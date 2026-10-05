@@ -5,7 +5,7 @@ import {
   lookupSampleBankByIfsc,
   fetchBankDetailsByIfsc,
 } from '@shared/services/bankService'
-import { GSTBankDetails } from '../../src/modules/gst/pages/GSTRegistration/steps/GSTBankDetails/GSTBankDetails'
+import { GSTBankDetails } from '../../src/modules/gst/components/GSTRegistration/GSTBankDetails/GSTBankDetails'
 
 afterEach(() => {
   cleanup()

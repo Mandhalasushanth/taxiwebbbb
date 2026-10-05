@@ -127,7 +127,7 @@ export const GSTComplianceCard: React.FC<GSTComplianceCardProps> = ({
               name="gstin"
               type="text"
               maxLength={15}
-              placeholder="e.g. 27ABCDE1234F1Z5 or ABCDE1234F"
+              placeholder="Enter your GSTIN or PAN"
               value={gstin}
               onChange={(e) => handleGstinChange(e.target.value)}
               className={`compliance-gstin-input ${errors.gstin ? 'has-error' : ''}`}

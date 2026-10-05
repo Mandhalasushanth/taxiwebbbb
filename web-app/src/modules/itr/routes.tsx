@@ -2,27 +2,19 @@ import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
 import { routePaths } from "@core/config";
 
-const Itr = lazy(() => import("./pages/Itr"));
-const FileItr = lazy(() => import("./pages/FileItr"));
-const ItrFiling = lazy(() => import("./pages/ItrFiling"));
-const TdsRefund = lazy(() => import("./pages/TdsRefund"));
+const Itr = lazy(() => import("./components/Itr/Itr"));
+const ItrFiling = lazy(() => import("./components/ItrFiling/ItrFiling"));
+const TdsRefund = lazy(() => import("./components/TdsRefund/TdsRefund"));
 const PreviousYearItr = lazy(
-  () => import("./pages/PreviousYearItr"),
+  () => import("./components/PreviousYearItr/PreviousYearItr"),
 );
-const RevisedItr = lazy(() => import("./pages/RevisedItr"));
+const RevisedItr = lazy(() => import("./components/RevisedItr/RevisedItr"));
 const TaxNoticeAssistance = lazy(
-  () => import("./pages/TaxNoticeAssistance"),
-);
-const TdsRefundEstimator = lazy(
-  () => import("./pages/TdsRefundEstimator"),
-);
-const TaxComputation = lazy(
-  () => import("./pages/TaxComputation"),
+  () => import("./components/TaxNoticeAssistance/TaxNoticeAssistance"),
 );
 
 export const itrRoutes: RouteObject[] = [
   { path: routePaths.itr.root, element: <Itr /> },
-  { path: routePaths.itr.fileItr, element: <FileItr /> },
   { path: routePaths.itr.itrFiling, element: <ItrFiling /> },
   { path: routePaths.itr.tdsRefund, element: <TdsRefund /> },
   { path: routePaths.itr.previousYearItr, element: <PreviousYearItr /> },
@@ -31,6 +23,4 @@ export const itrRoutes: RouteObject[] = [
     path: routePaths.itr.taxNoticeAssistance,
     element: <TaxNoticeAssistance />,
   },
-  { path: routePaths.itr.tdsRefundEstimator, element: <TdsRefundEstimator /> },
-  { path: routePaths.itr.taxComputation, element: <TaxComputation /> },
 ];

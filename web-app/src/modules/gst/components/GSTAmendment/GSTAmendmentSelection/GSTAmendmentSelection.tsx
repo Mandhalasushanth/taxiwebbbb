@@ -108,7 +108,7 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
               value={gstin}
               onChange={handleInputChange}
               maxLength={15}
-              placeholder="GSTIN (e.g. 22AAAAA0000A1Z5)"
+              placeholder="Enter your GSTIN"
               className={`gst-amend-input ${errorText ? 'has-error' : ''}`}
             />
           </div>

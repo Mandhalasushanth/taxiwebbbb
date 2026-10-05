@@ -39,6 +39,19 @@ export const formatAadhaar = (val: string): string => {
   return digits.replace(/(\d{4})(?=\d)/g, '$1 ')
 }
 
+const AADHAAR_VISIBLE_DIGITS = 4
+const MASK_GROUP = 'XXXX'
+
+/**
+ * Masks an Aadhaar number for display, showing only the last 4 digits (UIDAI guideline):
+ * "234567890124" -> "XXXX XXXX 0124". Returns the fallback when there is nothing to show.
+ */
+export const maskAadhaar = (val?: string | null, fallback = '—'): string => {
+  const digits = (val ?? '').replace(/\D/g, '')
+  if (digits.length < AADHAAR_VISIBLE_DIGITS) return fallback
+  return `${MASK_GROUP} ${MASK_GROUP} ${digits.slice(-AADHAAR_VISIBLE_DIGITS)}`
+}
+
 /**
  * Formats PAN to uppercase alphanumeric max 10 chars
  */
@@ -46,11 +59,18 @@ export const formatPan = (val: string): string => {
   return val.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10)
 }
 
+const MOBILE_LENGTH = 10
+const COUNTRY_CODE = '91'
+
 /**
- * Formats Indian 10-digit mobile number
+ * Formats Indian 10-digit mobile number, stripping pasted
+ * country code (+91 / 0091) and trunk prefix (0) when present
  */
 export const formatMobile = (val: string): string => {
-  return val.replace(/\D/g, '').slice(0, 10)
+  const digits = (val || '').replace(/\D/g, '').replace(/^0+/, '')
+  const hasCountryCode = digits.length > MOBILE_LENGTH && digits.startsWith(COUNTRY_CODE)
+  const local = hasCountryCode ? digits.slice(COUNTRY_CODE.length) : digits
+  return local.slice(0, MOBILE_LENGTH)
 }
 
 /**

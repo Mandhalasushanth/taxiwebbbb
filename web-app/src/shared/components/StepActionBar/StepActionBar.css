@@ -104,47 +104,38 @@
 
 /* Next / Continue button */
 .step-action-bar__btn--next {
-  background: #f97316;
-  border-color: #f97316;
-  color: #ffffff;
-  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.35);
-  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              background 0.18s ease-in-out,
-              box-shadow 0.18s ease-in-out,
-              transform 0.18s ease-in-out;
+  background: #f97316 !important;
+  border: 1.5px solid #f97316 !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  filter: none !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.35) !important;
+  transition: all 0.18s ease-in-out;
 }
 
 .step-action-bar__btn--next:disabled {
-  opacity: 0.38 !important;
-  filter: blur(0.6px) !important;
-  cursor: not-allowed !important;
-  pointer-events: none !important;
   background: #f97316 !important;
-  border-color: #f97316 !important;
+  border: 1.5px solid #f97316 !important;
   color: #ffffff !important;
-  box-shadow: none !important;
-  transform: none !important;
+  opacity: 1 !important;
+  filter: none !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.35) !important;
 }
 
-.step-action-bar__btn--next:not(:disabled) {
-  opacity: 1;
-  filter: none;
-  cursor: pointer;
-  pointer-events: auto;
-  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.35);
-}
-
-.step-action-bar__btn--next:hover:not(:disabled) {
-  background: #ea580c;
-  border-color: #ea580c;
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.45);
+.step-action-bar__btn--next:hover {
+  background: #ea580c !important;
+  border-color: #ea580c !important;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.45) !important;
   transform: translateY(-1px);
 }
 
-.step-action-bar__btn--next:active:not(:disabled) {
-  background: #c2410c;
-  border-color: #c2410c;
+.step-action-bar__btn--next:active {
+  background: #c2410c !important;
+  border-color: #c2410c !important;
   transform: translateY(0);
 }
 

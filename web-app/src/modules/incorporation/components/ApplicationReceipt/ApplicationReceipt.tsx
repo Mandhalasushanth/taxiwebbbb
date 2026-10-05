@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
+import { getEntityStructureLabel, getProposedCompanyName } from '../../types/incorporation.types'
 import { useIncorporationFlow } from '../../hooks'
 import './ApplicationReceipt.css'
 
@@ -9,21 +10,11 @@ export const ApplicationReceipt: React.FC = () => {
   const { formData } = useIncorporationFlow()
 
   const companyType = formData.companyType || 'pvt_ltd'
-  const entityTypeMap: Record<string, string> = {
-    opc: 'One Person Company (OPC)',
-    pvt_ltd: 'Private Limited Company',
-    section_8: 'Section 8 (NGO)',
-    public_ltd: 'Public Limited',
-  }
-  const entityStructure = entityTypeMap[companyType] || 'One Person Company (OPC)'
-
-  const defaultName =
-    companyType === 'opc'
-      ? 'TaxEdge Tech Private Limited'
-      : 'TaxEdge Tech Private Limited'
-  const companyName = formData.companyDetails?.firstPreferredName || defaultName
+  const entityStructure = getEntityStructureLabel(companyType, { full: true })
+  const companyName = getProposedCompanyName(companyType, formData.companyDetails?.firstPreferredName)
   const applicationId = formData.applicationId || 'INC-2026-89421'
   const transactionId = formData.transactionId || 'TXN-96771922'
+
   const applicationDate = formData.applicationDate || '18 Sep 2026'
 
   const paymentModeMap: Record<string, string> = {

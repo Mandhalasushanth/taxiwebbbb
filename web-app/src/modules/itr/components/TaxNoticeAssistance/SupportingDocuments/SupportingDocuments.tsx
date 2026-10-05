@@ -190,7 +190,8 @@ export const SupportingDocuments: React.FC<SupportingDocumentsProps> = ({
         onSaveDraft={onSaveDraftAndExit}
         onNext={handleNextClick}
         backLabel="Back"
-        nextLabel="Submit Documents &amp; Review Response"
+        nextLabel="Continue"
+        nextAriaLabel="Submit Documents & Review Response"
         nextDisabled={!canProceed}
       />
     </div>

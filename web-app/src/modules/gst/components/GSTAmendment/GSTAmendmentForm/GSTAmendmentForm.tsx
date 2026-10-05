@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import type { GstAmendmentPayload } from '@modules/gst/types/gst.types'
 import { useGSTAmendmentForm } from '@modules/gst/hooks/useGSTAmendmentForm'
+import { UploadDocument } from '@shared/components'
 import './GSTAmendmentForm.css'
 
 interface GSTAmendmentFormProps {
@@ -22,7 +23,6 @@ export const GSTAmendmentForm = ({
   onBackToSelection,
 }: GSTAmendmentFormProps) => {
   const {
-    fileInputRef,
     selectedFieldKey,
     newValue,
     setNewValue,
@@ -35,7 +35,6 @@ export const GSTAmendmentForm = ({
     filterNewValue,
     handleFieldSelectChange,
     handleFileChange,
-    handleBrowseClick,
     handleRemoveFile,
     handleSubmit,
   } = useGSTAmendmentForm({
@@ -144,77 +143,24 @@ export const GSTAmendmentForm = ({
             </label>
           </div>
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            className="gst-amend-form__file-input"
+          <UploadDocument
+            id="amendment-supporting-doc"
+            title="Supporting Document"
+            subtitle="Proof of the change — e.g. new rental agreement, name-change certificate (PDF, JPG, PNG up to 10 MB)"
+            isRequired={true}
+            isUploaded={Boolean(selectedFile)}
+            fileName={selectedFile?.name}
+            fileSize={selectedFile ? `${(selectedFile.size / 1024).toFixed(1)} KB` : undefined}
+            file={selectedFile || undefined}
             accept=".pdf,.jpg,.jpeg,.png"
-            onChange={handleFileChange}
-            aria-label="Upload supporting document"
-          />
-
-          <div
-            className={`gst-amend-form__upload-box ${errors.document ? 'gst-amend-form__upload-box--error' : ''}`}
-            onClick={handleBrowseClick}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault()
-                handleBrowseClick()
-              }
+            onUpload={(_, file) => {
+              handleFileChange({
+                target: { files: [file] },
+              } as unknown as React.ChangeEvent<HTMLInputElement>)
             }}
-          >
-            <div className="gst-amend-form__upload-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
-            </div>
-            <div className="gst-amend-form__upload-info">
-              {selectedFile ? (
-                <>
-                  <span className="gst-amend-form__upload-filename">{selectedFile.name}</span>
-                  <span className="gst-amend-form__upload-filesize">
-                    ({(selectedFile.size / 1024).toFixed(1)} KB) — Click or browse to replace
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span className="gst-amend-form__upload-main-text">
-                    Drag and drop file here, or browse
-                  </span>
-                  <span className="gst-amend-form__upload-sub-text">
-                    PDF, JPG, PNG up to 10 MB
-                  </span>
-                </>
-              )}
-            </div>
-            {selectedFile ? (
-              <button
-                type="button"
-                className="gst-amend-form__remove-btn"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleRemoveFile()
-                }}
-              >
-                Remove
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="gst-amend-form__browse-btn"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleBrowseClick()
-                }}
-              >
-                Browse
-              </button>
-            )}
-          </div>
+            onRemove={handleRemoveFile}
+            className={errors.document ? 'loan-doc-item--error' : ''}
+          />
 
           {errors.document ? (
             <span className="gst-amend-form__error-text">{errors.document}</span>

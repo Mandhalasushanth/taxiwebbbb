@@ -27,7 +27,7 @@ export const ReviewResponse: React.FC<ReviewResponseProps> = ({
   const ay = formData.assessmentYear || 'AY 2026–27'
 
   // Extract section if available
-  const sectionMatch = formData.noticeType?.match(/Section\s+([0-9a-zA-Z\(\)]+)/i)
+  const sectionMatch = formData.noticeType?.match(/Section\s+([0-9a-zA-Z()]+)/i)
   const section = sectionMatch ? sectionMatch[1] : '143(1)(a)'
 
   return (

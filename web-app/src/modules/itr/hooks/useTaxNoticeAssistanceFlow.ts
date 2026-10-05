@@ -24,20 +24,26 @@ export const INITIAL_NOTICE_FORM_DATA: NoticeFormData = {
   responseConfirmed: false,
 }
 
-export const getNoticeStepLabel = (stepNum: number) => {
-  switch (stepNum) {
-    case 1:
-      return 'Notice Details'
-    case 2:
-      return 'Upload Notice'
-    case 3:
-      return 'Notice Summary'
-    case 4:
-      return 'Supporting Documents'
-    case 5:
-      return 'Review Response'
-    default:
-      return 'Notice Details'
+const NOTICE_STEP_LABELS: Record<number, string> = {
+  1: 'Notice Details',
+  2: 'Upload Notice',
+  3: 'Notice Summary',
+  4: 'Supporting Documents',
+  5: 'Review Response',
+}
+
+const PREVIOUS_STEP_MAP: Record<number, 1 | 2 | 3 | 4> = {
+  2: 1,
+  3: 2,
+  4: 3,
+  5: 4,
+}
+
+export const getNoticeStepLabel = (stepNum: number): string => {
+  try {
+    return NOTICE_STEP_LABELS[stepNum] || 'Notice Details'
+  } catch {
+    return 'Notice Details'
   }
 }
 
@@ -50,43 +56,54 @@ export const useTaxNoticeAssistanceFlow = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState<NoticeFormData>(INITIAL_NOTICE_FORM_DATA)
 
-  // Load existing draft if present
   useEffect(() => {
-    const existingDraft = userStorage.getDraft(DRAFT_SERVICE_ID)
-    if (existingDraft?.formData) {
-      setFormData((prev) => ({
-        ...prev,
-        ...(existingDraft.formData as Partial<NoticeFormData>),
-      }))
-      if (existingDraft.currentStep && existingDraft.currentStep <= 5) {
-        setStep(existingDraft.currentStep as 1 | 2 | 3 | 4 | 5)
+    try {
+      const existingDraft = userStorage.getDraft(DRAFT_SERVICE_ID)
+      if (existingDraft?.formData) {
+        setFormData((prev) => ({
+          ...prev,
+          ...(existingDraft.formData as Partial<NoticeFormData>),
+        }))
+        if (existingDraft.currentStep && existingDraft.currentStep <= 5) {
+          setStep(existingDraft.currentStep as 1 | 2 | 3 | 4 | 5)
+        }
       }
+    } catch {
+      // No-op
     }
   }, [])
 
   const handleUpdateFormData = (patch: Partial<NoticeFormData>) => {
-    setFormData((prev) => ({ ...prev, ...patch }))
+    try {
+      setFormData((prev) => ({ ...prev, ...patch }))
+    } catch {
+      // No-op
+    }
   }
 
   const handleSaveDraft = useCallback(() => {
-    userStorage.saveDraft({
-      serviceId: DRAFT_SERVICE_ID,
-      serviceTitle: 'Tax Notice Assistance',
-      currentStep: step,
-      totalSteps: 5,
-      stepLabel: getNoticeStepLabel(step),
-      formData: {
-        ...formData,
-        documentFile: null,
-      },
-      savedAt: new Date().toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      }),
-      savedTimestamp: Date.now(),
-      resumeRoute: routePaths.itr.taxNoticeAssistance,
-    })
+    try {
+      userStorage.saveDraft({
+        serviceId: DRAFT_SERVICE_ID,
+        serviceTitle: 'Tax Notice Assistance',
+        currentStep: step,
+        totalSteps: 5,
+        stepLabel: getNoticeStepLabel(step),
+        formData: {
+          ...formData,
+          documentFile: null,
+        },
+        savedAt: new Date().toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        }),
+        savedTimestamp: Date.now(),
+        resumeRoute: routePaths.itr.taxNoticeAssistance,
+      })
+    } catch {
+      // No-op
+    }
   }, [step, formData])
 
   useEffect(() => {
@@ -116,25 +133,27 @@ export const useTaxNoticeAssistanceFlow = () => {
   })
 
   const handleSaveDraftAndExit = () => {
-    openModal()
+    try {
+      openModal()
+    } catch {
+      // No-op
+    }
   }
 
   const handleBack = () => {
-    if (step === 2) {
-      setStep(1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    } else if (step === 3) {
-      setStep(2)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    } else if (step === 4) {
-      setStep(3)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    } else if (step === 5) {
-      setStep(4)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    } else if (step === 1) {
-      openModal()
-    } else {
+    try {
+      const previousStep = PREVIOUS_STEP_MAP[step]
+      if (previousStep) {
+        setStep(previousStep)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return
+      }
+      if (step === 1) {
+        openModal()
+        return
+      }
+      navigate(routePaths.itr.root)
+    } catch {
       navigate(routePaths.itr.root)
     }
   }

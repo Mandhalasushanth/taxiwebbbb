@@ -125,7 +125,7 @@ export const SelectCompanyType: React.FC = () => {
       </main>
 
       {error && (
-        <div className="select-type-error-alert">
+        <div className="select-type-error-alert" role="alert">
           {error}
         </div>
       )}
@@ -135,7 +135,6 @@ export const SelectCompanyType: React.FC = () => {
         onBack={() => navigate(routePaths.incorporation.root)}
         onNext={handleContinue}
         onSaveDraft={() => navigate(routePaths.dashboard)}
-        nextDisabled={!selectedType}
         nextLabel="Continue"
       />
     </div>

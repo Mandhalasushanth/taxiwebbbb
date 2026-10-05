@@ -51,9 +51,11 @@ export interface TdsIncomeTaxData {
 }
 
 export interface UploadedFileMeta {
-  id: string
-  file: File
+  name: string
+  size: string
+  id?: string
+  file?: File
   previewUrl?: string
-  progress: number
-  uploadedAt: string
+  progress?: number
+  uploadedAt?: string
 }

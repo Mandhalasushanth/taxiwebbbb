@@ -5,12 +5,12 @@ import {
   IncorrectBankStep3,
   IncorrectBankStep4,
   IncorrectBankStep5,
-} from '../../src/modules/itr/pages/RevisedItr/IncorrectBankDetails'
+} from '../../src/modules/itr/components/RevisedItr/CorrectionDetails/IncorrectBankDetails'
 import {
   OtherCorrectionStep3,
   OtherCorrectionStep4,
   OtherCorrectionStep5,
-} from '../../src/modules/itr/pages/RevisedItr/Other'
+} from '../../src/modules/itr/components/RevisedItr/CorrectionDetails/Other'
 
 afterEach(() => {
   cleanup()

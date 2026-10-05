@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
-import { isStaffRole, roleHasPermission } from '@core/auth'
+import { buildLoginPath, isStaffRole, roleHasPermission } from '@core/auth'
 import type { Permission } from '@core/auth'
 import { routePaths } from '@core/config'
 import { Loader } from '@shared/components'
@@ -22,7 +22,7 @@ export const StaffRoute = ({ permission }: StaffRouteProps) => {
   if (isBootstrapping) return <Loader fullPage label="Checking your session" />
 
   if (!isAuthenticated || !user) {
-    return <Navigate to={routePaths.auth.login} state={{ from: location.pathname }} replace />
+    return <Navigate to={buildLoginPath(location)} replace />
   }
 
   if (!isStaffRole(user.role)) return <Navigate to={routePaths.dashboard} replace />

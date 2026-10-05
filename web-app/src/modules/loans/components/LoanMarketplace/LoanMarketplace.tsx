@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { routePaths } from '@core/config'
+import { buildProfileCompletionPath } from '@core/auth'
 import { useAuthStore } from '@store/index'
 import { CompleteProfileModal } from '@shared/components'
 import { LoanMarketplaceHeader } from './LoanMarketplaceHeader'
@@ -56,7 +56,7 @@ export const LoanMarketplace: React.FC = () => {
 
   const handleConfirmProfile = useCallback(() => {
     setIsProfileModalOpen(false)
-    navigate(routePaths.auth.register, {
+    navigate(buildProfileCompletionPath(selectedTarget), {
       state: { returnTo: selectedTarget, mobile: user?.mobile },
     })
   }, [navigate, selectedTarget, user?.mobile])

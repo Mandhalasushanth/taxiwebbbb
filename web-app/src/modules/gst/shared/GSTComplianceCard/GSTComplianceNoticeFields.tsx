@@ -37,7 +37,7 @@ export const GSTComplianceNoticeFields: React.FC<GSTComplianceNoticeFieldsProps>
           id="compliance-notice-num"
           name="noticeNumber"
           type="text"
-          placeholder="e.g. ZD270824001234M"
+          placeholder="Enter notice reference number"
           value={noticeNumber}
           onChange={(e) => {
             setNoticeNumber(

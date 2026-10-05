@@ -47,7 +47,7 @@ export const NoticeSummary: React.FC<NoticeSummaryProps> = ({
 
   // Extract section from notice type if possible
   const extractSection = (typeStr: string) => {
-    const match = typeStr.match(/Section\s+([0-9a-zA-Z\(\)]+)/i)
+    const match = typeStr.match(/Section\s+([0-9a-zA-Z()]+)/i)
     return match ? match[1] : '143(1)(a)'
   }
 
@@ -213,7 +213,8 @@ export const NoticeSummary: React.FC<NoticeSummaryProps> = ({
         onSaveDraft={onSaveDraftAndExit}
         onNext={onNext}
         backLabel="Back"
-        nextLabel="Upload Supporting Documents"
+        nextLabel="Continue"
+        nextAriaLabel="Upload Supporting Documents"
       />
     </div>
   )

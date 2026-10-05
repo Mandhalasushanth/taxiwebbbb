@@ -85,6 +85,11 @@ export const routePaths = {
   profilePersonal: '/profile/personal',
   profileKyc: '/profile/kyc',
   support: '/support',
+  legal: {
+    terms: '/legal/terms',
+    privacy: '/legal/privacy',
+    document: (id = ':documentId') => `/legal/${id}`,
+  },
   notifications: '/notifications',
   staff: {
     root: '/staff',

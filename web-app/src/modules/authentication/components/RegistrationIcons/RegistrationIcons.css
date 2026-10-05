@@ -30,12 +30,6 @@
   color: #16a34a;
 }
 
-.reg-icon--google {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .reg-icon--spin {
   animation: regIconSpin 0.9s linear infinite;
 }

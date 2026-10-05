@@ -1,4 +1,5 @@
 import {
+  HSN_SAC_LENGTHS,
   isValidBankAccNumber,
   isValidGstin,
   isValidHsnSac,
@@ -39,7 +40,7 @@ export const gstFieldRules = {
     const value = trimmed(v).toUpperCase()
     if (!value) return 'GSTIN is required'
     if (value.length !== 15) return 'GSTIN must be exactly 15 characters'
-    if (!isValidGstin(value)) return 'Enter a valid GSTIN (e.g. 27ABCDE1234F1Z5)'
+    if (!isValidGstin(value)) return 'Enter a valid GSTIN'
     if (!isValidStateCode(Number(value.slice(0, 2)))) return 'GSTIN has an invalid state code'
     return undefined
   },
@@ -53,19 +54,20 @@ export const gstFieldRules = {
 
   accountNumber: (v?: string): string | undefined => {
     const value = trimmed(v)
-    if (!value) return 'Account number is required'
-    return isValidBankAccNumber(value) ? undefined : 'Account number must be 9 to 18 digits'
+    if (!value) return 'Bank account number is required'
+    return isValidBankAccNumber(value) ? undefined : 'Enter a valid bank account number (9 to 18 digits)'
   },
 
   confirmAccountNumber: (account?: string, confirm?: string): string | undefined => {
-    if (!trimmed(confirm)) return 'Please re-enter the account number'
+    if (!trimmed(confirm)) return 'Confirm account number is required'
     return trimmed(account) === trimmed(confirm) ? undefined : 'Account numbers do not match'
   },
 
   hsnSac: (v?: string): string | undefined => {
     const value = trimmed(v)
     if (!value) return 'HSN / SAC code is required'
-    return isValidHsnSac(value) ? undefined : 'HSN / SAC must be 2 to 8 alphanumeric characters'
+    if (!/^\d+$/.test(value)) return 'HSN / SAC code must contain digits only'
+    return isValidHsnSac(value) ? undefined : `HSN / SAC code must be ${HSN_SAC_LENGTHS.join(', ').replace(/, (\d+)$/, ' or $1')} digits`
   },
 
   personName: (label: string): Rule => (v) => {
@@ -92,7 +94,7 @@ export const gstFieldRules = {
   bankName: (v?: string): string | undefined => {
     const value = trimmed(v)
     if (!value) return 'Bank name is required'
-    if (!GST_PATTERNS.BANK_NAME.test(value)) return 'Bank name must contain only letters (e.g. HDFC Bank)'
+    if (!GST_PATTERNS.BANK_NAME.test(value)) return 'Bank name must contain only letters'
     return value.length < 3 ? 'Please enter the full bank name' : undefined
   },
 

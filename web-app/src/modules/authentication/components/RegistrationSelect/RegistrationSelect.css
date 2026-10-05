@@ -154,6 +154,14 @@
   color: #ea580c;
 }
 
+/* Keyboard-highlighted option (aria-activedescendant) */
+.reg-select__item--active {
+  background: #fff7ed;
+  color: #ea580c;
+  outline: 2px solid #fdba74;
+  outline-offset: -2px;
+}
+
 .reg-select__item--selected {
   background: #ffedd5;
   color: #ea580c;

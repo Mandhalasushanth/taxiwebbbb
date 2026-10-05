@@ -1,5 +1,6 @@
 import React from 'react'
 import type { PropertyLoanStepProps } from '@modules/loans/types/propertyLoan.types'
+import { formatMobile } from '@shared/utils'
 import { loanInputHelpers } from '@modules/loans/utils/loanInputFormatters'
 import './Ownership.css'
 
@@ -155,11 +156,10 @@ export const Ownership: React.FC<PropertyLoanStepProps> = ({
               <input
                 id="lap-co-mobile"
                 type="tel"
-                maxLength={10}
                 className="property-input-prefixed"
                 placeholder="Enter mobile number"
                 value={data.coOwnerMobile || ''}
-                onChange={(e) => onChange({ coOwnerMobile: e.target.value.replace(/\D/g, '') })}
+                onChange={(e) => onChange({ coOwnerMobile: formatMobile(e.target.value) })}
               />
             </div>
             {errors.coOwnerMobile && <span className="property-error-text">{errors.coOwnerMobile}</span>}

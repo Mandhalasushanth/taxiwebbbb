@@ -9,11 +9,15 @@ export interface CardDetails {
 
 export interface PaymentResult {
   paymentId: string
+  /** Gateway order the payment belongs to */
+  orderId?: string
   method: PaymentMethodType
   amount: number
   applicationRef: string
   timestamp: string
   status: 'SUCCESS' | 'FAILED'
+  /** True only after server-side verification of the gateway callback */
+  verified: boolean
   receiptNumber?: string
 }
 
@@ -26,6 +30,8 @@ export interface PaymentBreakdown {
 
 export interface PaymentCheckoutProps {
   amount: number
+  /** Lets the payments service apply service-specific coupons */
+  serviceId?: string
   serviceTitle?: string
   applicationRef?: string
   applicantName?: string

@@ -3,6 +3,8 @@ export interface GstBusinessFormData {
   legalName: string
   tradeName: string
   constitution: string
+  /** PAN of the business entity (4th character must match the constitution) */
+  businessPan: string
   natureOfBusiness: string
   commencementDate: string
   registrationReason: string

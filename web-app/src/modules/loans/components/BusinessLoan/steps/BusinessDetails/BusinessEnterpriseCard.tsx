@@ -1,4 +1,5 @@
 import React from 'react'
+import { Building2, FileCheck, Calendar, ChevronDown } from 'lucide-react'
 import type { BusinessLoanFormData } from '@modules/loans/types/businessLoan.types'
 import { useDropdown } from '@modules/loans/hooks/useDropdown'
 import { LoanDropdownOption } from '../LoanDropdownOption'
@@ -36,13 +37,7 @@ export const BusinessEnterpriseCard: React.FC<BusinessEnterpriseCardProps> = ({
         <div className="business-field-header">
           <div className="business-field-header__left">
             <div className="business-icon-tile">
-              <img
-                src="/assets/icons/loans/building.svg"
-                alt=""
-                width="20"
-                height="20"
-                aria-hidden="true"
-              />
+              <Building2 size={20} aria-hidden="true" />
             </div>
             <label htmlFor="registeredBusinessName" className="business-field-title">
               Registered Business / Firm Name <span className="text-required">*</span>
@@ -69,13 +64,7 @@ export const BusinessEnterpriseCard: React.FC<BusinessEnterpriseCardProps> = ({
         <div className="business-field-header">
           <div className="business-field-header__left">
             <div className="business-icon-tile">
-              <img
-                src="/assets/icons/loans/gstin.svg"
-                alt=""
-                width="20"
-                height="20"
-                aria-hidden="true"
-              />
+              <FileCheck size={20} aria-hidden="true" />
             </div>
             <label htmlFor="gstin" className="business-field-title">
               GSTIN <span className="text-required">*</span>
@@ -106,13 +95,7 @@ export const BusinessEnterpriseCard: React.FC<BusinessEnterpriseCardProps> = ({
         <div className="business-field-header">
           <div className="business-field-header__left">
             <div className="business-icon-tile">
-              <img
-                src="/assets/icons/loans/vintage.svg"
-                alt=""
-                width="20"
-                height="20"
-                aria-hidden="true"
-              />
+              <Calendar size={20} aria-hidden="true" />
             </div>
             <label id="vintageLabel" className="business-field-title">
               Business Vintage (Years in Operation) <span className="text-required">*</span>
@@ -134,13 +117,7 @@ export const BusinessEnterpriseCard: React.FC<BusinessEnterpriseCardProps> = ({
               {data.businessVintage || 'Select Business Vintage'}
             </span>
             <span className={`custom-dropdown-chevron ${isVintageOpen ? 'custom-dropdown-chevron--open' : ''}`} aria-hidden="true">
-              <img
-                src="/assets/icons/loans/chevron-down.svg"
-                alt=""
-                width="18"
-                height="18"
-                aria-hidden="true"
-              />
+              <ChevronDown size={18} aria-hidden="true" />
             </span>
           </button>
 

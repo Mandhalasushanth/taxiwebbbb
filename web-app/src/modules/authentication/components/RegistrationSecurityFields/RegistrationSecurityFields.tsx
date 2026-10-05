@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
 import { LockIcon, EyeIcon, EyeOffIcon } from '../RegistrationIcons/RegistrationIcons'
+import { routePaths } from '@core/config'
+import { LegalDocumentModal, type LegalDocumentId } from '@modules/legal'
+import { PASSCODE_LENGTH } from '../../validation/registrationValidation'
 import './RegistrationSecurityFields.css'
+
+const TERMS_ERROR_ID = 'reg-agreeTerms-error'
 
 export interface RegistrationSecurityValues {
   password: string
@@ -37,6 +42,27 @@ export const RegistrationSecurityFields: React.FC<RegistrationSecurityFieldsProp
 }) => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [openPolicy, setOpenPolicy] = useState<LegalDocumentId | null>(null)
+
+  /**
+   * Plain click opens the policy in a dialog (form data stays intact);
+   * Ctrl/Cmd/middle-click still opens the published page in a new tab.
+   */
+  const renderPolicyLink = (id: LegalDocumentId, href: string, label: string) => (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="reg-security-fields__terms-link"
+      onClick={(e) => {
+        if (e.ctrlKey || e.metaKey || e.shiftKey) return
+        e.preventDefault()
+        setOpenPolicy(id)
+      }}
+    >
+      {label}
+    </a>
+  )
 
   return (
     <div className="reg-security-fields">
@@ -44,7 +70,7 @@ export const RegistrationSecurityFields: React.FC<RegistrationSecurityFieldsProp
       <div className="reg-security-fields__row">
         <div className="reg-field">
           <label className="reg-field__label" htmlFor="reg-password">
-            Passcode <span className="reg-field__required">*</span>
+            Create Passcode <span className="reg-field__required">*</span>
           </label>
           <div className={`reg-field__control ${errors.password ? 'reg-field__control--error' : ''}`}>
             <span className="reg-field__icon">
@@ -56,9 +82,9 @@ export const RegistrationSecurityFields: React.FC<RegistrationSecurityFieldsProp
               type={showPassword ? 'text' : 'password'}
               inputMode="numeric"
               pattern="[0-9]*"
-              maxLength={6}
+              maxLength={PASSCODE_LENGTH}
               className="reg-field__input"
-              placeholder="Set your passcode"
+              placeholder={`Set your ${PASSCODE_LENGTH}-digit passcode`}
               value={values.password}
               onChange={onChange}
               onBlur={onBlur}
@@ -91,9 +117,9 @@ export const RegistrationSecurityFields: React.FC<RegistrationSecurityFieldsProp
               type={showConfirmPassword ? 'text' : 'password'}
               inputMode="numeric"
               pattern="[0-9]*"
-              maxLength={6}
+              maxLength={PASSCODE_LENGTH}
               className="reg-field__input"
-              placeholder="Confirm passcode"
+              placeholder={`Confirm ${PASSCODE_LENGTH}-digit passcode`}
               value={values.confirmPassword}
               onChange={onChange}
               onBlur={onBlur}
@@ -116,7 +142,9 @@ export const RegistrationSecurityFields: React.FC<RegistrationSecurityFieldsProp
       </div>
 
       {/* Row 8: Terms and Privacy Checkbox */}
-      <div className="reg-security-fields__terms">
+      <div
+        className={`reg-security-fields__terms ${errors.agreeTerms ? 'reg-security-fields__terms--error' : ''}`}
+      >
         <label className="reg-security-fields__checkbox-label" htmlFor="reg-agreeTerms">
           <input
             id="reg-agreeTerms"
@@ -125,6 +153,9 @@ export const RegistrationSecurityFields: React.FC<RegistrationSecurityFieldsProp
             className="reg-security-fields__checkbox-input"
             checked={values.agreeTerms}
             onChange={onToggleTerms}
+            aria-invalid={Boolean(errors.agreeTerms)}
+            aria-describedby={errors.agreeTerms ? TERMS_ERROR_ID : undefined}
+            aria-label="I agree to the Terms of Service and Privacy Policy"
           />
           <span className="reg-security-fields__custom-checkbox">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
@@ -134,26 +165,17 @@ export const RegistrationSecurityFields: React.FC<RegistrationSecurityFieldsProp
         </label>
         <span className="reg-security-fields__terms-text">
           By creating an account, I agree to the{' '}
-          <a
-            href="/terms"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="reg-security-fields__terms-link"
-          >
-            Terms of Service
-          </a>{' '}
+          {renderPolicyLink('terms', routePaths.legal.terms, 'Terms of Service')}{' '}
           and{' '}
-          <a
-            href="/privacy"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="reg-security-fields__terms-link"
-          >
-            Privacy Policy
-          </a>
+          {renderPolicyLink('privacy', routePaths.legal.privacy, 'Privacy Policy')}
           .
         </span>
       </div>
+      {errors.agreeTerms && (
+        <p id={TERMS_ERROR_ID} className="reg-field__error reg-security-fields__terms-error" role="alert">
+          {errors.agreeTerms}
+        </p>
+      )}
 
       {/* Row 9: Continue Button */}
       <button
@@ -167,6 +189,8 @@ export const RegistrationSecurityFields: React.FC<RegistrationSecurityFieldsProp
       >
         {isSubmitting ? 'Processing...' : submitLabel}
       </button>
+
+      <LegalDocumentModal documentId={openPolicy} onClose={() => setOpenPolicy(null)} />
     </div>
   )
 }

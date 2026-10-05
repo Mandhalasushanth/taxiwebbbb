@@ -1,0 +1,223 @@
+/**
+ * Lifecycle Milestones Card Component Styles
+ * Strictly external CSS - zero inline or internal styles
+ */
+
+.loan-lifecycle-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.loan-lifecycle-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.loan-lifecycle-icon-tile {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: #fff7ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.loan-lifecycle-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.loan-timeline-track {
+  display: flex;
+  flex-direction: column;
+}
+
+.loan-timeline-row {
+  display: grid;
+  grid-template-columns: 44px 1fr 280px;
+  align-items: flex-start;
+  padding-bottom: 24px;
+  position: relative;
+}
+
+.loan-timeline-row:last-child {
+  padding-bottom: 0;
+}
+
+.loan-timeline-node-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  height: 100%;
+}
+
+.loan-timeline-node {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.loan-timeline-node--completed {
+  background-color: #041d3e;
+  color: #ffffff;
+}
+
+.loan-timeline-node--active {
+  background-color: #ff7a00;
+  border: 3px solid #ffedd5;
+  box-shadow: 0 0 0 1px #ff7a00;
+}
+
+.loan-timeline-inner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ffffff;
+}
+
+.loan-timeline-node--pending {
+  background-color: #e0f2fe;
+  border: 2px solid #bae6fd;
+}
+
+.loan-timeline-connector-line {
+  width: 2px;
+  flex: 1;
+  margin-top: 4px;
+}
+
+.loan-timeline-connector-line--completed {
+  background-color: #041d3e;
+}
+
+.loan-timeline-connector-line--pending {
+  background-color: #e2e8f0;
+}
+
+.loan-timeline-label-col {
+  padding-left: 8px;
+  padding-top: 3px;
+}
+
+.loan-timeline-stage-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 3px;
+}
+
+.loan-timeline-stage-title--active {
+  color: #ea580c;
+}
+
+.loan-timeline-stage-title--pending {
+  color: #0f172a;
+}
+
+.loan-timeline-stage-subtitle {
+  font-size: 13px;
+  color: #475569;
+  font-weight: 500;
+}
+
+.loan-timeline-stage-subtitle--pending {
+  color: #94a3b8;
+}
+
+.loan-timeline-badge-col {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.milestone-badge-completed {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #475569;
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+.milestone-status-box {
+  border-radius: 8px;
+  padding: 8px 14px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.milestone-status-box--active {
+  background-color: #fff7ed;
+  border: 1px solid #fed7aa;
+}
+
+.milestone-status-box--pending {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.milestone-status-box__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.milestone-status-box--active .milestone-status-box__header {
+  color: #ea580c;
+}
+
+.milestone-status-box--pending .milestone-status-box__header {
+  color: #64748b;
+}
+
+.milestone-status-box__desc {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .loan-timeline-row {
+    grid-template-columns: 40px 1fr 220px;
+  }
+}
+
+@media (max-width: 640px) {
+  .loan-timeline-row {
+    grid-template-columns: 36px 1fr;
+    row-gap: 10px;
+  }
+
+  .loan-timeline-badge-col {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+}

@@ -13,12 +13,18 @@ export const CapitalDetails: React.FC = () => {
   const companyType = formData.companyType || 'pvt_ltd'
   const isOpc = companyType === 'opc'
 
-  const capital = formData.capitalDetails?.authorisedCapital ? formData.capitalDetails : {
-    authorisedCapital: '',
-    subscribedCapital: '',
-    totalShares: '',
-    faceValue: '',
+  const capital: {
+    authorisedCapital: string
+    subscribedCapital: string
+    totalShares: string
+    faceValue: string
+  } = {
+    authorisedCapital: formData.capitalDetails?.authorisedCapital || '',
+    subscribedCapital: formData.capitalDetails?.subscribedCapital || '',
+    totalShares: formData.capitalDetails?.totalShares || '',
+    faceValue: formData.capitalDetails?.faceValue || '',
   }
+
 
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -29,13 +35,13 @@ export const CapitalDetails: React.FC = () => {
 
   const handleContinue = () => {
     const newErrors: Record<string, string> = {}
-    if (!capital.authorisedCapital.trim()) {
+    if (!(capital.authorisedCapital || '').trim()) {
       newErrors.authorisedCapital = 'Authorised capital is required'
     } else if (!isPositiveNumber(capital.authorisedCapital)) {
       newErrors.authorisedCapital = 'Authorised capital must be greater than 0'
     }
 
-    if (!capital.subscribedCapital.trim()) {
+    if (!(capital.subscribedCapital || '').trim()) {
       newErrors.subscribedCapital = 'Subscribed capital is required'
     } else if (!isPositiveNumber(capital.subscribedCapital)) {
       newErrors.subscribedCapital = 'Subscribed capital must be greater than 0'
@@ -43,13 +49,13 @@ export const CapitalDetails: React.FC = () => {
       newErrors.subscribedCapital = 'Subscribed capital cannot exceed authorised capital'
     }
 
-    if (!capital.totalShares.trim()) {
+    if (!(capital.totalShares || '').trim()) {
       newErrors.totalShares = 'Total number of shares is required'
     } else if (!isPositiveNumber(capital.totalShares)) {
       newErrors.totalShares = 'Total shares must be greater than 0'
     }
 
-    if (!capital.faceValue.trim()) {
+    if (!(capital.faceValue || '').trim()) {
       newErrors.faceValue = 'Face value per share is required'
     } else if (!isPositiveNumber(capital.faceValue)) {
       newErrors.faceValue = 'Face value must be greater than 0'
@@ -100,7 +106,7 @@ export const CapitalDetails: React.FC = () => {
             <input
               type="text"
               className={`capital-details-input ${errors.authorisedCapital ? 'capital-details-input--error' : ''}`}
-              placeholder="e.g. 100000"
+              placeholder="Enter authorised capital (₹)"
               value={capital.authorisedCapital}
               onChange={(e) => handleChange('authorisedCapital', e.target.value)}
             />
@@ -114,7 +120,7 @@ export const CapitalDetails: React.FC = () => {
             <input
               type="text"
               className={`capital-details-input ${errors.subscribedCapital ? 'capital-details-input--error' : ''}`}
-              placeholder="e.g. 100000"
+              placeholder="Enter subscribed capital (₹)"
               value={capital.subscribedCapital}
               onChange={(e) => handleChange('subscribedCapital', e.target.value)}
             />
@@ -128,7 +134,7 @@ export const CapitalDetails: React.FC = () => {
             <input
               type="text"
               className={`capital-details-input ${errors.totalShares ? 'capital-details-input--error' : ''}`}
-              placeholder="e.g. 10000"
+              placeholder="Enter total number of shares"
               value={capital.totalShares}
               onChange={(e) => handleChange('totalShares', e.target.value)}
             />
@@ -142,7 +148,7 @@ export const CapitalDetails: React.FC = () => {
             <input
               type="text"
               className={`capital-details-input ${errors.faceValue ? 'capital-details-input--error' : ''}`}
-              placeholder="e.g. 10"
+              placeholder="Enter face value per share (₹)"
               value={capital.faceValue}
               onChange={(e) => handleChange('faceValue', e.target.value)}
             />
@@ -225,15 +231,6 @@ export const CapitalDetails: React.FC = () => {
         onBack={() => navigate(routePaths.incorporation.promoterDetails)}
         onNext={handleContinue}
         onSaveDraft={() => navigate(routePaths.dashboard)}
-        nextDisabled={
-          !Boolean(
-            Number(capital.authorisedCapital || 0) > 0 &&
-            Number(capital.subscribedCapital || 0) > 0 &&
-            Number(capital.subscribedCapital || 0) <= Number(capital.authorisedCapital || 0) &&
-            Number(capital.totalShares || 0) > 0 &&
-            Number(capital.faceValue || 0) > 0
-          )
-        }
         nextLabel="Continue"
       />
     </div>

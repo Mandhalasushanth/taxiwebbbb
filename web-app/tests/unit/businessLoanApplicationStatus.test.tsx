@@ -12,7 +12,7 @@ vi.mock('@core/config/environment', () => ({
   },
 }))
 
-import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react'
+import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { LoanApplicationStatus } from '../../src/modules/loans/components/LoanApplicationStatus'
 import { loanApplicationService } from '../../src/modules/loans/services/loanApplicationService'
@@ -139,7 +139,7 @@ describe('Business Loan - Application Status Page', () => {
       createdAt: '2026-09-28T10:00:00Z',
       updatedAt: '2026-09-28T10:00:00Z',
       milestones: [
-        { id: 'm1', title: 'Application Submitted', timestamp: '28 Sep 2026  10:00 AM', status: 'completed' },
+        { id: 'm1', title: 'Application Submitted', timestamp: '28 Sep 2026 10:00 AM', status: 'completed' },
         { id: 'm2', title: 'Agent Review', timestamp: 'Documents Received', status: 'current' },
         { id: 'm3', title: 'Lender Review', timestamp: 'Pending', status: 'pending' },
         { id: 'm4', title: 'Sanctioned', timestamp: 'Pending', status: 'pending' },

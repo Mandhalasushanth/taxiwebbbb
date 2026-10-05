@@ -23,7 +23,7 @@ export const useAuth = () => {
         return
       }
 
-      navigate(session.user.isProfileComplete ? routePaths.dashboard : routePaths.auth.createProfile, {
+      navigate(routePaths.dashboard, {
         replace: true,
       })
     },

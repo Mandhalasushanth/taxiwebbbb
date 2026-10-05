@@ -1,4 +1,5 @@
 import React from 'react'
+import { Users, FileText } from 'lucide-react'
 import type { ProjectFinanceData, PlantMachineryItem, RawMaterialItem } from '@modules/loans/types/projectFinance.types'
 import {
   MACHINERY_CATEGORY_OPTIONS,
@@ -112,7 +113,7 @@ export const Section8And9: React.FC<Section8And9Props> = ({
         <div className="pf-collapsible-header" onClick={onToggleMachinery}>
           <div className="pf-collapsible-header__left">
             <div className="pf-section-icon-tile">
-              <img src="/assets/icons/loans/users-green.svg" alt="" width="20" height="20" />
+              <Users size={20} />
             </div>
             <h3 className="pf-collapsible-title">8. Plant & Machinery</h3>
           </div>
@@ -234,7 +235,7 @@ export const Section8And9: React.FC<Section8And9Props> = ({
         <div className="pf-collapsible-header" onClick={onToggleRawMaterial}>
           <div className="pf-collapsible-header__left">
             <div className="pf-section-icon-tile">
-              <img src="/assets/icons/loans/doc-orange.svg" alt="" width="20" height="20" />
+              <FileText size={20} />
             </div>
             <h3 className="pf-collapsible-title">9. Raw Material / Inputs</h3>
           </div>

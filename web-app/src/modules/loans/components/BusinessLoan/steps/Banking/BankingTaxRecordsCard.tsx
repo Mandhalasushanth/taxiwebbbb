@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react'
+import { Landmark, ChevronDown } from 'lucide-react'
 import type { BusinessLoanFormData } from '@modules/loans/types/businessLoan.types'
 import { useDropdown } from '@modules/loans/hooks/useDropdown'
 import { LoanDropdownOption } from '../LoanDropdownOption'
@@ -38,13 +39,7 @@ export const BankingTaxRecordsCard: React.FC<BankingTaxRecordsCardProps> = ({
     <div className="banking-card">
       <div className="banking-card-header">
         <div className="banking-icon-tile">
-          <img
-            src="/assets/icons/loans/bank-building.svg"
-            alt=""
-            width="22"
-            height="22"
-            aria-hidden="true"
-          />
+          <Landmark size={22} aria-hidden="true" />
         </div>
         <div className="banking-card-header__info">
           <h2 className="banking-card-title">Banking &amp; Tax Records</h2>
@@ -75,13 +70,7 @@ export const BankingTaxRecordsCard: React.FC<BankingTaxRecordsCardProps> = ({
                 {data.primaryOperatingBankName || 'Select bank name'}
               </span>
               <span className={`banking-dropdown-chevron ${isOpen ? 'banking-dropdown-chevron--open' : ''}`} aria-hidden="true">
-                <img
-                  src="/assets/icons/loans/chevron-down.svg"
-                  alt=""
-                  width="18"
-                  height="18"
-                  aria-hidden="true"
-                />
+                <ChevronDown size={18} aria-hidden="true" />
               </span>
             </button>
 
@@ -189,7 +178,7 @@ export const BankingTaxRecordsCard: React.FC<BankingTaxRecordsCardProps> = ({
             type="text"
             maxLength={LOAN_FIELD_LIMITS.BANK_ACCOUNT_MAX}
             className={`banking-input ${errors.currentAccountNumber ? 'banking-input--error' : ''}`}
-            placeholder="e.g. 50200012345678"
+            placeholder="Enter current account number"
             value={data.currentAccountNumber || ''}
             onChange={(e) =>
               onChange({
@@ -214,7 +203,7 @@ export const BankingTaxRecordsCard: React.FC<BankingTaxRecordsCardProps> = ({
             type="text"
             maxLength={LOAN_FIELD_LIMITS.IFSC}
             className={`banking-input ${errors.bankIfscCode ? 'banking-input--error' : ''}`}
-            placeholder="e.g. HDFC0001234"
+            placeholder="Enter IFSC code"
             value={data.bankIfscCode || ''}
             onChange={(e) =>
               onChange({

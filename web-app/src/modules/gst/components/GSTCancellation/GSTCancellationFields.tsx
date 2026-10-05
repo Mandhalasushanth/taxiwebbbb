@@ -51,7 +51,7 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
           GSTIN (15-Character) <span className="gst-canc-star">*</span>
         </label>
         <input
-          id="gst-canc-gstin-input" type="text" maxLength={15} placeholder="e.g. 29AAAAA0000A1Z5"
+          id="gst-canc-gstin-input" type="text" maxLength={15} placeholder="Enter your GSTIN"
           value={gstin} onChange={(e) => { setGstin(gstInput.gstin(e.target.value)); clearError('gstin') }}
           className={`gst-canc-input ${errors.gstin ? 'has-error' : ''}`}
         />
@@ -110,7 +110,7 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
             Last GSTR-3B Filed ARN / Period <span className="gst-canc-star">*</span>
           </label>
           <input
-            id="gst-canc-gstr3b-input" type="text" placeholder="e.g. AA2908260000100X / July 2026" value={lastGstr3bFiled}
+            id="gst-canc-gstr3b-input" type="text" placeholder="Enter ARN or return period" value={lastGstr3bFiled}
             onChange={(e) => { setLastGstr3bFiled(gstInput.text(e.target.value, 60)); clearError('lastGstr3bFiled') }}
             className={`gst-canc-input ${errors.lastGstr3bFiled ? 'has-error' : ''}`}
           />

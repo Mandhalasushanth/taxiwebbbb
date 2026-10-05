@@ -62,7 +62,13 @@ function withoutUnsavedFiles<T extends object>(data: T): T {
   const docs = (data as { uploadedDocs?: Record<string, unknown> }).uploadedDocs
   if (!docs || typeof docs !== 'object') return data
   const kept = Object.fromEntries(
-    Object.entries(docs).filter(([, doc]) => doc instanceof File || (doc as { file?: unknown })?.file instanceof File)
+    Object.entries(docs).filter(
+      ([, doc]) =>
+        doc instanceof File ||
+        (doc as { file?: unknown })?.file instanceof File ||
+        Boolean((doc as { fileName?: string })?.fileName) ||
+        Boolean((doc as { name?: string })?.name)
+    )
   )
   return { ...data, uploadedDocs: kept }
 }
@@ -100,7 +106,7 @@ export function useLoanApplication<T extends object>(
   })
 
   const [currentStep, setCurrentStepState] = useState<number>(() => {
-    const savedStep = localStore.get<number>(stepStorageKey)
+    const savedStep = localStore.get<number>(stepStorageKey) ?? localStore.get<number>(`taxedge_loan_step_${loanType}`)
     if (typeof savedStep === 'number' && savedStep > 1) {
       return savedStep
     }
@@ -159,12 +165,12 @@ export function useLoanApplication<T extends object>(
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [setCurrentStep])
 
-  // Automatically sync step position to storage only when user is beyond step 1
+  // Automatically sync step position to storage only when user is beyond step 1 and not submitted
   useEffect(() => {
-    if (currentStep > 1) {
+    if (!isSubmitted && currentStep > 1) {
       localStore.set(stepStorageKey, currentStep)
     }
-  }, [stepStorageKey, currentStep])
+  }, [stepStorageKey, currentStep, isSubmitted])
 
   const saveDraft = useCallback(() => {
     // 1. Save local service draft
@@ -209,6 +215,7 @@ export function useLoanApplication<T extends object>(
     loanApplicationService.clearDraft(loanType)
     userStorage.deleteDraft(loanType)
     localStore.remove(stepStorageKey)
+    localStore.remove(`taxedge_loan_step_${loanType}`)
     setFormData(initialValues)
     setIsDirty(false)
     setCurrentStepState(1)
@@ -222,6 +229,8 @@ export function useLoanApplication<T extends object>(
     loanApplicationService.clearDraft(loanType)
     userStorage.deleteDraft(loanType)
     localStore.remove(stepStorageKey)
+    localStore.remove(`taxedge_loan_step_${loanType}`)
+    setCurrentStepState(1)
   }, [loanType, stepStorageKey])
 
   // Block route navigation only if unsubmitted, not in submitting state,

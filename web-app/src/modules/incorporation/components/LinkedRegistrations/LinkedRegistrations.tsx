@@ -154,7 +154,6 @@ export const LinkedRegistrations: React.FC = () => {
         onBack={() => navigate(routePaths.incorporation.documentsKyc)}
         onNext={handleContinue}
         onSaveDraft={() => navigate(routePaths.dashboard)}
-        nextDisabled={!registrations.some((i: RegistrationItem) => i.id === 'pan' && i.checked)}
         nextLabel="Continue"
       />
     </div>

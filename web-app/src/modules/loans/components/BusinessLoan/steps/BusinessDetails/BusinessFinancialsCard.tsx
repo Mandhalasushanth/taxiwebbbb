@@ -1,4 +1,5 @@
 import React from 'react'
+import { TrendingUp, BarChart3 } from 'lucide-react'
 import {
   formatCurrencyString,
   handleNumericKeyDown,
@@ -27,13 +28,7 @@ export const BusinessFinancialsCard: React.FC<BusinessFinancialsCardProps> = ({
         <div className="business-field-header">
           <div className="business-field-header__left">
             <div className="business-icon-tile">
-              <img
-                src="/assets/icons/loans/turnover.svg"
-                alt=""
-                width="20"
-                height="20"
-                aria-hidden="true"
-              />
+              <TrendingUp size={20} aria-hidden="true" />
             </div>
             <label htmlFor="annualTurnover" className="business-field-title">
               Annual Turnover (FY 2024–25 / Latest) (₹) <span className="text-required">*</span>
@@ -61,13 +56,7 @@ export const BusinessFinancialsCard: React.FC<BusinessFinancialsCardProps> = ({
         <div className="business-field-header">
           <div className="business-field-header__left">
             <div className="business-icon-tile">
-              <img
-                src="/assets/icons/loans/profit.svg"
-                alt=""
-                width="20"
-                height="20"
-                aria-hidden="true"
-              />
+              <BarChart3 size={20} aria-hidden="true" />
             </div>
             <label htmlFor="annualNetProfit" className="business-field-title">
               Annual Net Profit (After Tax) (₹) <span className="text-required">*</span>

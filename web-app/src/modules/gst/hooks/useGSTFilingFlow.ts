@@ -48,6 +48,8 @@ const buildPaymentResult = (applicationRef: string): PaymentResult => ({
   dateText: new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
   applicationRef,
   amount: withPlatformGst(GST_FEES.filingCombo).total,
+  // Placeholder until the payments service verifies a real payment
+  verified: false,
 })
 
 const withoutKey = <V>(record: Record<string, V>, key: string): Record<string, V> =>

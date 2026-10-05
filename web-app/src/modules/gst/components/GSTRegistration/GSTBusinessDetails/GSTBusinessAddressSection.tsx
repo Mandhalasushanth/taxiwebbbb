@@ -1,4 +1,5 @@
 import React, { type ChangeEvent } from 'react'
+import { HSN_SAC_LENGTHS, validatePincodeMatchesState } from '@shared/utils'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import type { GstBusinessFormData } from '../GSTStepBusiness/GSTStepBusiness'
 import { INDIAN_STATES_AND_UTS } from '@modules/gst/utils/gstBusinessDetails.constants'
@@ -37,7 +38,13 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
   const handleStateChange = (e: ChangeEvent<HTMLSelectElement>) => {
     onChange('state', e.target.value)
     onClearError?.('state')
+    // A PIN / State mismatch error is re-evaluated against the new state
+    onClearError?.('pinCode')
   }
+
+  // Live PIN ↔ State check so a mismatch is visible before pressing Continue
+  const pinStateMismatch = errors.pinCode ? null : validatePincodeMatchesState(data.pinCode, data.state)
+  const pinCodeMessage = errors.pinCode || pinStateMismatch
 
   const handlePinCodeChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange('pinCode', gstInput.pinCode(e.target.value))
@@ -109,11 +116,12 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           <div className="gst-select-wrapper">
             <select
               id="state"
-              className={`gst-form-select ${errors.state ? 'gst-input--error' : ''}`}
+              className={`gst-form-select ${!data.state ? 'gst-select--placeholder' : ''} ${errors.state ? 'gst-input--error' : ''}`}
+              data-empty={!data.state}
               value={data.state}
               onChange={handleStateChange}
             >
-              <option value="">Select</option>
+              <option value="">Select State / UT</option>
               {INDIAN_STATES_AND_UTS.map((st) => (
                 <option key={st} value={st}>
                   {st}
@@ -138,12 +146,13 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
             type="text"
             inputMode="numeric"
             maxLength={6}
-            className={`gst-form-input ${errors.pinCode ? 'gst-input--error' : ''}`}
-            placeholder="560001"
+            className={`gst-form-input ${pinCodeMessage ? 'gst-input--error' : ''}`}
+            placeholder="Enter your PIN code"
             value={data.pinCode}
             onChange={handlePinCodeChange}
+            aria-invalid={Boolean(pinCodeMessage)}
           />
-          {errors.pinCode && <span className="gst-field-error">{errors.pinCode}</span>}
+          {pinCodeMessage && <span className="gst-field-error" role="alert">{pinCodeMessage}</span>}
         </div>
       </div>
 
@@ -154,9 +163,13 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
         </label>
         <input
           id="hsnSacCode"
+          name="hsnSacCode"
           type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          maxLength={Math.max(...HSN_SAC_LENGTHS)}
           className={`gst-form-input ${errors.hsnSacCode ? 'gst-input--error' : ''}`}
-          placeholder="e.g. 998311"
+          placeholder={`Enter ${HSN_SAC_LENGTHS.join(' / ')} digit HSN or SAC code`}
           value={data.hsnSacCode}
           onChange={handleHsnSacChange}
         />

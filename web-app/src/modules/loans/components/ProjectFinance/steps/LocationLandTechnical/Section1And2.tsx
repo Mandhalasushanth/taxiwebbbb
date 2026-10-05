@@ -1,4 +1,5 @@
 import React from 'react'
+import { Home, ChevronDown, FileText } from 'lucide-react'
 import type { ProjectFinanceData } from '@modules/loans/types/projectFinance.types'
 import {
   PROJECT_ZONES,
@@ -36,12 +37,12 @@ export const Section1And2: React.FC<Section1And2Props> = ({
         <div className="pf-collapsible-header" onClick={onToggleLocation}>
           <div className="pf-collapsible-header__left">
             <div className="pf-section-icon-tile">
-              <img src="/assets/icons/loans/home-pink.svg" alt="" width="20" height="20" />
+              <Home size={20} />
             </div>
             <h3 className="pf-collapsible-title">1. Project Location</h3>
           </div>
           <span className={`pf-chevron ${isLocationOpen ? 'pf-chevron--open' : ''}`}>
-            <img src="/assets/icons/loans/chevron-down.svg" alt="" width="18" height="18" />
+            <ChevronDown size={18} />
           </span>
         </div>
 
@@ -166,12 +167,12 @@ export const Section1And2: React.FC<Section1And2Props> = ({
         <div className="pf-collapsible-header" onClick={onToggleLandDetails}>
           <div className="pf-collapsible-header__left">
             <div className="pf-section-icon-tile">
-              <img src="/assets/icons/loans/doc-orange.svg" alt="" width="20" height="20" />
+              <FileText size={20} />
             </div>
             <h3 className="pf-collapsible-title">2. Land Details</h3>
           </div>
           <span className={`pf-chevron ${isLandDetailsOpen ? 'pf-chevron--open' : ''}`}>
-            <img src="/assets/icons/loans/chevron-down.svg" alt="" width="18" height="18" />
+            <ChevronDown size={18} />
           </span>
         </div>
 

@@ -1,9 +1,11 @@
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
+import { buildProfileCompletionPath } from '@core/auth'
 import { initialsOf } from '@shared/utils'
-import { CompleteProfileModal } from '@shared/components'
-import { useAuthStore } from '@store/index'
+import { CompleteProfileModal, LogoutConfirmModal, LogoutIcon } from '@shared/components'
+import { useLogoutConfirm } from '@modules/authentication'
+import { useAuthStore, useNotificationStore } from '@store/index'
 import { navSections } from './navigation'
 import { useDashboardSummary } from '@modules/dashboard'
 import { DashboardBreadcrumb } from './DashboardBreadcrumb'
@@ -39,7 +41,7 @@ const ChatIcon = () => (
 export const DashboardLayout = () => {
   const navigate = useNavigate()
   const user = useAuthStore((state) => state.user)
-  const signOut = useAuthStore((state) => state.signOut)
+  const logout = useLogoutConfirm()
   const location = useLocation()
   const { data } = useDashboardSummary()
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
@@ -48,15 +50,17 @@ export const DashboardLayout = () => {
 
   useEffect(() => {
     const locState = location.state as { openProfileModal?: boolean; returnTo?: string } | null
-    if (locState?.openProfileModal && !user?.isProfileComplete) {
+    // Pages with their own prompt (e.g. /loans) handle the state themselves; the layout covers the dashboard
+    const isDashboard = location.pathname === routePaths.dashboard
+    if (isDashboard && locState?.openProfileModal && !user?.isProfileComplete) {
       setSelectedServiceTarget(locState.returnTo || '')
       setIsProfileModalOpen(true)
     }
-  }, [location.state, user?.isProfileComplete])
+  }, [location.pathname, location.state, user?.isProfileComplete])
 
   const handleConfirmCompleteProfile = () => {
     setIsProfileModalOpen(false)
-    navigate(routePaths.auth.register, {
+    navigate(buildProfileCompletionPath(selectedServiceTarget), {
       state: { returnTo: selectedServiceTarget, mobile: user?.mobile },
     })
   }
@@ -75,9 +79,12 @@ export const DashboardLayout = () => {
     return matchedSection || { sectionTitle: 'Overview', label: 'Dashboard' }
   }, [location.pathname])
 
-  const notificationsCount = data?.recentApplications?.length ?? 0
+  const notifications = useNotificationStore((state) => state.notifications)
+  const notificationsCount = notifications.length
+  const applicationsCount = data?.brief?.activeApplications ?? 0
+
   const badges: Partial<Record<'applications' | 'notifications', string>> = {
-    applications: data?.brief ? String(data.brief.activeApplications) : undefined,
+    applications: applicationsCount > 0 ? String(applicationsCount) : undefined,
     notifications: notificationsCount > 0 ? String(notificationsCount) : undefined,
   }
 
@@ -170,16 +177,16 @@ export const DashboardLayout = () => {
         <div className="shell__sidebar-footer">
           <div className="shell__user">
             <span className="shell__avatar" aria-hidden="true">
-              {initialsOf(user?.fullName ?? 'TaxEdge User')}
+              {initialsOf(user?.fullName || 'User')}
             </span>
             <div className="shell__user-meta">
-              <span className="shell__user-name">{user?.fullName ?? 'Guest'}</span>
-              {user && <span className="shell__user-code">{customerCode}</span>}
+              <span className="shell__user-name">{user?.fullName || 'Guest'}</span>
+              {customerCode && <span className="shell__user-code">{customerCode}</span>}
             </div>
           </div>
 
-          <button className="shell__signout" type="button" onClick={signOut}>
-            <span aria-hidden="true">⇥</span> Sign out
+          <button className="shell__signout" type="button" onClick={logout.requestLogout}>
+            <LogoutIcon size={14} /> Log out
           </button>
         </div>
       </aside>
@@ -204,8 +211,8 @@ export const DashboardLayout = () => {
           <div className="shell__header-actions">
             <NavLink className="shell__icon-button" to={routePaths.notifications} aria-label="Notifications" title="Notifications">
               <BellIcon />
-              {badges.notifications && badges.notifications !== '0' && (
-                <span className="shell__badge-pill" aria-hidden="true">{badges.notifications}</span>
+              {notificationsCount > 0 && (
+                <span className="shell__badge-pill" aria-hidden="true">{notificationsCount}</span>
               )}
             </NavLink>
 
@@ -227,6 +234,13 @@ export const DashboardLayout = () => {
           </Suspense>
         </main>
       </div>
+
+      <LogoutConfirmModal
+        isOpen={logout.isConfirmOpen}
+        isLoggingOut={logout.isLoggingOut}
+        onConfirm={logout.confirmLogout}
+        onCancel={logout.cancelLogout}
+      />
 
       <CompleteProfileModal
         isOpen={isProfileModalOpen}

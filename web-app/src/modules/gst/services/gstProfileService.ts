@@ -90,7 +90,8 @@ export const gstProfileService = {
     gstProfileService.update({
       legalName: data.legalName,
       tradeName: data.tradeName,
-      pan: data.signatoryPan,
+      // The GSTIN is issued against the business PAN; older drafts may only have the signatory PAN
+      pan: data.businessPan || data.signatoryPan,
       address: data.businessAddress,
       city: data.city,
       state: data.state,

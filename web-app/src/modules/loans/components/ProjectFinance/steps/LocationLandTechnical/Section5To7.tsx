@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { FileText, ChevronDown } from 'lucide-react'
 import type { ProjectFinanceData } from '@modules/loans/types/projectFinance.types'
 import {
   POWER_SOURCE_OPTIONS,
@@ -35,12 +36,12 @@ export const Section5To7: React.FC<Section5To7Props> = ({
         <div className="pf-collapsible-header" onClick={() => setIsUtilitiesOpen((prev) => !prev)}>
           <div className="pf-collapsible-header__left">
             <div className="pf-section-icon-tile">
-              <img src="/assets/icons/loans/doc-orange.svg" alt="" width="20" height="20" />
+              <FileText size={20} />
             </div>
             <h3 className="pf-collapsible-title">5. Utilities & Site Infrastructure</h3>
           </div>
           <span className={`pf-chevron ${isUtilitiesOpen ? 'pf-chevron--open' : ''}`}>
-            <img src="/assets/icons/loans/chevron-down.svg" alt="" width="18" height="18" />
+            <ChevronDown size={18} />
           </span>
         </div>
 
@@ -149,12 +150,12 @@ export const Section5To7: React.FC<Section5To7Props> = ({
         <div className="pf-collapsible-header" onClick={() => setIsTechnicalOpen((prev) => !prev)}>
           <div className="pf-collapsible-header__left">
             <div className="pf-section-icon-tile">
-              <img src="/assets/icons/loans/doc-orange.svg" alt="" width="20" height="20" />
+              <FileText size={20} />
             </div>
             <h3 className="pf-collapsible-title">6. Technical Details</h3>
           </div>
           <span className={`pf-chevron ${isTechnicalOpen ? 'pf-chevron--open' : ''}`}>
-            <img src="/assets/icons/loans/chevron-down.svg" alt="" width="18" height="18" />
+            <ChevronDown size={18} />
           </span>
         </div>
 
@@ -302,12 +303,12 @@ export const Section5To7: React.FC<Section5To7Props> = ({
         <div className="pf-collapsible-header" onClick={() => setIsCapacityOpen((prev) => !prev)}>
           <div className="pf-collapsible-header__left">
             <div className="pf-section-icon-tile">
-              <img src="/assets/icons/loans/doc-orange.svg" alt="" width="20" height="20" />
+              <FileText size={20} />
             </div>
             <h3 className="pf-collapsible-title">7. Capacity & Production</h3>
           </div>
           <span className={`pf-chevron ${isCapacityOpen ? 'pf-chevron--open' : ''}`}>
-            <img src="/assets/icons/loans/chevron-down.svg" alt="" width="18" height="18" />
+            <ChevronDown size={18} />
           </span>
         </div>
 

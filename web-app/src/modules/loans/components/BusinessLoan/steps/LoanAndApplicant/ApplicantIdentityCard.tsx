@@ -1,4 +1,5 @@
 import React from 'react'
+import { User, CheckCircle2, Lock } from 'lucide-react'
 import type { ApplicantIdentityProfile } from '@modules/loans/types/businessLoan.types'
 
 interface ProfileFieldProps {
@@ -30,24 +31,15 @@ export const ApplicantIdentityCard: React.FC<ApplicantIdentityCardProps> = ({ ap
       <div className="applicant-id-card__header">
         <div className="applicant-id-card__title-group">
           <div className="applicant-id-card__icon-tile">
-            <img
-              src="/assets/icons/loans/applicant-user.svg"
-              alt=""
-              width="22"
-              height="22"
-              aria-hidden="true"
-            />
+            <User size={22} aria-hidden="true" />
           </div>
           <h2 className="applicant-id-card__title">Applicant Identity Details</h2>
         </div>
 
         {applicant.isVerified && (
           <div className="applicant-id-card__badge" aria-label="Verified Profile">
-            <img
-              src="/assets/icons/loans/verified-badge.svg"
-              alt=""
-              width="13"
-              height="13"
+            <CheckCircle2
+              size={13}
               className="applicant-id-card__badge-check"
               aria-hidden="true"
             />
@@ -58,11 +50,8 @@ export const ApplicantIdentityCard: React.FC<ApplicantIdentityCardProps> = ({ ap
 
       {/* Security Info Callout */}
       <div className="applicant-id-card__alert">
-        <img
-          src="/assets/icons/loans/security-lock.svg"
-          alt=""
-          width="18"
-          height="18"
+        <Lock
+          size={18}
           className="applicant-id-card__alert-icon"
           aria-hidden="true"
         />

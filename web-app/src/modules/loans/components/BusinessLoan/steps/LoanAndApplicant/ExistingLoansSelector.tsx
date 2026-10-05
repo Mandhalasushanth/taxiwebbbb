@@ -1,4 +1,5 @@
 import React from 'react'
+import { FileText } from 'lucide-react'
 import type { ExistingLoansType } from '@modules/loans/types/businessLoan.types'
 
 interface ExistingLoanOptionCardProps {
@@ -60,13 +61,7 @@ export const ExistingLoansSelector: React.FC<ExistingLoansSelectorProps> = ({
       <div className="form-section-header">
         <div className="form-section-header__left">
           <div className="form-section-icon-box">
-            <img
-              src="/assets/icons/loans/document-text.svg"
-              alt=""
-              width="20"
-              height="20"
-              aria-hidden="true"
-            />
+            <FileText size={20} aria-hidden="true" />
           </div>
 
           <label className="form-section-title">

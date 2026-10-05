@@ -210,7 +210,6 @@ export const DocumentsKyc: React.FC = () => {
         onBack={() => navigate(routePaths.incorporation.capitalDetails)}
         onNext={handleContinue}
         onSaveDraft={() => navigate(routePaths.dashboard)}
-        nextDisabled={!(promoterDocs.filter((d) => d.isRequired).every((d) => d.isUploaded) && officeDocs.filter((d) => d.isRequired).every((d) => d.isUploaded))}
         nextLabel="Continue"
       />
     </div>

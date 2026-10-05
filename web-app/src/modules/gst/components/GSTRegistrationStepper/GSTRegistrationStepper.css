@@ -1,0 +1,143 @@
+/* ==========================================================================
+   GST Registration Stepper - Connected Circular 4-Step Stepper (Web View)
+   Matching Reference: 40px circle, text down below the circle, connecting line
+   ========================================================================== */
+
+.gst-reg-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.5rem 0 1.5rem 0;
+}
+
+.gst-reg-stepper__track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 720px;
+}
+
+.gst-reg-stepper__item-wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.gst-reg-stepper__item-wrapper:last-child {
+  flex: 0 0 auto;
+}
+
+.gst-reg-stepper__step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: default;
+  position: relative;
+  z-index: 2;
+  user-select: none;
+}
+
+.gst-reg-stepper__step--completed,
+.gst-reg-stepper__step--current {
+  cursor: pointer;
+}
+
+.gst-reg-stepper__circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 0.95rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+/* Pending Step */
+.gst-reg-stepper__step--pending .gst-reg-stepper__circle {
+  background-color: #ffffff;
+  color: #94a3b8;
+  border: 2px solid #cbd5e1;
+}
+
+.gst-reg-stepper__step--pending .gst-reg-stepper__label {
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* Current Active Step (Orange) */
+.gst-reg-stepper__step--current .gst-reg-stepper__circle {
+  background-color: #f97316;
+  color: #ffffff;
+  border: 2.5px solid #f97316;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.42);
+  transform: scale(1.06);
+}
+
+.gst-reg-stepper__step--current .gst-reg-stepper__label {
+  color: #f97316;
+  font-weight: 700;
+}
+
+/* Completed Step */
+.gst-reg-stepper__step--completed .gst-reg-stepper__circle {
+  background-color: #083b75;
+  color: #ffffff;
+  border: 2.5px solid #083b75;
+  box-shadow: 0 4px 14px rgba(8, 59, 117, 0.35);
+}
+
+.gst-reg-stepper__step--completed .gst-reg-stepper__label {
+  color: #083b75;
+  font-weight: 600;
+}
+
+.gst-reg-stepper__check-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.gst-reg-stepper__label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+
+.gst-reg-stepper__line {
+  flex: 1;
+  height: 2.5px;
+  background-color: #e2e8f0;
+  margin: 0 0.75rem;
+  margin-bottom: 1.45rem; /* Align horizontally with the center of 40px circles */
+  transition: background-color 0.3s ease;
+  z-index: 1;
+}
+
+.gst-reg-stepper__line--completed {
+  background-color: #083b75;
+}
+
+@media (max-width: 640px) {
+  .gst-reg-stepper__track {
+    max-width: 100%;
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 1.25rem;
+    padding-bottom: 0.5rem;
+  }
+  .gst-reg-stepper__line {
+    display: none;
+  }
+}

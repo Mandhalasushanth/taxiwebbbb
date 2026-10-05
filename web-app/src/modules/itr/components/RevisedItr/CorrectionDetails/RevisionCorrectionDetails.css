@@ -1,0 +1,274 @@
+/* Revision Correction Details & Amount Card Styles */
+
+.step3-update-income-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+
+  .step3-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .step3-main-heading {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+
+    .step3-sub-heading {
+      font-size: 0.95rem;
+      color: #64748b;
+      margin: 0;
+    }
+  }
+
+  .step3-other-reason-pill {
+    background: #f1f5f9;
+    border-radius: 12px;
+    padding: 0.85rem 1.15rem;
+    font-size: 0.95rem;
+    color: #0f172a;
+    font-weight: 600;
+    margin-top: -0.25rem;
+    margin-bottom: 0.25rem;
+    border: 1px solid #e2e8f0;
+
+    .other-reason-prefix {
+      color: #64748b;
+      font-weight: 500;
+      margin-right: 0.35rem;
+    }
+  }
+
+  .step3-category-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0.25rem 0 -0.25rem;
+
+    &.step3-section-spacing {
+      margin-top: 1rem;
+    }
+  }
+
+  .step3-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    width: 100%;
+
+    .bank-correction-card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 1.25rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+
+      .bank-correction-label {
+        font-size: 0.98rem;
+        font-weight: 700;
+        color: #0f172a;
+
+        .required-star {
+          color: #ef4444;
+          font-weight: 700;
+        }
+      }
+
+      .bank-correction-input {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        color: #0f172a;
+        background: #f8fafc;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+
+        &::placeholder {
+          color: #94a3b8;
+        }
+
+        &:focus {
+          outline: none;
+          border-color: #f97316;
+          background: #ffffff;
+          box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
+        }
+
+        &.bank-correction-input--uppercase {
+          text-transform: uppercase;
+        }
+
+        &.input-error {
+          border-color: #ef4444;
+          background: #fff5f5;
+        }
+      }
+
+      .correction-field-error {
+        font-size: 0.82rem;
+        color: #ef4444;
+        font-weight: 600;
+        margin-top: -0.25rem;
+      }
+    }
+  }
+}
+
+.revision-amount-card {
+  width: 100%;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: #94a3b8;
+  }
+
+  .correction-card-header {
+    display: flex;
+    align-items: center;
+
+    .correction-card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0f172a;
+
+      .required-star {
+        color: #ef4444;
+        margin-left: 0.25rem;
+      }
+    }
+  }
+
+  .correction-original-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .original-label {
+      font-size: 0.95rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .original-value {
+      font-size: 0.975rem;
+      color: #0f172a;
+      font-weight: 700;
+    }
+  }
+
+  .correction-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+
+    .revised-label {
+      font-size: 0.95rem;
+      color: #1e293b;
+      font-weight: 700;
+    }
+
+    .input-field-wrap {
+      position: relative;
+      width: 100%;
+
+      .input-currency-prefix {
+        position: absolute;
+        left: 1.15rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        font-weight: 600;
+        font-size: 1rem;
+        pointer-events: none;
+      }
+
+      .correction-input {
+        width: 100%;
+        padding: 0.95rem 1.15rem 0.95rem 2.25rem;
+        border-radius: 12px;
+        border: 1.5px solid #cbd5e1;
+        background: #ffffff;
+        font: 600 0.975rem/1.4 inherit;
+        color: #0f172a;
+        outline: none;
+        box-sizing: border-box;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+
+        &::placeholder {
+          color: #94a3b8;
+          font-weight: 400;
+        }
+
+        &:focus {
+          border-color: #ea580c;
+          box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+        }
+
+        &.input-error {
+          border-color: #ef4444;
+          background-color: #fef2f2;
+        }
+      }
+    }
+
+    .correction-field-error {
+      font-size: 0.825rem;
+      color: #ef4444;
+      font-weight: 600;
+    }
+  }
+
+  .correction-change-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.4rem;
+    border-top: 1px dashed #e2e8f0;
+
+    .change-label {
+      font-size: 0.95rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .change-value {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #0f172a;
+
+      &.positive {
+        color: #16a34a;
+      }
+
+      &.negative {
+        color: #dc2626;
+      }
+
+      &.neutral {
+        color: #64748b;
+      }
+    }
+  }
+}

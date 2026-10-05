@@ -3,6 +3,8 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { useAppStore, useAuthStore } from '@store/index'
 import { Loader } from '@shared/components'
 
+import { SessionTimeoutManager } from '../providers/SessionTimeoutManager'
+
 import { routeConfig } from './routeConfig'
 
 const router = createBrowserRouter(routeConfig)
@@ -26,6 +28,7 @@ export const AppRouter = () => {
 
   return (
     <Suspense fallback={<Loader fullPage />}>
+      <SessionTimeoutManager />
       <RouterProvider router={router} />
     </Suspense>
   )

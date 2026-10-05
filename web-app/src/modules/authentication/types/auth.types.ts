@@ -19,6 +19,11 @@ export interface VerifyPasscodePayload {
   passcode: string
 }
 
+export interface ResetPasscodePayload {
+  mobile: string
+  passcode: string
+}
+
 export interface SaveRegistrationStep1Payload {
   mobile: string
   passcode: string

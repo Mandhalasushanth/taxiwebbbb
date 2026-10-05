@@ -40,6 +40,7 @@ export const Documents: React.FC<PersonalLoanStepProps> = ({
   const renderDocCard = (doc: DocDef) => {
     const uploaded = uploadedDocs[doc.id]
     const hasError = !uploaded && Boolean(errors[doc.id])
+    const IconComponent = doc.icon
 
     return (
       <UploadDocument
@@ -55,7 +56,7 @@ export const Documents: React.FC<PersonalLoanStepProps> = ({
             </span>
           ) : undefined
         }
-        icon={<img src={doc.icon} alt="" width="20" height="20" aria-hidden="true" />}
+        icon={<IconComponent size={20} color={doc.iconColor} aria-hidden="true" />}
         iconBg={doc.iconBg}
         isUploaded={Boolean(uploaded)}
         fileName={uploaded?.name}

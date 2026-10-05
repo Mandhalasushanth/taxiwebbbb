@@ -1,0 +1,49 @@
+.passcode-digit-input {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.passcode-digit-input__box {
+  width: 100%;
+  height: 46px;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #172033;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  outline: none;
+  transition: all 150ms ease;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.passcode-digit-input__box:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
+.passcode-digit-input__box--filled {
+  border-color: #cbd5e1;
+  background: #fafafa;
+}
+
+.passcode-digit-input__box--error {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+@media (max-width: 380px) {
+  .passcode-digit-input {
+    gap: 0.35rem;
+  }
+
+  .passcode-digit-input__box {
+    height: 42px;
+    font-size: 1.1rem;
+  }
+}

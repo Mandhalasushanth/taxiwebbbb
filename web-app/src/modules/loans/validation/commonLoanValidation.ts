@@ -52,7 +52,7 @@ export const commonLoanValidation = {
     const trimmed = pan.trim().toUpperCase()
     if (!trimmed) return { isValid: false, message: 'PAN number is required' }
     if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(trimmed)) {
-      return { isValid: false, message: 'Invalid PAN format (e.g. ABCDE1234F)' }
+      return { isValid: false, message: 'Enter a valid 10-character PAN' }
     }
     return { isValid: true }
   },
@@ -70,7 +70,7 @@ export const commonLoanValidation = {
     const trimmed = ifsc.trim().toUpperCase()
     if (!trimmed) return { isValid: false, message: 'IFSC code is required' }
     if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(trimmed)) {
-      return { isValid: false, message: 'Invalid 11-digit IFSC code (e.g. SBIN0001234)' }
+      return { isValid: false, message: 'Enter a valid 11-digit IFSC code' }
     }
     return { isValid: true }
   },
@@ -87,7 +87,7 @@ export const LOAN_PATTERNS = {
   MOBILE: /^[6-9]\d{9}$/,
   PAN: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
   GSTIN: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
-  UDYAM: /^UDYAM-[A-Z]{2}-\d{2}-\d{7}$/,
+  UDYAM: /^UDYAM-[A-Z]{2}-(\d{2}-\d{7}|\d{6,8})$/,
   PINCODE: /^[1-9]\d{5}$/,
   ITR_ACK: /^\d{15}$/,
   EMAIL: /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/,
@@ -128,7 +128,7 @@ export const loanFieldRules = {
   bankName: (val: string | undefined): string | undefined => {
     const v = (val || '').trim()
     if (!v) return 'Bank name is required'
-    if (!LOAN_PATTERNS.BANK_NAME.test(v)) return 'Bank name must contain only letters (e.g. HDFC Bank)'
+    if (!LOAN_PATTERNS.BANK_NAME.test(v)) return 'Bank name must contain only letters'
     if (v.length < 3) return 'Please enter the full bank name'
     if (v.length > 100) return 'Bank name cannot exceed 100 characters'
     return undefined
@@ -161,7 +161,7 @@ export const loanFieldRules = {
   pan: (val: string | undefined, label = 'PAN'): string | undefined => {
     const v = (val || '').trim().toUpperCase()
     if (!v) return `${label} is required`
-    if (!LOAN_PATTERNS.PAN.test(v)) return `Enter a valid 10-character ${label} (e.g. ABCDE1234F)`
+    if (!LOAN_PATTERNS.PAN.test(v)) return `Enter a valid 10-character ${label}`
     return undefined
   },
 
@@ -175,13 +175,13 @@ export const loanFieldRules = {
   /** Optional Udyam number: only checked when filled in */
   optionalUdyam: (val: string | undefined): string | undefined => {
     const v = (val || '').trim().toUpperCase()
-    return v && !LOAN_PATTERNS.UDYAM.test(v) ? 'Enter a valid Udyam number (e.g. UDYAM-TS-02-0012345)' : undefined
+    return v && !LOAN_PATTERNS.UDYAM.test(v) ? 'Enter a valid Udyam number' : undefined
   },
 
   /** Optional GSTIN: only checked when filled in */
   optionalGstin: (val: string | undefined): string | undefined => {
     const v = (val || '').trim().toUpperCase()
-    return v && !LOAN_PATTERNS.GSTIN.test(v) ? 'Enter a valid 15-character GSTIN (e.g. 27ABCDE1234F1Z5)' : undefined
+    return v && !LOAN_PATTERNS.GSTIN.test(v) ? 'Enter a valid 15-character GSTIN' : undefined
   },
 
   /** Optional ITR acknowledgement number: only checked when filled in */

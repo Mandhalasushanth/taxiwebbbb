@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { routePaths } from '@core/config'
+import { getEntityStructureLabel, getProposedCompanyName } from '../../types/incorporation.types'
 import './SubmissionSuccess.css'
 
 export const SubmissionSuccess: React.FC = () => {
@@ -10,21 +11,15 @@ export const SubmissionSuccess: React.FC = () => {
 
   useEffect(() => {
     // Forward directly to Step 10: Application Tracking
-    navigate(routePaths.incorporation.applicationTracking, { replace: true, state })
-  }, [navigate, state])
+    navigate(routePaths.incorporation.applicationTracking, { replace: true, state: location.state })
+  }, [navigate, location.state])
+
 
   const companyType = state.companyType || 'pvt_ltd'
-  const entityTypeMap: Record<string, string> = {
-    opc: 'One Person Company (OPC)',
-    pvt_ltd: 'Private Limited',
-    section_8: 'Section 8 (NGO)',
-    public_ltd: 'Public Limited',
-  }
-  const entityStructure = entityTypeMap[companyType] || 'One Person Company (OPC)'
-
-  const defaultName = companyType === 'opc' ? 'TaxEdge Tech (OPC) Private Limited' : 'TaxEdge Tech Private Limited'
-  const companyName = state.companyDetails?.firstPreferredName || defaultName
+  const entityStructure = getEntityStructureLabel(companyType)
+  const companyName = getProposedCompanyName(companyType, state.companyDetails?.firstPreferredName)
   const applicationId = state.applicationId || 'INC-2026-89421'
+
 
   const handleViewStatus = () => {
     navigate(routePaths.incorporation.applicationTracking, { state })

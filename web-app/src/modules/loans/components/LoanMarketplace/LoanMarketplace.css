@@ -185,11 +185,34 @@
   transform: scale(1.05);
 }
 
+.loan-item-card__icon-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  border-radius: 50%;
+  display: block;
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+
+.loan-item-card:hover .loan-item-card__icon-img {
+  transform: scale(1.06);
+}
 
 .loan-item-card__icon-svg {
   width: 36px;
   height: 36px;
 }
+
+.loan-item-card__icon-tile--business-loan .loan-item-card__icon-svg { color: #2563eb; }
+.loan-item-card__icon-tile--personal-loan .loan-item-card__icon-svg { color: #d97706; }
+.loan-item-card__icon-tile--home-loan .loan-item-card__icon-svg { color: #16a34a; }
+.loan-item-card__icon-tile--property-loan .loan-item-card__icon-svg { color: #e11d48; }
+.loan-item-card__icon-tile--vehicle-loan .loan-item-card__icon-svg { color: #0d9488; }
+.loan-item-card__icon-tile--working-capital .loan-item-card__icon-svg { color: #ea580c; }
+.loan-item-card__icon-tile--machinery-loan .loan-item-card__icon-svg { color: #0891b2; }
+.loan-item-card__icon-tile--project-finance .loan-item-card__icon-svg { color: #7c3aed; }
+.loan-item-card__icon-tile--msme-loan .loan-item-card__icon-svg { color: #ca8a04; }
 
 .loan-item-card__info {
   display: flex;
@@ -265,6 +288,10 @@
     width: 46px;
     height: 46px;
     border-radius: 12px;
+  }
+  .loan-item-card__icon-img {
+    width: 38px;
+    height: 38px;
   }
   .loan-item-card__icon-svg {
     width: 30px;

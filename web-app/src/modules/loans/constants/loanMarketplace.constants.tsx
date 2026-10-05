@@ -13,6 +13,22 @@ import {
 } from './loanMarketplace.icons'
 
 /**
+ * 3D Icon image mapping for all 9 loan categories.
+ * Stored in public/assets/icons/loans/
+ */
+export const LOAN_SERVICE_ICON_IMAGE_MAP: Record<string, string> = {
+  'business-loan': '/assets/icons/loans/business-loan.png',
+  'personal-loan': '/assets/icons/loans/personal-loan.png',
+  'home-loan': '/assets/icons/loans/home-loan.png',
+  'property-loan': '/assets/icons/loans/property-loan.png',
+  'vehicle-loan': '/assets/icons/loans/vehicle-loan.png',
+  'working-capital': '/assets/icons/loans/working-capital.png',
+  'machinery-loan': '/assets/icons/loans/machinery-loan.png',
+  'project-finance': '/assets/icons/loans/project-finance.png',
+  'msme-loan': '/assets/icons/loans/msme-loan.png',
+}
+
+/**
  * Complete list of loan items exactly matching the Marketplace catalog.
  */
 export const LOAN_MARKETPLACE_ITEMS: LoanMarketplaceItem[] = [

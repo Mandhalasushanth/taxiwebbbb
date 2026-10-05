@@ -1,13 +1,34 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { routePaths } from '@core/config'
+import { buildProfileCompletionPath } from '@core/auth'
 import { useAuthStore } from '@store/index'
 import { CompleteProfileModal } from '@shared/components'
-import { GST_SERVICE_ROUTES, type GstService } from '@modules/gst/constants/gstServices.constants'
+import { GST_SERVICE_ROUTES, GST_SERVICE_ICON_IMAGE_MAP, type GstService } from '@modules/gst/constants/gstServices.constants'
 import './GSTServices.css'
 
 export interface GSTServicesProps {
   services: readonly GstService[]
+}
+
+const ServiceIconItem = ({ iconType, title }: { iconType: GstService['iconType']; title: string }) => {
+  const [imgError, setImgError] = useState(false)
+  const imageSrc = GST_SERVICE_ICON_IMAGE_MAP[iconType]
+
+  if (imageSrc && !imgError) {
+    return (
+      <img
+        src={imageSrc}
+        alt={title}
+        className="gst-service-card__icon-img"
+        width={48}
+        height={48}
+        loading="lazy"
+        onError={() => setImgError(true)}
+      />
+    )
+  }
+
+  return getServiceIcon(iconType)
 }
 
 const getServiceIcon = (type: GstService['iconType']) => {
@@ -79,7 +100,7 @@ export const GSTServices = ({ services }: GSTServicesProps) => {
 
   const handleConfirmProfile = () => {
     setIsProfileModalOpen(false)
-    navigate(routePaths.auth.register, {
+    navigate(buildProfileCompletionPath(selectedTarget), {
       state: { returnTo: selectedTarget, mobile: user?.mobile },
     })
   }
@@ -109,8 +130,8 @@ export const GSTServices = ({ services }: GSTServicesProps) => {
             }}
           >
             <div className="gst-service-card__top">
-              <div className="gst-service-card__icon icon-blue">
-                {getServiceIcon(service.iconType)}
+              <div className={`gst-service-card__icon gst-icon-${service.iconType}`}>
+                <ServiceIconItem iconType={service.iconType} title={service.title} />
               </div>
             </div>
 
@@ -118,10 +139,6 @@ export const GSTServices = ({ services }: GSTServicesProps) => {
             <p className="gst-service-card__description">{service.description}</p>
 
             <div className="gst-service-card__footer">
-              <div className="gst-service-card__price-wrapper">
-                <span className="gst-service-card__price">{service.price}</span>
-                <span className="gst-service-card__price-type">/ {service.priceType}</span>
-              </div>
               <button
                 type="button"
                 className="gst-service-card__action"

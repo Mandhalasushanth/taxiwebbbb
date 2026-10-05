@@ -7,6 +7,7 @@ import { GSTDocCard } from './GSTDocCard'
 import { GSTDocPreviewModal } from './GSTDocPreviewModal'
 import { SecurityShieldIcon } from '@modules/gst/shared/GSTDocIcons/GSTDocIcons'
 import { StepActionBar } from '@shared/components'
+import { DOCUMENT_UPLOAD_RULE, PHOTO_UPLOAD_RULE, acceptAttributeFor } from '@shared/utils'
 import './GSTStepDocuments.css'
 
 export type { GSTStepDocumentsProps, UploadedDoc } from '@modules/gst/types/gstDocuments.types'
@@ -32,11 +33,13 @@ export const GSTStepDocuments: FC<GSTStepDocumentsProps> = ({
     replacingDocId,
     previewDoc,
     validationError,
+    uploadErrors,
     fileInputRef,
     cameraInputRef,
     handleTriggerUpload,
     handleTriggerCamera,
     handleFileSelected,
+    handleDirectUpload,
     handleDelete,
     handleStartReplace,
     handleCancelReplace,
@@ -53,7 +56,7 @@ export const GSTStepDocuments: FC<GSTStepDocumentsProps> = ({
         type="file"
         ref={fileInputRef}
         hidden
-        accept=".pdf,.jpg,.jpeg,.png,.docx"
+        accept={acceptAttributeFor(DOCUMENT_UPLOAD_RULE)}
         onChange={handleFileSelected}
         aria-label="Upload document file"
       />
@@ -61,7 +64,7 @@ export const GSTStepDocuments: FC<GSTStepDocumentsProps> = ({
         type="file"
         ref={cameraInputRef}
         hidden
-        accept="image/*"
+        accept={acceptAttributeFor(PHOTO_UPLOAD_RULE)}
         capture="environment"
         onChange={handleFileSelected}
         aria-label="Capture document via camera"
@@ -86,11 +89,13 @@ export const GSTStepDocuments: FC<GSTStepDocumentsProps> = ({
                 isReplacing={replacingDocId === doc.id}
                 onTriggerCamera={handleTriggerCamera}
                 onTriggerUpload={handleTriggerUpload}
+                onDirectUpload={handleDirectUpload}
                 onStartReplace={handleStartReplace}
                 onCancelReplace={handleCancelReplace}
                 onDelete={handleDelete}
                 onView={handleView}
                 onAddressProofChange={handleAddressProofTypeChange}
+                uploadError={uploadErrors[doc.id]}
               />
             ))}
           </div>

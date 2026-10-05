@@ -1,8 +1,23 @@
-import { validateCommencementDate } from '@shared/utils'
+import { validateCommencementDate, validateIndividualPan, validatePincodeMatchesState } from '@shared/utils'
 import type { GstBusinessFormData } from '@modules/gst/types/gstBusiness.types'
 import { gstFieldRules as r, runGstRules } from '@modules/gst/validation/gstFieldRules'
+import { getCompositionConflicts, validateBusinessPan } from '@modules/gst/validation/gstBusinessRules'
 
 const select = (message: string) => (v?: string) => ((v || '').trim() ? undefined : message)
+
+/** Rules that compare two fields, applied after the single-field rules */
+const crossFieldErrors = (data: GstBusinessFormData, fieldErrors: Record<string, string>): Record<string, string> => {
+  const pinStateError = fieldErrors.pinCode || fieldErrors.state
+    ? undefined
+    : validatePincodeMatchesState(data.pinCode, data.state) || undefined
+
+  return Object.fromEntries(
+    Object.entries({
+      pinCode: pinStateError,
+      ...getCompositionConflicts(data),
+    }).filter(([field, message]) => Boolean(message) && !fieldErrors[field]),
+  ) as Record<string, string>
+}
 
 /** Step 1 of GST registration: business, bank and authorised signatory details */
 export const validateGstBusinessForm = (data: GstBusinessFormData): Record<string, string> => {
@@ -11,6 +26,7 @@ export const validateGstBusinessForm = (data: GstBusinessFormData): Record<strin
     legalName: r.businessName('Legal name of business'),
     tradeName: r.businessName('Trade / brand name'),
     constitution: select('Please select constitution of business'),
+    businessPan: (v) => validateBusinessPan(v, data.constitution),
     natureOfBusiness: select('Please select nature of business'),
     commencementDate: (v) => validateCommencementDate(v || '') || undefined,
     registrationReason: select('Please select reason for registration'),
@@ -25,22 +41,24 @@ export const validateGstBusinessForm = (data: GstBusinessFormData): Record<strin
 
     // Bank details
     bankName: r.bankName,
+    branch: r.placeName('Branch'),
     accountHolderName: r.personName('Account holder name'),
     accountNumber: r.accountNumber,
     confirmAccountNumber: (v) => r.confirmAccountNumber(data.accountNumber, v),
     accountType: select('Please select account type'),
     ifscCode: r.ifsc,
 
-    // Authorised signatory
+    // Authorised signatory (a person, so their PAN must be an individual PAN)
     signatoryName: r.personName('Full legal name'),
     designation: r.designation,
-    signatoryPan: r.pan,
+    signatoryPan: (v) => validateIndividualPan(v || '', 'Signatory PAN') || undefined,
     signatoryEmail: r.email,
     signatoryMobile: r.mobile,
     dob: r.signatoryDob,
   })
 
+  const allErrors = { ...errors, ...crossFieldErrors(data, errors) }
   return data.aadhaarConsent
-    ? errors
-    : { ...errors, aadhaarConsent: 'Aadhaar authentication consent is mandatory to proceed' }
+    ? allErrors
+    : { ...allErrors, aadhaarConsent: 'Aadhaar authentication consent is mandatory to proceed' }
 }

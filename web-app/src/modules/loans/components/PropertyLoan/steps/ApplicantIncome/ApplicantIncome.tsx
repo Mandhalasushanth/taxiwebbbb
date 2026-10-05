@@ -1,5 +1,6 @@
 import React from 'react'
 import type { PropertyLoanStepProps } from '@modules/loans/types/propertyLoan.types'
+import { formatMobile } from '@shared/utils'
 import { loanInputHelpers } from '@modules/loans/utils/loanInputFormatters'
 import './ApplicantIncome.css'
 
@@ -64,11 +65,10 @@ export const ApplicantIncome: React.FC<PropertyLoanStepProps> = ({
             <input
               id="lap-mobile"
               type="tel"
-              maxLength={10}
               className="property-input-prefixed"
               placeholder="Enter mobile number"
               value={data.personalMobile || ''}
-              onChange={(e) => onChange({ personalMobile: e.target.value.replace(/\D/g, '') })}
+              onChange={(e) => onChange({ personalMobile: formatMobile(e.target.value) })}
             />
           </div>
           {errors.personalMobile && <span className="property-error-text">{errors.personalMobile}</span>}

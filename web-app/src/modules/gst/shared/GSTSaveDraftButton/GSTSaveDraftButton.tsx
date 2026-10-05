@@ -1,4 +1,5 @@
 import type { FC } from 'react'
+import { Save } from 'lucide-react'
 import './GSTSaveDraftButton.css'
 
 export interface GSTSaveDraftButtonProps {
@@ -14,7 +15,7 @@ export const GSTSaveDraftButton: FC<GSTSaveDraftButtonProps> = ({
   disabled = false,
 }) => (
   <button type="button" className="gst-save-draft-btn" onClick={onClick} disabled={disabled}>
-    <img src="/assets/icons/gst/save-draft.svg" alt="" className="gst-save-draft-btn__icon" />
+    <Save className="gst-save-draft-btn__icon" size={16} aria-hidden="true" />
     <span>{label}</span>
   </button>
 )

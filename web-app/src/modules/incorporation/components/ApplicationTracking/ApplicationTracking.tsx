@@ -1,19 +1,14 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
+import { getEntityStructureLabel, getProposedCompanyName, type TrackingStepItem } from '../../types/incorporation.types'
 import { useIncorporationFlow } from '../../hooks'
 import './ApplicationTracking.css'
 
-interface TrackingStep {
-  id: number
-  title: string
-  desc: string
-  dateText?: string
-  status: 'completed' | 'active' | 'upcoming'
-  statusLabel: string
-}
+type TrackingStep = TrackingStepItem
 
 const stepsData: TrackingStep[] = [
+
   {
     id: 1,
     title: 'Draft Creation',
@@ -85,17 +80,10 @@ export const ApplicationTracking: React.FC = () => {
   const { formData } = useIncorporationFlow()
 
   const companyType = formData.companyType || 'pvt_ltd'
-  const entityTypeMap: Record<string, string> = {
-    opc: 'One Person Company (OPC)',
-    pvt_ltd: 'Private Limited',
-    section_8: 'Section 8 (NGO)',
-    public_ltd: 'Public Limited',
-  }
-  const entityStructure = entityTypeMap[companyType] || 'One Person Company (OPC)'
-
-  const defaultName = companyType === 'opc' ? 'TaxEdge Tech (OPC) Private Limited' : 'TaxEdge Tech Private Limited'
-  const companyName = formData.companyDetails?.firstPreferredName || defaultName
+  const entityStructure = getEntityStructureLabel(companyType)
+  const companyName = getProposedCompanyName(companyType, formData.companyDetails?.firstPreferredName)
   const applicationId = formData.applicationId || 'INC-2026-89421'
+
 
   const dateStr = formData.applicationDate || '2026-09-18'
 

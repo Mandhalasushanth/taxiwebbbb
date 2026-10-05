@@ -1,0 +1,347 @@
+/* GST Registration Right Sidebar */
+.gst-reg-sidebar-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+/* 1. Slogan / Illustration Promo Card */
+.gst-sidebar-promo-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: linear-gradient(135deg, #eef6ff 0%, #e0f2fe 100%);
+  border: 1px solid #bae6fd;
+  border-radius: 14px;
+  padding: 1.35rem 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.06);
+}
+
+.gst-sidebar-promo-card__illustration {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gst-promo-graphic {
+  position: relative;
+  width: 110px;
+  height: 95px;
+}
+
+/* 3D GST Sheet */
+.gst-promo-sheet {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 58px;
+  height: 72px;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  padding: 5px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 2;
+}
+
+.gst-promo-sheet__badge {
+  font-size: 0.55rem;
+  font-weight: 800;
+  color: #083b75;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.gst-promo-sheet__line {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.gst-promo-check {
+  font-size: 0.5rem;
+  color: #10b981;
+  font-weight: 800;
+  background: #ecfdf5;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+.gst-promo-bar {
+  flex: 1;
+  height: 3px;
+  background: #e2e8f0;
+  border-radius: 2px;
+}
+
+.gst-promo-verified-pill {
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #10b981;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.35);
+}
+
+.gst-promo-verified-icon {
+  width: 11px;
+  height: 11px;
+}
+
+/* Mini Calculator */
+.gst-promo-calc {
+  position: absolute;
+  right: 12px;
+  top: 14px;
+  width: 38px;
+  height: 52px;
+  background: #1e293b;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 3;
+}
+
+.gst-promo-calc__screen {
+  width: 100%;
+  height: 8px;
+  background: #38bdf8;
+  border-radius: 2px;
+  opacity: 0.85;
+}
+
+.gst-promo-calc__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.gst-promo-calc__grid span {
+  width: 100%;
+  height: 5px;
+  background: #475569;
+  border-radius: 1px;
+}
+
+/* Mini Plant */
+.gst-promo-plant {
+  position: absolute;
+  right: 0;
+  bottom: 6px;
+  width: 24px;
+  height: 32px;
+  z-index: 4;
+}
+
+.gst-promo-plant__pot {
+  position: absolute;
+  bottom: 0;
+  left: 3px;
+  width: 18px;
+  height: 12px;
+  background: #f97316;
+  border-radius: 2px 2px 4px 4px;
+}
+
+.gst-promo-plant__leaf {
+  position: absolute;
+  background: #22c55e;
+  border-radius: 10px 0 10px 0;
+}
+
+.gst-promo-plant__leaf--1 {
+  width: 10px;
+  height: 14px;
+  top: 8px;
+  left: 2px;
+  transform: rotate(-25deg);
+}
+
+.gst-promo-plant__leaf--2 {
+  width: 9px;
+  height: 13px;
+  top: 7px;
+  right: 3px;
+  transform: rotate(30deg);
+}
+
+.gst-sidebar-promo-card__content {
+  flex: 1;
+}
+
+.gst-sidebar-promo-card__quote {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #083b75;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+/* 2. Need Help Card */
+.gst-sidebar-help-card {
+  display: flex;
+  gap: 0.85rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.25rem 1.15rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  align-items: flex-start;
+}
+
+.gst-sidebar-help-card__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #0284c7;
+  flex-shrink: 0;
+}
+
+.gst-sidebar-bulb-icon {
+  width: 19px;
+  height: 19px;
+}
+
+.gst-sidebar-help-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.gst-sidebar-help-card__title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.gst-sidebar-help-card__text {
+  margin: 0 0 0.4rem 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+.gst-sidebar-help-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #0284c7;
+  text-decoration: none;
+  transition: all 0.18s ease;
+}
+
+.gst-sidebar-help-card__link:hover {
+  color: #0369a1;
+  transform: translateX(2px);
+}
+
+.gst-sidebar-help-card__link svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* 3. Frequently Asked Questions Card */
+.gst-sidebar-faq-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.gst-sidebar-faq-card__title {
+  margin: 0 0 0.85rem 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.gst-sidebar-faq-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.gst-faq-item {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.gst-faq-item:last-child {
+  border-bottom: none;
+}
+
+.gst-faq-question-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0.75rem 0;
+  font-family: inherit;
+  cursor: pointer;
+  gap: 0.5rem;
+  transition: color 0.18s ease;
+}
+
+.gst-faq-question-text {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #334155;
+  line-height: 1.35;
+}
+
+.gst-faq-question-btn:hover .gst-faq-question-text {
+  color: #0f172a;
+}
+
+.gst-faq-chevron {
+  width: 15px;
+  height: 15px;
+  color: #94a3b8;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.gst-faq-item--open .gst-faq-chevron {
+  transform: rotate(90deg);
+  color: #0284c7;
+}
+
+.gst-faq-answer {
+  padding: 0 0 0.75rem 0;
+}
+
+.gst-faq-answer p {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: #64748b;
+}

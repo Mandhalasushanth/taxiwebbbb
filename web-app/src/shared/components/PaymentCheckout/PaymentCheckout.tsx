@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { paymentGateway, isVerifiedPayment, type CouponValidationResult } from '@core/payments'
 import type {
   PaymentCheckoutProps,
   PaymentMethodType,
@@ -12,9 +13,11 @@ import { PaymentCardForm } from './PaymentCardForm'
 import { PaymentNetBankingForm } from './PaymentNetBankingForm'
 import { PaymentSummaryCard } from './PaymentSummaryCard'
 import './PaymentCheckout.css'
+import './PaymentFeedback.css'
 
 export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
   amount,
+  serviceId,
   serviceTitle = 'Professional Filing Service',
   applicationRef = 'APP-2026-00001',
   applicantName,
@@ -36,8 +39,11 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
     cardHolder: '',
   })
 
-  const [discount, setDiscount] = useState<number>(0)
+  // Only a server-validated coupon sets a discount; the code (not the amount) is sent with the order
+  const [appliedCoupon, setAppliedCoupon] = useState<CouponValidationResult | null>(null)
+  const discount = appliedCoupon?.discountAmount ?? 0
   const [isProcessing, setIsProcessing] = useState<boolean>(false)
+  const [paymentError, setPaymentError] = useState<string | null>(null)
   const [upiError, setUpiError] = useState<string | null>(null)
   const [cardErrors, setCardErrors] = useState<Partial<Record<keyof CardDetails, string>>>({})
   const [bankError, setBankError] = useState<string | null>(null)
@@ -64,15 +70,19 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
     })
   }
 
-  const handleApplyPromo = (code: string) => {
-    if (code === 'TAXEDGE10' || code === 'SAVE10') {
-      setDiscount(Math.round(amount * 0.1))
-    } else if (code === 'FLAT100') {
-      setDiscount(100)
-    } else {
-      setDiscount(Math.round(amount * 0.05))
+  /** Asks the payments service whether the code is active; invalid / expired codes give no discount */
+  const handleApplyPromo = async (code: string): Promise<CouponValidationResult> => {
+    try {
+      const result = await paymentGateway.validateCoupon({ code, amount, serviceId })
+      setAppliedCoupon(result.valid ? result : null)
+      return result
+    } catch {
+      setAppliedCoupon(null)
+      return { valid: false, code, discountAmount: 0, message: 'Could not validate the promo code. Please try again.' }
     }
   }
+
+  const handleRemovePromo = () => setAppliedCoupon(null)
 
   const validatePayment = (): boolean => {
     if (selectedMethod === 'upi') {
@@ -119,25 +129,49 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
     return true
   }
 
-  const handlePay = () => {
-    if (!validatePayment()) return
+  /**
+   * Creates a gateway order (server recomputes the amount incl. coupon), completes the payment
+   * and reports success ONLY when the server has verified the gateway callback.
+   */
+  const handlePay = async () => {
+    if (!validatePayment() || isProcessing) return
 
     setIsProcessing(true)
-
-    // Simulate safe processing time
-    setTimeout(() => {
-      setIsProcessing(false)
-      const result: PaymentResult = {
-        paymentId: `TXN-${Date.now().toString().slice(-8)}`,
-        method: selectedMethod,
-        amount: totalAmount,
+    setPaymentError(null)
+    try {
+      const order = await paymentGateway.createOrder({
+        amount,
         applicationRef,
-        timestamp: new Date().toISOString(),
+        serviceId,
+        couponCode: appliedCoupon?.code,
+      })
+      const payment = await paymentGateway.payAndVerify(order, {
+        method: selectedMethod,
+        upiId: upiId.trim(),
+        cardNumber: cardDetails.cardNumber,
+        bank: selectedBank,
+      })
+      if (!isVerifiedPayment(payment)) {
+        setPaymentError(payment.failureReason || 'Payment could not be verified. You have not been charged.')
+        return
+      }
+      const result: PaymentResult = {
+        paymentId: payment.paymentId,
+        orderId: payment.orderId,
+        method: selectedMethod,
+        amount: payment.amount,
+        applicationRef,
+        timestamp: payment.timestamp,
         status: 'SUCCESS',
-        receiptNumber: `REC-${Date.now().toString().slice(-6)}`,
+        verified: true,
+        receiptNumber: payment.receiptNumber,
       }
       onSuccess(result)
-    }, 900)
+    } catch {
+      setPaymentError('Payment service is unavailable. Please try again in a moment.')
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
   return (
@@ -149,6 +183,7 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
             selectedMethod={selectedMethod}
             onSelectMethod={(m) => {
               setSelectedMethod(m)
+              setPaymentError(null)
               setUpiError(null)
               setCardErrors({})
               setBankError(null)
@@ -187,6 +222,12 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
             />
           )}
 
+          {paymentError && (
+            <div className="payment-error-banner" role="alert" data-testid="payment-error">
+              {paymentError}
+            </div>
+          )}
+
           {/* Action Row */}
           <div className="payment-checkout-actions">
             {onBack && (
@@ -213,7 +254,9 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
             isProcessing={isProcessing}
             enablePromoCode={enablePromoCode}
             showTrustBadges={showTrustBadges}
+            appliedPromoCode={appliedCoupon?.code}
             onApplyPromo={handleApplyPromo}
+            onRemovePromo={handleRemovePromo}
             onPay={handlePay}
           />
         </div>

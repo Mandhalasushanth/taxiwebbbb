@@ -128,6 +128,17 @@
   line-height: 1.45;
 }
 
+.sign-in-card__session-notice {
+  margin: 0 0 0.85rem;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #9a3412;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 10px;
+}
+
 @media (max-width: 1024px) {
   .sign-in-card {
     height: auto;

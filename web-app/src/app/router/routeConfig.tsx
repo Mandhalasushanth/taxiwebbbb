@@ -17,6 +17,7 @@ import { documentsRoutes } from '@modules/documents'
 import { gstRoutes } from '@modules/gst'
 import { incorporationRoutes } from '@modules/incorporation'
 import { insuranceRoutes } from '@modules/insurance'
+import { legalRoutes } from '@modules/legal'
 import { itrRoutes } from '@modules/itr'
 import { loansRoutes } from '@modules/loans'
 import { paymentsRoutes } from '@modules/payments'
@@ -97,5 +98,7 @@ export const routeConfig: RouteObject[] = [
       },
     ],
   },
+  // Public policy pages (Terms / Privacy) — no guard, reachable signed in or out
+  ...legalRoutes,
   { path: routePaths.notFound, element: <NotFound /> },
 ]

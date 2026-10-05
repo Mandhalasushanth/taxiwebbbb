@@ -5,6 +5,18 @@ import { LifecycleMilestonesCard } from './LifecycleMilestonesCard'
 import { loanApplicationService } from '@modules/loans/services/loanApplicationService'
 import { safeNavigateTo } from '@modules/loans/utils/loanMarketplace.utils'
 import type { LoanApplicationBase } from '@modules/loans/types/loanApplication.types'
+import {
+  Home,
+  Car,
+  Wrench,
+  Briefcase,
+  FolderGit2,
+  Target,
+  HelpCircle,
+  CheckCircle2,
+  List,
+  Download,
+} from 'lucide-react'
 import './LoanApplicationStatus.css'
 
 const LOAN_TYPE_DISPLAY_MAP: Record<string, string> = {
@@ -43,7 +55,7 @@ function resolvePrimaryDetail(loanKey: string, rawForm: Record<string, unknown>,
     return {
       label: 'Property Type & Purpose',
       value: val,
-      iconSrc: '/assets/icons/loans/home-blue.svg',
+      icon: <Home size={22} aria-hidden="true" />,
     }
   }
   if (loanKey.includes('home')) {
@@ -52,55 +64,55 @@ function resolvePrimaryDetail(loanKey: string, rawForm: Record<string, unknown>,
     return {
       label: 'Property Purpose',
       value: stage && intent !== '—' && !intent.includes(stage) ? `${intent} • ${stage}` : intent,
-      iconSrc: '/assets/icons/loans/home-blue.svg',
+      icon: <Home size={22} aria-hidden="true" />,
     }
   }
   if (loanKey.includes('vehicle')) {
     return {
       label: 'Vehicle / Model',
       value: (rawForm.vehicleMakeModel || rawForm.vehicleModel || rawForm.vehicleCategory || (equipment !== '—' ? equipment : '') || '—') as string,
-      iconSrc: '/assets/icons/loans/vehicle-blue.svg',
+      icon: <Car size={22} aria-hidden="true" />,
     }
   }
   if (loanKey.includes('machinery')) {
     return {
       label: 'Equipment',
       value: (rawForm.machineryName || rawForm.machineryType || (equipment !== '—' ? equipment : '') || '—') as string,
-      iconSrc: '/assets/icons/loans/equipment-blue.svg',
+      icon: <Wrench size={22} aria-hidden="true" />,
     }
   }
   if (loanKey.includes('working') || loanKey.includes('capital')) {
     return {
       label: 'Facility Purpose',
       value: (rawForm.creditPurpose || rawForm.preferredFacilityType || (equipment !== '—' ? equipment : '') || '—') as string,
-      iconSrc: '/assets/icons/loans/briefcase-blue.svg',
+      icon: <Briefcase size={22} aria-hidden="true" />,
     }
   }
   if (loanKey.includes('project')) {
     return {
       label: 'Project / Sector',
       value: (rawForm.projectName || rawForm.projectSector || (equipment !== '—' ? equipment : '') || '—') as string,
-      iconSrc: '/assets/icons/loans/project-blue.svg',
+      icon: <FolderGit2 size={22} aria-hidden="true" />,
     }
   }
   if (loanKey.includes('msme')) {
     return {
       label: 'Enterprise Purpose',
       value: (rawForm.msmePurpose || rawForm.businessType || (equipment !== '—' ? equipment : '') || '—') as string,
-      iconSrc: '/assets/icons/loans/briefcase-blue.svg',
+      icon: <Briefcase size={22} aria-hidden="true" />,
     }
   }
   if (loanKey.includes('personal')) {
     return {
       label: 'Loan Purpose',
       value: (rawForm.purposeOfLoan || rawForm.loanPurpose || (equipment !== '—' ? equipment : '') || '—') as string,
-      iconSrc: '/assets/icons/loans/purpose.svg',
+      icon: <Target size={22} aria-hidden="true" />,
     }
   }
   return {
     label: 'Business Purpose',
     value: (rawForm.purposeOfLoan || rawForm.businessType || (equipment !== '—' ? equipment : '') || '—') as string,
-    iconSrc: '/assets/icons/loans/briefcase-blue.svg',
+    icon: <Briefcase size={22} aria-hidden="true" />,
   }
 }
 
@@ -290,13 +302,13 @@ Thank you for applying with TaxEdge Fin Solutions.
           <h1 className="loan-status-header__title">Loan Application Status</h1>
         </div>
         <button type="button" className="loan-status-help-btn" aria-label="Help and Support" title="Need assistance? Contact support">
-          <img src="/assets/icons/loans/help-circle.svg" alt="" width="24" height="24" aria-hidden="true" />
+          <HelpCircle size={24} aria-hidden="true" />
         </button>
       </div>
 
       <section className="loan-status-success-banner" role="status">
         <div className="loan-status-success-banner__icon" aria-hidden="true">
-          <img src="/assets/icons/loans/check-circle-green-solid.svg" alt="" width="44" height="44" />
+          <CheckCircle2 size={44} color="#16a34a" />
         </div>
         <div className="loan-status-success-banner__content">
           <h2 className="loan-status-success-banner__title">Application Submitted Successfully</h2>
@@ -312,7 +324,7 @@ Thank you for applying with TaxEdge Fin Solutions.
         loanAmount={loanAmount}
         primaryDetailLabel={primaryDetail.label}
         primaryDetailValue={primaryDetail.value}
-        primaryDetailIcon={<img src={primaryDetail.iconSrc} alt="" width="22" height="22" aria-hidden="true" />}
+        primaryDetailIcon={primaryDetail.icon}
         tenure={formattedTenure}
         disbursementBank={formattedBank}
         loanAgent={loanAgent}
@@ -324,17 +336,17 @@ Thank you for applying with TaxEdge Fin Solutions.
 
       <div className="loan-status-actions-bar">
         <button type="button" className="loan-action-btn loan-action-btn--navy" onClick={handleTrackApplications} data-testid="track-my-applications-btn">
-          <img src="/assets/icons/loans/list-white.svg" alt="" width="18" height="18" aria-hidden="true" />
+          <List size={18} aria-hidden="true" />
           <span>Track My Applications</span>
         </button>
 
         <button type="button" className="loan-action-btn loan-action-btn--home" onClick={handleGoHome} data-testid="go-to-home-btn">
-          <img src="/assets/icons/loans/home-navy.svg" alt="" width="18" height="18" aria-hidden="true" />
+          <Home size={18} aria-hidden="true" />
           <span>Go to Home</span>
         </button>
 
         <button type="button" className="loan-action-btn loan-action-btn--download" onClick={handleDownload} data-testid="download-receipt-btn">
-          <img src="/assets/icons/loans/download-orange.svg" alt="" width="18" height="18" aria-hidden="true" />
+          <Download size={18} aria-hidden="true" />
           <span>Download Sanction Letter / Receipt</span>
         </button>
       </div>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Users, ChevronDown } from 'lucide-react'
 import type {
   ProjectFinanceData,
   ApplicantEntityType,
@@ -50,12 +51,12 @@ export const ApplicantDetailsSection: React.FC<ApplicantDetailsSectionProps> = (
       <div className="pf-collapsible-header" onClick={onToggle}>
         <div className="pf-collapsible-header__left">
           <div className="pf-section-icon-tile pf-section-icon-tile--orange">
-            <img src="/assets/icons/loans/users-green.svg" alt="" width="20" height="20" />
+            <Users size={20} />
           </div>
           <h3 className="pf-collapsible-title">Applicant / Borrower Details</h3>
         </div>
         <span className={`pf-chevron ${isOpen ? 'pf-chevron--open' : ''}`}>
-          <img src="/assets/icons/loans/chevron-down.svg" alt="" width="18" height="18" />
+          <ChevronDown size={18} />
         </span>
       </div>
 

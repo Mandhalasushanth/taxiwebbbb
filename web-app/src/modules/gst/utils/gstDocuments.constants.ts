@@ -1,3 +1,4 @@
+import { DOCUMENT_UPLOAD_RULE, MAX_UPLOAD_SIZE_MB, PHOTO_UPLOAD_RULE, type UploadRule } from '@shared/utils'
 import type { DocumentItem } from '@modules/gst/types/gstDocuments.types'
 
 export const ADDRESS_PROOF_OPTIONS: readonly string[] = [
@@ -61,3 +62,14 @@ export const INITIAL_DOCUMENTS: DocumentItem[] = [
     isUploaded: false,
   },
 ]
+
+/** Document slots that only accept photographs (no PDFs) */
+const PHOTO_ONLY_DOC_IDS: readonly string[] = ['photo']
+
+/** Upload rule for a document slot: PDF/JPG/PNG up to 10 MB, photographs JPG/PNG only */
+export const getGstDocUploadRule = (docId: string): UploadRule =>
+  PHOTO_ONLY_DOC_IDS.includes(docId) ? PHOTO_UPLOAD_RULE : DOCUMENT_UPLOAD_RULE
+
+/** Hint shown on each document card, e.g. "PDF, JPG or PNG · max 10 MB" */
+export const getGstDocUploadHint = (docId: string): string =>
+  `${getGstDocUploadRule(docId).label} · max ${MAX_UPLOAD_SIZE_MB} MB`

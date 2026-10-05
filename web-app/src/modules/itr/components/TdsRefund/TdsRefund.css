@@ -1,4 +1,4 @@
-/* TDS Refund Container & Layout */
+/* TDS Refund Container, Progress Tracker & Payment Layout */
 .tds-web-page {
   width: 100%;
   max-width: 100%;
@@ -12,8 +12,14 @@
 }
 
 @keyframes tdsFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tds-web-layout {
@@ -34,8 +40,168 @@
   box-sizing: border-box;
 }
 
+/* Connected Circular 5-Stage Progress Tracker */
+.tds-stepper-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto 1.5rem auto;
+  box-sizing: border-box;
+}
+
+.tds-stepper-track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0 0.5rem;
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.tds-stepper-step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  user-select: none;
+  min-width: 80px;
+}
+
+.tds-stepper-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.tds-stepper-dot--active {
+  background: #f97316;
+  color: #ffffff;
+  border: 2.5px solid #f97316;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.42);
+  transform: scale(1.06);
+}
+
+.tds-stepper-dot--completed {
+  background: #083b75;
+  color: #ffffff;
+  border: 2.5px solid #083b75;
+  box-shadow: 0 4px 14px rgba(8, 59, 117, 0.35);
+}
+
+.tds-stepper-dot--inactive {
+  background: #ffffff;
+  color: #94a3b8;
+  border: 2px solid #cbd5e1;
+  box-shadow: none;
+}
+
+.tds-stepper-line {
+  flex: 1;
+  min-width: 28px;
+  height: 2.5px;
+  background-color: #cbd5e1;
+  margin: 0 0.5rem 1.45rem 0.5rem;
+  transition: background-color 0.3s ease;
+  z-index: 1;
+}
+
+.tds-stepper-line--completed {
+  background-color: #083b75;
+}
+
+.tds-stepper-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.tds-stepper-label--active {
+  color: #f97316;
+  font-weight: 700;
+}
+
+/* Payment Stage Layout */
+.tds-payment-page {
+  width: 100%;
+  max-width: 100%;
+  padding: 1.25rem 2rem 4rem 2rem;
+  box-sizing: border-box;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.tds-payment-stepper-wrap {
+  width: 100%;
+  margin-bottom: 1.75rem;
+}
+
+.tds-card-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.tds-card-icon-box--user {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1.5px solid #bfdbfe;
+}
+.tds-card-icon-box--bank {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1.5px solid #a7f3d0;
+}
+.tds-card-icon-box--calc {
+  background: #fff7ed;
+  color: #ea580c;
+  border: 1.5px solid #fed7aa;
+}
+.tds-card-icon-box--shield {
+  background: #f5f3ff;
+  color: #7c3aed;
+  border: 1.5px solid #ddd6fe;
+}
+
 @media (max-width: 1200px) {
   .tds-web-layout {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .tds-stepper-track {
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 1.25rem;
+    padding-bottom: 0.5rem;
+  }
+  .tds-stepper-line {
+    display: none;
+  }
+  .tds-payment-page {
+    padding: 1rem 1rem 3rem 1rem;
   }
 }

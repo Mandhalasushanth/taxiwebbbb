@@ -1,16 +1,24 @@
 import React, { createContext, useContext, useState, useCallback } from 'react'
 import { userStorage } from '@core/storage/userStorage'
-import type { CompanyEntityType, CompanyDetailsFormData } from '../types/incorporation.types'
+import type {
+  CompanyEntityType,
+  CompanyDetailsFormData,
+  DirectorDetails,
+  RegisteredOfficeFormData,
+  CapitalDetailsFormData,
+  DocumentsKycFormData,
+  LinkedRegistrationItem,
+} from '../types/incorporation.types'
 
 export interface IncorporationFormData {
   companyType: CompanyEntityType | null
   companyDetails: Partial<CompanyDetailsFormData>
-  registeredOffice: any
-  promoterDetails: any
-  capitalDetails: any
-  documentsKyc: any
-  linkedRegistrations: any
-  promoters?: any[]
+  registeredOffice: Partial<RegisteredOfficeFormData>
+  promoterDetails: Record<string, unknown>
+  capitalDetails: Partial<CapitalDetailsFormData>
+  documentsKyc: Partial<DocumentsKycFormData>
+  linkedRegistrations: LinkedRegistrationItem[]
+  promoters?: DirectorDetails[]
   applicationId?: string
   transactionId?: string
   applicationDate?: string
@@ -26,7 +34,7 @@ const DEFAULT_INCORPORATION_DATA: IncorporationFormData = {
   promoterDetails: {},
   capitalDetails: {},
   documentsKyc: {},
-  linkedRegistrations: {}
+  linkedRegistrations: [],
 }
 
 export interface IncorporationContextValue {
@@ -39,23 +47,30 @@ const IncorporationContext = createContext<IncorporationContextValue | null>(nul
 
 export const IncorporationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [formData, setFormData] = useState<IncorporationFormData>(() => {
-    const draft = userStorage.getDraft('incorporation')
-    if (draft && draft.formData && draft.formData.applicationData) {
-      return draft.formData.applicationData as IncorporationFormData
+    try {
+      const draft = userStorage.getDraft('incorporation')
+      if (draft && draft.formData && draft.formData.applicationData) {
+        return draft.formData.applicationData as IncorporationFormData
+      }
+    } catch {
+      // Fall back safely to initial defaults
     }
     return DEFAULT_INCORPORATION_DATA
   })
 
   const updateFormData = useCallback((fields: Partial<IncorporationFormData>) => {
-    setFormData(prev => {
+    setFormData((prev) => {
       const updated = { ...prev, ...fields }
-      // Update draft automatically
-      const draft = userStorage.getDraft('incorporation')
-      if (draft) {
-        userStorage.saveDraft({
-          ...draft,
-          formData: { ...draft.formData, applicationData: updated }
-        })
+      try {
+        const draft = userStorage.getDraft('incorporation')
+        if (draft) {
+          userStorage.saveDraft({
+            ...draft,
+            formData: { ...draft.formData, applicationData: updated },
+          })
+        }
+      } catch {
+        // Silently preserve state in memory even if storage fails
       }
       return updated
     })
@@ -63,7 +78,11 @@ export const IncorporationProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const resetFlow = useCallback(() => {
     setFormData(DEFAULT_INCORPORATION_DATA)
-    userStorage.deleteDraft('incorporation')
+    try {
+      userStorage.deleteDraft('incorporation')
+    } catch {
+      // Ignore storage errors on cleanup
+    }
   }, [])
 
   return (

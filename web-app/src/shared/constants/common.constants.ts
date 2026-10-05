@@ -71,4 +71,16 @@ export const REGEX = {
   aadhaar: /^[0-9]{12}$/,
   aadhaarMasked: /^\d{4}$/,
   pincode: /^[1-9][0-9]{5}$/,
+  /**
+   * Local part: dot-separated atoms (no leading, trailing or consecutive dots).
+   * Domain: dot-separated labels that do not start/end with "-", ending in a 2+ letter TLD.
+   */
+  email: /^[A-Za-z0-9_%+-]+(?:\.[A-Za-z0-9_%+-]+)*@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/,
+  /** Company CIN, e.g. U12345MH2020PTC123456 */
+  cin: /^[LU]\d{5}[A-Z]{2}\d{4}[A-Z]{3}\d{6}$/,
+  /** LLP identification number, e.g. AAB-1234 */
+  llpin: /^[A-Z]{3}-\d{4}$/,
 } as const
+
+/** RFC 5321 limits on total address and local-part length */
+export const EMAIL_LIMITS = { maxLength: 254, maxLocalLength: 64 } as const

@@ -6,7 +6,6 @@ import type { ApplicationsFilters, ApplicationsItem } from '../types/application
 export const applicationsService = {
   async list(filters?: ApplicationsFilters): Promise<ApplicationsItem[]> {
     if (env.enableMocks) {
-      await new Promise((resolve) => setTimeout(resolve, 80))
       const userApps = userStorage.getUserApplications()
 
       const mappedUserApps: ApplicationsItem[] = userApps.map((a) => {

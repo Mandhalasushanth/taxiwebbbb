@@ -13,7 +13,7 @@ vi.mock('@core/config/environment', () => ({
 
 import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { GSTPaymentSuccess } from '../../src/modules/gst/pages/GSTRegistration/steps/GSTPaymentSuccess/GSTPaymentSuccess'
+import { GSTPaymentSuccess } from '../../src/modules/gst/components/GSTRegistration/GSTPaymentSuccess/GSTPaymentSuccess'
 import { userStorage } from '../../src/core/storage/userStorage'
 
 afterEach(() => {

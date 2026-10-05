@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
+import { buildProfileCompletionPath } from '@core/auth'
 import { useAuthStore } from '@store/index'
 import { CompleteProfileModal } from '@shared/components'
 import { companyRegistrationData } from '../../data/companyRegistrationData'
@@ -23,7 +24,7 @@ export const CompanyRegistration: React.FC = () => {
 
   const handleConfirmProfile = () => {
     setIsProfileModalOpen(false)
-    navigate(routePaths.auth.register, {
+    navigate(buildProfileCompletionPath(routePaths.incorporation.selectType), {
       state: { returnTo: routePaths.incorporation.selectType, mobile: user?.mobile },
     })
   }

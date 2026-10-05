@@ -1,0 +1,34 @@
+.loan-status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loan-status-badge--approved {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.loan-status-badge--rejected {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.loan-status-badge--disbursed {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.loan-status-badge--review {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.loan-status-badge--pending {
+  background-color: #f3f4f6;
+  color: #374151;
+}

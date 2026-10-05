@@ -3,18 +3,29 @@ import { useLocation } from 'react-router-dom'
 import { CUSTOMER_TYPE_OPTIONS } from '@modules/customerType/data/customerTypeOptions'
 import { CustomerTypeCard } from '@modules/customerType/components/CustomerTypeCard/CustomerTypeCard'
 import type { CustomerTypeId } from '@modules/customerType/types/customerType.types'
+import { useAuthStore } from '@store/index'
+import { registrationDraftStore } from '../../services/registrationDraftStore'
 import { RegistrationForm } from '../RegistrationForm/RegistrationForm'
 import './RegistrationCard.css'
 
 export const RegistrationCard: React.FC = () => {
   const location = useLocation()
   const locationState = location.state as { customerType?: CustomerTypeId; returnTo?: string; mobile?: string } | null
+  const userMobile = useAuthStore((state) => state.user?.mobile) ?? ''
 
   const [step, setStep] = useState<1 | 2>(() => (locationState?.customerType ? 2 : 1))
   const [selectedCustomerType, setSelectedCustomerType] = useState<CustomerTypeId | null>(
-    () => locationState?.customerType || 'individual'
+    () =>
+      locationState?.customerType ||
+      (registrationDraftStore.load(userMobile)?.customerType as CustomerTypeId | undefined) ||
+      'individual'
   )
   const [error] = useState<string | null>(null)
+
+  const handleSelectCustomerType = (id: CustomerTypeId) => {
+    setSelectedCustomerType(id)
+    registrationDraftStore.saveCustomerType(userMobile, id)
+  }
 
   const handleProceedToStep2 = () => {
     if (!selectedCustomerType) return
@@ -48,7 +59,7 @@ export const RegistrationCard: React.FC = () => {
                 description={option.description}
                 icon={option.icon}
                 isSelected={selectedCustomerType === option.id}
-                onSelect={(id) => setSelectedCustomerType(id)}
+                onSelect={handleSelectCustomerType}
               />
             ))}
           </div>

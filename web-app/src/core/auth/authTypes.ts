@@ -54,6 +54,9 @@ export interface AuthUser {
   avatarUrl?: string
   isProfileComplete: boolean
   businessName?: string
+  /** CIN / LLPIN / firm registration number for business-entity customers */
+  registrationNumber?: string
+  incorporationDate?: string
   // Profile and registration details
   gender?: string
   dob?: string

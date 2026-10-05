@@ -10,10 +10,27 @@ export function safeNavigateTo(
   fallback: string = '/loans'
 ): void {
   if (typeof destination === 'number') {
-    navigate(destination)
+    try {
+      navigate(destination)
+    } catch {
+      try {
+        navigate(fallback)
+      } catch {
+        // ignore secondary failure
+      }
+    }
     return
   }
-  navigate(destination.trim() ? destination : fallback)
+  const target = destination.trim() ? destination : fallback
+  try {
+    navigate(target)
+  } catch {
+    try {
+      navigate(fallback)
+    } catch {
+      // ignore secondary failure
+    }
+  }
 }
 
 /**

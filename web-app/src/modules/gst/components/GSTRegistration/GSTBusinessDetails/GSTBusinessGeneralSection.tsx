@@ -1,5 +1,6 @@
 import React, { type ChangeEvent } from 'react'
-import { gstInput } from '@modules/gst/utils/gstInputFormatters'
+import { getCommencementDateBounds } from '@shared/utils'
+import { gstInput, GST_MAX_LENGTH } from '@modules/gst/utils/gstInputFormatters'
 import type { GstBusinessFormData } from '../GSTStepBusiness/GSTStepBusiness'
 import {
   CONSTITUTION_OF_BUSINESS_OPTIONS,
@@ -8,23 +9,56 @@ import {
   COMPOSITION_SCHEME_OPTIONS,
   PLACE_OF_BUSINESS_OPTIONS,
 } from '@modules/gst/utils/gstBusinessDetails.constants'
+import {
+  COMPOSITION_INELIGIBLE_MESSAGE,
+  CONSTITUTION_PAN_TYPES,
+  getCompositionConflicts,
+  isCompositionOpted,
+  isOptionBlockedByComposition,
+} from '@modules/gst/validation/gstBusinessRules'
+
+type GeneralField =
+  | 'legalName'
+  | 'tradeName'
+  | 'constitution'
+  | 'businessPan'
+  | 'natureOfBusiness'
+  | 'commencementDate'
+  | 'registrationReason'
+  | 'compositionScheme'
+  | 'placeOfBusiness'
 
 export interface GSTBusinessGeneralSectionProps {
-  data: Pick<
-    GstBusinessFormData,
-    | 'legalName'
-    | 'tradeName'
-    | 'constitution'
-    | 'natureOfBusiness'
-    | 'commencementDate'
-    | 'registrationReason'
-    | 'compositionScheme'
-    | 'placeOfBusiness'
-  >
+  data: Pick<GstBusinessFormData, GeneralField>
   onChange: <K extends keyof GstBusinessFormData>(field: K, value: GstBusinessFormData[K]) => void
   errors?: Record<string, string>
   onClearError?: (field: string) => void
 }
+
+interface SelectSpec {
+  field: Extract<GeneralField, 'constitution' | 'natureOfBusiness' | 'registrationReason' | 'compositionScheme' | 'placeOfBusiness'>
+  label: string
+  placeholder: string
+  options: readonly string[]
+}
+
+const SELECTS: Record<SelectSpec['field'], SelectSpec> = {
+  constitution: { field: 'constitution', label: 'Constitution of Business', placeholder: 'Select business type', options: CONSTITUTION_OF_BUSINESS_OPTIONS },
+  natureOfBusiness: { field: 'natureOfBusiness', label: 'Nature of Business', placeholder: 'Select nature of business', options: NATURE_OF_BUSINESS_OPTIONS },
+  registrationReason: { field: 'registrationReason', label: 'Reason for Registration', placeholder: 'Select a reason', options: REASON_FOR_REGISTRATION_OPTIONS },
+  compositionScheme: { field: 'compositionScheme', label: 'Opting for Composition Scheme?', placeholder: 'Select yes or no', options: COMPOSITION_SCHEME_OPTIONS },
+  placeOfBusiness: { field: 'placeOfBusiness', label: 'Place of Business', placeholder: 'Select place type', options: PLACE_OF_BUSINESS_OPTIONS },
+}
+
+const COMPOSITION_RESTRICTED_FIELDS = new Set<SelectSpec['field']>(['natureOfBusiness', 'registrationReason'])
+
+const SelectArrow = () => (
+  <span className="gst-select-arrow" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  </span>
+)
 
 export const GSTBusinessGeneralSection: React.FC<GSTBusinessGeneralSectionProps> = ({
   data,
@@ -32,44 +66,61 @@ export const GSTBusinessGeneralSection: React.FC<GSTBusinessGeneralSectionProps>
   errors = {},
   onClearError,
 }) => {
-  const handleLegalNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange('legalName', gstInput.businessName(e.target.value))
-    onClearError?.('legalName')
-  }
+  const dateBounds = getCommencementDateBounds()
+  const compositionOpted = isCompositionOpted(data)
+  const compositionConflicts = getCompositionConflicts(data)
+  const hasCompositionConflict = Object.keys(compositionConflicts).length > 0
+  const panHint = CONSTITUTION_PAN_TYPES[data.constitution]
 
-  const handleTradeNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange('tradeName', gstInput.businessName(e.target.value))
-    onClearError?.('tradeName')
-  }
-
-  const handleConstitutionChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    onChange('constitution', e.target.value)
-    onClearError?.('constitution')
-  }
-
-  const handleNatureOfBusinessChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    onChange('natureOfBusiness', e.target.value)
+  const clearCompositionErrors = () => {
     onClearError?.('natureOfBusiness')
-  }
-
-  const handleCommencementDateChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange('commencementDate', e.target.value)
-    onClearError?.('commencementDate')
-  }
-
-  const handleRegistrationReasonChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    onChange('registrationReason', e.target.value)
     onClearError?.('registrationReason')
   }
 
-  const handleCompositionSchemeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    onChange('compositionScheme', e.target.value)
-    onClearError?.('compositionScheme')
+  const update = <K extends GeneralField>(field: K, value: GstBusinessFormData[K]) => {
+    onChange(field, value)
+    onClearError?.(field)
+    // Changing the composition choice can resolve conflicts shown on these fields
+    if (field === 'compositionScheme') clearCompositionErrors()
+    if (field === 'constitution') onClearError?.('businessPan')
   }
 
-  const handlePlaceOfBusinessChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    onChange('placeOfBusiness', e.target.value)
-    onClearError?.('placeOfBusiness')
+  const fieldError = (field: GeneralField) => errors[field]
+
+  const renderSelect = ({ field, label, placeholder, options }: SelectSpec) => {
+    const isRestricted = COMPOSITION_RESTRICTED_FIELDS.has(field)
+    const errorId = `${field}-error`
+    return (
+      <div className="gst-form-group">
+        <label htmlFor={field} className="gst-form-label">
+          {label} <span className="gst-required-star">*</span>
+        </label>
+        <div className="gst-select-wrapper">
+          <select
+            id={field}
+            name={field}
+            className={`gst-form-select ${!data[field] ? 'gst-select--placeholder' : ''} ${fieldError(field) ? 'gst-input--error' : ''}`}
+            data-empty={!data[field]}
+            value={data[field]}
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => update(field, e.target.value)}
+            aria-invalid={Boolean(fieldError(field))}
+            aria-describedby={fieldError(field) ? errorId : undefined}
+          >
+            <option value="">{placeholder}</option>
+            {options.map((opt) => {
+              const blocked = isRestricted && isOptionBlockedByComposition(field as 'natureOfBusiness' | 'registrationReason', opt, data.compositionScheme)
+              return (
+                <option key={opt} value={opt} disabled={blocked}>
+                  {blocked ? `${opt} (not allowed with Composition Scheme)` : opt}
+                </option>
+              )
+            })}
+          </select>
+          <SelectArrow />
+        </div>
+        {fieldError(field) && <span id={errorId} className="gst-field-error">{fieldError(field)}</span>}
+      </div>
+    )
   }
 
   return (
@@ -82,14 +133,15 @@ export const GSTBusinessGeneralSection: React.FC<GSTBusinessGeneralSectionProps>
           </label>
           <input
             id="legalName"
+            name="legalName"
             type="text"
-            className={`gst-form-input ${errors.legalName ? 'gst-input--error' : ''}`}
+            className={`gst-form-input ${fieldError('legalName') ? 'gst-input--error' : ''}`}
             placeholder="Exactly as on the PAN card"
             value={data.legalName}
-            onChange={handleLegalNameChange}
+            onChange={(e) => update('legalName', gstInput.businessName(e.target.value))}
             onBlur={() => onChange('legalName', data.legalName.trim())}
           />
-          {errors.legalName && <span className="gst-field-error">{errors.legalName}</span>}
+          {fieldError('legalName') && <span className="gst-field-error">{fieldError('legalName')}</span>}
         </div>
 
         <div className="gst-form-group">
@@ -98,76 +150,45 @@ export const GSTBusinessGeneralSection: React.FC<GSTBusinessGeneralSectionProps>
           </label>
           <input
             id="tradeName"
+            name="tradeName"
             type="text"
-            className={`gst-form-input ${errors.tradeName ? 'gst-input--error' : ''}`}
+            className={`gst-form-input ${fieldError('tradeName') ? 'gst-input--error' : ''}`}
             placeholder="Enter your business / trade name"
             value={data.tradeName}
-            onChange={handleTradeNameChange}
+            onChange={(e) => update('tradeName', gstInput.businessName(e.target.value))}
             onBlur={() => onChange('tradeName', data.tradeName.trim())}
           />
-          {errors.tradeName && <span className="gst-field-error">{errors.tradeName}</span>}
+          {fieldError('tradeName') && <span className="gst-field-error">{fieldError('tradeName')}</span>}
         </div>
       </div>
 
-      {/* Row 2: Constitution of Business & Nature of Business */}
+      {/* Row 2: Constitution & Business PAN (PAN type must match the constitution) */}
       <div className="gst-form-grid gst-form-grid--2col">
-        <div className="gst-form-group">
-          <label htmlFor="constitution" className="gst-form-label">
-            Constitution of Business <span className="gst-required-star">*</span>
-          </label>
-          <div className="gst-select-wrapper">
-            <select
-              id="constitution"
-              className={`gst-form-select ${errors.constitution ? 'gst-input--error' : ''}`}
-              value={data.constitution}
-              onChange={handleConstitutionChange}
-            >
-              <option value="">Select business type</option>
-              {CONSTITUTION_OF_BUSINESS_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
-                </option>
-              ))}
-            </select>
-            <span className="gst-select-arrow" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </span>
-          </div>
-          {errors.constitution && <span className="gst-field-error">{errors.constitution}</span>}
-        </div>
+        {renderSelect(SELECTS.constitution)}
 
         <div className="gst-form-group">
-          <label htmlFor="natureOfBusiness" className="gst-form-label">
-            Nature of Business <span className="gst-required-star">*</span>
+          <label htmlFor="businessPan" className="gst-form-label">
+            Business PAN <span className="gst-required-star">*</span>
           </label>
-          <div className="gst-select-wrapper">
-            <select
-              id="natureOfBusiness"
-              className={`gst-form-select ${errors.natureOfBusiness ? 'gst-input--error' : ''}`}
-              value={data.natureOfBusiness}
-              onChange={handleNatureOfBusinessChange}
-            >
-              <option value="">Select nature of business</option>
-              {NATURE_OF_BUSINESS_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
-                </option>
-              ))}
-            </select>
-            <span className="gst-select-arrow" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </span>
-          </div>
-          {errors.natureOfBusiness && <span className="gst-field-error">{errors.natureOfBusiness}</span>}
+          <input
+            id="businessPan"
+            name="businessPan"
+            type="text"
+            maxLength={GST_MAX_LENGTH.pan}
+            className={`gst-form-input ${fieldError('businessPan') ? 'gst-input--error' : ''}`}
+            placeholder={panHint ? `PAN of the business (4th letter ${panHint.join(' / ')})` : 'PAN of the business'}
+            value={data.businessPan}
+            onChange={(e) => update('businessPan', gstInput.pan(e.target.value))}
+            autoCapitalize="characters"
+          />
+          {fieldError('businessPan') && <span className="gst-field-error">{fieldError('businessPan')}</span>}
         </div>
       </div>
 
-      {/* Row 3: Date of Commencement & Reason for Registration */}
+      {/* Row 3: Nature of Business & Date of Commencement */}
       <div className="gst-form-grid gst-form-grid--2col">
+        {renderSelect(SELECTS.natureOfBusiness)}
+
         <div className="gst-form-group">
           <label htmlFor="commencementDate" className="gst-form-label">
             Date of Commencement of Business <span className="gst-required-star">*</span>
@@ -175,100 +196,39 @@ export const GSTBusinessGeneralSection: React.FC<GSTBusinessGeneralSectionProps>
           <div className="gst-date-input-wrapper">
             <input
               id="commencementDate"
+              name="commencementDate"
               type="date"
-              className={`gst-form-input gst-form-input--date ${errors.commencementDate ? 'gst-input--error' : ''}`}
+              min={dateBounds.min}
+              max={dateBounds.max}
+              className={`gst-form-input gst-form-input--date ${!data.commencementDate ? 'gst-date--placeholder' : 'has-value'} ${fieldError('commencementDate') ? 'gst-input--error' : ''}`}
               placeholder="DD-MM-YYYY"
               value={data.commencementDate}
-              onChange={handleCommencementDateChange}
+              onChange={(e) => update('commencementDate', e.target.value)}
             />
           </div>
-          {errors.commencementDate && <span className="gst-field-error">{errors.commencementDate}</span>}
-        </div>
-
-        <div className="gst-form-group">
-          <label htmlFor="registrationReason" className="gst-form-label">
-            Reason for Registration <span className="gst-required-star">*</span>
-          </label>
-          <div className="gst-select-wrapper">
-            <select
-              id="registrationReason"
-              className={`gst-form-select ${errors.registrationReason ? 'gst-input--error' : ''}`}
-              value={data.registrationReason}
-              onChange={handleRegistrationReasonChange}
-            >
-              <option value="">Select a reason</option>
-              {REASON_FOR_REGISTRATION_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
-                </option>
-              ))}
-            </select>
-            <span className="gst-select-arrow" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </span>
-          </div>
-          {errors.registrationReason && <span className="gst-field-error">{errors.registrationReason}</span>}
+          {fieldError('commencementDate') && <span className="gst-field-error">{fieldError('commencementDate')}</span>}
         </div>
       </div>
 
-      {/* Row 4: Opting for Composition Scheme? & Place of Business */}
+      {/* Row 4: Composition Scheme & Reason for Registration */}
       <div className="gst-form-grid gst-form-grid--2col">
-        <div className="gst-form-group">
-          <label htmlFor="compositionScheme" className="gst-form-label">
-            Opting for Composition Scheme? <span className="gst-required-star">*</span>
-          </label>
-          <div className="gst-select-wrapper">
-            <select
-              id="compositionScheme"
-              className={`gst-form-select ${errors.compositionScheme ? 'gst-input--error' : ''}`}
-              value={data.compositionScheme}
-              onChange={handleCompositionSchemeChange}
-            >
-              <option value="">Select yes or no</option>
-              {COMPOSITION_SCHEME_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
-                </option>
-              ))}
-            </select>
-            <span className="gst-select-arrow" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </span>
-          </div>
-          {errors.compositionScheme && <span className="gst-field-error">{errors.compositionScheme}</span>}
-        </div>
-
-        <div className="gst-form-group">
-          <label htmlFor="placeOfBusiness" className="gst-form-label">
-            Place of Business <span className="gst-required-star">*</span>
-          </label>
-          <div className="gst-select-wrapper">
-            <select
-              id="placeOfBusiness"
-              className={`gst-form-select ${errors.placeOfBusiness ? 'gst-input--error' : ''}`}
-              value={data.placeOfBusiness}
-              onChange={handlePlaceOfBusinessChange}
-            >
-              <option value="">Select place type</option>
-              {PLACE_OF_BUSINESS_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
-                </option>
-              ))}
-            </select>
-            <span className="gst-select-arrow" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </span>
-          </div>
-          {errors.placeOfBusiness && <span className="gst-field-error">{errors.placeOfBusiness}</span>}
-        </div>
+        {renderSelect(SELECTS.compositionScheme)}
+        {renderSelect(SELECTS.registrationReason)}
       </div>
+
+      {compositionOpted && (
+        <p
+          className={`gst-composition-note ${hasCompositionConflict ? 'gst-composition-note--error' : ''}`}
+          role={hasCompositionConflict ? 'alert' : 'note'}
+        >
+          {hasCompositionConflict
+            ? COMPOSITION_INELIGIBLE_MESSAGE
+            : 'Composition Scheme: e-commerce sales, inter-state supplies and exports are not allowed, so those options are disabled.'}
+        </p>
+      )}
+
+      {/* Row 5: Place of Business */}
+      <div className="gst-form-grid gst-form-grid--2col">{renderSelect(SELECTS.placeOfBusiness)}</div>
     </>
   )
 }

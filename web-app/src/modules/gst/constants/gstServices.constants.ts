@@ -25,12 +25,22 @@ export const GST_SERVICE_ROUTES: Record<GstServiceType, string> = {
   certificate: routePaths.gst.certificate,
 }
 
+/** 3D icon image paths stored in public/assets/icons/gst/ */
+export const GST_SERVICE_ICON_IMAGE_MAP: Partial<Record<GstServiceType, string>> = {
+  registration: '/assets/icons/gst/gst-registration.png',
+  filing: '/assets/icons/gst/gst-filing.png',
+  compliance: '/assets/icons/gst/gst-compliance.png',
+  amendment: '/assets/icons/gst/gst-amendment.png',
+  cancellation: '/assets/icons/gst/gst-cancellation.png',
+  certificate: '/assets/icons/gst/gst-certificate.png',
+}
+
 /** Service catalogue shown on the GST dashboard; prices come from GST_FEES */
 export const GST_SERVICES: readonly GstService[] = [
-  { id: '1', title: 'GST Registration', description: 'New GSTIN for your business, end to end with the department.', price: formatRupees(GST_FEES.registration), priceType: 'one time', iconType: 'registration', badge: 'Most Popular', turnaround: '3–5 days' },
-  { id: '2', title: 'GST Filing', description: 'Monthly or quarterly GSTR-1 and GSTR-3B preparation and filing.', price: formatRupees(GST_FEES.filingCombo), priceType: 'per period', iconType: 'filing', badge: 'Periodic', turnaround: 'Same Day' },
-  { id: '3', title: 'GST Compliance', description: 'Annual return, reconciliation and notice handling.', price: formatRupees(GST_FEES.compliance), priceType: 'per year', iconType: 'compliance', badge: 'Annual', turnaround: 'Comprehensive' },
-  { id: '4', title: 'GST Amendment', description: 'Change address, business name, or authorised signatory.', price: formatRupees(GST_FEES.amendment), priceType: 'per change', iconType: 'amendment', badge: 'Modification', turnaround: '24–48 hrs' },
-  { id: '5', title: 'GST Cancellation', description: 'Surrender a GSTIN and close out pending returns.', price: formatRupees(GST_FEES.cancellation), priceType: 'one time', iconType: 'cancellation', badge: 'Closure', turnaround: '5–7 days' },
-  { id: '6', title: 'GST Certificate', description: 'Download a fresh registration certificate copy.', price: formatRupees(GST_FEES.certificate), priceType: 'per copy', iconType: 'certificate', badge: 'Official', turnaround: 'Instant' },
+  { id: '1', title: 'GST Registration', description: 'Register your business for GST', price: formatRupees(GST_FEES.registration), priceType: 'one time', iconType: 'registration', badge: 'Most Popular', turnaround: '3–5 days' },
+  { id: '2', title: 'GST Filing', description: 'File monthly or quarterly returns', price: formatRupees(GST_FEES.filingCombo), priceType: 'per period', iconType: 'filing', badge: 'Periodic', turnaround: 'Same Day' },
+  { id: '3', title: 'GST Compliance', description: 'Stay compliant with GST requirements', price: formatRupees(GST_FEES.compliance), priceType: 'per year', iconType: 'compliance', badge: 'Annual', turnaround: 'Comprehensive' },
+  { id: '4', title: 'GST Amendment', description: 'Update your GST registration details', price: formatRupees(GST_FEES.amendment), priceType: 'per change', iconType: 'amendment', badge: 'Modification', turnaround: '24–48 hrs' },
+  { id: '5', title: 'GST Cancellation', description: 'Cancel your GST registration', price: formatRupees(GST_FEES.cancellation), priceType: 'one time', iconType: 'cancellation', badge: 'Closure', turnaround: '5–7 days' },
+  { id: '6', title: 'GST Certificate', description: 'Download your GST certificate', price: formatRupees(GST_FEES.certificate), priceType: 'per copy', iconType: 'certificate', badge: 'Official', turnaround: 'Instant' },
 ]

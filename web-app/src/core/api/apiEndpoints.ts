@@ -41,6 +41,7 @@ export const apiEndpoints = {
     list: '/payments',
     createOrder: '/payments/orders',
     verify: '/payments/verify',
+    validateCoupon: '/payments/coupons/validate',
   },
   documents: {
     list: '/documents',

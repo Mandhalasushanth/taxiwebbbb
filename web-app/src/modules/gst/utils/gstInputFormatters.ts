@@ -11,7 +11,8 @@ export const gstInput = {
   mobile: formatMobile,
   pinCode: (v: string): string => v.replace(/\D/g, '').slice(0, 6),
   accountNumber: (v: string): string => v.replace(/\D/g, '').slice(0, 18),
-  hsnSac: (v: string): string => v.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8),
+  /** HSN / SAC codes are numeric only (4, 6 or 8 digits) */
+  hsnSac: (v: string): string => v.replace(/\D/g, '').slice(0, 8),
   /** Names, cities, bank names: letters, spaces and . ' - & ( ) */
   letters: (v: string, max = 100): string => v.replace(/[^A-Za-z .'&()-]/g, '').replace(/\s{2,}/g, ' ').slice(0, max),
   /** Designation also allows "/" e.g. "Partner / Director" */

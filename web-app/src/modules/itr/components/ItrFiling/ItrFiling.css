@@ -1,9 +1,4 @@
-/* ==========================================================================
-   ITR Filing - Common Styles & Base Components
-   Theme: Navy Blue (#083B75) & TaxEdge Orange (#F97316)
-   ========================================================================== */
-
-/* Main View Container (Desktop Web Responsive) */
+/* ITR Filing - Common Styles, Header Stepper & Base Components */
 .itr-step-view-container {
   display: flex;
   flex-direction: column;
@@ -14,8 +9,122 @@
   padding: 0.25rem 0.5rem 3.5rem 0.5rem;
   box-sizing: border-box;
 }
+.itr-personal-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1.5px solid #e2e8f0;
+  width: 100%;
+}
+.itr-personal-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.itr-personal-title {
+  margin: 0;
+  font-size: 1.95rem;
+  font-weight: 800;
+  color: #083b75;
+  letter-spacing: -0.02em;
+}
+.itr-personal-subtitle-label {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f97316;
+}
 
-/* Card Base */
+.itr-stepper-track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 100%;
+  margin: 0.75rem 0 0 0;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+}
+.itr-stepper-step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+.itr-stepper-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+.itr-stepper-dot--active {
+  background: #f97316;
+  color: #ffffff;
+  border: 2.5px solid #f97316;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.42);
+  transform: scale(1.06);
+}
+.itr-stepper-dot--completed {
+  background: #083b75;
+  color: #ffffff;
+  border: 2.5px solid #083b75;
+  box-shadow: 0 4px 14px rgba(8, 59, 117, 0.35);
+}
+.itr-stepper-dot--completed img {
+  filter: brightness(0) invert(1);
+}
+.itr-stepper-dot--inactive {
+  background: #ffffff;
+  color: #94a3b8;
+  border: 2px solid #cbd5e1;
+}
+.itr-stepper-line {
+  flex: 1;
+  height: 2.5px;
+  background: #e2e8f0;
+  margin: 0 0.75rem;
+  margin-bottom: 1.45rem;
+  transition: background 0.3s ease;
+  z-index: 1;
+}
+.itr-stepper-line--completed {
+  background: #083b75;
+}
+.itr-stepper-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+  text-align: center;
+}
+.itr-stepper-label--active {
+  color: #f97316;
+  font-weight: 700;
+}
+
+@media (max-width: 680px) {
+  .itr-stepper-track {
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 1.25rem;
+    padding-bottom: 0.5rem;
+  }
+  .itr-stepper-line {
+    display: none;
+  }
+}
+
 .itr-step-card {
   background: #ffffff;
   border-radius: 18px;
@@ -27,20 +136,19 @@
   gap: 1.25rem;
   box-sizing: border-box;
   width: 100%;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
-
 .itr-step-card:hover {
   border-color: #cbd5e1;
   box-shadow: 0 6px 18px rgba(8, 59, 117, 0.06);
 }
-
 .itr-step-card--highlight {
   border-color: #fed7aa;
   background: #ffffff;
   box-shadow: 0 4px 14px rgba(249, 115, 22, 0.06);
 }
-
 .itr-step-card--info {
   border-color: #bfdbfe;
   background: #eff6ff;
@@ -56,32 +164,27 @@
   }
 }
 
-/* 2-Column Responsive Grid */
 .itr-grid-2col {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
-
 @media (max-width: 640px) {
   .itr-grid-2col {
     grid-template-columns: 1fr;
   }
 }
 
-/* Form Controls & Currency Inputs */
 .itr-form-group {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
 }
-
 .itr-label {
   font-size: 0.85rem;
   font-weight: 700;
   color: #1e293b;
 }
-
 .itr-hint {
   font-size: 0.75rem;
   color: #64748b;
@@ -96,12 +199,10 @@
   overflow: hidden;
   transition: border-color 0.2s ease;
 }
-
 .itr-input-currency-wrap:focus-within {
   border-color: #f97316;
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
 }
-
 .itr-currency-prefix {
   padding: 0.65rem 0.85rem;
   background: #f1f5f9;
@@ -111,7 +212,6 @@
   border-right: 1.5px solid #cbd5e1;
   user-select: none;
 }
-
 .itr-input-currency {
   flex: 1;
   border: none;
@@ -137,17 +237,14 @@
   width: 100%;
   box-sizing: border-box;
 }
-
 .itr-input-text:focus {
   border-color: #f97316;
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
 }
-
 .itr-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   letter-spacing: 0.03em;
 }
-
 .itr-sr-only {
   position: absolute;
   width: 1px;

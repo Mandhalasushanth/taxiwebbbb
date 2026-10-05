@@ -273,3 +273,12 @@
     font-size: 0.8rem;
   }
 }
+
+/* Rejected upload (wrong type / too large / not a genuine file) */
+.gst-doc-upload-error {
+  margin: 0.4rem 0 0;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: #dc2626;
+  line-height: 1.3;
+}

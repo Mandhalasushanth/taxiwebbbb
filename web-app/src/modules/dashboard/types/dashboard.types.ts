@@ -33,6 +33,7 @@ export interface RecentApplication {
   progress: number
   icon: string
   to: string
+  userId?: string
 }
 
 export interface PendingTask {

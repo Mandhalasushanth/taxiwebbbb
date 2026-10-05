@@ -1,0 +1,176 @@
+/* ==========================================================================
+   Step 2: Reason for Revision Component
+   ========================================================================== */
+
+.step2-reason-for-revision {
+  display: flex;
+  flex-direction: column;
+  gap: 1.65rem;
+  width: 100%;
+
+  .step2-heading {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .step2-error-banner {
+    font-size: 0.825rem;
+    color: #ef4444;
+    font-weight: 600;
+  }
+
+  .reason-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    width: 100%;
+  }
+
+  .reason-card-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 1.35rem;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 16px;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    text-align: left;
+
+    &:hover {
+      border-color: #94a3b8;
+      background: #fbfcfe;
+    }
+
+    &.selected {
+      border-color: #ea580c;
+      background: #fffcf9;
+      box-shadow: 0 0 0 1px #ea580c;
+    }
+
+    .reason-card-left {
+      display: flex;
+      align-items: center;
+      gap: 1.15rem;
+    }
+
+    .reason-card-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      background: #f1f5f9;
+      display: grid;
+      place-items: center;
+      color: #475569;
+      flex-shrink: 0;
+      transition:
+        background 0.2s,
+        color 0.2s;
+
+      &.selected {
+        background: #ffedd5;
+        color: #ea580c;
+      }
+    }
+
+    .reason-card-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+
+      .reason-card-title {
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: #0f172a;
+      }
+
+      .reason-card-sub {
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 500;
+      }
+    }
+
+    .reason-card-radio {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #cbd5e1;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: border-color 0.2s;
+
+      &.selected {
+        border-color: #ea580c;
+      }
+
+      .radio-inner-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #ea580c;
+      }
+    }
+  }
+
+  .other-reason-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-top: 0.5rem;
+
+    .other-field-label {
+      font-size: 0.925rem;
+      font-weight: 700;
+      color: #1e293b;
+
+      .required-star {
+        color: #ef4444;
+        margin-left: 0.25rem;
+      }
+    }
+
+    .other-reason-textarea {
+      width: 100%;
+      min-height: 110px;
+      padding: 0.95rem 1.15rem;
+      border-radius: 12px;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      font: 500 0.975rem/1.4 inherit;
+      color: #0f172a;
+      outline: none;
+      box-sizing: border-box;
+      resize: vertical;
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+
+      &::placeholder {
+        color: #94a3b8;
+      }
+
+      &:focus {
+        border-color: #ea580c;
+        box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+      }
+
+      &.input-error {
+        border-color: #ef4444;
+        background-color: #fef2f2;
+      }
+    }
+
+    .other-error-text {
+      font-size: 0.825rem;
+      color: #ef4444;
+      font-weight: 600;
+    }
+  }
+}

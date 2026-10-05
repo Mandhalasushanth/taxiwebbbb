@@ -20,6 +20,8 @@ export const env = {
   appName: import.meta.env.VITE_APP_NAME ?? 'TaxEdge',
   apiBaseUrl: required('VITE_API_BASE_URL', import.meta.env.VITE_API_BASE_URL),
   enableMocks: import.meta.env.VITE_ENABLE_MOCKS === 'true',
+  /** Idle minutes before automatic sign-out (defaults to 30). */
+  sessionTimeoutMinutes: Number(import.meta.env.VITE_SESSION_TIMEOUT_MINUTES) || 30,
   isDev: import.meta.env.DEV,
   isProd: import.meta.env.PROD,
 } as const

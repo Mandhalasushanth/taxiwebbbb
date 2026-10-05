@@ -1,0 +1,5 @@
+export { legalRoutes } from './routes'
+export { LegalDocumentModal } from './components/LegalDocumentModal/LegalDocumentModal'
+export { LegalDocumentView } from './components/LegalDocumentView/LegalDocumentView'
+export { LEGAL_DOCUMENTS, getLegalDocument } from './content/legalContent'
+export type { LegalDocumentContent, LegalDocumentId, LegalSection } from './content/legalContent'

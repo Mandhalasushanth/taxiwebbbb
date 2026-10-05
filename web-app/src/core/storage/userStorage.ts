@@ -1,6 +1,7 @@
 import { localStore } from './localStorage'
 import { authStorage } from '@core/auth'
 import type { RecentApplication, UpcomingDeadlineItem } from '@modules/dashboard/types/dashboard.types'
+import { useNotificationStore } from '@store/notifications/notificationStore'
 
 const USER_APPLICATIONS_KEY = 'taxedge.userApplications'
 const APPLICATION_DRAFTS_KEY = 'taxedge.applicationDrafts'
@@ -63,18 +64,39 @@ export const userStorage = {
       localStore.set(USER_APPLICATIONS_KEY, cleaned)
     }
 
+    const user = authStorage.getUser()
+    if (user) {
+      return cleaned.filter((a) => !a.userId || a.userId === user.id)
+    }
+
     return cleaned
   },
 
   saveUserApplication(app: RecentApplication): void {
-    const apps = this.getUserApplications()
-    const index = apps.findIndex((a) => a.id === app.id || (a.code && a.code === app.code))
-    if (index >= 0) {
-      apps[index] = { ...apps[index], ...app }
-    } else {
-      apps.unshift(app)
+    const raw = localStore.get<RecentApplication[]>(USER_APPLICATIONS_KEY) || []
+    const user = authStorage.getUser()
+    const appWithUser: RecentApplication = {
+      ...app,
+      userId: app.userId || user?.id,
     }
-    localStore.set(USER_APPLICATIONS_KEY, apps)
+    const index = raw.findIndex((a) => a.id === app.id || (a.code && a.code === app.code))
+    if (index >= 0) {
+      raw[index] = { ...raw[index], ...appWithUser }
+    } else {
+      raw.unshift(appWithUser)
+    }
+    localStore.set(USER_APPLICATIONS_KEY, raw)
+
+    try {
+      useNotificationStore.getState().addNotification({
+        title: `${app.title} Submitted`,
+        message: `Your request for ${app.title} (ID: ${app.code || app.id}) has been ${app.statusLabel?.toLowerCase() || 'submitted'} successfully.`,
+        timestamp: 'Just now',
+        type: 'application',
+      })
+    } catch {
+      // Safe fallback if called outside React/store initialization
+    }
   },
 
   clearUserApplications(): void {
@@ -162,9 +184,15 @@ export const userStorage = {
     this.clearUserApplications()
     this.clearAllDrafts()
     this.clearUserDeadlines()
+    try {
+      useNotificationStore.getState().clearAll()
+    } catch {
+      // Safe fallback
+    }
     localStore.remove(USER_APPLICATIONS_KEY)
     localStore.remove(APPLICATION_DRAFTS_KEY)
     localStore.remove(USER_DEADLINES_KEY)
+    localStore.remove('taxedge.notifications')
   },
 }
 

@@ -1,6 +1,7 @@
 import { ROLE_LABELS, STAFF_ROLES } from '@core/auth'
 import { Button, Input } from '@shared/components'
 import { useZodForm } from '@shared/hooks'
+import { formatMobile } from '@shared/utils'
 
 import { DEPARTMENTS } from '../../../types/staff.types'
 import type { StaffMember } from '../../../types/staff.types'
@@ -52,11 +53,10 @@ export const StaffForm = ({ member, isSaving, onSubmit, onCancel }: StaffFormPro
           name="mobile"
           label="Mobile"
           inputMode="numeric"
-          maxLength={10}
           prefix="+91"
           value={String(form.values.mobile)}
           error={form.errors.mobile}
-          onChange={form.handleChange}
+          onChange={(e) => form.setValue('mobile', formatMobile(e.target.value))}
           required
         />
       </div>

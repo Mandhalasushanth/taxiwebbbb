@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { authService } from '@core/auth'
-import { routePaths } from '@core/config'
+import { authService, buildProfileCompletionPath, resolvePostLoginPath } from '@core/auth'
 import { useAuthStore } from '@store/index'
 
 import { BrandPanel } from '../BrandPanel/BrandPanel'
@@ -14,7 +13,6 @@ import './CustomerTypePage.css'
 export const CustomerTypePage = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const locationState = location.state as { returnTo?: string } | null
   const { selectedId, setSelectedId } = useCustomerType(null)
   const user = useAuthStore((state) => state.user)
 
@@ -25,10 +23,12 @@ export const CustomerTypePage = () => {
   const handleProceed = () => {
     if (!selectedId) return
     const currentUser = user || authService.getUser()
-    navigate(routePaths.auth.register, {
+    // Carry the chosen service forward (?redirect= survives refresh / back navigation)
+    const returnTo = resolvePostLoginPath(location.search, location.state, '')
+    navigate(buildProfileCompletionPath(returnTo), {
       state: {
         customerType: selectedId,
-        returnTo: locationState?.returnTo,
+        returnTo: returnTo || undefined,
         mobile: currentUser?.mobile,
       },
     })

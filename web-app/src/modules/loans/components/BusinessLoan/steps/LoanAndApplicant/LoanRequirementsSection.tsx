@@ -1,4 +1,5 @@
 import React from "react";
+import { Wallet, ChevronDown, Calendar, Target, TrendingUp } from 'lucide-react';
 import {
   formatCurrencyString,
   handleNumericKeyDown,
@@ -20,7 +21,7 @@ export interface LoanRequirementsSectionProps {
 
 /**
  * 2-Column form inputs section for Loan Requirements (Loop-free)
- * Clean component referencing icons from public/assets/icons/loans
+ * Clean component using Lucide React icons
  */
 export const LoanRequirementsSection: React.FC<
   LoanRequirementsSectionProps
@@ -54,13 +55,7 @@ export const LoanRequirementsSection: React.FC<
       <div className="input-field-card">
         <div className="input-field-header">
           <div className="form-section-icon-box">
-            <img
-              src="/assets/icons/loans/wallet.svg"
-              alt=""
-              width="20"
-              height="20"
-              aria-hidden="true"
-            />
+            <Wallet size={20} aria-hidden="true" />
           </div>
           <label htmlFor="requiredLoanAmount" className="form-section-title">
             Required Loan Amount (₹) <span className="text-required">*</span>
@@ -79,17 +74,12 @@ export const LoanRequirementsSection: React.FC<
             <option value="500000">₹5,00,000</option>
             <option value="1000000">₹10,00,000 </option>
             <option value="2500000">₹25,00,000</option>
+            <option value="2500000-5000000">₹25,00,000 - ₹50,00,000</option>
             <option value="5000000">₹50,00,000</option>
             <option value="10000000">₹1,00,00,000</option>
           </select>
           <div className="select-chevron-icon" aria-hidden="true">
-            <img
-              src="/assets/icons/loans/chevron-down.svg"
-              alt=""
-              width="18"
-              height="18"
-              aria-hidden="true"
-            />
+            <ChevronDown size={18} aria-hidden="true" />
           </div>
         </div>
         {errors.requiredLoanAmount && (
@@ -101,13 +91,7 @@ export const LoanRequirementsSection: React.FC<
       <div className="input-field-card">
         <div className="input-field-header">
           <div className="form-section-icon-box">
-            <img
-              src="/assets/icons/loans/calendar.svg"
-              alt=""
-              width="20"
-              height="20"
-              aria-hidden="true"
-            />
+            <Calendar size={20} aria-hidden="true" />
           </div>
           <label htmlFor="preferredTenureMonths" className="form-section-title">
             Preferred Tenure (Months) <span className="text-required">*</span>
@@ -133,13 +117,7 @@ export const LoanRequirementsSection: React.FC<
             <option value="240">240 Months (20 Years)</option>
           </select>
           <div className="select-chevron-icon" aria-hidden="true">
-            <img
-              src="/assets/icons/loans/chevron-down.svg"
-              alt=""
-              width="18"
-              height="18"
-              aria-hidden="true"
-            />
+            <ChevronDown size={18} aria-hidden="true" />
           </div>
         </div>
         {errors.preferredTenureMonths && (
@@ -153,13 +131,7 @@ export const LoanRequirementsSection: React.FC<
       <div className="input-field-card">
         <div className="input-field-header">
           <div className="form-section-icon-box">
-            <img
-              src="/assets/icons/loans/purpose.svg"
-              alt=""
-              width="20"
-              height="20"
-              aria-hidden="true"
-            />
+            <Target size={20} aria-hidden="true" />
           </div>
           <label htmlFor="purposeOfLoan" className="form-section-title">
             Purpose of Loan <span className="text-required">*</span>
@@ -178,6 +150,9 @@ export const LoanRequirementsSection: React.FC<
             <option value="Working Capital">
               Working Capital &amp; Inventory
             </option>
+            <option value="working-capital">
+              Working Capital &amp; Inventory
+            </option>
             <option value="Business Expansion">
               Home purchase &amp; construction
             </option>
@@ -194,13 +169,7 @@ export const LoanRequirementsSection: React.FC<
             </option>
           </select>
           <div className="select-chevron-icon" aria-hidden="true">
-            <img
-              src="/assets/icons/loans/chevron-down.svg"
-              alt=""
-              width="18"
-              height="18"
-              aria-hidden="true"
-            />
+            <ChevronDown size={18} aria-hidden="true" />
           </div>
         </div>
         {errors.purposeOfLoan && (
@@ -212,13 +181,7 @@ export const LoanRequirementsSection: React.FC<
       <div className="input-field-card">
         <div className="input-field-header">
           <div className="form-section-icon-box">
-            <img
-              src="/assets/icons/loans/turnover.svg"
-              alt=""
-              width="20"
-              height="20"
-              aria-hidden="true"
-            />
+            <TrendingUp size={20} aria-hidden="true" />
           </div>
           <label htmlFor="revenueOrTurnover" className="form-section-title">
             Monthly / Annual Revenue / Turnover (₹){" "}
@@ -230,7 +193,7 @@ export const LoanRequirementsSection: React.FC<
           id="revenueOrTurnover"
           type="text"
           className={`custom-form-input ${errors.revenueOrTurnover ? "custom-form-input--error" : ""}`}
-          placeholder="e.g. 150000"
+          placeholder="Enter revenue or turnover"
           value={revenueOrTurnover}
           onChange={handleRevenueChange}
           onKeyDown={handleNumericKeyDown}

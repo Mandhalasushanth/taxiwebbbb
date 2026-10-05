@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="150" viewBox="0 0 220 150" fill="none">
+  <path d="M40 30L43 37L50 40L43 43L40 50L37 43L30 40L37 37Z" fill="#FBBF24" opacity="0.8" />
+  <path d="M190 40L192 45L197 47L192 49L190 54L188 49L183 47L188 45Z" fill="#FBBF24" opacity="0.9" />
+  <path d="M195 95L196 99L200 100L196 101L195 105L194 101L190 100L194 99Z" fill="#FBBF24" opacity="0.6" />
+  <rect x="75" y="15" width="85" height="110" rx="10" fill="#FFFFFF" />
+  <rect x="88" y="32" width="45" height="6" rx="3" fill="#E2E8F0" />
+  <rect x="88" y="46" width="60" height="4" rx="2" fill="#CBD5E1" />
+  <rect x="88" y="56" width="52" height="4" rx="2" fill="#CBD5E1" />
+  <circle cx="145" cy="35" r="7" fill="#22C55E" />
+  <polyline points="142,35 144,37 148,33" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="70" cy="85" r="19" fill="#3B82F6" />
+  <text x="70" y="92" fill="#FFFFFF" font-size="16" font-weight="bold" text-anchor="middle">₹</text>
+  <rect x="95" y="70" width="85" height="54" rx="8" fill="url(#cardGrad)" />
+  <rect x="105" y="85" width="14" height="10" rx="2" fill="#FDE68A" opacity="0.9" />
+  <circle cx="165" cy="97" r="4.5" fill="#FFFFFF" opacity="0.75" />
+  <ellipse cx="85" cy="118" rx="12" ry="4" fill="#D97706" />
+  <rect x="73" y="112" width="24" height="6" fill="#F59E0B" />
+  <ellipse cx="85" cy="112" rx="12" ry="4" fill="#FCD34D" />
+  <rect x="73" y="106" width="24" height="6" fill="#F59E0B" />
+  <ellipse cx="85" cy="106" rx="12" ry="4" fill="#FDE68A" />
+  <defs>
+    <linearGradient id="cardGrad" x1="95" y1="70" x2="180" y2="124" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FB923C" />
+      <stop offset="1" stop-color="#EA580C" />
+    </linearGradient>
+  </defs>
+</svg>

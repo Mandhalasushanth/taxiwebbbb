@@ -1,4 +1,5 @@
 import React from 'react'
+import { Home, Users, FileText, ChevronDown } from 'lucide-react'
 import type { ProjectFinanceData, ImplementationMilestoneItem } from '@modules/loans/types/projectFinance.types'
 import {
   CONTRACT_TYPE_OPTIONS,
@@ -69,12 +70,12 @@ export const Section10To12: React.FC<Section10To12Props> = ({
         <div className="pf-collapsible-header" onClick={onToggleEpc}>
           <div className="pf-collapsible-header__left">
             <div className="pf-section-icon-tile">
-              <img src="/assets/icons/loans/home-pink.svg" alt="" width="20" height="20" />
+              <Home size={20} />
             </div>
             <h3 className="pf-collapsible-title">10. EPC / Project Execution</h3>
           </div>
           <span className={`pf-chevron ${isEpcOpen ? 'pf-chevron--open' : ''}`}>
-            <img src="/assets/icons/loans/chevron-down.svg" alt="" width="18" height="18" />
+            <ChevronDown size={18} />
           </span>
         </div>
 
@@ -167,7 +168,7 @@ export const Section10To12: React.FC<Section10To12Props> = ({
         <div className="pf-collapsible-header" onClick={onToggleMilestones}>
           <div className="pf-collapsible-header__left">
             <div className="pf-section-icon-tile">
-              <img src="/assets/icons/loans/doc-orange.svg" alt="" width="20" height="20" />
+              <FileText size={20} />
             </div>
             <h3 className="pf-collapsible-title">11. Implementation Milestones</h3>
           </div>
@@ -263,12 +264,12 @@ export const Section10To12: React.FC<Section10To12Props> = ({
         <div className="pf-collapsible-header" onClick={onToggleManpower}>
           <div className="pf-collapsible-header__left">
             <div className="pf-section-icon-tile">
-              <img src="/assets/icons/loans/users-green.svg" alt="" width="20" height="20" />
+              <Users size={20} />
             </div>
             <h3 className="pf-collapsible-title">12. Manpower</h3>
           </div>
           <span className={`pf-chevron ${isManpowerOpen ? 'pf-chevron--open' : ''}`}>
-            <img src="/assets/icons/loans/chevron-down.svg" alt="" width="18" height="18" />
+            <ChevronDown size={18} />
           </span>
         </div>
 

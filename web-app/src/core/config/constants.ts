@@ -5,6 +5,8 @@ export const STORAGE_KEYS = {
   user: 'taxedge.user',
   theme: 'taxedge.theme',
   registeredUsers: 'taxedge.registeredUsers',
+  lastActivity: 'taxedge.lastActivity',
+  sessionEndReason: 'taxedge.sessionEndReason',
 } as const
 
 export const HTTP_STATUS = {

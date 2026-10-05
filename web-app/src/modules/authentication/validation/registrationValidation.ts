@@ -1,6 +1,21 @@
-import { validateMobileNumber, validatePan, validateAadhaar } from '@shared/utils'
+import {
+  getAgeRangeError,
+  isValidEmail,
+  validateAadhaar,
+  validateIndividualPan,
+  validateMobileNumber,
+} from '@shared/utils'
+
+import { getProfileKind } from '../constants/profileFormConfig'
+import {
+  validateEntityName,
+  validateEntityPan,
+  validateRegistrationNumber,
+} from './entityProfileValidation'
 
 export interface RegistrationFormState {
+  /** Selected customer type; decides individual vs business-entity fields */
+  customerType: string
   fullName: string
   email: string
   gender: string
@@ -17,6 +32,10 @@ export interface RegistrationFormState {
   state: string
   password: string
   confirmPassword: string
+  // Business-entity profile (Private Limited, LLP, Partnership…)
+  entityName: string
+  registrationNumber: string
+  incorporationDate: string
   agreeTerms: boolean
 }
 
@@ -25,6 +44,7 @@ export type RegistrationFormErrors = Partial<
 >
 
 export const INITIAL_REGISTRATION_VALUES: RegistrationFormState = {
+  customerType: 'individual',
   fullName: '',
   email: '',
   gender: '',
@@ -41,6 +61,9 @@ export const INITIAL_REGISTRATION_VALUES: RegistrationFormState = {
   state: '',
   password: '',
   confirmPassword: '',
+  entityName: '',
+  registrationNumber: '',
+  incorporationDate: '',
   agreeTerms: false,
 }
 
@@ -76,7 +99,15 @@ export const isValidDateString = (dob: string): boolean => {
   return date.getTime() <= Date.now()
 }
 
-export const isSequentialPasscode = (str: string): boolean => {
+/** Parses a DD-MM-YYYY string that already passed isValidDateString. */
+export const parseDateString = (value: string): Date => {
+  const [day, month, year] = value.split('-').map(Number)
+  return new Date(year, month - 1, day)
+}
+
+export const PASSCODE_LENGTH = 6
+
+export const isSequentialPasscode =(str: string): boolean => {
   if (str.length < 3) return false
   const chars = str.split('')
   const isFullAsc = chars.every((ch, i) => i === 0 || Number(ch) - Number(chars[i - 1]) === 1)
@@ -101,10 +132,20 @@ export const isRepeatingPatternPasscode = (str: string): boolean => {
   return false
 }
 
+/** Fields that only exist on one of the two profile forms */
+const INDIVIDUAL_ONLY_FIELDS: Array<keyof RegistrationFormState> = ['gender', 'dob', 'fatherSpouseName', 'aadhaar']
+const ENTITY_ONLY_FIELDS: Array<keyof RegistrationFormState> = ['entityName', 'registrationNumber', 'incorporationDate']
+
+const isFieldHidden = (name: keyof RegistrationFormState, values: RegistrationFormState): boolean =>
+  getProfileKind(values.customerType) === 'entity'
+    ? INDIVIDUAL_ONLY_FIELDS.includes(name)
+    : ENTITY_ONLY_FIELDS.includes(name)
+
 export const validateField = (
   name: keyof RegistrationFormState,
   values: RegistrationFormState
 ): string | undefined => {
+  if (isFieldHidden(name, values)) return undefined
   const val = values[name]
 
   switch (name) {
@@ -125,8 +166,8 @@ export const validateField = (
     case 'email': {
       const trimmed = String(val ?? '').trim()
       if (!trimmed) return 'Email is required'
-      if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(trimmed)) {
-        return 'Please enter a valid email address'
+      if (!isValidEmail(trimmed)) {
+        return 'Please enter a valid email address (no leading, trailing or consecutive dots)'
       }
       return undefined
     }
@@ -143,7 +184,7 @@ export const validateField = (
       if (!isValidDateString(str)) {
         return 'Enter a valid date in DD-MM-YYYY format'
       }
-      return undefined
+      return getAgeRangeError(parseDateString(str)) ?? undefined
     }
 
     case 'fatherSpouseName': {
@@ -160,7 +201,23 @@ export const validateField = (
     }
 
     case 'pan': {
-      return validatePan(String(val ?? '')) || undefined
+      if (getProfileKind(values.customerType) === 'entity') {
+        return validateEntityPan(String(val ?? ''), values.customerType)
+      }
+      return validateIndividualPan(String(val ?? '')) || undefined
+    }
+
+    case 'entityName':
+      return validateEntityName(String(val ?? ''), values.customerType)
+
+    case 'registrationNumber':
+      return validateRegistrationNumber(String(val ?? ''), values.customerType)
+
+    case 'incorporationDate': {
+      const str = String(val ?? '').trim()
+      if (!str) return 'Incorporation Date is required'
+      if (!isValidDateString(str)) return 'Enter a valid past date in DD-MM-YYYY format'
+      return undefined
     }
 
     case 'aadhaar': {
@@ -227,8 +284,8 @@ export const validateField = (
     case 'password': {
       const str = String(val ?? '').replace(/\D/g, '')
       if (!str) return 'Passcode is required'
-      if (str.length < 4 || str.length > 6) {
-        return 'Passcode must be 4 to 6 digits'
+      if (str.length !== PASSCODE_LENGTH) {
+        return `Passcode must be exactly ${PASSCODE_LENGTH} digits`
       }
 
       // Rule 1: Mobile number consecutive 6-digit match rejection
@@ -264,7 +321,7 @@ export const validateField = (
     }
 
     case 'agreeTerms': {
-      if (!values.agreeTerms) return 'You must agree to the Terms of Service'
+      if (!values.agreeTerms) return 'You must agree to the Terms of Service to continue'
       return undefined
     }
 
@@ -281,6 +338,9 @@ const MANDATORY_FIELDS: Array<keyof RegistrationFormState> = [
   'pan',
   'aadhaar',
   'mobile',
+  'entityName',
+  'registrationNumber',
+  'incorporationDate',
   'addressLine1',
   'city',
   'district',

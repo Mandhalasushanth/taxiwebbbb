@@ -96,7 +96,7 @@ export const GSTPeriodFields: React.FC<GSTPeriodFieldsProps> = ({
             type="text"
             list="gst-period-options"
             className="gst-filing-period__input"
-            placeholder="e.g. August 2026 (select or type)"
+            placeholder="Select or enter filing period"
             value={returnPeriod}
             onChange={(e) => {
               setReturnPeriod(e.target.value)
@@ -125,7 +125,7 @@ export const GSTPeriodFields: React.FC<GSTPeriodFieldsProps> = ({
           type="text"
           maxLength={15}
           className="gst-filing-period__input"
-          placeholder="e.g. 29AAAAA0000A1Z5"
+          placeholder="Enter your GSTIN"
           value={gstin}
           onChange={(e) => {
             setGstin(gstInput.gstin(e.target.value))

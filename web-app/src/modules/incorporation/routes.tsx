@@ -2,19 +2,20 @@ import { lazy } from 'react'
 import type { RouteObject } from 'react-router-dom'
 import { routePaths } from '@core/config'
 
-const CompanyRegistration = lazy(() => import('./pages/CompanyRegistration'))
-const SelectCompanyType = lazy(() => import('./pages/SelectCompanyType'))
-const CompanyDetails = lazy(() => import('./pages/CompanyDetails'))
-const RegisteredOffice = lazy(() => import('./pages/RegisteredOffice'))
-const PromoterDetails = lazy(() => import('./pages/PromoterDetails'))
-const CapitalDetails = lazy(() => import('./pages/CapitalDetails'))
-const DocumentsKyc = lazy(() => import('./pages/DocumentsKyc'))
-const LinkedRegistrations = lazy(() => import('./pages/LinkedRegistrations'))
-const ReviewApplication = lazy(() => import('./pages/ReviewApplication'))
-const FeesPayment = lazy(() => import('./pages/FeesPayment'))
-const SubmissionSuccess = lazy(() => import('./pages/SubmissionSuccess'))
-const ApplicationTracking = lazy(() => import('./pages/ApplicationTracking'))
-const ApplicationReceipt = lazy(() => import('./pages/ApplicationReceipt'))
+const CompanyRegistration = lazy(() => import('./components/CompanyRegistration/CompanyRegistration'))
+const SelectCompanyType = lazy(() => import('./components/SelectCompanyType/SelectCompanyType'))
+const CompanyDetails = lazy(() => import('./components/CompanyDetails/CompanyDetails'))
+const RegisteredOffice = lazy(() => import('./components/RegisteredOffice/RegisteredOffice'))
+const PromoterDetails = lazy(() => import('./components/PromoterDetails/PromoterDetails'))
+const CapitalDetails = lazy(() => import('./components/CapitalDetails/CapitalDetails'))
+const DocumentsKyc = lazy(() => import('./components/DocumentsKyc/DocumentsKyc'))
+const LinkedRegistrations = lazy(() => import('./components/LinkedRegistrations/LinkedRegistrations'))
+const ReviewApplication = lazy(() => import('./components/ReviewApplication/ReviewApplication'))
+const FeesPayment = lazy(() => import('./components/FeesPayment/FeesPayment'))
+const SubmissionSuccess = lazy(() => import('./components/SubmissionSuccess/SubmissionSuccess'))
+const ApplicationTracking = lazy(() => import('./components/ApplicationTracking/ApplicationTracking'))
+const ApplicationReceipt = lazy(() => import('./components/ApplicationReceipt/ApplicationReceipt'))
+
 
 import { IncorporationWizardLayout } from './components'
 

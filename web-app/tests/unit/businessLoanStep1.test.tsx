@@ -11,7 +11,7 @@ vi.mock('@core/config/environment', () => ({
     isProd: false,
   },
 }))
-import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react'
+import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach } from 'vitest'
 import { BusinessLoan } from '../../src/modules/loans/components/BusinessLoan/BusinessLoan'

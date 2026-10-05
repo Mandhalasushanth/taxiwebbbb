@@ -1,4 +1,18 @@
 import React from 'react'
+import {
+  AlertCircle,
+  FileText,
+  CreditCard,
+  Users,
+  Home,
+  Landmark,
+  FileCheck,
+  TrendingUp,
+  PieChart,
+  BarChart3,
+  Award,
+  Briefcase,
+} from 'lucide-react'
 import { LoanDocumentGrid } from '@modules/loans/shared'
 import { DocumentSection } from '@shared/components'
 import { DocumentVerificationHeader } from './DocumentVerificationHeader'
@@ -32,13 +46,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
       {/* 2. File Upload Error Banner */}
       {fileError && (
         <div className="doc-verification-error-banner" role="alert">
-          <img
-            src="/assets/icons/loans/alert-error.svg"
-            alt=""
-            width="18"
-            height="18"
-            aria-hidden="true"
-          />
+          <AlertCircle size={18} aria-hidden="true" />
           <span>{fileError}</span>
         </div>
       )}
@@ -51,7 +59,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
             id="panCard"
             title="PAN Card"
             subtitle="Entity PAN card & Promoter/Director PAN card"
-            iconSrc="/assets/icons/loans/doc-blue.svg"
+            icon={<FileText size={20} aria-hidden="true" />}
             themeColor="blue"
             isRequired
             uploadedDoc={uploaded.panCard}
@@ -66,7 +74,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
             id="aadhaarCard"
             title="Aadhaar Card"
             subtitle="Aadhaar of all Primary Directors / Partners"
-            iconSrc="/assets/icons/loans/id-purple.svg"
+            icon={<CreditCard size={20} aria-hidden="true" />}
             themeColor="purple"
             isRequired
             uploadedDoc={uploaded.aadhaarCard}
@@ -81,7 +89,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
             id="directorsKyc"
             title="KYC of Directors / Partners"
             subtitle="PAN, Aadhaar, DIN and Passport photo"
-            iconSrc="/assets/icons/loans/users-green.svg"
+            icon={<Users size={20} aria-hidden="true" />}
             themeColor="green"
             isRequired
             uploadedDoc={uploaded.directorsKyc}
@@ -96,7 +104,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
             id="businessAddressProof"
             title="Business Address Proof"
             subtitle="Utility bill / Rent agreement / Property document"
-            iconSrc="/assets/icons/loans/home-pink.svg"
+            icon={<Home size={20} aria-hidden="true" />}
             themeColor="pink"
             isRequired
             uploadedDoc={uploaded.businessAddressProof}
@@ -111,7 +119,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
             id="bankStatements"
             title="Current Account Bank Statements"
             subtitle="Last 12 months bank statements"
-            iconSrc="/assets/icons/loans/bank-orange.svg"
+            icon={<Landmark size={20} aria-hidden="true" />}
             themeColor="orange"
             isRequired
             uploadedDoc={uploaded.bankStatements}
@@ -126,7 +134,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
             id="gstCertificate"
             title="GST Certificate (REG-06)"
             subtitle="GST registration certificate"
-            iconSrc="/assets/icons/loans/certificate-green.svg"
+            icon={<FileCheck size={20} aria-hidden="true" />}
             themeColor="green"
             isRequired
             uploadedDoc={uploaded.gstCertificate}
@@ -141,7 +149,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
             id="gstReturns"
             title="GST Returns (12 Months)"
             subtitle="Filed GSTR-3B & GSTR-1 returns for last 12 months"
-            iconSrc="/assets/icons/loans/trend-orange.svg"
+            icon={<TrendingUp size={20} aria-hidden="true" />}
             themeColor="orange"
             isRequired
             uploadedDoc={uploaded.gstReturns}
@@ -156,7 +164,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
             id="businessItr"
             title="Business ITR (Last 2-3 Years)"
             subtitle="ITR-V and computation for the last 3 assessment years"
-            iconSrc="/assets/icons/loans/doc-purple.svg"
+            icon={<FileText size={20} aria-hidden="true" />}
             themeColor="purple"
             isRequired
             uploadedDoc={uploaded.businessItr}
@@ -171,7 +179,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
             id="auditedBalanceSheet"
             title="Audited Balance Sheet"
             subtitle="CA audited balance sheet for last 2-3 years"
-            iconSrc="/assets/icons/loans/pie-pink.svg"
+            icon={<PieChart size={20} aria-hidden="true" />}
             themeColor="pink"
             isRequired
             uploadedDoc={uploaded.auditedBalanceSheet}
@@ -186,7 +194,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
             id="profitAndLossStatement"
             title="Profit & Loss Statement"
             subtitle="CA certified P&L statement with schedules"
-            iconSrc="/assets/icons/loans/bars-purple.svg"
+            icon={<BarChart3 size={20} aria-hidden="true" />}
             themeColor="purple"
             isRequired
             uploadedDoc={uploaded.profitAndLossStatement}
@@ -201,7 +209,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
             id="udyamCertificate"
             title="Udyam Registration Certificate"
             subtitle="MSME registration certificate"
-            iconSrc="/assets/icons/loans/briefcase-green.svg"
+            icon={<Award size={20} aria-hidden="true" />}
             themeColor="green"
             isRequired={false}
             isOptional
@@ -216,7 +224,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
             id="cashFlowStatement"
             title="Cash Flow Statement"
             subtitle="Cash flow statement for the latest financial year"
-            iconSrc="/assets/icons/loans/doc-blue.svg"
+            icon={<FileText size={20} aria-hidden="true" />}
             themeColor="blue"
             isRequired
             uploadedDoc={uploaded.cashFlowStatement}
@@ -231,7 +239,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
             id="businessExpansionDoc"
             title="Business Expansion Document"
             subtitle="Project report / Business plan / Estimated cost"
-            iconSrc="/assets/icons/loans/doc-blue.svg"
+            icon={<FileText size={20} aria-hidden="true" />}
             themeColor="blue"
             isRequired
             uploadedDoc={uploaded.businessExpansionDoc}
@@ -246,7 +254,7 @@ export const DocumentVerification: React.FC<DocumentVerificationProps> = ({
             id="businessRegistrationProof"
             title="Business Registration Proof"
             subtitle="Certificate of Incorporation / Business license"
-            iconSrc="/assets/icons/loans/briefcase-orange.svg"
+            icon={<Briefcase size={20} aria-hidden="true" />}
             themeColor="orange"
             isRequired
             uploadedDoc={uploaded.businessRegistrationProof}

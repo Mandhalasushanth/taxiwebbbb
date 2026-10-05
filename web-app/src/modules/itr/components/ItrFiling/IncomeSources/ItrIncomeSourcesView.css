@@ -1,0 +1,334 @@
+/* ITR Income Sources View & Source Detail Cards */
+.itr-salary-card,
+.itr-applicable-card {
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.itr-salary-card {
+  background: #fff;
+  border: 1.5px solid #fed7aa;
+  gap: 0.85rem;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.05);
+}
+
+.itr-applicable-card {
+  background: #f0f7ff;
+  border: 1.5px solid #3b82f6;
+  gap: 0.75rem;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.04);
+}
+
+.itr-applicable-card__header,
+.itr-salary-card__header,
+.itr-gst-table-header,
+.itr-gst-table-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.itr-applicable-card__title-wrap,
+.itr-salary-card__left,
+.itr-gst-reconcile-title-row,
+.itr-gst-verify-note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.itr-applicable-card__sparkle,
+.itr-check-circle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.itr-applicable-card__sparkle {
+  color: #1d4ed8;
+}
+
+.itr-applicable-card__title,
+.itr-sources-title,
+.itr-salary-card__title,
+.itr-gst-reconcile-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  letter-spacing: -0.01em;
+}
+
+.itr-applicable-card__badge {
+  background: #1d4ed8;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.25rem 0.85rem;
+  border-radius: 8px;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.itr-applicable-card__desc,
+.itr-sources-subtitle,
+.itr-salary-card__sub,
+.itr-gst-reconcile-desc {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #1e3a8a;
+  line-height: 1.5;
+}
+.itr-sources-subtitle,
+.itr-salary-card__sub,
+.itr-gst-reconcile-desc {
+  color: #64748b;
+}
+
+.itr-applicable-card__checklist,
+.itr-sources-header,
+.itr-salary-card__titles,
+.itr-business-method-list,
+.itr-business-method-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.itr-applicable-card__check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.itr-check-circle-icon {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #1d4ed8;
+  color: #fff;
+  margin-top: 2px;
+}
+
+.itr-check-circle-icon svg,
+.itr-pill-icon-active svg {
+  width: 10px;
+  height: 10px;
+}
+
+.itr-applicable-card__check-text {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  line-height: 1.4;
+}
+
+.itr-pills-row,
+.itr-asset-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.itr-source-pill,
+.itr-source-pill-btn,
+.itr-asset-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 1.15rem;
+  border-radius: 9999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  line-height: 1;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.itr-source-pill:hover,
+.itr-source-pill-btn:hover,
+.itr-asset-pill:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.08);
+}
+
+.itr-source-pill--active,
+.itr-source-pill-btn--active,
+.itr-asset-pill--active {
+  border-color: #f97316;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  color: #ea580c;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(249, 115, 22, 0.22);
+}
+
+.itr-pill-icon-checked,
+.itr-pill-icon-active {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ea580c;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.itr-pill-icon-add {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.itr-source-pill-btn:hover .itr-pill-icon-add {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.itr-salary-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #ffedd5;
+  color: #ea580c;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+
+.itr-checkbox-custom {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: #f97316;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.itr-toggle-group {
+  display: flex;
+  border-radius: 10px;
+  border: 1.5px solid #e2e8f0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.itr-toggle-btn {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  background: #f8fafc;
+  color: #64748b;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+.itr-toggle-btn:first-child {
+  border-right: 1px solid #e2e8f0;
+}
+.itr-toggle-btn--active {
+  background: #fff7ed;
+  color: #ea580c;
+  font-weight: 700;
+  border-bottom: 2.5px solid #f97316;
+}
+
+.itr-business-method-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1rem 1.15rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  transition: 0.18s ease;
+  width: 100%;
+}
+.itr-business-method-card--active {
+  border-color: #f97316;
+  background: #fff7ed;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.08);
+}
+.itr-business-method-title,
+.itr-gst-row-label,
+.itr-gst-row-val {
+  font-weight: 700;
+}
+.itr-business-method-title,
+.itr-gst-row-val {
+  color: #083b75;
+}
+.itr-business-method-title {
+  font-size: 0.9rem;
+}
+.itr-business-method-desc,
+.itr-gst-row-sub {
+  color: #64748b;
+  font-size: 0.78rem;
+}
+.itr-gst-row-label {
+  font-size: 0.85rem;
+  color: #1e293b;
+}
+.itr-gst-row-val {
+  font-size: 0.875rem;
+}
+.itr-gst-verify-note {
+  padding: 0.85rem 1.25rem;
+  background: #f0fdf4;
+  border-top: 1px solid #dcfce7;
+  font-size: 0.8rem;
+  color: #166534;
+  font-weight: 600;
+}
+.itr-field-error {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #dc2626;
+  font-size: 0.84rem;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: #fef2f2;
+  border: 1.5px solid #fecaca;
+  border-radius: 8px;
+  animation: itrErrorFadeIn 0.2s ease-out;
+}
+.itr-field-error svg { flex-shrink: 0; color: #dc2626; }
+@keyframes itrErrorFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}

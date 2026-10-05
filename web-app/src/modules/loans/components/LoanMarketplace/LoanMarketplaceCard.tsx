@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RightChevronIcon } from '@modules/loans/constants/loanMarketplace.icons'
+import { LOAN_SERVICE_ICON_IMAGE_MAP } from '@modules/loans/constants/loanMarketplace.constants'
 import { safeNavigateTo, buildLoanCardAriaLabel } from '@modules/loans/utils/loanMarketplace.utils'
 import type { LoanMarketplaceCardProps } from '@modules/loans/types/loanMarketplace.types'
 
@@ -9,6 +10,8 @@ import type { LoanMarketplaceCardProps } from '@modules/loans/types/loanMarketpl
  */
 export const LoanMarketplaceCard: React.FC<LoanMarketplaceCardProps> = ({ item, onSelect }) => {
   const navigate = useNavigate()
+  const [imageError, setImageError] = useState(false)
+  const iconSrc = LOAN_SERVICE_ICON_IMAGE_MAP[item.id]
 
   /**
    * Hands the click to `onSelect` when provided; otherwise the link navigates normally.
@@ -44,7 +47,17 @@ export const LoanMarketplaceCard: React.FC<LoanMarketplaceCardProps> = ({ item, 
     >
       <div className="loan-item-card__left">
         <div className={`loan-item-card__icon-tile loan-item-card__icon-tile--${item.id}`}>
-          {item.icon}
+          {iconSrc && !imageError ? (
+            <img
+              src={iconSrc}
+              alt={item.title}
+              className="loan-item-card__icon-img"
+              onError={() => setImageError(true)}
+              loading="lazy"
+            />
+          ) : (
+            item.icon
+          )}
         </div>
 
         <div className="loan-item-card__info">

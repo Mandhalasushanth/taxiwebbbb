@@ -1,4 +1,5 @@
 import React from 'react'
+import { User, CheckCircle2 } from 'lucide-react'
 import type { PersonalLoanStepProps } from '@modules/loans/types/personalLoan.types'
 import { getApplicantIdentityDetails } from '@modules/loans/services/applicantDetailsService'
 import { loanInputHelpers } from '@modules/loans/utils/loanInputFormatters'
@@ -42,36 +43,19 @@ export const Financials: React.FC<PersonalLoanStepProps> = ({
       <div className="personal-applicant-card__header">
         <div className="personal-applicant-card__title-group">
           <div className="personal-applicant-card__icon-tile">
-            <img
-              src="/assets/icons/loans/applicant-user.svg"
-              alt=""
-              width="20"
-              height="20"
-              aria-hidden="true"
-            />
+            <User size={20} aria-hidden="true" />
           </div>
           <h2 className="personal-applicant-card__title">Applicant Identity Details</h2>
         </div>
 
         <div className="personal-applicant-card__badge" aria-label="Verified Profile">
-          <img
-            src="/assets/icons/loans/verified-badge.svg"
-            alt=""
-            width="13"
-            height="13"
+          <CheckCircle2
+            size={13}
             className="personal-applicant-card__badge-icon"
             aria-hidden="true"
           />
           <span>Verified Profile</span>
         </div>
-      </div>
-
-      {/* Security Bracket Callout */}
-      <div className="personal-applicant-card__callout">
-        <span className="personal-applicant-card__bracket" aria-hidden="true">&#123;</span>
-        <p className="personal-applicant-card__callout-text">
-          Personal details are securely fetched from your customer profile table. Manual re-entry is skipped.
-        </p>
       </div>
 
       {/* Profile Details List */}

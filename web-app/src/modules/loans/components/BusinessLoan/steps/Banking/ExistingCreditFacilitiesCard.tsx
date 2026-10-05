@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react'
+import { CreditCard, ChevronDown } from 'lucide-react'
 import {
   formatCurrencyString,
   handleNumericKeyDown,
@@ -36,13 +37,7 @@ export const ExistingCreditFacilitiesCard: React.FC<ExistingCreditFacilitiesCard
     <div className="banking-card">
       <div className="banking-card-header">
         <div className="banking-icon-tile">
-          <img
-            src="/assets/icons/loans/credit-card.svg"
-            alt=""
-            width="22"
-            height="22"
-            aria-hidden="true"
-          />
+          <CreditCard size={22} aria-hidden="true" />
         </div>
         <div className="banking-card-header__info">
           <h2 className="banking-card-title">Existing Credit Facilities</h2>
@@ -73,13 +68,7 @@ export const ExistingCreditFacilitiesCard: React.FC<ExistingCreditFacilitiesCard
                 {data.currentLenderBank || 'Select current lender (if any)'}
               </span>
               <span className={`banking-dropdown-chevron ${isOpen ? 'banking-dropdown-chevron--open' : ''}`} aria-hidden="true">
-                <img
-                  src="/assets/icons/loans/chevron-down.svg"
-                  alt=""
-                  width="18"
-                  height="18"
-                  aria-hidden="true"
-                />
+                <ChevronDown size={18} aria-hidden="true" />
               </span>
             </button>
 

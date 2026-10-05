@@ -1,0 +1,60 @@
+.loan-page-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.loan-page-nav__left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.loan-page-nav__back-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.loan-page-nav__back-btn:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.loan-page-nav__titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.loan-page-nav__category {
+  font-size: 0.775rem;
+  font-weight: 700;
+  color: #ff7a00;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.15rem;
+}
+
+.loan-page-nav__title {
+  margin: 0;
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #083b75;
+  letter-spacing: -0.015em;
+}
+
+.loan-page-nav__subtitle {
+  margin: 0.2rem 0 0 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}

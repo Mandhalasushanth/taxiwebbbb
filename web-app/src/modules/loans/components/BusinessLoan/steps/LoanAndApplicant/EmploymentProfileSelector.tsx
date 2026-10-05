@@ -1,4 +1,5 @@
 import React from 'react'
+import { Briefcase, Info } from 'lucide-react'
 import type { EmploymentProfileType } from '@modules/loans/types/businessLoan.types'
 
 interface EmploymentOptionCardProps {
@@ -55,25 +56,13 @@ export const EmploymentProfileSelector: React.FC<EmploymentProfileSelectorProps>
       <div className="form-section-header">
         <div className="form-section-header__left">
           <div className="form-section-icon-box">
-            <img
-              src="/assets/icons/loans/vintage.svg"
-              alt=""
-              width="20"
-              height="20"
-              aria-hidden="true"
-            />
+            <Briefcase size={20} aria-hidden="true" />
           </div>
           <label className="form-section-title">
             Employment / Business Profile <span className="text-required">*</span>
           </label>
           <div className="form-section-info-icon" title="Select your primary source of profession or business income">
-            <img
-              src="/assets/icons/loans/info-circle.svg"
-              alt=""
-              width="16"
-              height="16"
-              aria-hidden="true"
-            />
+            <Info size={16} aria-hidden="true" />
           </div>
 
         </div>

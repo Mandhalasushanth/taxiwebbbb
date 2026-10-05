@@ -16,7 +16,11 @@ export const loanStorageKey = (suffix: string): string => {
 
 export const loanApplicationService = {
   getDraft: <T>(loanType: string): T | null => {
-    return localStore.get<T>(loanStorageKey(loanType))
+    return (
+      localStore.get<T>(loanStorageKey(loanType)) ??
+      localStore.get<T>(`taxedge_loan_app_${loanType}`) ??
+      localStore.get<T>(`taxedge_loan_${loanType}`)
+    )
   },
 
   saveDraft: <T>(loanType: string, data: T): void => {
@@ -25,21 +29,21 @@ export const loanApplicationService = {
 
   clearDraft: (loanType: string): void => {
     localStore.remove(loanStorageKey(loanType))
+    localStore.remove(`taxedge_loan_app_${loanType}`)
+    localStore.remove(`taxedge_loan_${loanType}`)
   },
 
   getApplication: (refNumber: string): LoanApplicationBase | null => {
     try {
       const getLatest = () => {
-        const latest = localStorage.getItem(loanStorageKey('latest'))
-        return latest ? JSON.parse(latest) : null
+        return localStore.get<LoanApplicationBase>(loanStorageKey('latest'))
       }
 
       const getByRef = () => {
-        const data = localStorage.getItem(loanStorageKey(`record_${refNumber}`))
+        const data = localStore.get<LoanApplicationBase>(loanStorageKey(`record_${refNumber}`))
         const latest = getLatest()
-        const parsedData = data ? JSON.parse(data) : null
         const isLatestMatch = latest && (latest.refNumber === refNumber || latest.id === refNumber)
-        return parsedData || (isLatestMatch ? latest : null)
+        return data || (isLatestMatch ? latest : null)
       }
 
       return !refNumber ? getLatest() : getByRef()
@@ -51,8 +55,8 @@ export const loanApplicationService = {
 
   saveApplication: (app: LoanApplicationBase): void => {
     try {
-      localStorage.setItem(loanStorageKey(`record_${app.refNumber}`), JSON.stringify(app))
-      localStorage.setItem(loanStorageKey('latest'), JSON.stringify(app))
+      localStore.set(loanStorageKey(`record_${app.refNumber}`), app)
+      localStore.set(loanStorageKey('latest'), app)
     } catch {
       // Storage full or unavailable; the in-memory application is still returned
     }

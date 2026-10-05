@@ -1,0 +1,24 @@
+.reg-mobile-field__control--locked {
+  background: #f8fafc;
+}
+
+.reg-mobile-field__control--locked .reg-field__input {
+  color: #475569;
+  cursor: not-allowed;
+}
+
+.reg-mobile-field__verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #15803d;
+}
+
+.reg-mobile-field__verified svg {
+  width: 14px;
+  height: 14px;
+}

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { userStorage } from '@core/storage/userStorage'
@@ -7,6 +7,8 @@ import { formatRupees, generateGstReference } from '@modules/gst/utils/gstFormat
 import { gstProfileService } from '@modules/gst/services/gstProfileService'
 import { GST_FEES } from '@modules/gst/constants/gstBusiness.constants'
 import { INITIAL_DOCUMENTS } from '@modules/gst/utils/gstDocuments.constants'
+import { clampRegistrationStep } from '@modules/gst/utils/gstRegistrationGuard'
+import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
 import { useGstDraft, readGstDraft, hasGstFormChanged } from '@modules/gst/hooks/useGstDraft'
 import type { DocumentItem } from '@modules/gst/types/gstDocuments.types'
 import type { GstBusinessFormData } from '@modules/gst/types/gstBusiness.types'
@@ -19,6 +21,12 @@ const SERVICE_TITLE = 'GST Registration'
 const TOTAL_STEPS = 4
 const STEP_LABELS = ['Business', 'Documents', 'Review', 'Payment']
 const STEP_NAMES: Record<number, string> = { 1: 'business', 2: 'documents', 3: 'review', 4: 'payment' }
+const STATUS_STEP = 5
+
+/** Router state stored on each wizard history entry (lets the in-page Back reuse browser history) */
+interface WizardHistoryState {
+  gstPrevStep?: number
+}
 
 interface RegistrationDraft {
   businessData: GstBusinessFormData
@@ -41,6 +49,7 @@ const buildInitialBusinessData = (user: CurrentUser): GstBusinessFormData => ({
   legalName: user?.fullName || '',
   tradeName: '',
   constitution: '',
+  businessPan: '',
   natureOfBusiness: '',
   commencementDate: '',
   registrationReason: '',
@@ -68,20 +77,7 @@ const buildInitialBusinessData = (user: CurrentUser): GstBusinessFormData => ({
   aadhaarConsent: false,
 })
 
-const buildPaymentResult = (): PaymentResult => ({
-  transactionId: `TXN${Date.now()}`,
-  receiptNumber: `TE/${new Date().getFullYear()}/R-${Math.floor(Math.random() * 9000 + 1000)}`,
-  method: 'UPI',
-  dateText: new Intl.DateTimeFormat('en-IN', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-  }).format(new Date()),
-  applicationRef: generateGstReference('GST'),
-  amount: GST_FEES.registration,
-})
+const STEP_NAME_FOR = (step: number): string => STEP_NAMES[step] ?? 'status'
 
 export const useGstRegistrationState = () => {
   const navigate = useNavigate()
@@ -93,13 +89,6 @@ export const useGstRegistrationState = () => {
   const [savedDraft] = useState(() => readGstDraft<RegistrationDraft>(SERVICE_ID))
   const [initialBusinessData] = useState(() => buildInitialBusinessData(user))
 
-  const [currentStep, setCurrentStep] = useState<number>(() => {
-    const urlStep = registrationStepFromUrl(searchParams.get('step'), location.pathname)
-    if (urlStep) return urlStep
-    const draftStep = savedDraft?.currentStep ?? 1
-    return draftStep >= 1 && draftStep <= TOTAL_STEPS ? draftStep : 1
-  })
-
   const [businessData, setBusinessData] = useState<GstBusinessFormData>(() => ({
     ...initialBusinessData,
     ...savedDraft?.formData?.businessData,
@@ -109,7 +98,21 @@ export const useGstRegistrationState = () => {
     () => savedDraft?.formData?.documents || INITIAL_DOCUMENTS
   )
 
-  const [paymentResult, setPaymentResult] = useState<PaymentResult>(buildPaymentResult)
+  // Set only by a payment the payments service verified; the status step requires it
+  const [paymentResult, setPaymentResult] = useState<PaymentResult | null>(null)
+  const [applicationRef] = useState(() => generateGstReference('GST'))
+  const isPaid = Boolean(paymentResult?.verified)
+
+  /** Route guard: a requested step is only shown when every earlier step is complete */
+  const allowedStep = (requested: number, paid = isPaid): number =>
+    clampRegistrationStep(requested, { businessData, documents, isPaid: paid })
+
+  const [currentStep, setCurrentStep] = useState<number>(() => {
+    const urlStep = registrationStepFromUrl(searchParams.get('step'), location.pathname)
+    const draftStep = savedDraft?.currentStep ?? 1
+    const requested = urlStep ?? (draftStep >= 1 && draftStep <= TOTAL_STEPS ? draftStep : 1)
+    return clampRegistrationStep(requested, { businessData, documents, isPaid: false })
+  })
 
   const hasEnteredData =
     currentStep > 1 ||
@@ -129,19 +132,48 @@ export const useGstRegistrationState = () => {
     isComplete: currentStep > TOTAL_STEPS,
   })
 
-  // Follow the step in the URL (applied during render when the URL changes, no extra effect pass)
+  // Every wizard history entry carries an explicit ?step= (and a blocked deep link is rewritten
+  // to the first pending step) so the URL always matches what is shown
+  useEffect(() => {
+    if (searchParams.get('step') !== STEP_NAME_FOR(currentStep)) {
+      setSearchParams({ step: STEP_NAME_FOR(currentStep) }, { replace: true })
+    }
+    // Only normalises the entry the wizard was opened with
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Follow the step in the URL (browser Back / Forward), applied during render when the URL changes
   const urlKey = `${location.pathname}?${searchParams.get('step') || ''}`
   const [syncedUrlKey, setSyncedUrlKey] = useState(urlKey)
   if (syncedUrlKey !== urlKey) {
     setSyncedUrlKey(urlKey)
-    const urlStep = registrationStepFromUrl(searchParams.get('step'), location.pathname)
-    if (urlStep) setCurrentStep(urlStep)
+    const urlStep = registrationStepFromUrl(searchParams.get('step'), location.pathname) ?? 1
+    // After payment the application is submitted: history must not reopen the payment steps
+    const target = currentStep === STATUS_STEP ? STATUS_STEP : allowedStep(urlStep)
+    setCurrentStep(target)
+    if (target !== urlStep) setSearchParams({ step: STEP_NAME_FOR(target) }, { replace: true })
   }
 
-  const goToStep = (step: number) => {
-    setCurrentStep(step)
-    if (STEP_NAMES[step]) setSearchParams({ step: STEP_NAMES[step] }, { replace: true })
+  /**
+   * Forward moves add a browser history entry, so the browser Back button returns to the previous step.
+   * The in-page Back button pops that entry when it is the step we are going to, keeping both in sync.
+   */
+  const goToStep = (requestedStep: number) => {
+    const step = allowedStep(requestedStep)
+    const historyState = location.state as WizardHistoryState | null
+    const isBackToPreviousEntry = step < currentStep && historyState?.gstPrevStep === step
     window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (isBackToPreviousEntry) {
+      navigate(-1)
+      return
+    }
+    setCurrentStep(step)
+    if (!STEP_NAMES[step]) return
+    const isForward = step > currentStep
+    setSearchParams(
+      { step: STEP_NAMES[step] },
+      isForward ? { state: { gstPrevStep: currentStep } satisfies WizardHistoryState } : { replace: true },
+    )
   }
 
   // Leaving from step 1 asks to save when something was entered (same as the loans flows)
@@ -170,16 +202,27 @@ export const useGstRegistrationState = () => {
   }
 
   const handlePaymentSuccess = (result: PaymentResult) => {
+    // Only a server-verified gateway payment may submit the application
+    if (!result.verified) {
+      pushToast('Payment could not be verified. Your application has not been submitted.', 'error')
+      return
+    }
     setPaymentResult(result)
-    setCurrentStep(5)
+    setCurrentStep(STATUS_STEP)
     setSearchParams({ step: 'status' }, { replace: true })
     pushToast(`Payment of ${formatRupees(result.amount ?? GST_FEES.registration)} successful`, 'success')
     window.scrollTo({ top: 0, behavior: 'smooth' })
 
     // Clear the draft and remember the business details for later GST services
     draft.clearDraft()
+    gstUploadedFiles.clear()
     gstProfileService.saveFromRegistration(businessData)
-    recordApplication(result.applicationRef || generateGstReference('GST'))
+    recordApplication(result.applicationRef || applicationRef)
+  }
+
+  const handleDiscardAndExit = () => {
+    gstUploadedFiles.clear()
+    draft.handleDiscardAndExit()
   }
 
   return {
@@ -187,11 +230,12 @@ export const useGstRegistrationState = () => {
     businessData,
     documents,
     paymentResult,
+    applicationRef,
     isDraftModalOpen: draft.isDraftModalOpen,
     openDraftModal: draft.openDraftModal,
     handleCancel,
     handleSaveAndExit: draft.handleSaveAndExit,
-    handleDiscardAndExit: draft.handleDiscardAndExit,
+    handleDiscardAndExit,
     handleKeepEditing: draft.handleKeepEditing,
     handleBusinessChange,
     setDocuments,

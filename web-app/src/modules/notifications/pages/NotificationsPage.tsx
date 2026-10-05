@@ -1,8 +1,6 @@
-import React, { useMemo } from 'react'
-import { userStorage } from '@core/storage/userStorage'
+import React from 'react'
+import { useNotificationStore } from '@store/index'
 import './NotificationsPage.css'
-
-
 
 const EmptyStateIllustration = () => (
   <svg viewBox="0 0 200 200" fill="none" className="empty-illustration">
@@ -25,21 +23,34 @@ const DocumentIcon = () => (
 )
 
 const NotificationsPage: React.FC = () => {
-  const notifications = useMemo(() => {
-    const apps = userStorage.getUserApplications()
-    return apps.map((app) => ({
-      id: app.id,
-      title: `${app.title} Submitted`,
-      message: `Your request for ${app.title} (ID: ${app.code || app.id}) has been ${app.statusLabel?.toLowerCase() || 'submitted'} successfully.`,
-      timestamp: 'Recently',
-      type: 'application'
-    }))
-  }, [])
+  const notifications = useNotificationStore((state) => state.notifications)
+  const clearAll = useNotificationStore((state) => state.clearAll)
+  const removeNotification = useNotificationStore((state) => state.removeNotification)
 
   return (
     <div className="notifications-page">
-      <div className="notifications-header notifications-header--centered">
-        <h1>Notifications</h1>
+      <div className="notifications-header">
+        <div className="notifications-header-left">
+          <h1>Notifications</h1>
+          {notifications.length > 0 && (
+            <span className="notifications-count-badge">{notifications.length}</span>
+          )}
+        </div>
+
+        <button
+          type="button"
+          className="notifications-clear-btn"
+          onClick={clearAll}
+          disabled={notifications.length === 0}
+          title={notifications.length === 0 ? 'No notifications to clear' : 'Clear all notifications'}
+          aria-label="Clear all notifications"
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          Clear All
+        </button>
       </div>
 
       <div className="notifications-list">
@@ -58,7 +69,21 @@ const NotificationsPage: React.FC = () => {
               <div className="notification-content">
                 <div className="notification-header-row">
                   <h3>{notification.title}</h3>
-                  <span className="timestamp">{notification.timestamp}</span>
+                  <div className="notification-meta-row">
+                    <span className="timestamp">{notification.timestamp}</span>
+                    <button
+                      type="button"
+                      className="notification-dismiss-btn"
+                      onClick={() => removeNotification(notification.id)}
+                      title="Dismiss notification"
+                      aria-label={`Dismiss ${notification.title}`}
+                    >
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
                 <p>{notification.message}</p>
               </div>

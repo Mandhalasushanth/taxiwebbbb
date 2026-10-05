@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { GoogleIcon } from '../RegistrationIcons/RegistrationIcons'
 import './PasscodeLoginView.css'
 
 export interface PasscodeLoginViewProps {
@@ -10,7 +9,7 @@ export interface PasscodeLoginViewProps {
   isSubmitting: boolean
   error: string | null
   onForgotPasscode?: () => void
-  onGoogleLogin?: () => void
+  notice?: string | null
 }
 
 const PASSCODE_LENGTH = 6
@@ -23,7 +22,7 @@ export const PasscodeLoginView: React.FC<PasscodeLoginViewProps> = ({
   isSubmitting,
   error,
   onForgotPasscode,
-  onGoogleLogin,
+  notice,
 }) => {
   const [digits, setDigits] = useState<string[]>(Array.from({ length: PASSCODE_LENGTH }, () => ''))
   const [showPasscode, setShowPasscode] = useState(false)
@@ -142,6 +141,9 @@ export const PasscodeLoginView: React.FC<PasscodeLoginViewProps> = ({
           </div>
 
           {error && <span className="passcode-login-form__error-msg">{error}</span>}
+          {!error && notice && (
+            <span className="passcode-login-form__notice-msg" role="status">{notice}</span>
+          )}
         </div>
 
         {/* Action Row below boxes: Forgot Passcode? */}
@@ -156,7 +158,7 @@ export const PasscodeLoginView: React.FC<PasscodeLoginViewProps> = ({
         </div>
       </div>
 
-      {/* Bottom Actions: Login Button, Divider, Google Button */}
+      {/* Bottom Actions: Login Button */}
       <div className="passcode-login-form__bottom-actions">
         <button
           type="submit"
@@ -168,21 +170,6 @@ export const PasscodeLoginView: React.FC<PasscodeLoginViewProps> = ({
           disabled={!isPasscodeComplete || isSubmitting}
         >
           <span>{isSubmitting ? 'Verifying...' : 'Verify Passcode'}</span>
-        </button>
-
-        <div className="passcode-login-form__divider">
-          <span className="passcode-login-form__divider-line" />
-          <span className="passcode-login-form__divider-text">or</span>
-          <span className="passcode-login-form__divider-line" />
-        </div>
-
-        <button
-          type="button"
-          className="passcode-login-form__google-btn"
-          onClick={onGoogleLogin}
-        >
-          <GoogleIcon size={18} />
-          <span>Continue with Google</span>
         </button>
       </div>
     </form>

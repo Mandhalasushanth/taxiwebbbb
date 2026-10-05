@@ -2,22 +2,19 @@ import type { ApplicationStatus, Timestamped } from '@shared/types'
 
 export type ItrViewKey =
   | 'overview'
-  | 'file-itr'
   | 'track-my-return'
   | 'itr-filing'
   | 'tds-refund'
   | 'previous-year-itr'
   | 'revised-itr'
   | 'tax-notice-assistance'
-  | 'tds-refund-estimator'
-  | 'tax-computation'
 
 export interface ItrStatCard {
   id: string
   label: string
   value: string
   subtext: string
-  icon: 'calendar' | 'check' | 'rupee' | 'notice'
+  icon: string
 }
 
 export interface ItrServiceCard {

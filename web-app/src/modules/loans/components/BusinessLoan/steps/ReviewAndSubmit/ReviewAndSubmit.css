@@ -21,6 +21,7 @@
   height: 44px;
   border-radius: 10px;
   background-color: #ffedd5;
+  color: #ea580c;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -95,22 +96,27 @@
 
 .review-card--blue .review-card-icon-tile {
   background-color: #eff6ff;
+  color: #2563eb;
 }
 
 .review-card--orange .review-card-icon-tile {
   background-color: #fff7ed;
+  color: #ea580c;
 }
 
 .review-card--purple .review-card-icon-tile {
   background-color: #f5f3ff;
+  color: #9333ea;
 }
 
 .review-card--pink .review-card-icon-tile {
   background-color: #fff1f2;
+  color: #db2777;
 }
 
 .review-card--green .review-card-icon-tile {
   background-color: #f0fdf4;
+  color: #16a34a;
 }
 
 .review-card-title {

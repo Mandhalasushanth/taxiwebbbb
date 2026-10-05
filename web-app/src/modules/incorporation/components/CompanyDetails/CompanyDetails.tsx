@@ -83,19 +83,19 @@ export const CompanyDetails: React.FC = () => {
 
   const handleContinue = () => {
     const newErrors: Record<string, string> = {}
-    if (!currentData.classOfCompany) newErrors.classOfCompany = 'Please select class of company'
-    if (!currentData.categoryOfCompany) newErrors.categoryOfCompany = 'Please select category of company'
-    if (!currentData.subCategoryOfCompany) newErrors.subCategoryOfCompany = 'Please select sub-category of company'
-    if (!currentData.primaryBusinessActivity.trim()) newErrors.primaryBusinessActivity = 'Primary business activity is required'
+    if (!currentData.classOfCompany) newErrors.classOfCompany = 'Class of company is required'
+    if (!currentData.categoryOfCompany) newErrors.categoryOfCompany = 'Category of company is required'
+    if (!currentData.subCategoryOfCompany) newErrors.subCategoryOfCompany = 'Sub-category of company is required'
+    if (!(currentData.primaryBusinessActivity || '').trim()) newErrors.primaryBusinessActivity = 'Primary business activity is required'
     if (showNicCode) {
-      if (!currentData.nicCode.trim()) {
+      if (!(currentData.nicCode || '').trim()) {
         newErrors.nicCode = 'NIC 5-digit code is required'
       } else if (!isValidNicCode(currentData.nicCode)) {
-        newErrors.nicCode = 'Please enter a valid 5-digit numeric NIC code'
+        newErrors.nicCode = 'Enter a valid 5-digit numeric NIC code'
       }
     }
-    if (!currentData.firstPreferredName.trim()) newErrors.firstPreferredName = 'First preferred name is required'
-    if (!currentData.secondPreferredName.trim()) newErrors.secondPreferredName = 'Second preferred name is required'
+    if (!(currentData.firstPreferredName || '').trim()) newErrors.firstPreferredName = 'First preferred name is required'
+    if (!(currentData.secondPreferredName || '').trim()) newErrors.secondPreferredName = 'Second preferred name is required'
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
@@ -155,7 +155,7 @@ export const CompanyDetails: React.FC = () => {
           <input
             type="text"
             className={`company-details-input ${errors.primaryBusinessActivity ? 'company-input--error' : ''}`}
-            placeholder="e.g. Information Technology & Software Consultancy"
+            placeholder="Enter primary business activity"
             value={currentData.primaryBusinessActivity}
             onChange={(e) => handleInputChange('primaryBusinessActivity', e.target.value)}
           />
@@ -171,7 +171,7 @@ export const CompanyDetails: React.FC = () => {
             <input
               type="text"
               className={`company-details-input ${errors.nicCode ? 'company-input--error' : ''}`}
-              placeholder="e.g. 62011"
+              placeholder="Enter 5-digit NIC code"
               value={currentData.nicCode}
               onChange={(e) => handleInputChange('nicCode', e.target.value)}
             />
@@ -185,7 +185,7 @@ export const CompanyDetails: React.FC = () => {
           <input
             type="text"
             className="company-details-input"
-            placeholder="e.g. IT Enabled Services & Data Processing (Optional)"
+            placeholder="Enter secondary business activity (Optional)"
             value={currentData.secondaryBusinessActivity}
             onChange={(e) => handleInputChange('secondaryBusinessActivity', e.target.value)}
           />
@@ -208,7 +208,7 @@ export const CompanyDetails: React.FC = () => {
           <input
             type="text"
             className={`company-details-input ${errors.firstPreferredName ? 'company-input--error' : ''}`}
-            placeholder="e.g. TaxEdge Innovations"
+            placeholder="Enter first preferred company name"
             value={currentData.firstPreferredName}
             onChange={(e) => handleInputChange('firstPreferredName', e.target.value)}
           />
@@ -222,7 +222,7 @@ export const CompanyDetails: React.FC = () => {
           <input
             type="text"
             className={`company-details-input ${errors.secondPreferredName ? 'company-input--error' : ''}`}
-            placeholder="e.g. TaxEdge Technologies"
+            placeholder="Enter second preferred company name"
             value={currentData.secondPreferredName}
             onChange={(e) => handleInputChange('secondPreferredName', e.target.value)}
           />
@@ -256,7 +256,6 @@ export const CompanyDetails: React.FC = () => {
         onBack={() => navigate(routePaths.incorporation.selectType)}
         onNext={handleContinue}
         onSaveDraft={() => navigate(routePaths.dashboard)}
-        nextDisabled={!Boolean(currentData.primaryBusinessActivity?.trim() && currentData.firstPreferredName?.trim())}
         nextLabel="Continue"
       />
     </div>

@@ -15,6 +15,7 @@ import {
 import { AddPromoterModal } from './AddPromoterModal'
 import { ApplicantDetailsSection } from './ApplicantDetailsSection'
 import { OfficeAddressAndPromoters } from './OfficeAddressAndPromoters'
+import { FileText, ChevronDown } from 'lucide-react'
 import './ApplicantAndProject.css'
 
 export interface ApplicantAndProjectProps {
@@ -61,12 +62,12 @@ export const ApplicantAndProject: React.FC<ApplicantAndProjectProps> = ({
       >
         <div className="pf-collapsible-header__left">
           <div className="pf-section-icon-tile pf-section-icon-tile--orange">
-            <img src="/assets/icons/loans/doc-orange.svg" alt="" width="20" height="20" />
+            <FileText size={20} />
           </div>
           <h3 className="pf-collapsible-title">Project Classification</h3>
         </div>
         <span className={`pf-chevron ${isClassificationOpen ? 'pf-chevron--open' : ''}`}>
-          <img src="/assets/icons/loans/chevron-down.svg" alt="" width="18" height="18" />
+          <ChevronDown size={18} />
         </span>
       </div>
 

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Copy, FileText, Wrench, Clock, Landmark, User } from 'lucide-react'
 import './LoanSummaryCard.css'
 
 export interface LoanSummaryCardProps {
@@ -51,13 +52,7 @@ export const LoanSummaryCard: React.FC<LoanSummaryCardProps> = ({
               title={isCopied ? 'Copied!' : 'Copy Reference Number'}
               aria-label="Copy Reference Number"
             >
-              <img
-                src="/assets/icons/loans/copy-blue.svg"
-                alt=""
-                width="15"
-                height="15"
-                aria-hidden="true"
-              />
+              <Copy size={15} aria-hidden="true" />
               {isCopied && <span className="loan-status-copy-tooltip">Copied!</span>}
             </button>
           </div>
@@ -68,13 +63,7 @@ export const LoanSummaryCard: React.FC<LoanSummaryCardProps> = ({
 
         <div className="loan-status-summary-card__right">
           <div className="loan-status-doc-badge">
-            <img
-              src="/assets/icons/loans/doc-blue.svg"
-              alt=""
-              width="16"
-              height="16"
-              aria-hidden="true"
-            />
+            <FileText size={16} aria-hidden="true" />
             <span>Documents Received</span>
           </div>
         </div>
@@ -86,13 +75,7 @@ export const LoanSummaryCard: React.FC<LoanSummaryCardProps> = ({
         <div className="loan-status-meta-col">
           <div className="loan-status-meta-icon-tile">
             {primaryDetailIcon || (
-              <img
-                src="/assets/icons/loans/equipment-blue.svg"
-                alt=""
-                width="22"
-                height="22"
-                aria-hidden="true"
-              />
+              <Wrench size={22} aria-hidden="true" />
             )}
           </div>
           <div className="loan-status-meta-info">
@@ -104,13 +87,7 @@ export const LoanSummaryCard: React.FC<LoanSummaryCardProps> = ({
         {/* Column 2: Tenure */}
         <div className="loan-status-meta-col">
           <div className="loan-status-meta-icon-tile">
-            <img
-              src="/assets/icons/loans/clock-blue.svg"
-              alt=""
-              width="22"
-              height="22"
-              aria-hidden="true"
-            />
+            <Clock size={22} aria-hidden="true" />
           </div>
           <div className="loan-status-meta-info">
             <span className="loan-status-meta-label">Tenure</span>
@@ -121,13 +98,7 @@ export const LoanSummaryCard: React.FC<LoanSummaryCardProps> = ({
         {/* Column 3: Disbursement Bank */}
         <div className="loan-status-meta-col">
           <div className="loan-status-meta-icon-tile">
-            <img
-              src="/assets/icons/loans/bank-blue.svg"
-              alt=""
-              width="22"
-              height="22"
-              aria-hidden="true"
-            />
+            <Landmark size={22} aria-hidden="true" />
           </div>
           <div className="loan-status-meta-info">
             <span className="loan-status-meta-label">Disbursement Bank</span>
@@ -138,13 +109,7 @@ export const LoanSummaryCard: React.FC<LoanSummaryCardProps> = ({
         {/* Column 4: Loan Agent */}
         <div className="loan-status-meta-col">
           <div className="loan-status-meta-icon-tile">
-            <img
-              src="/assets/icons/loans/user-blue.svg"
-              alt=""
-              width="22"
-              height="22"
-              aria-hidden="true"
-            />
+            <User size={22} aria-hidden="true" />
           </div>
           <div className="loan-status-meta-info">
             <span className="loan-status-meta-label">Loan Agent</span>

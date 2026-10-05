@@ -1,0 +1,31 @@
+/* Promo / payment verification feedback */
+.payment-promo-error {
+  margin: 0.4rem 0 0;
+}
+
+.payment-promo-success {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.payment-promo-remove {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: #b91c1c;
+  cursor: pointer;
+}
+
+.payment-error-banner {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.75rem;
+}

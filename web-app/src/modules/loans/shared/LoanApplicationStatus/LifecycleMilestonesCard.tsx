@@ -1,5 +1,6 @@
 import React from 'react'
 import type { LoanMilestoneItem } from '@modules/loans/types/loanApplication.types'
+import { FileText, Check, CheckCircle, Clock } from 'lucide-react'
 import './LifecycleMilestonesCard.css'
 
 export interface LifecycleMilestonesCardProps {
@@ -24,12 +25,7 @@ export const LifecycleMilestonesCard: React.FC<LifecycleMilestonesCardProps> = (
       {/* Header */}
       <div className="loan-lifecycle-header">
         <div className="loan-lifecycle-icon-tile" aria-hidden="true">
-          <img
-            src="/assets/icons/loans/doc-orange.svg"
-            alt=""
-            width="20"
-            height="20"
-          />
+          <FileText size={20} aria-hidden="true" />
         </div>
         <h2 className="loan-lifecycle-title">Application Lifecycle Milestones</h2>
       </div>
@@ -40,13 +36,7 @@ export const LifecycleMilestonesCard: React.FC<LifecycleMilestonesCardProps> = (
         <div className="loan-timeline-row">
           <div className="loan-timeline-node-col">
             <div className="loan-timeline-node loan-timeline-node--completed">
-              <img
-                src="/assets/icons/loans/check-circle-white.svg"
-                alt=""
-                width="16"
-                height="16"
-                aria-hidden="true"
-              />
+              <Check size={14} strokeWidth={3} aria-hidden="true" />
             </div>
             <div className="loan-timeline-connector-line loan-timeline-connector-line--completed" />
           </div>
@@ -58,13 +48,7 @@ export const LifecycleMilestonesCard: React.FC<LifecycleMilestonesCardProps> = (
 
           <div className="loan-timeline-badge-col">
             <span className="milestone-badge-completed">
-              <img
-                src="/assets/icons/loans/verified-circle.svg"
-                alt=""
-                width="14"
-                height="14"
-                aria-hidden="true"
-              />
+              <CheckCircle size={14} aria-hidden="true" />
               <span>{stage1Time}</span>
             </span>
           </div>
@@ -89,13 +73,7 @@ export const LifecycleMilestonesCard: React.FC<LifecycleMilestonesCardProps> = (
           <div className="loan-timeline-badge-col">
             <div className="milestone-status-box milestone-status-box--active">
               <div className="milestone-status-box__header">
-                <img
-                  src="/assets/icons/loans/clock-orange.svg"
-                  alt=""
-                  width="14"
-                  height="14"
-                  aria-hidden="true"
-                />
+                <Clock size={14} aria-hidden="true" />
                 <span>In Progress</span>
               </div>
               <p className="milestone-status-box__desc">
@@ -124,13 +102,7 @@ export const LifecycleMilestonesCard: React.FC<LifecycleMilestonesCardProps> = (
           <div className="loan-timeline-badge-col">
             <div className="milestone-status-box milestone-status-box--pending">
               <div className="milestone-status-box__header">
-                <img
-                  src="/assets/icons/loans/clock-grey.svg"
-                  alt=""
-                  width="14"
-                  height="14"
-                  aria-hidden="true"
-                />
+                <Clock size={14} aria-hidden="true" />
                 <span>Pending</span>
               </div>
               <p className="milestone-status-box__desc">
@@ -159,13 +131,7 @@ export const LifecycleMilestonesCard: React.FC<LifecycleMilestonesCardProps> = (
           <div className="loan-timeline-badge-col">
             <div className="milestone-status-box milestone-status-box--pending">
               <div className="milestone-status-box__header">
-                <img
-                  src="/assets/icons/loans/clock-grey.svg"
-                  alt=""
-                  width="14"
-                  height="14"
-                  aria-hidden="true"
-                />
+                <Clock size={14} aria-hidden="true" />
                 <span>Pending</span>
               </div>
               <p className="milestone-status-box__desc">
@@ -193,13 +159,7 @@ export const LifecycleMilestonesCard: React.FC<LifecycleMilestonesCardProps> = (
           <div className="loan-timeline-badge-col">
             <div className="milestone-status-box milestone-status-box--pending">
               <div className="milestone-status-box__header">
-                <img
-                  src="/assets/icons/loans/clock-grey.svg"
-                  alt=""
-                  width="14"
-                  height="14"
-                  aria-hidden="true"
-                />
+                <Clock size={14} aria-hidden="true" />
                 <span>Pending</span>
               </div>
               <p className="milestone-status-box__desc">

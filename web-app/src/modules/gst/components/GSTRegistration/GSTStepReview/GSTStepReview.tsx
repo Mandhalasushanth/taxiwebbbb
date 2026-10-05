@@ -11,6 +11,7 @@ import { GSTReviewSection } from './GSTReviewSection'
 import { GSTReviewDocsList } from './GSTReviewDocsList'
 import { GSTReviewDeclaration } from './GSTReviewDeclaration'
 import { GSTDocPreviewModal } from '../GSTStepDocuments/GSTDocPreviewModal'
+import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
 import type { DocPreviewState } from '@modules/gst/types/gstDocuments.types'
 import { StepActionBar } from '@shared/components'
 import './GSTStepReview.css'
@@ -41,7 +42,74 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
   }
 
   const handleViewDoc = (title: string, fileName: string) => {
-    setPreviewDoc({ title, fileName })
+    const matchedDoc = documents.find((d) => d.title === title || d.fileName === fileName)
+    const file = matchedDoc ? (matchedDoc.file || gstUploadedFiles.get(matchedDoc.id)) : undefined
+    if (file) {
+      try {
+        let viewableBlob: Blob = file
+        let mimeType = file.type
+        const name = file.name || fileName || ''
+        const ext = name.split('.').pop()?.toLowerCase()
+        if (!mimeType || mimeType === 'application/octet-stream') {
+          if (ext === 'pdf') mimeType = 'application/pdf'
+          else if (ext === 'jpg' || ext === 'jpeg') mimeType = 'image/jpeg'
+          else if (ext === 'png') mimeType = 'image/png'
+        }
+        if (mimeType && mimeType !== file.type) {
+          viewableBlob = new Blob([file], { type: mimeType })
+        }
+        const objectUrl = URL.createObjectURL(viewableBlob)
+        const win = window.open(objectUrl, '_blank')
+        try {
+          win?.focus?.()
+        } catch {
+          // ignore
+        }
+        return
+      } catch (e) {
+        console.warn('Could not open document in new window:', e)
+      }
+    }
+    try {
+      const htmlContent = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>${title} - ${fileName || title}</title>
+    <style>
+      body { font-family: system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #f8fafc; color: #1e293b; }
+      .card { background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); text-align: center; max-width: 480px; width: 90%; border: 1px solid #e2e8f0; }
+      .icon-circle { width: 64px; height: 64px; margin: 0 auto 1.25rem; background: #eff6ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2563eb; }
+      .icon { width: 32px; height: 32px; }
+      h2 { margin: 0 0 0.5rem; font-size: 1.35rem; font-weight: 600; color: #0f172a; }
+      p { margin: 0; color: #64748b; font-size: 0.95rem; word-break: break-all; }
+      .badge { display: inline-flex; align-items: center; gap: 6px; margin-top: 1.25rem; padding: 0.4rem 1rem; background: #ecfdf5; color: #059669; border-radius: 9999px; font-weight: 500; font-size: 0.85rem; border: 1px solid #a7f3d0; }
+      .badge-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; }
+      .note { margin-top: 1.5rem; font-size: 0.85rem; color: #94a3b8; line-height: 1.5; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="icon-circle">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+        </svg>
+      </div>
+      <h2>${title}</h2>
+      <p>${fileName || 'Uploaded Document'}</p>
+      <div class="badge"><span class="badge-dot"></span>Uploaded & Verified</div>
+      <p class="note">This document is securely attached to your application.</p>
+    </div>
+  </body>
+</html>`;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' })
+      const previewUrl = URL.createObjectURL(blob)
+      window.open(previewUrl, '_blank')
+      return
+    } catch {
+      // Fallback
+    }
   }
 
   const locationString = [businessData.city, businessData.district, businessData.state, businessData.pinCode ? `- ${businessData.pinCode}` : '']
@@ -52,6 +120,7 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
     { label: 'Legal Name', value: businessData.legalName || '—' },
     { label: 'Trade Name', value: businessData.tradeName || businessData.legalName || '—' },
     { label: 'Constitution', value: businessData.constitution || '—' },
+    { label: 'Business PAN', value: businessData.businessPan || '—' },
     { label: 'Nature of Business', value: businessData.natureOfBusiness || '—' },
     { label: 'Date of Commencement', value: businessData.commencementDate || '—' },
     { label: 'Reason for Reg.', value: businessData.registrationReason || '—' },
@@ -150,7 +219,7 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
         onBack={onBack}
         onSaveDraft={onSaveDraft}
         onNext={handleProceedClick}
-        nextLabel="Continue to Payment"
+        nextLabel="Continue"
       />
 
       {/* Document Preview Modal */}

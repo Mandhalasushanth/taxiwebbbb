@@ -61,7 +61,7 @@ export const registerInterceptors = (instance: AxiosInstance): void => {
         config.headers.Authorization = `Bearer ${accessToken}`
         return instance.request(config)
       } catch (refreshError) {
-        authService.endSession()
+        authService.endSession('expired')
         return Promise.reject(refreshError)
       }
     },

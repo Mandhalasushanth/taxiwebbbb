@@ -1,8 +1,10 @@
 import React from 'react'
+import { Pencil } from 'lucide-react'
 
 export interface ReviewSectionCardProps {
   title: string
-  iconSrc: string
+  iconSrc?: string
+  icon?: React.ReactNode
   themeColor: 'blue' | 'orange' | 'purple' | 'green' | 'pink'
   badge?: React.ReactNode
   onEdit?: () => void
@@ -19,6 +21,7 @@ export interface ReviewSectionCardProps {
 export const ReviewSectionCard: React.FC<ReviewSectionCardProps> = ({
   title,
   iconSrc,
+  icon,
   themeColor,
   badge,
   onEdit,
@@ -32,7 +35,7 @@ export const ReviewSectionCard: React.FC<ReviewSectionCardProps> = ({
       <div className="review-card-header">
         <div className="review-card-header__left">
           <div className="review-card-icon-tile" aria-hidden="true">
-            <img src={iconSrc} alt="" width="20" height="20" />
+            {icon ?? (iconSrc ? <img src={iconSrc} alt="" width="20" height="20" /> : null)}
           </div>
           <h2 className="review-card-title">{title}</h2>
         </div>
@@ -51,13 +54,7 @@ export const ReviewSectionCard: React.FC<ReviewSectionCardProps> = ({
               onClick={onEdit}
               aria-label={`${editLabel} ${title}`}
             >
-              <img
-                src="/assets/icons/loans/edit-blue.svg"
-                alt=""
-                width="16"
-                height="16"
-                aria-hidden="true"
-              />
+              <Pencil size={16} aria-hidden="true" />
               <span>{editLabel}</span>
             </button>
           )}

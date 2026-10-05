@@ -1,4 +1,5 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
+import { buildLoginPath, resolvePostLoginPath } from '@core/auth'
 import { routePaths } from '@core/config'
 import { useAuthStore } from '@store/index'
 import { AuthIdentityHeroPanel } from '../../components/AuthIdentityHeroPanel/AuthIdentityHeroPanel'
@@ -6,15 +7,17 @@ import { RegistrationCard } from '../../components/RegistrationCard/Registration
 import './Register.css'
 
 export const Register = () => {
+  const location = useLocation()
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
   const user = useAuthStore((state) => state.user)
 
   if (!isAuthenticated) {
-    return <Navigate to={routePaths.auth.login} replace />
+    return <Navigate to={buildLoginPath(location)} replace />
   }
 
+  // Profile done: continue to the service the user started from (?redirect=), else the dashboard
   if (user?.isProfileComplete) {
-    return <Navigate to={routePaths.dashboard} replace />
+    return <Navigate to={resolvePostLoginPath(location.search, location.state, routePaths.dashboard)} replace />
   }
   return (
     <div className="register-screen">

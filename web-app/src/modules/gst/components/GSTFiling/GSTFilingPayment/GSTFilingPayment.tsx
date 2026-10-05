@@ -33,6 +33,7 @@ export const GSTFilingPayment: FC<GSTFilingPaymentProps> = ({
         onBack={onBack}
         enablePromoCode={true}
         onSuccess={(res) => {
+          if (res.status !== 'SUCCESS' || !res.verified) return
           onSuccess({
             transactionId: res.paymentId,
             receiptNumber: res.receiptNumber || `REC-${Date.now().toString().slice(-6)}`,
@@ -40,6 +41,8 @@ export const GSTFilingPayment: FC<GSTFilingPaymentProps> = ({
             dateText: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
             applicationRef: res.applicationRef,
             amount: res.amount,
+            verified: res.verified,
+            orderId: res.orderId,
           })
         }}
       />

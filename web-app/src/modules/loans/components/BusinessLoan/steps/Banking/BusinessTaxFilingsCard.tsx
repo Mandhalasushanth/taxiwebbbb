@@ -1,4 +1,5 @@
 import React from 'react'
+import { FileText } from 'lucide-react'
 import {
   formatCurrencyString,
   formatDigitsOnly,
@@ -26,13 +27,7 @@ export const BusinessTaxFilingsCard: React.FC<BusinessTaxFilingsCardProps> = ({
     <div className="banking-card">
       <div className="banking-card-header">
         <div className="banking-icon-tile">
-          <img
-            src="/assets/icons/loans/document-text.svg"
-            alt=""
-            width="22"
-            height="22"
-            aria-hidden="true"
-          />
+          <FileText size={22} aria-hidden="true" />
         </div>
         <div className="banking-card-header__info">
           <h2 className="banking-card-title">Business Tax Filings</h2>
@@ -50,7 +45,7 @@ export const BusinessTaxFilingsCard: React.FC<BusinessTaxFilingsCardProps> = ({
             type="text"
             maxLength={LOAN_FIELD_LIMITS.ITR_ACK}
             className={`banking-input ${errors.itrAcknowledgementNumber ? 'banking-input--error' : ''}`}
-            placeholder="e.g. 123456789012345"
+            placeholder="Enter 15-digit acknowledgement number"
             value={data.itrAcknowledgementNumber || ''}
             onChange={(e) =>
               onChange({
@@ -74,7 +69,7 @@ export const BusinessTaxFilingsCard: React.FC<BusinessTaxFilingsCardProps> = ({
             id="grossTotalIncomeItr"
             type="text"
             className={`banking-input ${errors.grossTotalIncomeItr ? 'banking-input--error' : ''}`}
-            placeholder="e.g. 3500000"
+            placeholder="Enter gross total income"
             value={data.grossTotalIncomeItr || ''}
             onChange={(e) =>
               onChange({ grossTotalIncomeItr: formatCurrencyString(e.target.value) })

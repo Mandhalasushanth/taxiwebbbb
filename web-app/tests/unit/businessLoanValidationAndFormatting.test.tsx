@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import {
   formatTextOnly,
   formatDigitsOnly,
@@ -9,9 +9,6 @@ import {
 import {
   validateStep1LoanAndApplicant,
   validateStep2BusinessDetails,
-  validateStep3Banking,
-  validateStep4Documents,
-  validateStep5Review,
 } from '../../src/modules/loans/validation/businessLoanValidation'
 import { BusinessLoanFormData } from '../../src/modules/loans/types/businessLoan.types'
 

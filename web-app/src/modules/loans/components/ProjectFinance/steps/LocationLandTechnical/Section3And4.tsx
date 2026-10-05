@@ -1,4 +1,5 @@
 import React from 'react'
+import { Users, FileText, ChevronDown } from 'lucide-react'
 import type { ProjectFinanceData, LandParcelItem } from '@modules/loans/types/projectFinance.types'
 import {
   LAND_OWNERSHIP_OPTIONS,
@@ -75,7 +76,7 @@ export const Section3And4: React.FC<Section3And4Props> = ({
         <div className="pf-collapsible-header" onClick={onToggleLandParcels}>
           <div className="pf-collapsible-header__left">
             <div className="pf-section-icon-tile">
-              <img src="/assets/icons/loans/users-green.svg" alt="" width="20" height="20" />
+              <Users size={20} />
             </div>
             <h3 className="pf-collapsible-title">3. Land Parcels</h3>
           </div>
@@ -216,12 +217,12 @@ export const Section3And4: React.FC<Section3And4Props> = ({
         <div className="pf-collapsible-header" onClick={onToggleRow}>
           <div className="pf-collapsible-header__left">
             <div className="pf-section-icon-tile">
-              <img src="/assets/icons/loans/doc-orange.svg" alt="" width="20" height="20" />
+              <FileText size={20} />
             </div>
             <h3 className="pf-collapsible-title">4. Right of Way (ROW)</h3>
           </div>
           <span className={`pf-chevron ${isRowOpen ? 'pf-chevron--open' : ''}`}>
-            <img src="/assets/icons/loans/chevron-down.svg" alt="" width="18" height="18" />
+            <ChevronDown size={18} />
           </span>
         </div>
 

@@ -22,7 +22,7 @@ export const NoticeStatus: React.FC<NoticeStatusProps> = ({
   const acknowledgementNo = formData.acknowledgementNo || 'ITR-2026-41262'
 
   // Extract section if available
-  const sectionMatch = formData.noticeType?.match(/Section\s+([0-9a-zA-Z\(\)]+)/i)
+  const sectionMatch = formData.noticeType?.match(/Section\s+([0-9a-zA-Z()]+)/i)
   const section = sectionMatch ? sectionMatch[1] : '143(1)(a)'
 
   const handleDownload = () => {

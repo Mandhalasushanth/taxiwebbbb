@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { userStorage } from '@core/storage/userStorage'
+import { getEntityStructureLabel, getProposedCompanyName } from '../../types/incorporation.types'
 import { useIncorporationFlow } from '../../hooks'
 import './FeesPayment.css'
 
@@ -20,15 +21,9 @@ export const FeesPayment: React.FC = () => {
   const totalAmount = professionalFee + gst + mcaCharges
 
   const companyType = formData.companyType || 'pvt_ltd'
-  const entityTypeMap: Record<string, string> = {
-    opc: 'One Person Company (OPC)',
-    pvt_ltd: 'Private Limited',
-    section_8: 'Section 8 (NGO)',
-    public_ltd: 'Public Limited',
-  }
-  const entityStructure = entityTypeMap[companyType] || 'Private Limited'
-  const defaultName = companyType === 'opc' ? 'TaxEdge Tech (OPC) Private Limited' : 'TaxEdge Tech Private Limited'
-  const companyName = formData.companyDetails?.firstPreferredName || defaultName
+  const entityStructure = getEntityStructureLabel(companyType)
+  const companyName = getProposedCompanyName(companyType, formData.companyDetails?.firstPreferredName)
+
 
   const handlePayAndSubmit = () => {
     if (!selectedMethod) {

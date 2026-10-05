@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@store/index'
 import { authStorage } from '@core/auth'
-import { routePaths } from '@core/config'
 
 import { ProfileHeader } from '../../components/ProfileHeader/ProfileHeader'
 import { ProfileSection } from '../../components/ProfileSection/ProfileSection'
 import { ProfileMenuItem } from '../../components/ProfileMenuItem/ProfileMenuItem'
 import { LogoutButton } from '../../components/LogoutButton/LogoutButton'
+import { LogoutConfirmModal } from '@shared/components'
+import { useLogoutConfirm } from '@modules/authentication'
 import { profileSectionsConfig } from './profileConfig'
 import './Profile.css'
 
 export const Profile = () => {
-  const navigate = useNavigate()
   const storeUser = useAuthStore((state) => state.user)
   const user = storeUser || authStorage.getUser()
 
@@ -49,10 +48,7 @@ export const Profile = () => {
     }
   }, [])
 
-  const handleLogout = async () => {
-    useAuthStore.getState().signOut()
-    navigate(routePaths.auth.login, { replace: true })
-  }
+  const logout = useLogoutConfirm()
 
   const handleEditAvatar = () => {
     // Empty for now
@@ -119,7 +115,13 @@ export const Profile = () => {
         })}
 
         <div className="profile-page-view__logout-wrapper">
-          <LogoutButton onClick={handleLogout} />
+          <LogoutButton onClick={logout.requestLogout} />
+          <LogoutConfirmModal
+            isOpen={logout.isConfirmOpen}
+            isLoggingOut={logout.isLoggingOut}
+            onConfirm={logout.confirmLogout}
+            onCancel={logout.cancelLogout}
+          />
         </div>
       </div>
     </div>

@@ -45,7 +45,7 @@ export const StaffHeader = ({ user, onSignOut }: StaffHeaderProps) => {
         </div>
 
         <button className="staff-shell__signout" type="button" onClick={onSignOut}>
-          Sign out
+          Log out
         </button>
       </div>
     </header>

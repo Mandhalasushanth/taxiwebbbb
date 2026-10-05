@@ -9,7 +9,7 @@ afterEach(() => {
   cleanup()
 })
 
-import { Step6ApplicationReceived } from '../../src/modules/itr/pages/RevisedItr/Step6ApplicationReceived'
+import { Step6ApplicationReceived } from '../../src/modules/itr/components/RevisedItr/ApplicationReceived/Step6ApplicationReceived'
 
 describe('Step6ApplicationReceived', () => {
   const mockProps = {

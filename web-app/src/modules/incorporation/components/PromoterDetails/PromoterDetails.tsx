@@ -11,7 +11,9 @@ import {
   isValidEmail,
   isValidMobile,
   isValidPincode,
+  isValidName,
 } from '../../utils/validation'
+import { validateDobSignatory } from '@shared/utils/validationUtils'
 import type { DirectorDetails } from '../../types/incorporation.types'
 import './PromoterDetails.css'
 
@@ -99,37 +101,50 @@ export const PromoterDetails: React.FC = () => {
 
     const allErrors = directors.reduce<Record<number, Record<string, string>>>((acc, d) => {
       const dErrors: Record<string, string> = {}
-      if (!d.fullName.trim()) dErrors.fullName = 'Full Name is required'
-      if (!d.pan.trim()) {
-        dErrors.pan = 'PAN Number is required'
+      if (!(d.fullName || '').trim()) {
+        dErrors.fullName = 'Name is required'
+      } else if (!isValidName(d.fullName)) {
+        dErrors.fullName = 'Enter a valid name (letters only)'
+      }
+      if (!(d.pan || '').trim()) {
+        dErrors.pan = 'PAN is required'
       } else if (!isValidPan(d.pan)) {
-        dErrors.pan = 'Valid 10-character PAN (e.g. ABCDE1234F) is required'
+        dErrors.pan = 'Enter a valid PAN'
       }
-      if (d.din && !isValidDin(d.din)) dErrors.din = 'DIN must be an 8-digit number'
-      if (!d.dob) dErrors.dob = 'Date of Birth is required'
-      if (!d.fatherName.trim()) dErrors.fatherName = "Father's Name is required"
-      if (!d.gender) dErrors.gender = 'Please select gender'
-      if (!d.nationality.trim()) dErrors.nationality = 'Nationality is required'
-      if (!d.designation.trim()) dErrors.designation = 'Designation is required'
-      if (!d.category.trim()) dErrors.category = 'Category is required'
-      if (!d.email.trim()) {
-        dErrors.email = 'Email Address is required'
+      if (d.din && !isValidDin(d.din)) dErrors.din = 'Enter a valid 8-digit DIN'
+      if (!d.dob) {
+        dErrors.dob = 'Date of birth is required'
+      } else {
+        const dobError = validateDobSignatory(d.dob)
+        if (dobError) dErrors.dob = dobError
+      }
+      if (!(d.fatherName || '').trim()) {
+        dErrors.fatherName = "Father's name is required"
+      } else if (!isValidName(d.fatherName)) {
+        dErrors.fatherName = "Enter a valid name (letters only)"
+      }
+      if (!d.gender) dErrors.gender = 'Gender is required'
+      if (!(d.nationality || '').trim()) dErrors.nationality = 'Nationality is required'
+      if (!(d.designation || '').trim()) dErrors.designation = 'Designation is required'
+      if (!(d.category || '').trim()) dErrors.category = 'Category is required'
+      if (!(d.email || '').trim()) {
+        dErrors.email = 'Email address is required'
       } else if (!isValidEmail(d.email)) {
-        dErrors.email = 'Please enter a valid email address'
+        dErrors.email = 'Enter a valid email address'
       }
-      if (!d.mobile.trim()) {
-        dErrors.mobile = 'Mobile Number is required'
+      if (!(d.mobile || '').trim()) {
+        dErrors.mobile = 'Mobile number is required'
       } else if (!isValidMobile(d.mobile)) {
-        dErrors.mobile = 'Please enter a valid 10-digit mobile number'
+        dErrors.mobile = 'Enter a valid 10-digit Indian mobile number'
       }
-      if (!d.addressLine1.trim()) dErrors.addressLine1 = 'Address Line 1 is required'
-      if (!d.city.trim()) dErrors.city = 'City is required'
-      if (!d.district.trim()) dErrors.district = 'District is required'
-      if (!d.state.trim()) dErrors.state = 'State is required'
-      if (!d.pincode.trim()) {
-        dErrors.pincode = 'PIN Code is required'
+      if (!(d.addressLine1 || '').trim()) dErrors.addressLine1 = 'Address line 1 is required'
+      if (!(d.city || '').trim()) dErrors.city = 'City is required'
+      if (!(d.district || '').trim()) dErrors.district = 'District is required'
+      if (!(d.state || '').trim()) dErrors.state = 'State is required'
+      if (!(d.pincode || '').trim()) {
+        dErrors.pincode = 'PIN code is required'
       } else if (!isValidPincode(d.pincode)) {
-        dErrors.pincode = 'Please enter a valid 6-digit PIN code'
+        dErrors.pincode = 'Enter a valid 6-digit PIN code'
       }
       if (!d.equityShares || Number(d.equityShares) <= 0) dErrors.equityShares = 'Number of equity shares is required'
       if (!d.equityAmount || Number(d.equityAmount) <= 0) dErrors.equityAmount = 'Amount of equity shares is required'
@@ -219,7 +234,6 @@ export const PromoterDetails: React.FC = () => {
         onBack={() => navigate(routePaths.incorporation.registeredOffice)}
         onNext={handleContinue}
         onSaveDraft={() => navigate(routePaths.dashboard)}
-        nextDisabled={!Boolean(directors.length > 0 && directors.every((d: DirectorDetails) => d.fullName?.trim() && d.pan?.trim()))}
         nextLabel="Continue"
       />
     </div>

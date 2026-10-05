@@ -7,7 +7,21 @@ import {
 } from '../RegistrationIcons/RegistrationIcons'
 import { RegistrationSelect } from '../RegistrationSelect/RegistrationSelect'
 import { DobDatePickerModal } from '../DobDatePickerModal/DobDatePickerModal'
+import { AGE_LIMITS } from '@shared/utils'
 import './RegistrationPersonalFields.css'
+
+const yearsAgo = (years: number, extraDays = 0): Date => {
+  const date = new Date()
+  date.setFullYear(date.getFullYear() - years)
+  date.setDate(date.getDate() + extraDays)
+  return date
+}
+
+/** Calendar only offers birth dates for ages AGE_LIMITS.min to AGE_LIMITS.max */
+const DOB_PICKER_RANGE = {
+  min: yearsAgo(AGE_LIMITS.max + 1, 1),
+  max: yearsAgo(AGE_LIMITS.min),
+}
 
 export interface RegistrationPersonalValues {
   fullName: string
@@ -115,6 +129,7 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
             align="left"
             searchable={false}
             onChange={onChange}
+            onBlur={onBlur}
           />
           {errors.gender && <p className="reg-field__error">{errors.gender}</p>}
         </div>
@@ -148,6 +163,8 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
             {onApplyDate && onCloseCalendar && (
               <DobDatePickerModal
                 isOpen={Boolean(isCalendarOpen)}
+                minDate={DOB_PICKER_RANGE.min}
+                maxDate={DOB_PICKER_RANGE.max}
                 value={values.dob}
                 onApply={onApplyDate}
                 onClose={onCloseCalendar}

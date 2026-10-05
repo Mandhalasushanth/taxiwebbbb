@@ -1,4 +1,4 @@
-/* TaxNoticeAssistance Layout & Page Styles */
+/* TaxNoticeAssistance Layout, Stepper & Page Styles */
 
 .tax-notice-page {
   background: transparent;
@@ -24,7 +24,6 @@
   position: relative;
 }
 
-/* Success View Action Buttons */
 .notice-action-bar__btn {
   height: 50px;
   border-radius: 9999px;
@@ -64,4 +63,129 @@
   background: #f8fafc;
   border-color: #94a3b8;
   color: #0f172a;
+}
+
+/* Connected Circular 5-Step Stepper */
+.notice-stepper-wrap {
+  width: 100%;
+  margin-bottom: 2.25rem;
+  padding: 0.75rem 0 0.5rem 0;
+  box-sizing: border-box;
+}
+
+.notice-stepper-track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.notice-stepper-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  cursor: default;
+  transition: transform 0.2s ease;
+}
+
+.notice-stepper-step--clickable {
+  cursor: pointer;
+}
+
+.notice-stepper-step--clickable:hover .notice-stepper-circle {
+  transform: scale(1.08);
+}
+
+.notice-stepper-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.notice-stepper-circle--completed {
+  background: #083b75;
+  color: #ffffff;
+  border: 2.5px solid #083b75;
+  box-shadow: 0 4px 14px rgba(8, 59, 117, 0.35);
+}
+
+.notice-stepper-circle--active {
+  background: #f97316;
+  color: #ffffff;
+  border: 2.5px solid #f97316;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.42);
+  transform: scale(1.06);
+}
+
+.notice-stepper-circle--inactive {
+  background: #ffffff;
+  color: #94a3b8;
+  border: 2px solid #cbd5e1;
+}
+
+.notice-stepper-line {
+  flex: 1;
+  height: 2.5px;
+  background: #e2e8f0;
+  margin: 0 0.75rem;
+  margin-bottom: 1.45rem;
+  transition: background 0.3s ease;
+  z-index: 1;
+}
+
+.notice-stepper-line--completed {
+  background: #083b75;
+}
+
+.notice-stepper-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.notice-stepper-label--completed {
+  color: #64748b;
+  font-weight: 600;
+}
+
+.notice-stepper-label--active {
+  color: #f97316;
+  font-weight: 700;
+}
+
+.notice-stepper-label--inactive {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+@media (max-width: 680px) {
+  .notice-stepper-track {
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 1.25rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .notice-stepper-line {
+    display: none;
+  }
 }

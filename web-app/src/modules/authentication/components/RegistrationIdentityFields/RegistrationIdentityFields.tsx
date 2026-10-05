@@ -3,8 +3,8 @@ import {
   UsersIcon,
   IdCardIcon,
   DocumentIcon,
-  PhoneIcon,
 } from '../RegistrationIcons/RegistrationIcons'
+import { RegistrationMobileField } from '../RegistrationMobileField/RegistrationMobileField'
 import './RegistrationIdentityFields.css'
 
 export interface RegistrationIdentityValues {
@@ -24,6 +24,7 @@ export interface RegistrationIdentityErrors {
 export interface RegistrationIdentityFieldsProps {
   values: RegistrationIdentityValues
   errors: RegistrationIdentityErrors
+  isMobileVerified: boolean
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
 }
@@ -31,6 +32,7 @@ export interface RegistrationIdentityFieldsProps {
 export const RegistrationIdentityFields: React.FC<RegistrationIdentityFieldsProps> = ({
   values,
   errors,
+  isMobileVerified,
   onChange,
   onBlur,
 }) => {
@@ -114,30 +116,13 @@ export const RegistrationIdentityFields: React.FC<RegistrationIdentityFieldsProp
           {errors.aadhaar && <p className="reg-field__error">{errors.aadhaar}</p>}
         </div>
 
-        <div className="reg-field">
-          <label className="reg-field__label" htmlFor="reg-mobile">
-            Mobile Number <span className="reg-field__required">*</span>
-          </label>
-          <div className={`reg-field__control ${errors.mobile ? 'reg-field__control--error' : ''}`}>
-            <span className="reg-field__icon">
-              <PhoneIcon />
-            </span>
-            <input
-              id="reg-mobile"
-              name="mobile"
-              type="tel"
-              inputMode="numeric"
-              className="reg-field__input"
-              placeholder="Mobile Number"
-              maxLength={10}
-              value={values.mobile}
-              onChange={onChange}
-              onBlur={onBlur}
-              autoComplete="tel"
-            />
-          </div>
-          {errors.mobile && <p className="reg-field__error">{errors.mobile}</p>}
-        </div>
+        <RegistrationMobileField
+          value={values.mobile}
+          error={errors.mobile}
+          isVerified={isMobileVerified}
+          onChange={onChange}
+          onBlur={onBlur}
+        />
       </div>
     </div>
   )

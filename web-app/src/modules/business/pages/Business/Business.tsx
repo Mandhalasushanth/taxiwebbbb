@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
+import { buildProfileCompletionPath } from '@core/auth'
 import { useAuthStore } from '@store/index'
 import { CompleteProfileModal } from '@shared/components'
 import { useBusiness } from '../../hooks/useBusiness'
@@ -38,7 +39,7 @@ export const BusinessPage: React.FC = () => {
 
   const handleConfirmProfile = () => {
     setIsProfileModalOpen(false)
-    navigate(routePaths.auth.register, {
+    navigate(buildProfileCompletionPath(routePaths.business.root), {
       state: { returnTo: routePaths.business.root, mobile: user?.mobile },
     })
   }

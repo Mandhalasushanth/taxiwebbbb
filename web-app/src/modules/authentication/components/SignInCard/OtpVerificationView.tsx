@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { GoogleIcon } from '../RegistrationIcons/RegistrationIcons'
 import './OtpVerificationView.css'
 
 export interface OtpVerificationViewProps {
@@ -10,7 +9,6 @@ export interface OtpVerificationViewProps {
   onResendOtp: () => void
   isSubmitting: boolean
   error: string | null
-  onGoogleLogin?: () => void
 }
 
 const OTP_LENGTH = 6
@@ -24,7 +22,6 @@ export const OtpVerificationView: React.FC<OtpVerificationViewProps> = ({
   onResendOtp,
   isSubmitting,
   error,
-  onGoogleLogin,
 }) => {
   const [digits, setDigits] = useState<string[]>(Array.from({ length: OTP_LENGTH }, () => ''))
   const [countdown, setCountdown] = useState<number>(COUNTDOWN_SECONDS)
@@ -168,7 +165,7 @@ export const OtpVerificationView: React.FC<OtpVerificationViewProps> = ({
         </div>
       </div>
 
-      {/* Bottom Actions: Verify Button, Divider, Google Button */}
+      {/* Bottom Actions: Verify Button */}
       <div className="otp-verification-form__bottom-actions">
         <button
           type="submit"
@@ -180,21 +177,6 @@ export const OtpVerificationView: React.FC<OtpVerificationViewProps> = ({
           disabled={!isOtpComplete || isSubmitting}
         >
           <span>{isSubmitting ? 'Verifying...' : 'Verify OTP'}</span>
-        </button>
-
-        <div className="otp-verification-form__divider">
-          <span className="otp-verification-form__divider-line" />
-          <span className="otp-verification-form__divider-text">or</span>
-          <span className="otp-verification-form__divider-line" />
-        </div>
-
-        <button
-          type="button"
-          className="otp-verification-form__google-btn"
-          onClick={onGoogleLogin}
-        >
-          <GoogleIcon size={18} />
-          <span>Continue with Google</span>
         </button>
       </div>
     </form>

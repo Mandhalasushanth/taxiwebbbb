@@ -33,6 +33,7 @@
   height: 44px;
   border-radius: 12px;
   background: #fff7ed;
+  color: #ea580c;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,22 +176,27 @@
 /* External CSS Theme Colors for Icon Tiles */
 .business-loan-doc-card--blue .supporting-doc-item__icon-box {
   background-color: #eff6ff;
+  color: #2563eb;
 }
 
 .business-loan-doc-card--purple .supporting-doc-item__icon-box {
   background-color: #f5f3ff;
+  color: #9333ea;
 }
 
 .business-loan-doc-card--green .supporting-doc-item__icon-box {
   background-color: #ecfdf5;
+  color: #16a34a;
 }
 
 .business-loan-doc-card--pink .supporting-doc-item__icon-box {
   background-color: #fdf2f8;
+  color: #db2777;
 }
 
 .business-loan-doc-card--orange .supporting-doc-item__icon-box {
   background-color: #fff7ed;
+  color: #ea580c;
 }
 
 .business-loan-doc-card .supporting-doc-item__meta {

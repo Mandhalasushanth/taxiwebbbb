@@ -123,7 +123,8 @@ describe('LoanMarketplace Module', () => {
     const completeBtn = screen.getByRole('button', { name: /complete profile/i })
     fireEvent.click(completeBtn)
 
-    expect(mockNavigate).toHaveBeenCalledWith('/auth/register', {
+    // ?redirect= brings the user back to the chosen loan after completing the profile (BUG-CP-013)
+    expect(mockNavigate).toHaveBeenCalledWith('/auth/register?redirect=%2Floans%2Fvehicle-loan', {
       state: { returnTo: '/loans/vehicle-loan', mobile: '9876543210' },
     })
   })

@@ -10,6 +10,7 @@ export interface GSTBusinessDetailsProps {
     | 'legalName'
     | 'tradeName'
     | 'constitution'
+    | 'businessPan'
     | 'natureOfBusiness'
     | 'commencementDate'
     | 'registrationReason'

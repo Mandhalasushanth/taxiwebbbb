@@ -82,6 +82,20 @@
   display: block;
 }
 
+.reg-security-fields__terms--error .reg-security-fields__custom-checkbox {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.12);
+}
+
+.reg-security-fields__checkbox-input:focus-visible + .reg-security-fields__custom-checkbox {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+}
+
+.reg-security-fields__terms-error {
+  margin-top: -6px;
+}
+
 .reg-security-fields__terms-text {
   font-size: clamp(0.8125rem, 0.85vw, 0.9375rem);
   color: #64748b;

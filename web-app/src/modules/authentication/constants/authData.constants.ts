@@ -128,8 +128,4 @@ export const SIGN_IN_TRUST_BADGES: TrustBadgeData[] = [
 
 export const COUNTRY_CODES = [
   { code: '+91', country: 'IN', flag: '🇮🇳', label: 'India (+91)' },
-  { code: '+1', country: 'US', flag: '🇺🇸', label: 'USA (+1)' },
-  { code: '+44', country: 'UK', flag: '🇬🇧', label: 'UK (+44)' },
-  { code: '+971', country: 'AE', flag: '🇦🇪', label: 'UAE (+971)' },
-  { code: '+65', country: 'SG', flag: '🇸🇬', label: 'Singapore (+65)' },
 ]

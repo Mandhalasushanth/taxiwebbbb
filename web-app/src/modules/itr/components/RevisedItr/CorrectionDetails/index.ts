@@ -1,0 +1,6 @@
+export { RevisionCorrectionDetails } from './RevisionCorrectionDetails'
+export { RevisionAmountCard } from './RevisionAmountCard'
+export * from './MissedIncome'
+export * from './WrongDeduction'
+export * from './IncorrectBankDetails'
+export * from './Other'

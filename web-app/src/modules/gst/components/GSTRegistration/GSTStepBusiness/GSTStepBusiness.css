@@ -99,6 +99,7 @@
   padding: 0.55rem 0.85rem;
   font-size: 0.875rem;
   font-family: inherit;
+  font-weight: 600; /* Little bold for entered / selected field text */
   color: #0f172a;
   background-color: #ffffff;
   border: 1.5px solid #e2e8f0;
@@ -108,9 +109,76 @@
   box-sizing: border-box;
 }
 
-.gst-form-input::placeholder {
-  color: #94a3b8;
+/* All placeholder text: Distinct ash color and normal weight */
+.gst-form-input::placeholder,
+.gst-form-select::placeholder,
+input.gst-form-input::placeholder,
+textarea.gst-form-input::placeholder,
+.gst-step-business input::placeholder,
+.gst-step-business textarea::placeholder {
+  color: #94a3b8 !important; /* Ash gray */
+  font-weight: 400 !important; /* Normal weight so placeholder looks like placeholder */
   font-size: 0.875rem;
+  opacity: 1;
+}
+
+/* Dropdown select placeholder state: when the empty option is selected */
+.gst-form-select.gst-select--placeholder,
+.gst-form-select:has(option[value=""]:checked),
+.gst-form-select[data-empty="true"],
+.gst-form-select:invalid {
+  color: #94a3b8 !important; /* Ash color for placeholder state */
+  font-weight: 400 !important; /* Normal weight */
+}
+
+/* Real options inside select dropdown: Little bold and dark */
+.gst-form-select option {
+  color: #0f172a;
+  font-weight: 600;
+  background-color: #ffffff;
+}
+
+.gst-form-select option[value=""] {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* Date input placeholder state */
+.gst-form-input--date.gst-date--placeholder,
+.gst-form-input--date:not(.has-value):not(:focus) {
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
+}
+
+.gst-form-input--date.gst-date--placeholder::-webkit-datetime-edit,
+.gst-form-input--date.gst-date--placeholder::-webkit-datetime-edit-fields-wrapper,
+.gst-form-input--date.gst-date--placeholder::-webkit-datetime-edit-text,
+.gst-form-input--date.gst-date--placeholder::-webkit-datetime-edit-month-field,
+.gst-form-input--date.gst-date--placeholder::-webkit-datetime-edit-day-field,
+.gst-form-input--date.gst-date--placeholder::-webkit-datetime-edit-year-field,
+.gst-form-input--date:not(.has-value):not(:focus)::-webkit-datetime-edit,
+.gst-form-input--date:not(.has-value):not(:focus)::-webkit-datetime-edit-fields-wrapper,
+.gst-form-input--date:not(.has-value):not(:focus)::-webkit-datetime-edit-text,
+.gst-form-input--date:not(.has-value):not(:focus)::-webkit-datetime-edit-month-field,
+.gst-form-input--date:not(.has-value):not(:focus)::-webkit-datetime-edit-day-field,
+.gst-form-input--date:not(.has-value):not(:focus)::-webkit-datetime-edit-year-field {
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
+}
+
+.gst-form-input--date.has-value,
+.gst-form-input--date:focus {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+.gst-form-input--date.has-value::-webkit-datetime-edit,
+.gst-form-input--date.has-value::-webkit-datetime-edit-text,
+.gst-form-input--date.has-value::-webkit-datetime-edit-month-field,
+.gst-form-input--date.has-value::-webkit-datetime-edit-day-field,
+.gst-form-input--date.has-value::-webkit-datetime-edit-year-field {
+  color: #0f172a !important;
+  font-weight: 600 !important;
 }
 
 .gst-form-input:focus,
@@ -415,4 +483,22 @@
     font-size: 0.84rem;
     padding: 0.45rem 0.75rem;
   }
+}
+
+/* Composition Scheme eligibility note (BUG-GST-006) */
+.gst-composition-note {
+  margin: -0.25rem 0 0.25rem;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+}
+
+.gst-composition-note--error {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: #fecaca;
 }

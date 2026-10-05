@@ -6,6 +6,7 @@ import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
 import { getCurrentBankDetails } from '@modules/gst/services/gstProfileDetails'
 import { lookupSampleBankByIfsc } from '@shared/services'
+import { ConfirmAccountNumberInput } from '@shared/components'
 import GSTAmendmentProofUpload from './GSTAmendmentProofUpload'
 import './GSTBankAccountsForm.css'
 
@@ -148,7 +149,7 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
               <input
                 id="account-no-input"
                 type="text"
-                placeholder="Enter account number"
+                placeholder="Enter your bank account number"
                 value={accountNumber}
                 onChange={(e) => {
                   setAccountNumber(gstInput.accountNumber(e.target.value))
@@ -166,20 +167,19 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
               <label htmlFor="confirm-account-no-input" className="gst-amend-field-label">
                 Confirm Account Number <span className="gst-amend-star">*</span>
               </label>
-              <input
+              <ConfirmAccountNumberInput
                 id="confirm-account-no-input"
-                type="text"
-                placeholder="Re-enter account number"
+                name="confirmAccountNumber"
+                placeholder="Enter your bank account number"
                 value={confirmAccountNumber}
-                onChange={(e) => {
-                  setConfirmAccountNumber(gstInput.accountNumber(e.target.value))
+                onChange={(val) => {
+                  setConfirmAccountNumber(val)
                   if (errors.confirmAccountNumber) setErrors((prev) => ({ ...prev, confirmAccountNumber: '' }))
                 }}
                 className={`gst-amend-text-input ${errors.confirmAccountNumber ? 'has-error' : ''}`}
+                hasError={Boolean(errors.confirmAccountNumber)}
+                error={errors.confirmAccountNumber}
               />
-              {errors.confirmAccountNumber && (
-                <span className="gst-amend-error-msg">{errors.confirmAccountNumber}</span>
-              )}
             </div>
 
             <div className="gst-amend-field-group">
@@ -189,7 +189,7 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
               <input
                 id="ifsc-code-input"
                 type="text"
-                placeholder="Enter IFSC code"
+                placeholder="Enter your IFSC code"
                 value={ifscCode}
                 onChange={(e) => {
                   const cleaned = gstInput.ifsc(e.target.value)

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Check } from 'lucide-react'
 
 export interface LoanDropdownOptionProps {
   value: string
@@ -35,11 +36,8 @@ export const LoanDropdownOption: React.FC<LoanDropdownOptionProps> = ({
     >
       <span>{label}</span>
       {isSelected && (
-        <img
-          src="/assets/icons/loans/check-orange.svg"
-          alt=""
-          width="16"
-          height="16"
+        <Check
+          size={16}
           className={iconClass}
           aria-hidden="true"
         />

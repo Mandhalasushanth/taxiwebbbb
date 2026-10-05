@@ -1,4 +1,5 @@
 import React from 'react'
+import { Home, Users, ChevronDown } from 'lucide-react'
 import type { ProjectFinanceData } from '@modules/loans/types/projectFinance.types'
 
 export interface OfficeAddressAndPromotersProps {
@@ -33,12 +34,12 @@ export const OfficeAddressAndPromoters: React.FC<OfficeAddressAndPromotersProps>
         <div className="pf-collapsible-header" onClick={onToggleOffice}>
           <div className="pf-collapsible-header__left">
             <div className="pf-section-icon-tile pf-section-icon-tile--orange">
-              <img src="/assets/icons/loans/home-pink.svg" alt="" width="20" height="20" />
+              <Home size={20} />
             </div>
             <h3 className="pf-collapsible-title">Registered Office Address</h3>
           </div>
           <span className={`pf-chevron ${isOfficeOpen ? 'pf-chevron--open' : ''}`}>
-            <img src="/assets/icons/loans/chevron-down.svg" alt="" width="18" height="18" />
+            <ChevronDown size={18} />
           </span>
         </div>
 
@@ -133,12 +134,12 @@ export const OfficeAddressAndPromoters: React.FC<OfficeAddressAndPromotersProps>
         <div className="pf-collapsible-header" onClick={onTogglePromoters}>
           <div className="pf-collapsible-header__left">
             <div className="pf-section-icon-tile pf-section-icon-tile--orange">
-              <img src="/assets/icons/loans/users-green.svg" alt="" width="20" height="20" />
+              <Users size={20} />
             </div>
             <h3 className="pf-collapsible-title">Promoters / Sponsors</h3>
           </div>
           <span className={`pf-chevron ${isPromotersOpen ? 'pf-chevron--open' : ''}`}>
-            <img src="/assets/icons/loans/chevron-down.svg" alt="" width="18" height="18" />
+            <ChevronDown size={18} />
           </span>
         </div>
 

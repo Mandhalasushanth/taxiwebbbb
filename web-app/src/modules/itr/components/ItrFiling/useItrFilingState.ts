@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from 'react'
-import { routePaths } from '@core/config'
-import { useAppStore } from '@store/index'
-import { userStorage } from '@core/storage/userStorage'
-import { useDraftBlocker } from '@shared/hooks'
-import { calculateItrTax } from './itrTaxCalculator'
+import { useState, useEffect, useCallback } from "react";
+import { routePaths } from "@core/config";
+import { useAppStore } from "@store/index";
+import { userStorage } from "@core/storage/userStorage";
+import { useDraftBlocker } from "@shared/hooks";
+import { calculateItrTax } from "./itrTaxCalculator";
 import {
   DEFAULT_PREVIOUS_ITR,
   DEFAULT_SALARY_DETAILS,
@@ -26,113 +26,178 @@ import {
   type OtherSourcesDetails,
   type DeductionsData,
   type UploadedDocInfo,
-} from './itrFiling.constants'
+} from "./itrFiling.constants";
+
+const resolveSubmittedFormType = (selectedSources: string[]): string => {
+  try {
+    if (selectedSources.includes("business")) return "ITR-3";
+    if (selectedSources.includes("capital_gains")) return "ITR-2";
+    return "ITR-1";
+  } catch {
+    return "ITR-1";
+  }
+};
+
+const resolveSubmittedSourceLabel = (
+  selectedSources: string[],
+  employerName?: string,
+): string => {
+  try {
+    if (selectedSources.includes("salary")) return employerName || "Salaried";
+    if (selectedSources.includes("business")) return "Business";
+    if (selectedSources.includes("capital_gains")) return "Capital Gains";
+    return "Income Tax Return";
+  } catch {
+    return "Income Tax Return";
+  }
+};
 
 export function useItrFilingState() {
-  const pushToast = useAppStore((state) => state.pushToast)
-  const [existingDraft] = useState(() => userStorage.getDraft('itr-filing'))
+  const pushToast = useAppStore((state) => state.pushToast);
+  const [existingDraft] = useState(() => {
+    try {
+      return userStorage.getDraft("itr-filing");
+    } catch {
+      return undefined;
+    }
+  });
 
-  const [isStarted, setIsStarted] = useState<boolean>(() => Boolean(existingDraft))
-  const [currentStep, setCurrentStep] = useState<number>(() => existingDraft?.currentStep || 1)
-
-  // Step 1: Personal & Filing
-  const [selectedCategoryId, setSelectedCategoryId] = useState<ItrCategoryId | null>(
-    () => (existingDraft?.formData?.selectedCategoryId as ItrCategoryId) || null
-  )
+  const [isStarted, setIsStarted] = useState<boolean>(() =>
+    Boolean(existingDraft),
+  );
+  const [currentStep, setCurrentStep] = useState<number>(
+    () => existingDraft?.currentStep || 1,
+  );
+  const [selectedCategoryId, setSelectedCategoryId] =
+    useState<ItrCategoryId | null>(
+      () =>
+        (existingDraft?.formData?.selectedCategoryId as ItrCategoryId) || null,
+    );
   const [assessmentYear, setAssessmentYear] = useState<AssessmentYearOption>(
-    () => (existingDraft?.formData?.assessmentYear as AssessmentYearOption) || ''
-  )
-  const [residentialStatus, setResidentialStatus] = useState<ResidentialStatusOption>(
-    () => (existingDraft?.formData?.residentialStatus as ResidentialStatusOption) || ''
-  )
+    () =>
+      (existingDraft?.formData?.assessmentYear as AssessmentYearOption) || "",
+  );
+  const [residentialStatus, setResidentialStatus] =
+    useState<ResidentialStatusOption>(
+      () =>
+        (existingDraft?.formData
+          ?.residentialStatus as ResidentialStatusOption) || "",
+    );
   const [filingType, setFilingType] = useState<FilingTypeOption>(
-    () => (existingDraft?.formData?.filingType as FilingTypeOption) || ''
-  )
+    () => (existingDraft?.formData?.filingType as FilingTypeOption) || "",
+  );
   const [bankAccounts, setBankAccounts] = useState<FilingBankAccount[]>(
-    () => (existingDraft?.formData?.bankAccounts as FilingBankAccount[]) || []
-  )
+    () => (existingDraft?.formData?.bankAccounts as FilingBankAccount[]) || [],
+  );
   const [selectedBankId, setSelectedBankId] = useState<string>(
-    () => (existingDraft?.formData?.selectedBankId as string) || ''
-  )
+    () => (existingDraft?.formData?.selectedBankId as string) || "",
+  );
   const [previousItr, setPreviousItr] = useState<PreviousItrInfo>(
-    () => (existingDraft?.formData?.previousItr as PreviousItrInfo) || DEFAULT_PREVIOUS_ITR
-  )
+    () =>
+      (existingDraft?.formData?.previousItr as PreviousItrInfo) ||
+      DEFAULT_PREVIOUS_ITR,
+  );
 
-  // Step 2: Income Sources
   const [selectedSources, setSelectedSources] = useState<string[]>(
-    () => (existingDraft?.formData?.selectedSources as string[]) || []
-  )
+    () =>
+      (existingDraft?.formData?.selectedSources as string[]) || [],
+  );
   const [salaryDetails, setSalaryDetails] = useState<SalaryDetails>(
-    () => (existingDraft?.formData?.salaryDetails as SalaryDetails) || DEFAULT_SALARY_DETAILS
-  )
-  const [housePropertyDetails, setHousePropertyDetails] = useState<HousePropertyDetails>(
-    () => (existingDraft?.formData?.housePropertyDetails as HousePropertyDetails) || DEFAULT_HOUSE_PROPERTY_DETAILS
-  )
+    () =>
+      (existingDraft?.formData?.salaryDetails as SalaryDetails) ||
+      DEFAULT_SALARY_DETAILS,
+  );
+  const [housePropertyDetails, setHousePropertyDetails] =
+    useState<HousePropertyDetails>(
+      () =>
+        (existingDraft?.formData
+          ?.housePropertyDetails as HousePropertyDetails) ||
+        DEFAULT_HOUSE_PROPERTY_DETAILS,
+    );
   const [businessDetails, setBusinessDetails] = useState<BusinessDetails>(
-    () => (existingDraft?.formData?.businessDetails as BusinessDetails) || DEFAULT_BUSINESS_DETAILS
-  )
-  const [capitalGainsDetails, setCapitalGainsDetails] = useState<CapitalGainsDetails>(
-    () => (existingDraft?.formData?.capitalGainsDetails as CapitalGainsDetails) || DEFAULT_CAPITAL_GAINS_DETAILS
-  )
-  const [otherSourcesDetails, setOtherSourcesDetails] = useState<OtherSourcesDetails>(
-    () => (existingDraft?.formData?.otherSourcesDetails as OtherSourcesDetails) || DEFAULT_OTHER_SOURCES_DETAILS
-  )
+    () =>
+      (existingDraft?.formData?.businessDetails as BusinessDetails) ||
+      DEFAULT_BUSINESS_DETAILS,
+  );
+  const [capitalGainsDetails, setCapitalGainsDetails] =
+    useState<CapitalGainsDetails>(
+      () =>
+        (existingDraft?.formData?.capitalGainsDetails as CapitalGainsDetails) ||
+        DEFAULT_CAPITAL_GAINS_DETAILS,
+    );
+  const [otherSourcesDetails, setOtherSourcesDetails] =
+    useState<OtherSourcesDetails>(
+      () =>
+        (existingDraft?.formData?.otherSourcesDetails as OtherSourcesDetails) ||
+        DEFAULT_OTHER_SOURCES_DETAILS,
+    );
 
-  // Step 3: Regime & Deductions
-  const [selectedRegime, setSelectedRegime] = useState<'new' | 'old' | ''>(
-    () => (existingDraft?.formData?.selectedRegime as 'new' | 'old') || ''
-  )
+  const [selectedRegime, setSelectedRegime] = useState<"new" | "old" | "">(
+    () => (existingDraft?.formData?.selectedRegime as "new" | "old") || "",
+  );
   const [deductions, setDeductions] = useState<DeductionsData>(
-    () => (existingDraft?.formData?.deductions as DeductionsData) || DEFAULT_DEDUCTIONS
-  )
+    () =>
+      (existingDraft?.formData?.deductions as DeductionsData) ||
+      DEFAULT_DEDUCTIONS,
+  );
+  const [uploadedDocs, setUploadedDocs] = useState<
+    Record<string, UploadedDocInfo>
+  >(
+    () =>
+      (existingDraft?.formData?.uploadedDocs as Record<
+        string,
+        UploadedDocInfo
+      >) || {},
+  );
 
-  // Step 4: Documents
-  const [uploadedDocs, setUploadedDocs] = useState<Record<string, UploadedDocInfo>>(
-    () => (existingDraft?.formData?.uploadedDocs as Record<string, UploadedDocInfo>) || {}
-  )
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedRef, setSubmittedRef] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Step 5: Final Submission
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [submittedRef, setSubmittedRef] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const selectedBank = bankAccounts.find((b) => b.id === selectedBankId) || bankAccounts[0]
+  const selectedBank =
+    bankAccounts.find((b) => b.id === selectedBankId) || bankAccounts[0];
 
   const saveCurrentDraft = useCallback(() => {
-    if (isSubmitted) return
-    const now = new Date()
-    const timeStr = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
-
-    userStorage.saveDraft({
-      serviceId: 'itr-filing',
-      serviceTitle: 'ITR Filing',
-      currentStep,
-      totalSteps: 5,
-      stepLabel: ITR_STEP_LABELS[currentStep - 1] || 'Personal & Filing Info',
-      formData: {
-        isStarted,
+    try {
+      if (isSubmitted) return;
+      const timeStr = new Date().toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
+      userStorage.saveDraft({
+        serviceId: "itr-filing",
+        serviceTitle: "ITR Filing",
         currentStep,
-        selectedCategoryId,
-        assessmentYear,
-        residentialStatus,
-        filingType,
-        bankAccounts,
-        selectedBankId,
-        previousItr,
-        selectedSources,
-        salaryDetails,
-        housePropertyDetails,
-        businessDetails,
-        capitalGainsDetails,
-        otherSourcesDetails,
-        selectedRegime,
-        deductions,
-        uploadedDocs,
-      },
-      savedAt: timeStr,
-      savedTimestamp: Date.now(),
-      resumeRoute: routePaths.itr.itrFiling,
-    })
+        totalSteps: 5,
+        stepLabel: ITR_STEP_LABELS[currentStep - 1] || "Personal & Filing Info",
+        formData: {
+          isStarted,
+          currentStep,
+          selectedCategoryId,
+          assessmentYear,
+          residentialStatus,
+          filingType,
+          bankAccounts,
+          selectedBankId,
+          previousItr,
+          selectedSources,
+          salaryDetails,
+          housePropertyDetails,
+          businessDetails,
+          capitalGainsDetails,
+          otherSourcesDetails,
+          selectedRegime,
+          deductions,
+          uploadedDocs,
+        },
+        savedAt: timeStr,
+        savedTimestamp: Date.now(),
+        resumeRoute: routePaths.itr.itrFiling,
+      });
+    } catch {
+      // Fallback
+    }
   }, [
     isSubmitted,
     currentStep,
@@ -153,13 +218,14 @@ export function useItrFilingState() {
     selectedRegime,
     deductions,
     uploadedDocs,
-  ])
+  ]);
 
   useEffect(() => {
     if (isStarted && currentStep > 1 && !isSubmitted) {
-      saveCurrentDraft()
+      saveCurrentDraft();
     }
-  }, [isStarted, currentStep, isSubmitted, saveCurrentDraft])
+  }, [isStarted, currentStep, isSubmitted, saveCurrentDraft]);
+
 
   const {
     isModalOpen,
@@ -170,77 +236,84 @@ export function useItrFilingState() {
   } = useDraftBlocker({
     shouldBlock: isStarted && currentStep > 1 && !isSubmitted,
     onSaveDraft: () => {
-      saveCurrentDraft()
-      pushToast('Application saved as draft', 'success')
+      saveCurrentDraft();
+      pushToast("Application saved as draft", "success");
     },
     onDiscardDraft: () => {
-      userStorage.deleteDraft('itr-filing')
-      pushToast('Draft discarded', 'info')
+      userStorage.deleteDraft("itr-filing");
+      pushToast("Draft discarded", "info");
     },
     defaultExitRoute: routePaths.dashboard,
-  })
+  });
 
   const handleUploadDoc = (docId: string, docInfo: UploadedDocInfo) => {
-    setUploadedDocs((prev) => ({ ...prev, [docId]: docInfo }))
-  }
+    try {
+      setUploadedDocs((prev) => ({ ...prev, [docId]: docInfo }));
+    } catch {
+      // Fallback
+    }
+  };
 
   const handleRemoveDoc = (docId: string) => {
-    setUploadedDocs((prev) => {
-      const next = { ...prev }
-      delete next[docId]
-      return next
-    })
-  }
+    try {
+      setUploadedDocs((prev) => {
+        const next = { ...prev };
+        delete next[docId];
+        return next;
+      });
+    } catch {
+      // Fallback
+    }
+  };
 
   const handleFinalSubmit = () => {
-    setIsSubmitting(true)
-    const year = new Date().getFullYear()
-    const randomCode = Math.floor(10000 + Math.random() * 90000)
-    const generatedRef = `ITR-${year}-${randomCode}`
+    try {
+      setIsSubmitting(true);
+      const generatedRef = `ITR-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
 
-    setTimeout(() => {
-      const taxCalc = calculateItrTax({
-        selectedSources,
-        salaryDetails,
-        housePropertyDetails,
-        businessDetails,
-        capitalGainsDetails,
-        otherSourcesDetails,
-        selectedRegime,
-        deductions,
-      })
+      setTimeout(() => {
+        try {
+          const taxCalc = calculateItrTax({
+            selectedSources,
+            salaryDetails,
+            housePropertyDetails,
+            businessDetails,
+            capitalGainsDetails,
+            otherSourcesDetails,
+            selectedRegime,
+            deductions,
+          });
+          const formType = resolveSubmittedFormType(selectedSources);
+          const sourceLabel = resolveSubmittedSourceLabel(
+            selectedSources,
+            salaryDetails.employerName,
+          );
 
-      const hasBusiness = selectedSources.includes('business')
-      const hasCapital = selectedSources.includes('capital_gains')
-      const formType = hasBusiness ? 'ITR-3' : hasCapital ? 'ITR-2' : 'ITR-1'
+          userStorage.saveUserApplication({
+            id: `app-itr-${Date.now()}`,
+            code: generatedRef,
+            title: `${formType} Filing — ${assessmentYear}`,
+            meta: `${sourceLabel} · ₹${taxCalc.grossTotalIncome.toLocaleString("en-IN")}`,
+            statusLabel: "Submitted",
+            statusTone: "info",
+            progress: 25,
+            icon: "📄",
+            to: `/applications/track/${generatedRef}`,
+          });
 
-      const sourceLabel = selectedSources.includes('salary')
-        ? (salaryDetails.employerName || 'Salaried')
-        : selectedSources.includes('business')
-        ? 'Business'
-        : selectedSources.includes('capital_gains')
-        ? 'Capital Gains'
-        : 'Income Tax Return'
-
-      userStorage.saveUserApplication({
-        id: `app-itr-${Date.now()}`,
-        code: generatedRef,
-        title: `${formType} Filing — ${assessmentYear}`,
-        meta: `${sourceLabel} · ₹${taxCalc.grossTotalIncome.toLocaleString('en-IN')}`,
-        statusLabel: 'Submitted',
-        statusTone: 'info',
-        progress: 25,
-        icon: '📄',
-        to: `/applications/track/${generatedRef}`,
-      })
-
-      userStorage.deleteDraft('itr-filing')
-      setSubmittedRef(generatedRef)
-      setIsSubmitting(false)
-      setIsSubmitted(true)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }, 600)
-  }
+          userStorage.deleteDraft("itr-filing");
+          setSubmittedRef(generatedRef);
+          setIsSubmitting(false);
+          setIsSubmitted(true);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } catch {
+          setIsSubmitting(false);
+        }
+      }, 600);
+    } catch {
+      setIsSubmitting(false);
+    }
+  };
 
   return {
     isStarted,
@@ -290,5 +363,5 @@ export function useItrFilingState() {
     handleSaveAndExit,
     handleDiscardAndExit,
     handleKeepEditing,
-  }
+  };
 }

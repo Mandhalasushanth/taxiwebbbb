@@ -53,7 +53,7 @@ export const GSTCertificateForm = ({
               id="gcf-gstin"
               type="text"
               className={`gcf-input ${errors.gstin ? 'has-error' : ''}`}
-              placeholder="e.g. 29ABCDE1234F1Z5"
+              placeholder="Enter your GSTIN"
               maxLength={15}
               value={gstin}
               onChange={(e: ChangeEvent<HTMLInputElement>) => onChange('gstin', gstInput.gstin(e.target.value))}

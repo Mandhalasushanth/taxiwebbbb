@@ -36,9 +36,11 @@ export function LoanStepFlowFooter<T extends object>({
         onNext={flow.handleNext}
         onSaveDraft={() => flow.setIsDraftModalOpen(true)}
         saveDraftLabel="Save Draft & Exit"
-        nextLabel={flow.isLastStep ? (flow.isSubmitting ? 'Submitting...' : 'Submit Application') : 'Continue'}
+        nextLabel="Continue"
+        isSubmitting={flow.isSubmitting}
         nextDisabled={flow.isSubmitting || nextDisabled}
         nextTestId={flow.isLastStep ? `${prefix}submit-application-btn` : `${prefix}step-continue-btn`}
+        nextAriaLabel={flow.isLastStep ? 'Submit Application' : undefined}
       />
 
       <DraftConfirmModal

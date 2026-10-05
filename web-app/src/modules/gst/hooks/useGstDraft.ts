@@ -71,14 +71,17 @@ export const useGstDraft = <T>({
   const [isManualModalOpen, setIsManualModalOpen] = useState(false)
   // Set once the user picks an exit, so that navigation is not blocked again
   const isExitingRef = useRef(false)
+  // Set by "Discard & Exit": nothing may write the draft back while the page unmounts
+  const isDiscardedRef = useRef(false)
 
   // Silent auto-save of every change (storage write only, no state update)
   useEffect(() => {
-    if (isComplete || !hasEnteredData) return
+    if (isComplete || !hasEnteredData || isDiscardedRef.current) return
     localStore.set<GstDraftSnapshot<T>>(autosaveKey(serviceId), { formData, currentStep })
   }, [serviceId, formData, currentStep, hasEnteredData, isComplete])
 
   const saveDraft = useCallback(() => {
+    if (isDiscardedRef.current) return
     localStore.set<GstDraftSnapshot<T>>(autosaveKey(serviceId), { formData, currentStep })
     userStorage.saveDraft({
       serviceId,
@@ -100,7 +103,12 @@ export const useGstDraft = <T>({
     localStore.remove(autosaveKey(serviceId))
   }, [serviceId])
 
+  /**
+   * Purges every stored copy (saved draft, auto-save, drafts list) and blocks any later
+   * auto-save / unload save, so reopening the flow starts empty.
+   */
   const discardDraft = useCallback(() => {
+    isDiscardedRef.current = true
     clearDraft()
     pushToast('Draft discarded', 'info')
   }, [clearDraft, pushToast])

@@ -13,10 +13,12 @@ export interface StepActionBarProps {
   backDisabled?: boolean
   showBack?: boolean
   showNext?: boolean
+  showSaveDraft?: boolean
   hideNextWhenDisabled?: boolean
   nextType?: 'button' | 'submit'
   backTestId?: string
   nextTestId?: string
+  nextAriaLabel?: string
   saveDraftTestId?: string
   extraActions?: React.ReactNode
   className?: string
@@ -28,30 +30,98 @@ export const StepActionBar: React.FC<StepActionBarProps> = ({
   onSaveDraft,
   saveDraftLabel = 'Save Draft & Exit',
   backLabel = 'Back',
-  nextLabel = 'Continue',
+  nextLabel: _nextLabel = 'Continue',
   isSubmitting = false,
   nextDisabled = false,
   backDisabled = false,
   showBack = true,
   showNext = true,
-  hideNextWhenDisabled = false,
+  showSaveDraft = true,
+  hideNextWhenDisabled: _hideNextWhenDisabled = false,
   nextType = 'button',
   backTestId = 'step-back-btn',
   nextTestId = 'step-continue-btn',
+  nextAriaLabel,
   saveDraftTestId = 'step-save-draft-btn',
   extraActions,
   className = '',
 }) => {
-  const isContinueVisible = showNext && (!hideNextWhenDisabled || !nextDisabled)
+  const isContinueVisible = showNext
+
+  const handleBackClick = () => {
+    if (isSubmitting) return
+    if (onBack) {
+      onBack()
+      return
+    }
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      window.history.back()
+    }
+  }
+
+  const handleSaveDraftClick = () => {
+    if (isSubmitting) return
+    if (onSaveDraft) {
+      onSaveDraft()
+      return
+    }
+    // Fallback: Dispatch custom event for parents to listen to, or go back
+    window.dispatchEvent(
+      new CustomEvent('step-action-bar:save-draft', {
+        bubbles: true,
+        detail: { nextTestId },
+      })
+    )
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      window.history.back()
+    }
+  }
+
+  const handleNextClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (isSubmitting) return
+
+    if (nextDisabled) {
+      e.preventDefault()
+      e.stopPropagation()
+
+      // Notify parent views that a continue was attempted while incomplete
+      window.dispatchEvent(
+        new CustomEvent('step-action-bar:submit-attempt', {
+          bubbles: true,
+          detail: { nextTestId },
+        })
+      )
+
+      // Trigger HTML form submit / reportValidity if inside a form
+      const form = e.currentTarget.closest('form') || document.querySelector('form')
+      if (form) {
+        if (typeof form.requestSubmit === 'function') {
+          form.requestSubmit()
+        } else {
+          form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }))
+        }
+      }
+      return
+    }
+
+    if (nextType === 'button') {
+      onNext?.()
+    }
+  }
+
+  // Consistent label enforcement: Continue is always strictly 'Continue' (or 'Processing...' if submitting)
+  const displayContinueLabel = isSubmitting ? 'Processing...' : 'Continue'
+  const displayBackLabel = backLabel || 'Back'
+  const displaySaveDraftLabel = saveDraftLabel || 'Save Draft & Exit'
 
   return (
     <div className={`step-action-bar ${className}`} data-testid="step-action-bar">
       <div className="step-action-bar__left">
-        {showBack && onBack && (
+        {showBack && (
           <button
             type="button"
             className="step-action-bar__btn step-action-bar__btn--back"
-            onClick={onBack}
+            onClick={handleBackClick}
             disabled={backDisabled || isSubmitting}
             data-testid={backTestId}
           >
@@ -66,17 +136,17 @@ export const StepActionBar: React.FC<StepActionBarProps> = ({
             >
               <polyline points="15 18 9 12 15 6" />
             </svg>
-            <span>{backLabel}</span>
+            <span>{displayBackLabel}</span>
           </button>
         )}
       </div>
 
       <div className="step-action-bar__right">
-        {onSaveDraft && (
+        {showSaveDraft && (
           <button
             type="button"
             className="step-action-bar__btn step-action-bar__btn--save-draft"
-            onClick={onSaveDraft}
+            onClick={handleSaveDraftClick}
             data-testid={saveDraftTestId}
           >
             <svg
@@ -94,7 +164,7 @@ export const StepActionBar: React.FC<StepActionBarProps> = ({
               <polyline points="17 21 17 13 7 13 7 21" />
               <polyline points="7 3 7 8 15 8" />
             </svg>
-            <span>{saveDraftLabel}</span>
+            <span>{displaySaveDraftLabel}</span>
           </button>
         )}
 
@@ -103,18 +173,19 @@ export const StepActionBar: React.FC<StepActionBarProps> = ({
         {isContinueVisible && (
           <button
             type={nextType}
-            className="step-action-bar__btn step-action-bar__btn--next"
-            onClick={nextType === 'button' ? onNext : undefined}
-            disabled={nextDisabled || isSubmitting}
+            className={`step-action-bar__btn step-action-bar__btn--next ${nextDisabled ? 'step-action-bar__btn--next-incomplete' : ''}`}
+            onClick={handleNextClick}
+            disabled={isSubmitting}
             data-testid={nextTestId}
+            aria-label={nextAriaLabel}
           >
             {isSubmitting ? (
               <>
                 <span className="step-action-bar__spinner" aria-hidden="true" />
-                <span>Processing...</span>
+                <span>{displayContinueLabel}</span>
               </>
             ) : (
-              <span>{nextLabel}</span>
+              <span>{displayContinueLabel}</span>
             )}
           </button>
         )}

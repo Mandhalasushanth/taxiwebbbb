@@ -85,14 +85,14 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
             type="text"
             maxLength={10}
             className={`notice-field__input ${touched.pan && !hasPan ? 'notice-field__input--error' : ''}`}
-            placeholder="e.g. CASPJ4743E"
+            placeholder="Enter your PAN"
             value={formData.pan}
             onChange={(e) => onChange({ pan: e.target.value.toUpperCase() })}
             onBlur={() => handleBlur('pan')}
             autoCapitalize="characters"
           />
           {touched.pan && !hasPan && (
-            <span className="notice-field__error">Please enter a valid 10-character PAN (e.g. ABCDE1234F).</span>
+            <span className="notice-field__error">Enter a valid PAN</span>
           )}
         </div>
 
@@ -187,7 +187,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
             className={`notice-field__input ${
               touched.noticeReference && !hasNoticeRef ? 'notice-field__input--error' : ''
             }`}
-            placeholder="e.g. ITBA/AST/S/143(1)/2024-25/..."
+            placeholder="Enter notice reference number or DIN"
             value={formData.noticeReference}
             onChange={(e) => onChange({ noticeReference: e.target.value })}
             onBlur={() => handleBlur('noticeReference')}
@@ -246,7 +246,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
               touched.explanation && !hasExplanation ? 'notice-field__textarea--error' : ''
             }`}
             rows={3}
-            placeholder="Briefly describe what discrepancy or issue the notice mentions (e.g., mismatch in 26AS TDS credit, foreign income inquiry, or disallowed deduction under 80C)..."
+            placeholder="Describe what discrepancy or issue the notice mentions..."
             value={formData.explanation}
             onChange={(e) => onChange({ explanation: e.target.value })}
             onBlur={() => handleBlur('explanation')}

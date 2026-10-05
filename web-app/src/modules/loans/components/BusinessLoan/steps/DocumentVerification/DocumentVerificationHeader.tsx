@@ -1,4 +1,5 @@
 import React from 'react'
+import { FileText, Info } from 'lucide-react'
 
 /**
  * Header banner for Step 4 Document Verification
@@ -9,12 +10,7 @@ export const DocumentVerificationHeader: React.FC = () => {
     <div className="doc-verification-header">
       <div className="doc-verification-header__left">
         <div className="doc-verification-icon-tile" aria-hidden="true">
-          <img
-            src="/assets/icons/loans/doc-orange.svg"
-            alt=""
-            width="22"
-            height="22"
-          />
+          <FileText size={22} />
         </div>
         <div className="doc-verification-header__text">
           <h2 className="doc-verification-title">Document Verification</h2>
@@ -25,11 +21,8 @@ export const DocumentVerificationHeader: React.FC = () => {
       </div>
 
       <div className="doc-verification-info-badge">
-        <img
-          src="/assets/icons/loans/info-orange.svg"
-          alt=""
-          width="18"
-          height="18"
+        <Info
+          size={18}
           className="doc-verification-info-icon"
           aria-hidden="true"
         />

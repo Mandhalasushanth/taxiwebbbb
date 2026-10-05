@@ -94,3 +94,36 @@
     font-size: 0.82rem;
   }
 }
+
+/* GST Registration Form Fields: Main text little bold, placeholders ash */
+.gst-reg-page input:not([type="checkbox"]):not([type="radio"]),
+.gst-reg-page select,
+.gst-reg-page textarea {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.gst-reg-page input::placeholder,
+.gst-reg-page textarea::placeholder {
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
+  opacity: 1;
+}
+
+.gst-reg-page select.gst-select--placeholder,
+.gst-reg-page select:has(option[value=""]:checked),
+.gst-reg-page select[data-empty="true"] {
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
+}
+
+.gst-reg-page select option {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.gst-reg-page select option[value=""] {
+  color: #94a3b8;
+  font-weight: 400;
+}
+

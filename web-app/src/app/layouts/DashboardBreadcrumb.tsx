@@ -189,12 +189,21 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
     )
   }
 
-  if (path === routePaths.applications) {
+  if (path.startsWith('/applications')) {
+    const isTracker = path.includes('/track') || path !== routePaths.applications
     return (
       <nav className="shell__breadcrumb" aria-label="Breadcrumb">
         <Link to={routePaths.dashboard}>Home</Link>
         <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
-        <span className="shell__breadcrumb-current">Applications</span>
+        {isTracker ? (
+          <>
+            <Link to={routePaths.applications}>Applications</Link>
+            <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
+            <span className="shell__breadcrumb-current">Track Application</span>
+          </>
+        ) : (
+          <span className="shell__breadcrumb-current">Applications</span>
+        )}
       </nav>
     )
   }

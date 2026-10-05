@@ -1,4 +1,5 @@
 import { useEffect, useRef, type FC } from 'react'
+import { AlertCircle } from 'lucide-react'
 import './GSTStepErrorBanner.css'
 
 export interface GSTStepErrorBannerProps {
@@ -18,7 +19,7 @@ export const GSTStepErrorBanner: FC<GSTStepErrorBannerProps> = ({ message }) => 
 
   return (
     <div ref={bannerRef} className="gst-step-error-banner" role="alert">
-      <img src="/assets/icons/gst/alert-circle.svg" alt="" className="gst-step-error-banner__icon" />
+      <AlertCircle className="gst-step-error-banner__icon" size={20} aria-hidden="true" />
       <span>{message}</span>
     </div>
   )

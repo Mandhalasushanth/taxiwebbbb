@@ -1,0 +1,393 @@
+/* TDS Refund Step 5: Application Status (Desktop Web View) */
+
+.tds-status-page {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.25rem 0 3.5rem 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* Stepper Track - Centered at Top */
+.tds-status-stepper-wrap {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+/* Full Width Content Layout */
+.tds-status-layout {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.tds-status-main {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-sizing: border-box;
+}
+
+/* Base Status Card */
+.tds-status-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-sizing: border-box;
+}
+
+/* Top Overview Card */
+.tds-status-overview-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.tds-status-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+.tds-action-back-btn--compact {
+  height: 38px !important;
+  padding: 0 0.85rem !important;
+}
+.tds-status-app-id-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+.tds-status-app-id-val {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.tds-status-badge-purple {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fff7ed;
+  color: #ea580c;
+  border: 1px solid #fed7aa;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.tds-status-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ea580c;
+}
+
+/* Overview Info Grid */
+.tds-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+.tds-status-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.tds-status-item-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+}
+.tds-status-item-val {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.tds-status-item-val--green {
+  color: #083b75;
+}
+
+/* Progress Bar */
+.tds-status-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.tds-status-progress-track {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.tds-status-progress-fill {
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(90deg, #083b75 0%, #f97316 100%);
+  border-radius: 9999px;
+  transition: width 0.5s ease;
+}
+.tds-status-progress-label {
+  align-self: flex-end;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+/* 9-Stage Vertical Lifecycle Tracker */
+.tds-timeline-list {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.tds-timeline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.15rem;
+  position: relative;
+  padding-bottom: 1.5rem;
+}
+.tds-timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+/* Vertical connecting line */
+.tds-timeline-line {
+  position: absolute;
+  left: 16px;
+  top: 32px;
+  bottom: 0;
+  width: 2px;
+  background: #e2e8f0;
+}
+.tds-timeline-item--completed .tds-timeline-line {
+  background: #083b75;
+}
+
+/* Timeline node icon / circle */
+.tds-timeline-node {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 2;
+  font-size: 0.85rem;
+  font-weight: 800;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+.tds-timeline-item--completed .tds-timeline-node {
+  background: #083b75;
+  color: #ffffff;
+  border: 2px solid #083b75;
+  box-shadow: 0 2px 6px rgba(8, 59, 117, 0.25);
+}
+.tds-timeline-item--active .tds-timeline-node {
+  background: #f97316;
+  color: #ffffff;
+  border: 3px solid #ffedd5;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.2);
+}
+.tds-timeline-item--pending .tds-timeline-node {
+  background: #f1f5f9;
+  color: #94a3b8;
+  border: 1.5px solid #cbd5e1;
+}
+
+/* Timeline text */
+.tds-timeline-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding-top: 0.35rem;
+}
+.tds-timeline-title {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+.tds-timeline-item--pending .tds-timeline-title {
+  color: #94a3b8;
+  font-weight: 700;
+}
+.tds-timeline-desc {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: 0;
+}
+.tds-timeline-item--pending .tds-timeline-desc {
+  color: #94a3b8;
+}
+
+/* Assigned CA Card */
+.tds-ca-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.tds-ca-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.tds-ca-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  color: #1d4ed8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.tds-ca-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+.tds-ca-role {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #083b75;
+  margin: 0;
+}
+.tds-ca-eta {
+  font-size: 0.82rem;
+  color: #64748b;
+  line-height: 1.45;
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+}
+
+/* Bottom Action Buttons Row */
+.tds-status-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+.tds-btn-contact-support {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+  color: #083b75;
+  border-radius: 12px;
+  height: 48px;
+  padding: 0 2rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tds-btn-contact-support:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  transform: translateY(-1px);
+}
+.tds-btn-dashboard {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #f97316;
+  border: none;
+  color: #ffffff;
+  border-radius: 12px;
+  height: 48px;
+  padding: 0 2.25rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.25);
+  transition: all 0.2s;
+}
+.tds-btn-dashboard:hover {
+  background: #ea580c;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35);
+}
+
+/* Sticky Right Sidebar */
+.tds-status-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: sticky;
+  top: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+.tds-status-sidebar .tds-sidebar-card--navy {
+  background: #022145 !important;
+  border-color: #083b75 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(2, 33, 69, 0.18);
+}
+.tds-status-sidebar .tds-sidebar-card--navy .tds-sidebar-card-title {
+  color: #ffffff !important;
+}
+.tds-status-sidebar .tds-sidebar-card--navy .tds-sidebar-card-desc {
+  color: #94a3b8 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1100px) {
+  .tds-status-layout {
+    grid-template-columns: 1fr;
+  }
+  .tds-status-sidebar {
+    position: static;
+  }
+}
+@media (max-width: 768px) {
+  .tds-status-page {
+    padding: 1rem 1rem 3rem 1rem;
+  }
+  .tds-status-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .tds-status-actions-row {
+    flex-direction: column;
+  }
+  .tds-btn-contact-support,
+  .tds-btn-dashboard {
+    width: 100%;
+  }
+}

@@ -1,17 +1,27 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
-import { authStorage } from '@core/auth'
+import { authStorage, resolvePostLoginPath } from '@core/auth'
+import type { SessionEndReason } from '@core/auth'
 import { useAuthStore } from '@store/index'
-import { validateMobileNumber } from '@shared/utils'
+import { formatMobile, validateMobileNumber } from '@shared/utils'
 import { authFlowService } from '../../services/authFlowService'
 import { COUNTRY_CODES } from '../../constants/authData.constants'
 import { MobileEntryView } from './MobileEntryView'
 import { OtpVerificationView } from './OtpVerificationView'
 import { PasscodeLoginView } from './PasscodeLoginView'
+import { SetPasscodeView } from './SetPasscodeView'
 import './SignInCard.css'
 
-export type AuthMode = 'mobile' | 'otp' | 'passcode'
+export type AuthMode = 'mobile' | 'otp' | 'passcode' | 'reset'
+
+const PASSCODE_RESET_NOTICE = 'Passcode updated. Sign in with your new passcode.'
+
+/** Explains why the user is back on the login screen; plain sign-outs need no message. */
+const SESSION_END_NOTICES: Partial<Record<SessionEndReason, string>> = {
+  timeout: 'Automatic session timeout: you were signed out after a period of inactivity. Please sign in again.',
+  expired: 'Your session has expired. Please sign in again.',
+}
 
 export interface SignInCardProps {
   initialMobile?: string
@@ -24,26 +34,32 @@ export const SignInCard: React.FC<SignInCardProps> = ({
 }) => {
   const navigate = useNavigate()
   const location = useLocation()
-  const locationState = location.state as { returnTo?: string } | null
+  // One-time notice: captured when the login screen opens right after a timeout / expiry,
+  // then cleared so later visits (or a reload) show the normal login screen
+  const [sessionNotice] = useState(() => {
+    const reason = useAuthStore.getState().sessionEndReason
+    return reason ? SESSION_END_NOTICES[reason] : undefined
+  })
+  useEffect(() => {
+    if (useAuthStore.getState().sessionEndReason) useAuthStore.getState().clearSessionEndReason()
+  }, [])
+  const getPostLoginPath = () => resolvePostLoginPath(location.search, location.state, routePaths.dashboard)
   const signIn = useAuthStore((state) => state.signIn)
 
   const [authMode, setAuthMode] = useState<AuthMode>(initialMode)
   const [mobile, setMobile] = useState(initialMobile)
-  const [countryIndex, setCountryIndex] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [isResetFlow, setIsResetFlow] = useState(false)
+  const [notice, setNotice] = useState<string | null>(null)
 
-  const selectedCountry = COUNTRY_CODES[countryIndex] ?? COUNTRY_CODES[0]
+  // Login supports Indian numbers only (OTP + validation are +91-specific)
+  const selectedCountry = COUNTRY_CODES[0]
   const cleanMobile = mobile.replace(/\D/g, '').trim()
 
-  const handleToggleCountry = () => {
-    setCountryIndex((prev) => (prev + 1) % COUNTRY_CODES.length)
-  }
-
   const handleMobileChange = (val: string) => {
-    const cleaned = val.replace(/\D/g, '').slice(0, 10)
+    const cleaned = formatMobile(val)
     setMobile(cleaned)
     if (error) setError(null)
   }
@@ -79,15 +95,15 @@ export const SignInCard: React.FC<SignInCardProps> = ({
         otp,
       })
 
-      // Check if user is an existing registered user who already created a passcode
-      const isExistingUser = authFlowService.isRegistered(cleanMobile)
-      if (isExistingUser) {
+      // Check dynamically if user has created a passcode
+      const userHasPasscode = authFlowService.hasPasscode(cleanMobile)
+      if (userHasPasscode) {
         if (isResetFlow) {
-          // If they forgot their passcode, we redirect to registration to set a new one
-          navigate(routePaths.registration, { state: { resetPasscode: true, mobile: cleanMobile } })
+          // Forgot passcode: OTP proves ownership, so let them choose a new passcode right here
+          setAuthMode('reset')
           return
         }
-        // For existing users normal login: OTP is verified, now prompt for passcode on the same card
+        // For users who have created a passcode: OTP is verified, now prompt for passcode
         setAuthMode('passcode')
         return
       }
@@ -96,7 +112,7 @@ export const SignInCard: React.FC<SignInCardProps> = ({
       authStorage.setTokens(session.tokens)
       authStorage.setUser(session.user)
       signIn(session)
-      const targetPath = locationState?.returnTo || routePaths.dashboard
+      const targetPath = getPostLoginPath()
       navigate(targetPath, { replace: true })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Invalid OTP. Please try again.')
@@ -114,8 +130,30 @@ export const SignInCard: React.FC<SignInCardProps> = ({
     }
   }
 
+  const handleSetNewPasscode = async (passcode: string) => {
+    setError(null)
+    setIsSubmitting(true)
+    try {
+      await authFlowService.resetPasscode({ mobile: cleanMobile, passcode })
+      setIsResetFlow(false)
+      setNotice(PASSCODE_RESET_NOTICE)
+      setAuthMode('passcode')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to update passcode. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleCancelReset = () => {
+    setIsResetFlow(false)
+    setError(null)
+    setAuthMode('passcode')
+  }
+
   const handlePasscodeLogin = async (passcode: string) => {
     setError(null)
+    setNotice(null)
     setIsSubmitting(true)
     try {
       const session = await authFlowService.verifyPasscode({
@@ -125,7 +163,7 @@ export const SignInCard: React.FC<SignInCardProps> = ({
       authStorage.setTokens(session.tokens)
       authStorage.setUser(session.user)
       signIn(session)
-      const targetPath = locationState?.returnTo || routePaths.dashboard
+      const targetPath = getPostLoginPath()
       navigate(targetPath, { replace: true })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Incorrect passcode. Please try again.')
@@ -136,6 +174,7 @@ export const SignInCard: React.FC<SignInCardProps> = ({
 
   const handleForgotPasscode = async () => {
     setError(null)
+    setNotice(null)
     setIsSubmitting(true)
     setIsResetFlow(true)
     try {
@@ -150,17 +189,16 @@ export const SignInCard: React.FC<SignInCardProps> = ({
 
   const handleChangeNumber = () => {
     setAuthMode('mobile')
+    setIsResetFlow(false)
+    setNotice(null)
     setError(null)
   }
 
-  const handleGoogleLogin = () => {
-    // Graceful Google OAuth trigger
-    window.location.href = '#google-login'
-  }
 
   const getSubtitle = () => {
     if (authMode === 'otp') return 'Enter the 6-digit OTP sent to your mobile number'
     if (authMode === 'passcode') return 'Enter your 6-digit passcode to sign in'
+    if (authMode === 'reset') return 'Set a new 6-digit passcode for your account'
     return 'Sign in to continue to your TaxEdge account'
   }
 
@@ -206,16 +244,20 @@ export const SignInCard: React.FC<SignInCardProps> = ({
         <p className="sign-in-card__subtitle">{getSubtitle()}</p>
       </header>
 
+      {sessionNotice && (
+        <p className="sign-in-card__session-notice" role="alert">
+          {sessionNotice}
+        </p>
+      )}
+
       {authMode === 'mobile' && (
         <MobileEntryView
           mobile={mobile}
           onMobileChange={handleMobileChange}
           selectedCountryCode={selectedCountry.code}
-          onToggleCountry={handleToggleCountry}
           onSubmit={handleMobileSubmit}
           isSubmitting={isSubmitting}
           error={error}
-          onGoogleLogin={handleGoogleLogin}
         />
       )}
 
@@ -228,7 +270,6 @@ export const SignInCard: React.FC<SignInCardProps> = ({
           onResendOtp={handleResendOtp}
           isSubmitting={isSubmitting}
           error={error}
-          onGoogleLogin={handleGoogleLogin}
         />
       )}
 
@@ -241,7 +282,18 @@ export const SignInCard: React.FC<SignInCardProps> = ({
           isSubmitting={isSubmitting}
           error={error}
           onForgotPasscode={handleForgotPasscode}
-          onGoogleLogin={handleGoogleLogin}
+          notice={notice}
+        />
+      )}
+
+      {authMode === 'reset' && (
+        <SetPasscodeView
+          mobile={cleanMobile}
+          countryCode={selectedCountry.code}
+          onSubmit={handleSetNewPasscode}
+          onCancel={handleCancelReset}
+          isSubmitting={isSubmitting}
+          error={error}
         />
       )}
     </div>

@@ -1,0 +1,17 @@
+.reg-entity-fields {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 1.3vw, 18px);
+}
+
+.reg-entity-fields__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(14px, 1.3vw, 18px);
+}
+
+@media (max-width: 640px) {
+  .reg-entity-fields__row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -13,8 +13,8 @@ describe('registrationValidation', () => {
     email: 'rohan.sharma@example.com',
     gender: 'Male',
     dob: '15-08-1995',
-    pan: 'ABCDE1234F',
-    aadhaar: '123456789012',
+    pan: 'ABCPE1234F',
+    aadhaar: '234567890124',
     mobile: '9823145672',
     addressLine1: 'Flat 402, Sunshine Heights',
     addressLine2: 'Near City Mall',
@@ -23,8 +23,8 @@ describe('registrationValidation', () => {
     district: 'Pune',
     pincode: '411001',
     state: 'Maharashtra',
-    password: '5819',
-    confirmPassword: '5819',
+    password: '581940',
+    confirmPassword: '581940',
     agreeTerms: true,
   }
 
@@ -63,6 +63,15 @@ describe('registrationValidation', () => {
         'Please select your State / UT'
       )
       expect(validateField('state', sampleValidForm)).toBeUndefined()
+    })
+  })
+
+  describe('Passcode validations', () => {
+    it('requires exactly 6 digits', () => {
+      const shortForm = { ...sampleValidForm, password: '5819', confirmPassword: '5819' }
+      expect(validateField('password', shortForm)).toBe('Passcode must be exactly 6 digits')
+      expect(checkIsFormValid(shortForm)).toBe(false)
+      expect(validateField('password', sampleValidForm)).toBeUndefined()
     })
   })
 

@@ -1,6 +1,7 @@
 
 import { useAuthStore } from '@store/index'
 import { authStorage } from '@core/auth'
+import { maskAadhaar } from '@shared/utils'
 import { DetailCard } from '../../components/DetailCard/DetailCard'
 import '../PersonalInformation/ProfileDetails.css'
 
@@ -20,7 +21,8 @@ export const KycDetails = () => {
 
   const identityItems = [
     { label: 'PAN Number', value: user.pan },
-    { label: 'Aadhaar Number', value: user.aadhaar },
+    // Never show the full Aadhaar number: only the last 4 digits (XXXX XXXX 1234)
+    { label: 'Aadhaar Number', value: maskAadhaar(user.aadhaar) },
   ]
 
   return (

@@ -1,4 +1,13 @@
 import React from 'react'
+import {
+  FileText,
+  User,
+  CheckCircle,
+  Wallet,
+  Building2,
+  Landmark,
+  FileCheck,
+} from 'lucide-react'
 import type { ReviewAndSubmitProps } from '@modules/loans/types/businessLoan.types'
 import { ReviewSectionCard } from './ReviewSectionCard'
 import './ReviewAndSubmit.css'
@@ -48,11 +57,8 @@ const ReviewRow: React.FC<{ label: string; value: string }> = ({ label, value })
 
 const DocumentPill: React.FC<{ label: string }> = ({ label }) => (
   <span className="review-doc-pill">
-    <img
-      src="/assets/icons/loans/doc-green.svg"
-      alt=""
-      width="14"
-      height="14"
+    <FileText
+      size={14}
       className="review-doc-pill__icon"
       aria-hidden="true"
     />
@@ -83,7 +89,7 @@ export const ReviewAndSubmit: React.FC<ReviewAndSubmitProps> = ({
   const renderHeaderBanner = () => (
     <div className="review-dossier-banner">
       <div className="review-dossier-banner__icon" aria-hidden="true">
-        <img src="/assets/icons/loans/doc-orange.svg" alt="" width="22" height="22" />
+        <FileText size={22} />
       </div>
       <div className="review-dossier-banner__content">
         <h2 className="review-dossier-banner__title">Application Dossier Review</h2>
@@ -97,16 +103,13 @@ export const ReviewAndSubmit: React.FC<ReviewAndSubmitProps> = ({
   const renderApplicantCard = () => (
     <ReviewSectionCard
       title="Applicant Information"
-      iconSrc="/assets/icons/loans/applicant-user.svg"
+      icon={<User size={20} aria-hidden="true" />}
       themeColor="blue"
       testId="applicant-info-card"
       badge={
         <div className="review-verified-badge">
-          <img
-            src="/assets/icons/loans/verified-circle.svg"
-            alt=""
-            width="16"
-            height="16"
+          <CheckCircle
+            size={16}
             className="review-verified-badge__icon"
             aria-hidden="true"
           />
@@ -131,7 +134,7 @@ export const ReviewAndSubmit: React.FC<ReviewAndSubmitProps> = ({
   const renderLoanRequirementCard = () => (
     <ReviewSectionCard
       title="Loan Requirement"
-      iconSrc="/assets/icons/loans/wallet.svg"
+      icon={<Wallet size={20} aria-hidden="true" />}
       themeColor="orange"
       onEdit={() => onNavigateToStep(1)}
       testId="loan-requirement-card"
@@ -153,7 +156,7 @@ export const ReviewAndSubmit: React.FC<ReviewAndSubmitProps> = ({
   const renderBusinessDetailsCard = () => (
     <ReviewSectionCard
       title="Business Details"
-      iconSrc="/assets/icons/loans/network-purple.svg"
+      icon={<Building2 size={20} aria-hidden="true" />}
       themeColor="purple"
       onEdit={() => onNavigateToStep(2)}
       testId="business-details-card"
@@ -178,7 +181,7 @@ export const ReviewAndSubmit: React.FC<ReviewAndSubmitProps> = ({
   const renderBankingTaxCard = () => (
     <ReviewSectionCard
       title="Banking & Tax Details"
-      iconSrc="/assets/icons/loans/bank-orange.svg"
+      icon={<Landmark size={20} aria-hidden="true" />}
       themeColor="pink"
       onEdit={() => onNavigateToStep(3)}
       testId="banking-tax-details-card"
@@ -195,7 +198,7 @@ export const ReviewAndSubmit: React.FC<ReviewAndSubmitProps> = ({
             value={
               data.itrAcknowledgementNumber
                 ? `Filed (${data.itrAcknowledgementNumber})`
-                : '—'
+                : 'Filed (Last 3 Years)'
             }
           />
         </div>
@@ -206,7 +209,7 @@ export const ReviewAndSubmit: React.FC<ReviewAndSubmitProps> = ({
   const renderUploadedDocsCard = () => (
     <ReviewSectionCard
       title="Uploaded Documents"
-      iconSrc="/assets/icons/loans/certificate-green.svg"
+      icon={<FileCheck size={20} aria-hidden="true" />}
       themeColor="green"
       countBadge={countBadgeText}
       onEdit={() => onNavigateToStep(4)}

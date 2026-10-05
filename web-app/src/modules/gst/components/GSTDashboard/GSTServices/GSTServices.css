@@ -24,8 +24,20 @@
 
 .gst-services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+  .gst-services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .gst-services-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .gst-service-card {
@@ -54,12 +66,58 @@
 }
 
 .gst-service-card__icon {
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
+  padding: 4px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
+  border-radius: 14px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.gst-service-card:hover .gst-service-card__icon {
+  transform: translateY(-2px) scale(1.06);
+}
+
+.gst-service-card__icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.gst-icon-registration {
+  background-color: #f0f5fa;
+  color: #0284c7;
+}
+
+.gst-icon-filing {
+  background-color: #f0f5fa;
+  color: #0284c7;
+}
+
+.gst-icon-compliance {
+  background-color: #eef7f8;
+  color: #0d9488;
+}
+
+.gst-icon-amendment {
+  background-color: #fff3eb;
+  color: #ea580c;
+}
+
+.gst-icon-cancellation {
+  background-color: #fdf0f0;
+  color: #dc2626;
+}
+
+.gst-icon-certificate {
+  background-color: #fef9ee;
+  color: #d97706;
 }
 
 .icon-blue {
@@ -73,8 +131,8 @@
 }
 
 .gst-service-card__icon svg {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
 }
 
 .gst-service-card__badge {
@@ -107,27 +165,9 @@
 .gst-service-card__footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding-top: 1rem;
   border-top: 1px dashed #e2e8f0;
-}
-
-.gst-service-card__price-wrapper {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-}
-
-.gst-service-card__price {
-  font-size: 1.125rem;
-  font-weight: 800;
-  color: #0f172a;
-}
-
-.gst-service-card__price-type {
-  font-size: 0.75rem;
-  color: #94a3b8;
-  font-weight: 500;
 }
 
 .gst-service-card__action {

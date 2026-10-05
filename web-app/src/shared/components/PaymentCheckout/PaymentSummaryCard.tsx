@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import type { CouponValidationResult } from '@core/payments'
 import type { PaymentBreakdown } from './payment.types'
 import { formatCurrency } from '@shared/utils'
 
@@ -10,7 +11,10 @@ interface PaymentSummaryCardProps {
   isProcessing: boolean
   enablePromoCode?: boolean
   showTrustBadges?: boolean
-  onApplyPromo?: (code: string) => void
+  /** Code currently applied (validated by the payments service) */
+  appliedPromoCode?: string
+  onApplyPromo?: (code: string) => Promise<CouponValidationResult>
+  onRemovePromo?: () => void
   onPay: () => void
 }
 
@@ -22,17 +26,34 @@ export const PaymentSummaryCard: React.FC<PaymentSummaryCardProps> = ({
   isProcessing,
   enablePromoCode = true,
   showTrustBadges = true,
+  appliedPromoCode,
   onApplyPromo,
+  onRemovePromo,
   onPay,
 }) => {
   const [promoInput, setPromoInput] = useState('')
-  const [promoApplied, setPromoApplied] = useState(false)
+  const [promoError, setPromoError] = useState<string | null>(null)
+  const [isCheckingPromo, setIsCheckingPromo] = useState(false)
+  const promoApplied = Boolean(appliedPromoCode)
 
-  const handleApply = (e: React.FormEvent) => {
+  const handleApply = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!promoInput.trim()) return
-    onApplyPromo?.(promoInput.trim().toUpperCase())
-    setPromoApplied(true)
+    const code = promoInput.trim().toUpperCase()
+    if (!code || !onApplyPromo || isCheckingPromo) return
+    setIsCheckingPromo(true)
+    setPromoError(null)
+    try {
+      const result = await onApplyPromo(code)
+      if (result.valid) setPromoInput('')
+      else setPromoError(result.message)
+    } finally {
+      setIsCheckingPromo(false)
+    }
+  }
+
+  const handleRemove = () => {
+    setPromoError(null)
+    onRemovePromo?.()
   }
 
   return (
@@ -68,30 +89,50 @@ export const PaymentSummaryCard: React.FC<PaymentSummaryCardProps> = ({
         </div>
         {breakdown.discountAmount > 0 && (
           <div className="payment-breakdown-row payment-breakdown-row--discount">
-            <span>Special Discount</span>
+            <span>Promo {appliedPromoCode ? `(${appliedPromoCode})` : 'Discount'}</span>
             <strong>-{formatCurrency(breakdown.discountAmount)}</strong>
           </div>
         )}
       </div>
 
       {enablePromoCode && !promoApplied && (
-        <form className="payment-promo-form" onSubmit={handleApply}>
+        <form className="payment-promo-form" onSubmit={handleApply} noValidate>
           <input
             type="text"
-            className="payment-promo-input"
+            className={`payment-promo-input ${promoError ? 'payment-input--error' : ''}`}
             placeholder="Coupon / Promo code"
             value={promoInput}
-            onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+            maxLength={20}
+            onChange={(e) => {
+              setPromoInput(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))
+              setPromoError(null)
+            }}
+            aria-invalid={Boolean(promoError)}
+            aria-describedby={promoError ? 'payment-promo-error' : undefined}
+            aria-label="Promo code"
           />
-          <button type="submit" className="payment-promo-btn" disabled={!promoInput.trim()}>
-            Apply
+          <button type="submit" className="payment-promo-btn" disabled={!promoInput.trim() || isCheckingPromo}>
+            {isCheckingPromo ? 'Checking…' : 'Apply'}
           </button>
         </form>
       )}
 
+      {promoError && (
+        <p id="payment-promo-error" className="payment-field-error payment-promo-error" role="alert">
+          {promoError}
+        </p>
+      )}
+
       {promoApplied && breakdown.discountAmount > 0 && (
         <div className="payment-promo-success">
-          <span>Promo applied! You saved {formatCurrency(breakdown.discountAmount)}.</span>
+          <span>
+            {appliedPromoCode} applied! You saved {formatCurrency(breakdown.discountAmount)}.
+          </span>
+          {onRemovePromo && (
+            <button type="button" className="payment-promo-remove" onClick={handleRemove} disabled={isProcessing}>
+              Remove
+            </button>
+          )}
         </div>
       )}
 

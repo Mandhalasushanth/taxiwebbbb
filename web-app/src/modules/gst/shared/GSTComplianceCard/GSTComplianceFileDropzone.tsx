@@ -1,5 +1,6 @@
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import React from 'react'
+import { UploadDocument } from '@shared/components'
 import '@modules/gst/styles/gstTones.css'
 
 export const ChevronIcon = () => (
@@ -97,89 +98,20 @@ export const FileDropzone: React.FC<{
   hasError,
   accept = '.pdf,.jpg,.jpeg,.png,.xlsx,.xls,.csv',
   label,
-}) =>
-  file ? (
-    <div
-      className={`compliance-upload-dropzone compliance-upload-dropzone--uploaded ${hasError ? 'has-error' : ''}`}
-      aria-label={label}
-    >
-      <div
-        className="compliance-upload-left compliance-upload-left--clickable"
-        onClick={() => onFileView?.(file)}
-        title="Click to preview this document"
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            onFileView?.(file)
-          }
-        }}
-      >
-        <div
-          className="compliance-upload-icon-box compliance-upload-icon-box--uploaded"
-          aria-hidden="true"
-        >
-          <UploadIcon />
-        </div>
-        <div className="compliance-upload-meta">
-          <span className="compliance-upload-title">{file.name}</span>
-          <span className="compliance-upload-subtitle">{`${formatGstFileSize(file.size)} · File uploaded`}</span>
-        </div>
-      </div>
-      <div className="compliance-upload-actions">
-        <button
-          type="button"
-          className="compliance-view-btn"
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            onFileView?.(file)
-          }}
-          title="View uploaded document"
-        >
-          <EyeIcon /> View
-        </button>
-        <button
-          type="button"
-          className="compliance-delete-btn"
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            onFileRemove?.()
-          }}
-          title="Delete uploaded file"
-          aria-label="Delete uploaded file"
-        >
-          <TrashIcon />
-        </button>
-      </div>
-    </div>
-  ) : (
-    <label
-      className={`compliance-upload-dropzone ${hasError ? 'has-error' : ''}`}
-      aria-label={label}
-    >
-      <input
-        type="file"
-        accept={accept}
-        onChange={(e) => {
-          if (e.target.files?.[0]) onFileSelect(e.target.files[0])
-          e.target.value = ''
-        }}
-        className="gst-hidden-input"
-      />
-      <div className="compliance-upload-left">
-        <div className="compliance-upload-icon-box" aria-hidden="true">
-          <UploadIcon />
-        </div>
-        <div className="compliance-upload-meta">
-          <span className="compliance-upload-title">Choose a file to upload</span>
-          <span className="compliance-upload-subtitle">
-            PDF, JPG or PNG · up to 10 MB
-          </span>
-        </div>
-      </div>
-      <span className="compliance-browse-btn">Browse</span>
-    </label>
-  )
+}) => (
+  <UploadDocument
+    id="compliance-file"
+    title={label || 'Supporting Document'}
+    subtitle="PDF, JPG, PNG or Excel up to 10 MB"
+    isRequired={true}
+    isUploaded={Boolean(file)}
+    fileName={file?.name}
+    fileSize={file ? formatGstFileSize(file.size) : undefined}
+    file={file || undefined}
+    accept={accept}
+    onUpload={(_, f) => onFileSelect(f)}
+    onRemove={() => onFileRemove?.()}
+    onView={() => file && onFileView?.(file)}
+    className={hasError ? 'loan-doc-item--error' : ''}
+  />
+)

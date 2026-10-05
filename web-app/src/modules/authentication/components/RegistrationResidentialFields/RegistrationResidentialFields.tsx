@@ -221,6 +221,7 @@ export const RegistrationResidentialFields: React.FC<RegistrationResidentialFiel
             align="right"
             searchable={true}
             onChange={onChange}
+            onBlur={onBlur}
           />
           {errors.state && <p className="reg-field__error">{errors.state}</p>}
         </div>

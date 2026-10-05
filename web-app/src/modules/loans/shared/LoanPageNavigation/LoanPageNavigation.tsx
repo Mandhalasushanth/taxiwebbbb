@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ArrowLeft } from 'lucide-react'
 import './LoanPageNavigation.css'
 
 export interface LoanPageNavigationProps {
@@ -46,11 +47,8 @@ export const LoanPageNavigation: React.FC<LoanPageNavigationProps> = ({
               onClick={handleBack}
               aria-label="Back"
             >
-              <img
-                src="/assets/icons/loans/arrow-left.svg"
-                alt="Back"
-                width="20"
-                height="20"
+              <ArrowLeft
+                size={20}
                 aria-hidden="true"
               />
             </button>

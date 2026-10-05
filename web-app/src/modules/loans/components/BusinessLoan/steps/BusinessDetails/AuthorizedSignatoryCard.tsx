@@ -1,4 +1,5 @@
 import React from 'react'
+import { UserCheck } from 'lucide-react'
 import type { BusinessLoanFormData } from '@modules/loans/types/businessLoan.types'
 import {
   formatTextOnly,
@@ -25,13 +26,7 @@ export const AuthorizedSignatoryCard: React.FC<AuthorizedSignatoryCardProps> = (
       <div className="business-field-header">
         <div className="business-field-header__left">
           <div className="business-icon-tile">
-            <img
-              src="/assets/icons/loans/signatory.svg"
-              alt=""
-              width="20"
-              height="20"
-              aria-hidden="true"
-            />
+            <UserCheck size={20} aria-hidden="true" />
           </div>
           <label className="business-field-title">
             Authorized Signatory Details <span className="text-required">*</span>

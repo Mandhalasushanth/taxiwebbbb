@@ -1,13 +1,12 @@
 import React from 'react'
-import { useRevisedItr } from '../../hooks/useRevisedItr'
-import { Step1FindOriginalReturn } from './Step1FindOriginalReturn'
-import { Step2ReasonForRevision } from './Step2ReasonForRevision'
-import { Step6ApplicationReceived } from './Step6ApplicationReceived'
-import { MissedIncomeStep3, MissedIncomeStep4, MissedIncomeStep5 } from './MissedIncome'
-import { WrongDeductionStep3, WrongDeductionStep4, WrongDeductionStep5 } from './WrongDeduction'
-import { IncorrectBankStep3, IncorrectBankStep4, IncorrectBankStep5 } from './IncorrectBankDetails'
-import { OtherCorrectionStep3, OtherCorrectionStep4, OtherCorrectionStep5 } from './Other'
 import { StepActionBar, PaymentCheckout, DraftConfirmModal } from '@shared/components'
+import { useRevisedItr } from '../../hooks/useRevisedItr'
+import { FindOriginalReturn } from './FindOriginalReturn'
+import { ReasonForRevision } from './ReasonForRevision'
+import { RevisionCorrectionDetails } from './CorrectionDetails'
+import { RevisionDocumentUpload } from './DocumentUpload'
+import { RevisionReviewSummary } from './ReviewSummary'
+import { RevisionApplicationReceived } from './ApplicationReceived'
 import './RevisedItr.css'
 
 export const RevisedItr: React.FC = () => {
@@ -59,16 +58,81 @@ export const RevisedItr: React.FC = () => {
     taxableOriginal: returnDetails?.taxableOriginal ?? 0,
   }
 
-  const Step4Component =
-    selectedReason === 'wrong_deduction' ? WrongDeductionStep4 :
-    selectedReason === 'incorrect_bank' ? IncorrectBankStep4 :
-    selectedReason === 'other' ? OtherCorrectionStep4 :
-    MissedIncomeStep4
+  const stageRenderers: Record<number, () => React.ReactNode> = {
+    1: () => (
+      <FindOriginalReturn
+        ackNumber={ackNumber}
+        selectedAy={selectedAy}
+        isDropdownOpen={isDropdownOpen}
+        isReturnFound={isReturnFound}
+        returnDetails={returnDetails}
+        ackError={errors.ackError}
+        ayError={errors.ayError}
+        dropdownRef={dropdownRef}
+        onAckChange={handleAckChange}
+        onKeyDown={handleKeyDown}
+        onToggleDropdown={handleToggleDropdown}
+        onSelectAy={handleSelectAy}
+      />
+    ),
+    2: () => (
+      <ReasonForRevision
+        selectedReason={selectedReason}
+        otherReasonText={otherReasonText}
+        reasonError={errors.reasonError}
+        otherReasonError={errors.otherReasonError}
+        onSelectReason={handleSelectReason}
+        onOtherReasonChange={handleOtherReasonChange}
+      />
+    ),
+    3: () => (
+      <RevisionCorrectionDetails
+        selectedReason={selectedReason}
+        otherReasonText={otherReasonText}
+        incomeCorrections={incomeCorrections}
+        deductionCorrections={deductionCorrections}
+        bankCorrections={bankCorrections}
+        originalAmounts={originalAmounts}
+        salaryError={errors.salaryIncomeError}
+        taxableError={errors.taxableIncomeError}
+        bankAccountError={errors.bankAccountError}
+        ifscError={errors.ifscError}
+        onIncomeChange={handleIncomeChange}
+        onDeductionChange={handleDeductionChange}
+        onBankChange={handleBankChange}
+        onKeyDown={handleKeyDown}
+      />
+    ),
+    4: () => (
+      <RevisionDocumentUpload
+        selectedReason={selectedReason}
+        selectedAy={selectedAy}
+        uploadedDocuments={uploadedDocuments}
+        documentsError={errors.documentsError}
+        onUpload={handleFileUpload}
+        onRemove={handleFileRemove}
+      />
+    ),
+    5: () => (
+      <RevisionReviewSummary
+        selectedReason={selectedReason}
+        ackNumber={ackNumber}
+        selectedAy={selectedAy}
+        returnDetails={returnDetails}
+        incomeCorrections={incomeCorrections}
+        deductionCorrections={deductionCorrections}
+        bankCorrections={bankCorrections}
+        otherReasonText={otherReasonText}
+        uploadedDocuments={uploadedDocuments}
+        onEditStep={goToStep}
+      />
+    ),
+  }
 
-  return (
-    <div className="revised-itr-page">
-      <div className="revised-itr-content-area">
-        {showPayment ? (
+  const renderActiveContent = () => {
+    try {
+      if (showPayment) {
+        return (
           <PaymentCheckout
             amount={999}
             serviceTitle="Revised ITR Filing Assistance"
@@ -77,8 +141,11 @@ export const RevisedItr: React.FC = () => {
             onBack={handleBack}
             onSuccess={handlePaymentSuccess}
           />
-        ) : isSubmitted ? (
-          <Step6ApplicationReceived
+        )
+      }
+      if (isSubmitted) {
+        return (
+          <RevisionApplicationReceived
             applicationId={applicationId}
             selectedAy={selectedAy}
             returnDetails={returnDetails}
@@ -86,152 +153,30 @@ export const RevisedItr: React.FC = () => {
             onBack={handleBack}
             onDownloadReceipt={handleDownloadReceipt}
           />
-        ) : (
-          <>
-            {/* Step 1: Find Original Return */}
-            {step === 1 && (
-              <Step1FindOriginalReturn
-                ackNumber={ackNumber}
-                selectedAy={selectedAy}
-                isDropdownOpen={isDropdownOpen}
-                isReturnFound={isReturnFound}
-                returnDetails={returnDetails}
-                ackError={errors.ackError}
-                ayError={errors.ayError}
-                dropdownRef={dropdownRef}
-                onAckChange={handleAckChange}
-                onKeyDown={handleKeyDown}
-                onToggleDropdown={handleToggleDropdown}
-                onSelectAy={handleSelectAy}
-              />
-            )}
+        )
+      }
+      const renderStepFn = stageRenderers[step] || stageRenderers[1]
+      return (
+        <>
+          {renderStepFn()}
+          <StepActionBar
+            onBack={handleBack}
+            onNext={handleContinue}
+            onSaveDraft={openModal}
+            backLabel="Back"
+            nextLabel="Continue"
+            isSubmitting={isLoading}
+          />
+        </>
+      )
+    } catch {
+      return null
+    }
+  }
 
-            {/* Step 2: Reason for Revision */}
-            {step === 2 && (
-              <Step2ReasonForRevision
-                selectedReason={selectedReason}
-                otherReasonText={otherReasonText}
-                reasonError={errors.reasonError}
-                otherReasonError={errors.otherReasonError}
-                onSelectReason={handleSelectReason}
-                onOtherReasonChange={handleOtherReasonChange}
-              />
-            )}
-
-            {/* Step 3: Update Details */}
-            {step === 3 && (
-              selectedReason === 'wrong_deduction' ? (
-                <WrongDeductionStep3
-                  deductionCorrections={deductionCorrections}
-                  originalAmounts={originalAmounts}
-                  taxableError={errors.taxableIncomeError}
-                  onDeductionChange={handleDeductionChange}
-                  onKeyDown={handleKeyDown}
-                />
-              ) : selectedReason === 'incorrect_bank' ? (
-                <IncorrectBankStep3
-                  bankCorrections={bankCorrections}
-                  bankAccountError={errors.bankAccountError}
-                  ifscError={errors.ifscError}
-                  onBankChange={handleBankChange}
-                  onKeyDown={handleKeyDown}
-                />
-              ) : selectedReason === 'other' ? (
-                <OtherCorrectionStep3
-                  otherReasonText={otherReasonText}
-                  incomeCorrections={incomeCorrections}
-                  deductionCorrections={deductionCorrections}
-                  bankCorrections={bankCorrections}
-                  originalAmounts={originalAmounts}
-                  salaryError={errors.salaryIncomeError}
-                  taxableError={errors.taxableIncomeError}
-                  bankAccountError={errors.bankAccountError}
-                  ifscError={errors.ifscError}
-                  onChange={handleIncomeChange}
-                  onDeductionChange={handleDeductionChange}
-                  onBankChange={handleBankChange}
-                  onKeyDown={handleKeyDown}
-                />
-              ) : (
-                <MissedIncomeStep3
-                  incomeCorrections={incomeCorrections}
-                  originalAmounts={originalAmounts}
-                  salaryError={errors.salaryIncomeError}
-                  taxableError={errors.taxableIncomeError}
-                  onChange={handleIncomeChange}
-                  onKeyDown={handleKeyDown}
-                />
-              )
-            )}
-
-            {/* Step 4: Upload Documents */}
-            {step === 4 && (
-              <Step4Component
-                selectedAy={selectedAy}
-                uploadedDocuments={uploadedDocuments}
-                documentsError={errors.documentsError}
-                onUpload={handleFileUpload}
-                onRemove={handleFileRemove}
-              />
-            )}
-
-            {/* Step 5: Review Revised ITR */}
-            {step === 5 && (
-              selectedReason === 'wrong_deduction' ? (
-                <WrongDeductionStep5
-                  ackNumber={ackNumber}
-                  selectedAy={selectedAy}
-                  returnDetails={returnDetails}
-                  deductionCorrections={deductionCorrections}
-                  uploadedDocuments={uploadedDocuments}
-                  onEditStep={goToStep}
-                />
-              ) : selectedReason === 'incorrect_bank' ? (
-                <IncorrectBankStep5
-                  ackNumber={ackNumber}
-                  selectedAy={selectedAy}
-                  returnDetails={returnDetails}
-                  bankCorrections={bankCorrections}
-                  uploadedDocuments={uploadedDocuments}
-                  onEditStep={goToStep}
-                />
-              ) : selectedReason === 'other' ? (
-                <OtherCorrectionStep5
-                  ackNumber={ackNumber}
-                  selectedAy={selectedAy}
-                  returnDetails={returnDetails}
-                  incomeCorrections={incomeCorrections}
-                  deductionCorrections={deductionCorrections}
-                  bankCorrections={bankCorrections}
-                  otherReasonText={otherReasonText}
-                  uploadedDocuments={uploadedDocuments}
-                  onEditStep={goToStep}
-                />
-              ) : (
-                <MissedIncomeStep5
-                  ackNumber={ackNumber}
-                  selectedAy={selectedAy}
-                  returnDetails={returnDetails}
-                  incomeCorrections={incomeCorrections}
-                  uploadedDocuments={uploadedDocuments}
-                  onEditStep={goToStep}
-                />
-              )
-            )}
-
-            {/* Reusable Action Bar */}
-            <StepActionBar
-              onBack={handleBack}
-              onNext={handleContinue}
-              onSaveDraft={openModal}
-              backLabel={step === 1 ? 'Cancel' : 'Back'}
-              nextLabel={step === 5 ? 'Proceed to Payment →' : 'Continue'}
-              isSubmitting={isLoading}
-            />
-          </>
-        )}
-      </div>
-
+  return (
+    <div className="revised-itr-page">
+      <div className="revised-itr-content-area">{renderActiveContent()}</div>
       <DraftConfirmModal
         isOpen={isModalOpen}
         serviceTitle="Revised ITR Filing"

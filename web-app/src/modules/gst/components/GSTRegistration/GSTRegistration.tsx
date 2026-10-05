@@ -16,6 +16,7 @@ export const GSTRegistration = () => {
     businessData,
     documents,
     paymentResult,
+    applicationRef,
     isDraftModalOpen,
     openDraftModal,
     handleCancel,
@@ -121,7 +122,7 @@ export const GSTRegistration = () => {
             {currentStep === 4 && (
               <GSTStepPayment
                 amount={GST_FEES.registration}
-                applicationRef={paymentResult.applicationRef}
+                applicationRef={applicationRef}
                 serviceTitle="GST Registration"
                 applicantName={businessData.signatoryName || businessData.legalName || 'Applicant'}
                 onBack={handleStep4Back}
@@ -133,7 +134,7 @@ export const GSTRegistration = () => {
       )}
 
       {/* Step 5: Application Status (Post-Payment Complete Screen) */}
-      {currentStep === 5 && (
+      {currentStep === 5 && paymentResult && (
         <GSTPaymentSuccess
           details={paymentResult}
           businessName={businessData.tradeName || businessData.legalName || 'Your Business'}

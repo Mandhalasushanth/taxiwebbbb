@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { StepActionBar } from '@shared/components'
+import { StepActionBar, UploadDocument } from '@shared/components'
 import type { NoticeFormData } from '../../../types/taxNoticeAssistance.types'
 import './NoticeDocument.css'
 
@@ -96,56 +96,24 @@ export const NoticeDocument: React.FC<NoticeDocumentProps> = ({
       <div className="notice-step2-grid">
         <div className="notice-step2-col notice-step2-col--left">
           {/* Upload Card */}
-          <div className="notice-upload-card">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
-              className="notice-file-input-hidden"
-              onChange={handleFileChange}
-            />
-
-            <div className="notice-upload-card__content">
-              <div className="notice-upload-card__icon-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="16" y1="13" x2="8" y2="13" />
-                  <line x1="16" y1="17" x2="8" y2="17" />
-                  <polyline points="10 9 9 9 8 9" />
-                </svg>
-              </div>
-
-              <div className="notice-upload-card__meta">
-                <span className="notice-upload-card__title">Notice Document</span>
-                <span className="notice-upload-card__subtitle">
-                  {formData.documentFileName
-                    ? `${formData.documentFileName} (${formData.documentFileSize})`
-                    : 'PDF, JPG or PNG • Up to 10 MB'}
-                </span>
-              </div>
-
-              {formData.documentFileName ? (
-                <button
-                  type="button"
-                  className="notice-upload-card__btn notice-upload-card__btn--remove"
-                  onClick={handleRemoveFile}
-                >
-                  Remove
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="notice-upload-card__btn"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  Upload
-                </button>
-              )}
-            </div>
-
-            {uploadError && <span className="notice-upload-card__error">{uploadError}</span>}
-          </div>
+          <UploadDocument
+            id="notice-doc"
+            title="Notice Document"
+            subtitle="PDF, JPG or PNG • Up to 10 MB"
+            isRequired={true}
+            isUploaded={Boolean(formData.documentFileName)}
+            fileName={formData.documentFileName || undefined}
+            fileSize={formData.documentFileSize || undefined}
+            accept=".pdf,.jpg,.jpeg,.png"
+            onUpload={(_, file) => {
+              handleFileChange({
+                target: { files: [file] },
+              } as unknown as React.ChangeEvent<HTMLInputElement>)
+            }}
+            onRemove={handleRemoveFile}
+            className={uploadError ? 'loan-doc-item--error' : ''}
+          />
+          {uploadError && <span className="notice-upload-card__error">{uploadError}</span>}
 
           {/* Confidentiality Callout Box */}
           <div className="notice-trust-card">
@@ -208,7 +176,8 @@ export const NoticeDocument: React.FC<NoticeDocumentProps> = ({
         onNext={handleNextClick}
         onSaveDraft={onSaveDraftAndExit}
         backLabel="Back"
-        nextLabel="Continue to Staff Review"
+        nextLabel="Continue"
+        nextAriaLabel="Continue to staff review"
         nextDisabled={!hasDocument}
         isSubmitting={isSubmitting}
       />

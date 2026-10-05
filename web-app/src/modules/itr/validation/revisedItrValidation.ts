@@ -5,12 +5,9 @@ import type {
   BankCorrectionState,
   DocumentTypeId,
   UploadedDocument,
+  RevisedItrValidationErrors,
 } from '../types/revisedItr.types'
 
-/**
- * Validates Original ITR Acknowledgement Number
- * Must be non-empty and exactly 15 numeric digits.
- */
 export const validateAckNumber = (val: string): string | null => {
   const trimmed = val.trim()
   if (!trimmed) {
@@ -22,9 +19,6 @@ export const validateAckNumber = (val: string): string | null => {
   return null
 }
 
-/**
- * Validates Assessment Year selection
- */
 export const validateAssessmentYear = (val: string): string | null => {
   if (!val || !val.trim()) {
     return 'Please select an Assessment Year.'
@@ -32,54 +26,32 @@ export const validateAssessmentYear = (val: string): string | null => {
   return null
 }
 
-/**
- * Sanitizes input string to contain only digits, capped at 15 characters.
- */
-export const sanitizeAckNumberInput = (val: string): string => {
-  return val.replace(/\D/g, '').slice(0, 15)
-}
+export const sanitizeAckNumberInput = (val: string): string => val.replace(/\D/g, '').slice(0, 15)
 
-/**
- * Sanitizes currency input to contain only numeric digits
- */
-export const sanitizeNumericAmount = (val: string): string => {
-  return val.replace(/\D/g, '')
-}
+export const sanitizeNumericAmount = (val: string): string => val.replace(/\D/g, '')
 
-/**
- * Formats byte count to readable string (e.g. "1.2 MB" or "450 KB")
- */
 export const formatFileSize = (bytes: number): string => {
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-/**
- * Keypress filter to prevent non-digit input.
- */
-export const isNumericKeyAllowed = (key: string, isCtrlOrMeta: boolean): boolean => {
-  const allowedControlKeys = [
-    'Backspace',
-    'Tab',
-    'Enter',
-    'Delete',
-    'ArrowLeft',
-    'ArrowRight',
-    'ArrowUp',
-    'ArrowDown',
-    'Home',
-    'End',
-  ]
-  if (allowedControlKeys.includes(key) || isCtrlOrMeta) {
-    return true
-  }
-  return /^\d$/.test(key)
-}
+const ALLOWED_CONTROL_KEYS = [
+  'Backspace',
+  'Tab',
+  'Enter',
+  'Delete',
+  'ArrowLeft',
+  'ArrowRight',
+  'ArrowUp',
+  'ArrowDown',
+  'Home',
+  'End',
+]
 
-/**
- * Validates Revision Reason selection and conditional "other" reason field
- */
+export const isNumericKeyAllowed = (key: string, isCtrlOrMeta: boolean): boolean =>
+  ALLOWED_CONTROL_KEYS.includes(key) || isCtrlOrMeta || /^\d$/.test(key)
+
 export const validateRevisionReason = (
   reason: RevisionReasonKey | null,
   otherText: string
@@ -87,82 +59,43 @@ export const validateRevisionReason = (
   if (!reason) {
     return { reasonError: 'Please select a reason for revising your ITR.', otherReasonError: null }
   }
-
-  if (reason === 'other') {
-    if (!otherText.trim()) {
-      return { reasonError: null, otherReasonError: 'Please specify your reason for revision.' }
-    }
+  if (reason === 'other' && !otherText.trim()) {
+    return { reasonError: null, otherReasonError: 'Please specify your reason for revision.' }
   }
-
   return { reasonError: null, otherReasonError: null }
 }
 
-/**
- * Validates Step 3 Income Correction required fields:
- * - Salary / Business income * is required
- * - Taxable income * is required
- */
 export const validateIncomeCorrections = (
   values: IncomeCorrectionState
-): { salaryIncomeError?: string | null; taxableIncomeError?: string | null } => {
-  let salaryIncomeError: string | null = null
-  let taxableIncomeError: string | null = null
+): { salaryIncomeError?: string | null; taxableIncomeError?: string | null } => ({
+  salaryIncomeError: !values.salaryIncome?.trim() ? 'Salary / Business income is required.' : null,
+  taxableIncomeError: !values.taxableIncome?.trim() ? 'Taxable income is required.' : null,
+})
 
-  if (!values.salaryIncome || !values.salaryIncome.trim()) {
-    salaryIncomeError = 'Salary / Business income is required.'
-  }
-
-  if (!values.taxableIncome || !values.taxableIncome.trim()) {
-    taxableIncomeError = 'Taxable income is required.'
-  }
-
-  return { salaryIncomeError, taxableIncomeError }
-}
-
-/**
- * Validates Step 3 Deduction Correction required fields:
- * - Taxable income * is required
- */
 export const validateDeductionCorrections = (
   values: DeductionCorrectionState
-): { taxableIncomeError?: string | null } => {
-  let taxableIncomeError: string | null = null
+): { taxableIncomeError?: string | null } => ({
+  taxableIncomeError: !values.taxableIncome?.trim() ? 'Taxable income is required.' : null,
+})
 
-  if (!values.taxableIncome || !values.taxableIncome.trim()) {
-    taxableIncomeError = 'Taxable income is required.'
-  }
-
-  return { taxableIncomeError }
-}
-
-/**
- * Validates Step 3 Bank Details Correction:
- * - Bank account number * is required
- * - IFSC * is required
- */
 export const validateBankCorrections = (
   values: BankCorrectionState
 ): { bankAccountError?: string | null; ifscError?: string | null } => {
-  let bankAccountError: string | null = null
-  let ifscError: string | null = null
-
-  if (!values.accountNumber || !values.accountNumber.trim()) {
-    bankAccountError = 'Bank account number is required.'
-  }
-
+  const bankAccountError = !values.accountNumber?.trim()
+    ? 'Bank account number is required.'
+    : !/^\d{9,18}$/.test(values.accountNumber.trim())
+      ? 'Please enter a valid bank account number.'
+      : null
   const trimmedIfsc = values.ifsc?.trim() || ''
-  if (!trimmedIfsc) {
-    ifscError = 'IFSC is required.'
-  } else if (!/^[A-Z0-9]{11}$/i.test(trimmedIfsc)) {
-    ifscError = 'Please enter a valid 11-character IFSC code.'
-  }
+  const ifscError = !trimmedIfsc
+    ? 'IFSC is required.'
+    : !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(trimmedIfsc.toUpperCase())
+      ? 'Please enter a valid 11-character IFSC code.'
+      : null
 
   return { bankAccountError, ifscError }
 }
 
-/**
- * Calculates the difference between revised and original income values.
- */
 export const calculateIncomeChange = (
   original: number,
   revisedStr: string
@@ -170,101 +103,159 @@ export const calculateIncomeChange = (
   if (!revisedStr || !revisedStr.trim()) {
     return { changeText: '—', tone: 'neutral' }
   }
-
   const revisedNum = Number(revisedStr)
-  if (isNaN(revisedNum)) {
+  if (Number.isNaN(revisedNum)) {
     return { changeText: '—', tone: 'neutral' }
   }
-
   const diff = revisedNum - original
   if (diff === 0) {
     return { changeText: '₹ 0', tone: 'neutral' }
   }
-
   const formattedAbs = new Intl.NumberFormat('en-IN').format(Math.abs(diff))
-  if (diff > 0) {
-    return { changeText: `+₹ ${formattedAbs}`, tone: 'positive' }
-  }
-
-  return { changeText: `-₹ ${formattedAbs}`, tone: 'negative' }
+  return diff > 0
+    ? { changeText: `+₹ ${formattedAbs}`, tone: 'positive' }
+    : { changeText: `-₹ ${formattedAbs}`, tone: 'negative' }
 }
 
-/**
- * Validates Step 4 Document Uploads based on revision reason:
- * - For wrong_deduction: PAN Card, Aadhaar Card, and Investment Proofs are required.
- * - For incorrect_bank: PAN Card, Aadhaar Card, and Bank Statements are required.
- * - For missed_income and other: PAN Card, Aadhaar Card, Form 16, and AIS/TIS are required.
- */
+const REQUIRED_DOCS_MAP: Record<RevisionReasonKey, Array<{ id: DocumentTypeId; label: string }>> = {
+  wrong_deduction: [
+    { id: 'pan', label: 'PAN Card' },
+    { id: 'aadhaar', label: 'Aadhaar Card' },
+    { id: 'investment_proof', label: 'Investment Proofs' },
+  ],
+  incorrect_bank: [
+    { id: 'pan', label: 'PAN Card' },
+    { id: 'aadhaar', label: 'Aadhaar Card' },
+    { id: 'bank_statement', label: 'Bank Statements' },
+  ],
+  other: [
+    { id: 'pan', label: 'PAN Card' },
+    { id: 'aadhaar', label: 'Aadhaar Card' },
+  ],
+  missed_income: [
+    { id: 'pan', label: 'PAN Card' },
+    { id: 'aadhaar', label: 'Aadhaar Card' },
+    { id: 'form16', label: 'Form 16 / Form 16A' },
+    { id: 'ais_tis', label: 'AIS and TIS Statement' },
+  ],
+}
+
 export const validateRequiredDocuments = (
   uploads: Partial<Record<DocumentTypeId, UploadedDocument>>,
   selectedReason?: RevisionReasonKey | null
 ): string | null => {
-  const requiredIds: { id: DocumentTypeId; label: string }[] =
-    selectedReason === 'wrong_deduction'
-      ? [
-          { id: 'pan', label: 'PAN Card' },
-          { id: 'aadhaar', label: 'Aadhaar Card' },
-          { id: 'investment_proof', label: 'Investment Proofs' },
-        ]
-      : selectedReason === 'incorrect_bank'
-      ? [
-          { id: 'pan', label: 'PAN Card' },
-          { id: 'aadhaar', label: 'Aadhaar Card' },
-          { id: 'bank_statement', label: 'Bank Statements' },
-        ]
-      : selectedReason === 'other'
-      ? [
-          { id: 'pan', label: 'PAN Card' },
-          { id: 'aadhaar', label: 'Aadhaar Card' },
-        ]
-      : [
-          { id: 'pan', label: 'PAN Card' },
-          { id: 'aadhaar', label: 'Aadhaar Card' },
-          { id: 'form16', label: 'Form 16 / Form 16A' },
-          { id: 'ais_tis', label: 'AIS and TIS Statement' },
-        ]
-
+  const requiredIds = REQUIRED_DOCS_MAP[selectedReason || 'missed_income'] || REQUIRED_DOCS_MAP.missed_income
   const missing = requiredIds.filter(({ id }) => !uploads[id])
-  if (missing.length > 0) {
-    return `Please upload all required documents: ${missing.map((m) => m.label).join(', ')}.`
-  }
-
-  return null
+  return missing.length > 0
+    ? `Please upload all required documents: ${missing.map((m) => m.label).join(', ')}.`
+    : null
 }
 
-/**
- * Calculates progressive Indian Income Tax + 4% Cess based on taxable income.
- * Incorporates standard progressive slabs with statutory 4% Health & Education Cess
- * and surcharge on high income brackets.
- */
+export const validateRevisedItrStage = (params: {
+  step: 1 | 2 | 3 | 4 | 5
+  ackNumber: string
+  selectedAy: string
+  selectedReason: RevisionReasonKey | null
+  otherReasonText: string
+  incomeCorrections: IncomeCorrectionState
+  deductionCorrections: DeductionCorrectionState
+  bankCorrections: BankCorrectionState
+  uploadedDocuments: Partial<Record<DocumentTypeId, UploadedDocument>>
+}): { isValid: boolean; errors: RevisedItrValidationErrors } => {
+  const {
+    step,
+    ackNumber,
+    selectedAy,
+    selectedReason,
+    otherReasonText,
+    incomeCorrections,
+    deductionCorrections,
+    bankCorrections,
+    uploadedDocuments,
+  } = params
+
+  if (step === 1) {
+    const ackErr = validateAckNumber(ackNumber)
+    const ayErr = validateAssessmentYear(selectedAy)
+    return ackErr || ayErr ? { isValid: false, errors: { ackError: ackErr, ayError: ayErr } } : { isValid: true, errors: {} }
+  }
+
+  if (step === 2) {
+    const validation = validateRevisionReason(selectedReason, otherReasonText)
+    return validation.reasonError || validation.otherReasonError
+      ? { isValid: false, errors: { reasonError: validation.reasonError, otherReasonError: validation.otherReasonError } }
+      : { isValid: true, errors: {} }
+  }
+
+  if (step === 3) {
+    if (selectedReason === 'wrong_deduction') {
+      const { taxableIncomeError } = validateDeductionCorrections(deductionCorrections)
+      return taxableIncomeError ? { isValid: false, errors: { taxableIncomeError } } : { isValid: true, errors: {} }
+    }
+    if (selectedReason === 'incorrect_bank') {
+      const { bankAccountError, ifscError } = validateBankCorrections(bankCorrections)
+      return bankAccountError || ifscError
+        ? { isValid: false, errors: { bankAccountError, ifscError } }
+        : { isValid: true, errors: {} }
+    }
+    if (selectedReason === 'other') {
+      const incomeValidation = validateIncomeCorrections(incomeCorrections)
+      const bankErrors =
+        bankCorrections.accountNumber.trim() || bankCorrections.ifsc.trim()
+          ? validateBankCorrections(bankCorrections)
+          : {}
+      const hasError =
+        incomeValidation.salaryIncomeError ||
+        incomeValidation.taxableIncomeError ||
+        bankErrors.bankAccountError ||
+        bankErrors.ifscError
+      return hasError
+        ? {
+            isValid: false,
+            errors: {
+              salaryIncomeError: incomeValidation.salaryIncomeError,
+              taxableIncomeError: incomeValidation.taxableIncomeError,
+              bankAccountError: bankErrors.bankAccountError,
+              ifscError: bankErrors.ifscError,
+            },
+          }
+        : { isValid: true, errors: {} }
+    }
+    const { salaryIncomeError, taxableIncomeError } = validateIncomeCorrections(incomeCorrections)
+    return salaryIncomeError || taxableIncomeError
+      ? { isValid: false, errors: { salaryIncomeError, taxableIncomeError } }
+      : { isValid: true, errors: {} }
+  }
+
+  if (step === 4) {
+    const docsError = validateRequiredDocuments(uploadedDocuments, selectedReason)
+    return docsError ? { isValid: false, errors: { documentsError: docsError } } : { isValid: true, errors: {} }
+  }
+
+  return { isValid: true, errors: {} }
+}
+
 export const calculateTaxLiability = (taxableIncome: number): number => {
   if (taxableIncome <= 0) return 0
 
-  let baseTax = 0
-  if (taxableIncome <= 250000) {
-    baseTax = 0
-  } else if (taxableIncome <= 500000) {
-    baseTax = (taxableIncome - 250000) * 0.05
-  } else if (taxableIncome <= 1000000) {
-    baseTax = 12500 + (taxableIncome - 500000) * 0.20
-  } else {
-    baseTax = 12500 + 100000 + (taxableIncome - 1000000) * 0.30
-  }
+  const baseTax =
+    taxableIncome <= 250000
+      ? 0
+      : taxableIncome <= 500000
+        ? (taxableIncome - 250000) * 0.05
+        : taxableIncome <= 1000000
+          ? 12500 + (taxableIncome - 500000) * 0.2
+          : 112500 + (taxableIncome - 1000000) * 0.3
 
-  // Surcharge for High Net Worth Incomes
-  let surcharge = 0
-  if (taxableIncome > 50000000) {
-    surcharge = baseTax * 0.25 // > 5 Crore
-  } else if (taxableIncome > 20000000) {
-    surcharge = baseTax * 0.25 // > 2 Crore
-  } else if (taxableIncome > 10000000) {
-    surcharge = baseTax * 0.15 // > 1 Crore
-  } else if (taxableIncome > 5000000) {
-    surcharge = baseTax * 0.10 // > 50 Lakhs
-  }
+  const surchargeRate =
+    taxableIncome > 20000000
+      ? 0.25
+      : taxableIncome > 10000000
+        ? 0.15
+        : taxableIncome > 5000000
+          ? 0.1
+          : 0
 
-  const totalWithSurcharge = baseTax + surcharge
-  const cess = totalWithSurcharge * 0.04
-
-  return Math.round(totalWithSurcharge + cess)
+  const totalWithSurcharge = baseTax * (1 + surchargeRate)
+  return Math.round(totalWithSurcharge * 1.04)
 }

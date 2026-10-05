@@ -8,7 +8,8 @@ export interface BusinessDocumentItemProps {
   id: string
   title: string
   subtitle: string
-  iconSrc: string
+  iconSrc?: string
+  icon?: React.ReactNode
   themeColor?: DocumentThemeColor
   isRequired?: boolean
   isOptional?: boolean
@@ -29,6 +30,7 @@ export const BusinessDocumentItem: React.FC<BusinessDocumentItemProps> = ({
   title,
   subtitle,
   iconSrc,
+  icon,
   themeColor = 'blue',
   isRequired = true,
   isOptional = false,
@@ -44,7 +46,7 @@ export const BusinessDocumentItem: React.FC<BusinessDocumentItemProps> = ({
     <span className="business-doc-badge--optional">Optional</span>
   ) : undefined
 
-  const cardIcon = (
+  const cardIcon = icon ?? (iconSrc ? (
     <img
       src={iconSrc}
       alt=""
@@ -52,7 +54,7 @@ export const BusinessDocumentItem: React.FC<BusinessDocumentItemProps> = ({
       height="20"
       aria-hidden="true"
     />
-  )
+  ) : null)
 
   const cardClassName = `business-loan-doc-card business-loan-doc-card--${themeColor} ${
     error ? 'business-doc-card--error' : ''

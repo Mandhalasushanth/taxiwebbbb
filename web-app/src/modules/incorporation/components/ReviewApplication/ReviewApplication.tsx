@@ -2,6 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { StepActionBar } from '@shared/components'
+import { getEntityStructureLabel } from '../../types/incorporation.types'
 import { useIncorporationFlow } from '../../hooks'
 import './ReviewApplication.css'
 
@@ -33,19 +34,8 @@ export const ReviewApplication: React.FC = () => {
   const { formData } = useIncorporationFlow()
 
   const companyType = formData.companyType || 'pvt_ltd'
+  const entityTypeLabel = getEntityStructureLabel(companyType, { full: true })
 
-  const entityTypeMap: Record<string, string> = {
-    opc: 'One Person Company (OPC)',
-    pvt_ltd: 'Private Limited Company',
-    public: 'Public Limited Company',
-    public_ltd: 'Public Limited Company',
-    llp: 'Limited Liability Partnership (LLP)',
-    section_8: 'Section 8 Company (NGO)',
-    nidhi: 'Nidhi Company',
-    producer: 'Producer Company',
-  }
-
-  const entityTypeLabel = entityTypeMap[companyType] || 'Private Limited Company'
 
   const classCategory =
     formData.companyDetails?.classOfCompany && formData.companyDetails?.categoryOfCompany
@@ -166,7 +156,7 @@ export const ReviewApplication: React.FC = () => {
         onBack={() => navigate(routePaths.incorporation.linkedRegistrations)}
         onNext={() => navigate(routePaths.incorporation.feesPayment)}
         onSaveDraft={() => navigate(routePaths.dashboard)}
-        nextLabel="Continue to Payment"
+        nextLabel="Continue"
       />
     </div>
   )

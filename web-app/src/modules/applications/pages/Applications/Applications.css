@@ -140,14 +140,17 @@
   padding: 1.25rem 1.5rem;
   cursor: pointer;
   text-align: left;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .app-stat-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) translateZ(0);
   border-color: #cbd5e1;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
 }
@@ -195,6 +198,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  min-height: 320px;
 }
 
 .app-list-section__header {
@@ -279,14 +283,22 @@
   border-radius: 18px;
   padding: 1.35rem 1.75rem;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .app-item-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) translateZ(0);
   border-color: #cbd5e1;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.app-item-card__left,
+.app-item-card__right {
+  pointer-events: none;
 }
 
 .app-item-card__left {
@@ -388,7 +400,8 @@
 }
 
 .app-item-card__track-text {
-  transition: transform 0.2s ease;
+  transition: transform 0.18s ease;
+  will-change: transform;
 }
 
 .app-item-card:hover .app-item-card__track-text {
@@ -407,7 +420,8 @@
   width: 18px;
   height: 18px;
   stroke: #ff6b00;
-  transition: transform 0.2s ease;
+  transition: transform 0.18s ease;
+  will-change: transform;
 }
 
 .app-item-card:hover .app-chevron-svg {

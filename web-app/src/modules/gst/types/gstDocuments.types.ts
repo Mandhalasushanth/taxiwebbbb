@@ -9,6 +9,7 @@ export interface DocumentItem {
   fileName?: string
   isUploaded: boolean
   addressProofType?: string
+  file?: File
 }
 
 export type UploadedDoc = DocumentItem
@@ -24,6 +25,8 @@ export interface GSTStepDocumentsProps {
 export interface DocPreviewState {
   title: string
   fileName: string
+  /** The uploaded file (in memory for this session); absent for drafts restored after a reload */
+  file?: File
 }
 
 /** Colour tone of a document/section icon tile (see styles/gstTones.css) */

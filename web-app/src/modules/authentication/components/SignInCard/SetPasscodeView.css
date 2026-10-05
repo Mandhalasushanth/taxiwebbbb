@@ -1,0 +1,119 @@
+.set-passcode-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.set-passcode-form__mobile-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.65rem 0.9rem;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.set-passcode-form__mobile-label {
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.set-passcode-form__mobile-value {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #172033;
+  letter-spacing: 0.04em;
+}
+
+.set-passcode-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.set-passcode-form__label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.set-passcode-form__label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #172033;
+}
+
+.set-passcode-form__link-btn {
+  background: transparent;
+  border: none;
+  color: #0b5ed7;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  transition: color 150ms ease;
+}
+
+.set-passcode-form__link-btn:hover {
+  color: #f97316;
+}
+
+.set-passcode-form__error-msg {
+  font-size: 0.75rem;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.set-passcode-form__hint {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.set-passcode-form__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.set-passcode-form__btn-primary {
+  width: 100%;
+  padding: 0.72rem 1.25rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  font-family: inherit;
+  transition: all 180ms ease;
+}
+
+.set-passcode-form__btn-primary--active {
+  background: #f97316;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
+}
+
+.set-passcode-form__btn-primary--active:hover {
+  background: #ea580c;
+  transform: translateY(-1px);
+}
+
+.set-passcode-form__btn-primary--disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.set-passcode-form__cancel {
+  font-size: 0.8125rem;
+}
