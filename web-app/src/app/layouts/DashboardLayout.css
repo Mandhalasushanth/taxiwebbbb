@@ -5,6 +5,8 @@
   background: var(--color-bg);
   position: relative;
   width: 100%;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
 }
 
 .shell__backdrop { display: none; }
@@ -155,7 +157,15 @@
 }
 .shell__signout:hover { color: #fca5a5; background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); }
 
-.shell__main { display: flex; flex-direction: column; min-width: 0; background: var(--color-bg); width: 100%; }
+.shell__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--color-bg);
+  width: 100%;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+}
 
 .shell__header {
   position: sticky;

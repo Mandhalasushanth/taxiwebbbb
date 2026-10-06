@@ -10,6 +10,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   tab-size: 4;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -20,6 +22,8 @@ body {
   background-color: var(--color-background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
 }
 
 img,
@@ -51,6 +55,8 @@ h6 {
 #root {
   isolation: isolate;
   min-height: 100vh;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
 }
 
 a {
