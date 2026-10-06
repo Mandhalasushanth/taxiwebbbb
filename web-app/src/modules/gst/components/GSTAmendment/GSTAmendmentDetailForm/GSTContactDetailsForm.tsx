@@ -1,10 +1,10 @@
 import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
+import { GSTUpdateAndReviewButton } from '@modules/gst/shared/edit/GSTUpdateAndReviewButton'
 import { GST_FILE_MESSAGES, gstFileSizeError } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
-import React, { useState, type ChangeEvent, type FormEvent, useMemo } from 'react'
+import React, { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
-import { getCurrentContactDetails } from '@modules/gst/services/gstProfileDetails'
 import GSTAmendmentProofUpload from './GSTAmendmentProofUpload'
 import './GSTContactDetailsForm.css'
 
@@ -13,37 +13,76 @@ interface GSTContactDetailsFormProps {
     mobile: string
     email: string
   }
+  initialContactDetails?: Record<string, string>
+  initialFile?: File | null
+  initialFileName?: string
+  initialFileSize?: string
   isSubmitting?: boolean
+  isEditMode?: boolean
   onBack: () => void
-  onSaveDraft?: () => void
+  onSaveDraft?: (data?: {
+    newValue: string
+    file: File | null
+    fileName?: string
+    fileSizeText?: string
+    contactDetails?: Record<string, string>
+  }) => void
   onSubmit: (payload: {
     newValue: string
     file: File | null
+    fileName?: string
+    fileSizeText?: string
+    contactDetails?: Record<string, string>
+  }) => void
+  onChange?: (data: {
+    newValue: string
+    file: File | null
+    fileName?: string
+    fileSizeText?: string
     contactDetails?: Record<string, string>
   }) => void
 }
 
-const ACCEPTED_PROOFS = [
-  'Official government/business registration document showing the updated contact details',
-  'Official government correspondence showing the updated contact details',
-  'Other supporting document showing the contact detail change',
-  'Board Resolution / Authorization for contact update',
-  'Utility Bill in the name of the entity / authorized person',
-  'Other official document evidencing the contact detail change',
-]
-
 export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
-  currentDetails: currentDetailsProp,
+  currentDetails: _currentDetailsProp,
+  initialContactDetails,
+  initialFile,
+  initialFileName,
+  initialFileSize,
   isSubmitting = false,
+  isEditMode = false,
   onBack,
   onSubmit,
   onSaveDraft,
+  onChange: _onChange,
 }) => {
-  const currentDetails = useMemo(() => currentDetailsProp ?? getCurrentContactDetails(), [currentDetailsProp])
-  const [mobileNumber, setMobileNumber] = useState('')
-  const [emailAddress, setEmailAddress] = useState('')
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [mobileNumber, setMobileNumber] = useState(
+    initialContactDetails?.mobile?.replace(/^\+91\s*/, '') || ''
+  )
+  const [emailAddress, setEmailAddress] = useState(initialContactDetails?.email || '')
+  const [selectedFile, setSelectedFile] = useState<File | null>(initialFile || null)
+  const [removedInitialFile, setRemovedInitialFile] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    if (initialContactDetails) {
+      if (initialContactDetails.mobile !== undefined) {
+        setMobileNumber(initialContactDetails.mobile.replace(/^\+91\s*/, ''))
+      }
+      if (initialContactDetails.email !== undefined) {
+        setEmailAddress(initialContactDetails.email)
+      }
+    }
+  }, [initialContactDetails])
+
+  useEffect(() => {
+    if (initialFile !== undefined) {
+      setSelectedFile(initialFile)
+      if (initialFile) setRemovedInitialFile(false)
+    }
+  }, [initialFile])
+
+  const effectiveFileName = !removedInitialFile ? (selectedFile?.name || initialFileName) : selectedFile?.name
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -54,6 +93,7 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
         return
       }
       setSelectedFile(file)
+      setRemovedInitialFile(false)
       setErrors((prev) => ({ ...prev, file: '' }))
     }
   }
@@ -65,7 +105,7 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
       emailAddress: rules.email(emailAddress),
     })
 
-    if (!selectedFile) {
+    if (!selectedFile && !effectiveFileName) {
       newErrors.file = GST_FILE_MESSAGES.proofRequired
     }
 
@@ -82,6 +122,8 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
     onSubmit({
       newValue: formattedNewValue,
       file: selectedFile,
+      fileName: effectiveFileName,
+      fileSizeText: initialFileSize,
       contactDetails: {
         mobile: formattedMobile,
         email: formattedEmail,
@@ -94,40 +136,9 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
       {/* Header */}
       <div className="gst-amend-detail-header">
         <h1 className="gst-amend-detail-title">Contact Details</h1>
-        <p className="gst-amend-detail-subtitle">Current details are read-only</p>
       </div>
 
       <form onSubmit={handleSubmitForm} noValidate>
-        {/* Card 1: Currently registered (read-only) */}
-        <div className="gst-amend-contact-readonly-card">
-          <h3 className="gst-amend-contact-readonly-title">Currently registered (read-only)</h3>
-          <div className="gst-amend-contact-readonly-grid">
-            <div className="gst-amend-contact-readonly-item">
-              <div className="gst-amend-contact-readonly-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                </svg>
-              </div>
-              <div className="gst-amend-contact-readonly-text">
-                <span className="gst-amend-contact-readonly-label">Mobile</span>
-                <span className="gst-amend-contact-readonly-val">{currentDetails.mobile}</span>
-              </div>
-            </div>
-
-            <div className="gst-amend-contact-readonly-item">
-              <div className="gst-amend-contact-readonly-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                  <polyline points="22,6 12,13 2,6" />
-                </svg>
-              </div>
-              <div className="gst-amend-contact-readonly-text">
-                <span className="gst-amend-contact-readonly-label">Email</span>
-                <span className="gst-amend-contact-readonly-val">{currentDetails.email}</span>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Card 2: New details */}
         <div className="gst-amend-card-box">
@@ -184,48 +195,19 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
           </div>
         </div>
 
-        {/* Section 3: Supporting proof & Accepted proofs (2-column layout) */}
-        <div className="gst-amend-contact-proof-grid">
-          {/* Left Side: Supporting proof upload */}
-          <div className="gst-amend-contact-proof-left">
-            <GSTAmendmentProofUpload
-              selectedFile={selectedFile}
-              error={errors.file}
-              onFileChange={handleFileChange}
-              onRemoveFile={(e) => {
-                e.stopPropagation()
-                setSelectedFile(null)
-              }}
-            />
-          </div>
-
-          {/* Right Side: Accepted proofs card */}
-          <div className="gst-amend-contact-accepted-card">
-            <div className="gst-amend-contact-accepted-header">
-              <div className="gst-amend-contact-accepted-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="16" x2="12" y2="12" />
-                  <line x1="12" y1="8" x2="12.01" y2="8" />
-                </svg>
-              </div>
-              <h4 className="gst-amend-contact-accepted-title">Accepted proofs</h4>
-            </div>
-
-            <ul className="gst-amend-contact-accepted-list">
-              {ACCEPTED_PROOFS.map((proofText) => (
-                <li key={proofText} className="gst-amend-contact-accepted-item">
-                  <span className="gst-amend-contact-check-icon">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                    </svg>
-                  </span>
-                  <span className="gst-amend-contact-item-text">{proofText}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        {/* Section 3: Supporting proof */}
+        <GSTAmendmentProofUpload
+          selectedFile={selectedFile}
+          existingFileName={!selectedFile ? effectiveFileName : undefined}
+          existingFileSize={initialFileSize}
+          error={errors.file}
+          onFileChange={handleFileChange}
+          onRemoveFile={(e) => {
+            e.stopPropagation()
+            setSelectedFile(null)
+            setRemovedInitialFile(true)
+          }}
+        />
 
         {/* Bottom Actions Row (Left: Back, Right: Review Changes) */}
         <div className="gst-amend-detail-actions-row">
@@ -237,14 +219,40 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
           </button>
 
           <div className="gst-actions-group">
-            {onSaveDraft && <GSTSaveDraftButton onClick={onSaveDraft} />}
-            <button type="submit" disabled={isSubmitting} className="gst-amend-submit-orange-btn">
-              {isSubmitting ? 'Submitting...' : 'Review Changes'}
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </button>
+            {onSaveDraft && (
+              <GSTSaveDraftButton
+                onClick={() => {
+                  const formattedMobile = `+91 ${mobileNumber.trim()}`
+                  const formattedEmail = emailAddress.trim()
+                  const formattedNewValue = `${formattedMobile} · ${formattedEmail}`
+                  onSaveDraft({
+                    newValue: formattedNewValue,
+                    file: selectedFile,
+                    fileName: effectiveFileName,
+                    fileSizeText: initialFileSize,
+                    contactDetails: {
+                      mobile: formattedMobile,
+                      email: formattedEmail,
+                    },
+                  })
+                }}
+              />
+            )}
+            {isEditMode ? (
+              <GSTUpdateAndReviewButton
+                type="submit"
+                isSubmitting={isSubmitting}
+                label="Update & Review"
+              />
+            ) : (
+              <button type="submit" disabled={isSubmitting} className="gst-amend-submit-orange-btn">
+                {isSubmitting ? 'Submitting...' : 'Review Changes'}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </button>
+            )}
           </div>
         </div>
       </form>

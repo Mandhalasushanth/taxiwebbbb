@@ -1,56 +1,135 @@
 .gst-review-card {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 22px 24px;
-  margin-bottom: 24px;
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .gst-review-card__header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  margin-bottom: 18px;
 }
 
 .gst-review-card__header--split {
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
 }
 
-.gst-review-card__header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.gst-review-card__title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .gst-review-card__edit-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background-color: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 8px;
-  padding: 6px 14px;
-  font-size: 13px;
+  gap: 5px;
+  background-color: transparent;
+  border: 1.5px solid #ea580c;
+  border-radius: 9999px;
+  padding: 4px 14px;
+  font-size: 13.5px;
   font-weight: 600;
-  color: #2563eb;
+  color: #ea580c;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .gst-review-card__edit-btn:hover {
-  background-color: #eff6ff;
-  border-color: #3b82f6;
-  color: #1d4ed8;
+  background-color: #fff7ed;
+  border-color: #c2410c;
+  color: #c2410c;
   transform: translateY(-1px);
 }
 
 .gst-review-card__edit-icon {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
+}
+
+.gst-review-card__rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.gst-review-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.gst-review-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.gst-review-row__label {
+  font-size: 0.925rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.gst-review-row__value {
+  font-size: 0.95rem;
+  color: #0f172a;
+  font-weight: 700;
+  text-align: right;
+}
+
+/* Documents Card */
+.gst-review-doc-card-box {
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.gst-review-doc-card-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #059669;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gst-review-doc-card-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.gst-review-doc-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.gst-review-doc-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #065f46;
+  margin: 0;
+}
+
+.gst-review-doc-card-subtitle {
+  font-size: 0.85rem;
+  color: #047857;
+  margin: 0;
+  font-weight: 500;
 }
 
 .gst-review-doc-overall-badge {
@@ -65,264 +144,3 @@
   padding: 4px 10px;
   border-radius: 9999px;
 }
-
-.gst-review-doc-overall-icon {
-  width: 14px;
-  height: 14px;
-}
-
-.gst-review-doc-overall-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-  border: 1px solid #bbf7d0;
-  border-radius: 10px;
-  padding: 10px 14px;
-  margin-bottom: 16px;
-}
-
-.gst-review-doc-overall-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.gst-review-doc-overall-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 700;
-  color: #047857;
-}
-
-.gst-review-doc-overall-text {
-  font-size: 12.5px;
-  color: #334155;
-  font-weight: 500;
-}
-
-.gst-review-doc-overall-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background-color: #10b981;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 9999px;
-  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.25);
-  flex-shrink: 0;
-}
-
-.gst-review-doc-overall-pill-icon {
-  width: 13px;
-  height: 13px;
-}
-
-.gst-review-card__icon-wrap {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gst-review-card__icon-wrap--orange {
-  background-color: #ffedd5;
-  color: #ea580c;
-}
-
-.gst-review-card__icon-wrap--blue {
-  background-color: #dbeafe;
-  color: #2563eb;
-}
-
-.gst-review-card__icon-wrap svg {
-  width: 18px;
-  height: 18px;
-}
-
-.gst-review-card__title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 0;
-}
-
-/* Responsive Grid inside Filing Details */
-.gst-review-details-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  column-gap: 28px;
-  row-gap: 18px;
-}
-
-@media (max-width: 1024px) {
-  .gst-review-details-grid {
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 20px;
-    row-gap: 16px;
-  }
-}
-
-@media (max-width: 540px) {
-  .gst-review-details-grid {
-    grid-template-columns: 1fr;
-    row-gap: 14px;
-  }
-}
-
-.gst-review-field {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.gst-review-field__label {
-  font-size: 11.5px;
-  color: #64748b;
-  font-weight: 500;
-}
-
-.gst-review-field__value {
-  font-size: 13.5px;
-  color: #0f172a;
-  font-weight: 700;
-}
-
-/* Documents Summary Card */
-.gst-review-doc-summary-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.gst-review-doc-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 13px;
-}
-
-.gst-review-doc-item__left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #334155;
-  font-weight: 500;
-}
-
-.gst-review-doc-item__icon-check {
-  width: 18px;
-  height: 18px;
-  background-color: #10b981;
-  color: #ffffff;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gst-review-doc-item__icon-check svg {
-  width: 12px;
-  height: 12px;
-}
-
-.gst-review-doc-item__icon-empty {
-  width: 16px;
-  height: 16px;
-  border: 1.5px solid #94a3b8;
-  border-radius: 50%;
-  display: inline-block;
-  flex-shrink: 0;
-}
-
-.gst-review-doc-item__right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.gst-review-doc-item__count {
-  font-weight: 700;
-  color: #0f172a;
-  font-size: 13.5px;
-}
-
-.gst-review-doc-item__status {
-  font-size: 11.5px;
-  font-weight: 600;
-  padding: 3px 9px;
-  border-radius: 9999px;
-  white-space: nowrap;
-}
-
-.gst-review-doc-item__status--verified {
-  background-color: #ecfdf5;
-  color: #059669;
-  border: 1px solid #a7f3d0;
-}
-
-.gst-review-doc-item__status--not_added {
-  background-color: #f1f5f9;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
-}
-
-.gst-review-doc-item__status--not_applicable {
-  background-color: #f8fafc;
-  color: #64748b;
-  border: 1px solid #cbd5e1;
-}
-
-.gst-review-doc-item__status--pending {
-  background-color: #fffbeb;
-  color: #d97706;
-  border: 1px solid #fde68a;
-}
-
-.gst-review-doc-item__icon-pending {
-  width: 18px;
-  height: 18px;
-  background-color: #fef3c7;
-  color: #d97706;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gst-review-doc-item__icon-pending svg {
-  width: 11px;
-  height: 11px;
-}
-
-.gst-review-doc-item__icon-na {
-  width: 18px;
-  height: 18px;
-  background-color: #f1f5f9;
-  color: #64748b;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gst-review-doc-item__icon-na svg {
-  width: 11px;
-  height: 11px;
-}
-
-@media (max-width: 640px) {
-  .gst-review-details-grid {
-    grid-template-columns: 1fr;
-  }
-}
-

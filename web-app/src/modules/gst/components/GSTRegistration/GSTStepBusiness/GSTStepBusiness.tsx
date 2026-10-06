@@ -13,6 +13,7 @@ export type { GstBusinessFormData, BusinessFormData }
 
 interface GSTStepBusinessProps {
   data: GstBusinessFormData
+  isEditMode?: boolean
   onChange: <K extends keyof GstBusinessFormData>(field: K, value: GstBusinessFormData[K]) => void
   onNext: () => void
   onCancel?: () => void
@@ -21,6 +22,7 @@ interface GSTStepBusinessProps {
 
 export const GSTStepBusiness = ({
   data,
+  isEditMode = false,
   onChange,
   onNext,
   onCancel,
@@ -153,7 +155,7 @@ export const GSTStepBusiness = ({
         onBack={onCancel}
         onSaveDraft={onSaveDraft}
         onNext={handleSubmit}
-        nextLabel="Continue"
+        nextLabel={isEditMode ? 'Update & Review' : 'Continue'}
       />
     </form>
   )

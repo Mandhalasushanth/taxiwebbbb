@@ -35,6 +35,8 @@ export const GSTFiling = () => {
     handleFileUpload,
     handleFileRemove,
     handleToggleNotApplicable,
+    isEditMode,
+    startEditingFromReview,
   } = useGSTFilingFlow()
 
   return (
@@ -43,6 +45,7 @@ export const GSTFiling = () => {
       {currentStep === 1 && (
         <GSTFilingPeriod
           initialData={filingData}
+          isEditMode={isEditMode}
           onStepClick={handleStepClick}
           onContinue={handleStep1Continue}
           onCancel={handleStep1Back}
@@ -60,6 +63,7 @@ export const GSTFiling = () => {
           frequency={filingData.frequency}
           uploadedFiles={uploadedFiles}
           notApplicableDocs={notApplicableDocs}
+          isEditMode={isEditMode}
           onFileUpload={handleFileUpload}
           onFileRemove={handleFileRemove}
           onToggleNotApplicable={handleToggleNotApplicable}
@@ -80,7 +84,10 @@ export const GSTFiling = () => {
           notApplicableDocs={notApplicableDocs}
           onStepClick={handleStepClick}
           onSaveDraft={openModal}
-          onEditFilingDetails={() => goToStep(1)}
+          onEditFilingDetails={() => startEditingFromReview(1)}
+          onEditTaxComputation={() => startEditingFromReview(1)}
+          onEditFilingFee={() => startEditingFromReview(1)}
+          onEditDocuments={() => startEditingFromReview(2)}
           onBack={() => goToStep(2)}
           onRequestChange={() => goToStep(2)}
           onApprove={handleStep3Approve}
@@ -103,12 +110,12 @@ export const GSTFiling = () => {
       {currentStep === 5 && (
         <GSTFilingSuccess
           details={paymentResult}
+          businessName={filingData.businessName}
           onBack={() => goToStep(4)}
           onViewReceipt={() => goToStep(6)}
-          onTrackApplication={() =>
-            navigate(routePaths.gst.detail(paymentResult.applicationRef || filingRef))
-          }
-          onBackToDashboard={() => navigate(routePaths.gst.root)}
+          onTrackApplication={() => navigate(routePaths.applications)}
+          onBackToDashboard={() => navigate(routePaths.dashboard)}
+          onContactSupport={() => navigate(routePaths.support)}
         />
       )}
 

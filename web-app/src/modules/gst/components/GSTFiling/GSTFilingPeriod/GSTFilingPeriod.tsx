@@ -36,6 +36,7 @@ export interface FilingPeriodData {
 
 interface GSTFilingPeriodProps {
   initialData?: Partial<FilingPeriodData>
+  isEditMode?: boolean
   onStepClick?: (step: number) => void
   onContinue: (data: FilingPeriodData) => void
   onCancel: () => void
@@ -46,6 +47,7 @@ interface GSTFilingPeriodProps {
 
 export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
   initialData,
+  isEditMode = false,
   onStepClick,
   onContinue,
   onCancel,
@@ -218,6 +220,7 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
             onBack={onCancel}
             onSaveDraft={onSaveDraft}
             nextType="submit"
+            nextLabel={isEditMode ? 'Update & Review' : 'Continue'}
           />
         </form>
       </div>

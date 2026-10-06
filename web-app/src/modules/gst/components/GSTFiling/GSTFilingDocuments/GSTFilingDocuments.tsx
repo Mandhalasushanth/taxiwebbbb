@@ -19,6 +19,7 @@ export interface GSTFilingDocumentsProps {
   frequency?: string
   uploadedFiles?: Record<string, UploadedFileInfo>
   notApplicableDocs?: Record<string, boolean>
+  isEditMode?: boolean
   onFileUpload?: (id: string, file: File) => void
   onFileRemove?: (id: string) => void
   onToggleNotApplicable?: (id: string) => void
@@ -125,6 +126,7 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
   selectedMonth,
   uploadedFiles: externalUploadedFiles,
   notApplicableDocs: externalNotApplicableDocs,
+  isEditMode = false,
   onFileUpload: externalOnFileUpload,
   onFileRemove: externalOnFileRemove,
   onStepClick,
@@ -281,7 +283,7 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
         onBack={onBack}
         onNext={handleNext}
         onSaveDraft={onSaveDraft}
-        nextLabel="Continue"
+        nextLabel={isEditMode ? 'Update & Review' : 'Continue'}
       />
     </div>
   )

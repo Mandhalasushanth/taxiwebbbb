@@ -4,6 +4,8 @@ import './GSTAmendmentProofUpload.css'
 
 export interface GSTAmendmentProofUploadProps {
   selectedFile: File | null
+  existingFileName?: string
+  existingFileSize?: string
   error?: string
   onFileChange: (e: ChangeEvent<HTMLInputElement>) => void
   onRemoveFile: (e: React.MouseEvent) => void
@@ -11,6 +13,8 @@ export interface GSTAmendmentProofUploadProps {
 
 export const GSTAmendmentProofUpload: React.FC<GSTAmendmentProofUploadProps> = ({
   selectedFile,
+  existingFileName,
+  existingFileSize,
   error,
   onFileChange,
   onRemoveFile,
@@ -37,6 +41,12 @@ export const GSTAmendmentProofUpload: React.FC<GSTAmendmentProofUploadProps> = (
     onRemoveFile({} as React.MouseEvent)
   }
 
+  const isUploaded = Boolean(selectedFile || existingFileName)
+  const displayFileName = selectedFile?.name || existingFileName
+  const displayFileSize = selectedFile
+    ? `${(selectedFile.size / 1024).toFixed(0)} KB`
+    : existingFileSize || undefined
+
   return (
     <div className="gst-amend-proof-container">
       <UploadDocument
@@ -44,9 +54,9 @@ export const GSTAmendmentProofUpload: React.FC<GSTAmendmentProofUploadProps> = (
         title="Supporting proof"
         subtitle="Attach the document that evidences this change (PDF, JPG, PNG - max 10 MB)"
         isRequired={true}
-        isUploaded={Boolean(selectedFile)}
-        fileName={selectedFile?.name}
-        fileSize={selectedFile ? `${(selectedFile.size / 1024).toFixed(0)} KB` : undefined}
+        isUploaded={isUploaded}
+        fileName={displayFileName}
+        fileSize={displayFileSize}
         file={selectedFile || undefined}
         accept=".pdf,.jpg,.jpeg,.png"
         onUpload={handleUpload}

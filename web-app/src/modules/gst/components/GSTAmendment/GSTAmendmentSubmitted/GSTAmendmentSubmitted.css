@@ -1,43 +1,20 @@
-/* GST Amendment Submitted Screen Styling */
+/* GST Amendment Submitted Screen - Matching Image 2 Design */
 .gst-amend-submitted-container {
-  max-width: 680px;
+  width: 100%;
+  max-width: 1120px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem 1rem;
+  padding: 1.5rem 2rem 4rem 2rem;
   font-family: inherit;
   color: #0f172a;
+  box-sizing: border-box;
 }
 
-/* Hero Checkmark & Confetti Header */
+/* Hero Checkmark Header */
 .gst-amend-submitted-hero {
   text-align: center;
-  position: relative;
   margin-bottom: 2rem;
   padding-top: 1rem;
 }
-
-.gst-amend-confetti-container {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200px;
-  height: 90px;
-  pointer-events: none;
-}
-
-.gst-amend-confetti-dot {
-  position: absolute;
-  border-radius: 50%;
-}
-
-.gst-amend-confetti-1 { width: 8px; height: 8px; background: #3b82f6; top: 10px; left: 20px; }
-.gst-amend-confetti-2 { width: 6px; height: 6px; background: #f97316; top: 25px; left: 45px; }
-.gst-amend-confetti-3 { width: 10px; height: 6px; background: #10b981; top: 5px; right: 35px; border-radius: 2px; }
-.gst-amend-confetti-4 { width: 7px; height: 7px; background: #eab308; top: 30px; right: 20px; }
-.gst-amend-confetti-5 { width: 6px; height: 6px; background: #ec4899; top: 55px; left: 15px; }
-.gst-amend-confetti-6 { width: 8px; height: 8px; background: #06b6d4; top: 60px; right: 15px; }
-.gst-amend-confetti-7 { width: 9px; height: 5px; background: #8b5cf6; top: 40px; left: 35px; border-radius: 2px; }
-.gst-amend-confetti-8 { width: 7px; height: 7px; background: #10b981; top: 45px; right: 40px; }
 
 .gst-amend-submitted-ring {
   width: 72px;
@@ -86,81 +63,41 @@
   margin: 0;
 }
 
-.gst-amend-submitted-subtitle-sub {
-  font-size: 0.95rem;
-  color: #64748b;
-  margin: 0;
-}
-
-/* Main Details Card */
+/* Details Card Matching Image 2 */
 .gst-amend-submitted-card {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 0.75rem 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  border-radius: 20px;
+  padding: 0.75rem 2.25rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
 .gst-amend-submitted-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.875rem 0;
+  padding: 1.125rem 0;
+  gap: 1.5rem;
 }
-
-.gst-amend-submitted-row__left {
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-}
-
-.gst-amend-submitted-icon-bg {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gst-amend-submitted-icon-bg svg {
-  width: 20px;
-  height: 20px;
-}
-
-.gst-amend-submitted-icon-bg--blue { background-color: #eff6ff; color: #2563eb; }
-.gst-amend-submitted-icon-bg--purple { background-color: #f3e8ff; color: #9333ea; }
-.gst-amend-submitted-icon-bg--orange { background-color: #fff7ed; color: #ea580c; }
-.gst-amend-submitted-icon-bg--green { background-color: #e6f4ea; color: #16a34a; }
 
 .gst-amend-submitted-label {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 500;
   color: #64748b;
 }
 
 .gst-amend-submitted-value {
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #0f172a;
+  text-align: right;
+  word-break: break-word;
 }
 
 .gst-amend-submitted-value--arn {
-  color: #1e3a8a;
+  color: #0f172a;
   font-weight: 800;
-  letter-spacing: 0.02em;
-}
-
-.gst-amend-submitted-status-badge {
-  background-color: #e6f4ea;
-  color: #16a34a;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  padding: 0.375rem 0.875rem;
-  border-radius: 9999px;
-  display: inline-block;
 }
 
 .gst-amend-submitted-divider {
@@ -168,7 +105,7 @@
   background-color: #f1f5f9;
 }
 
-/* Action Buttons Row */
+/* Action Buttons Row - Only Two Buttons */
 .gst-amend-submitted-actions-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -180,105 +117,56 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.625rem;
-  padding: 0.8125rem 1.25rem;
-  background-color: #ff6b00;
+  padding: 0.9375rem 1.5rem;
+  background-color: #f97316;
   border: none;
-  border-radius: 10px;
-  font-size: 0.9375rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #ffffff;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(255, 107, 0, 0.25);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+  text-align: center;
 }
 
 .gst-amend-submitted-btn-orange:hover {
-  background-color: #e66000;
-  box-shadow: 0 4px 10px rgba(255, 107, 0, 0.35);
-}
-
-.gst-amend-btn-icon-target {
-  width: 20px;
-  height: 20px;
-}
-
-.gst-amend-btn-icon-arrow {
-  width: 18px;
-  height: 18px;
+  background-color: #ea580c;
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35);
+  transform: translateY(-1px);
 }
 
 .gst-amend-submitted-btn-navy {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.625rem;
-  padding: 0.8125rem 1.25rem;
+  padding: 0.9375rem 1.5rem;
   background-color: #ffffff;
   border: 1.5px solid #1e3a8a;
-  border-radius: 10px;
-  font-size: 0.9375rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #1e3a8a;
   cursor: pointer;
   transition: all 0.2s ease;
+  text-align: center;
 }
 
 .gst-amend-submitted-btn-navy:hover {
   background-color: #eff6ff;
   border-color: #1d4ed8;
+  color: #1d4ed8;
 }
 
-.gst-amend-submitted-btn-navy svg {
-  width: 18px;
-  height: 18px;
-}
-
-/* Bottom Info Box */
-.gst-amend-submitted-info-box {
-  background-color: #f0f7ff;
-  border: 1px solid #dbeafe;
-  border-radius: 12px;
-  padding: 1.125rem 1.25rem;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.875rem;
-}
-
-.gst-amend-submitted-info-icon-wrap {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: #dbeafe;
-  color: #2563eb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-top: 0.125rem;
-}
-
-.gst-amend-submitted-info-icon-wrap svg {
-  width: 18px;
-  height: 18px;
-}
-
-.gst-amend-submitted-info-title {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: #1e40af;
-  line-height: 1.4;
-  margin: 0 0 0.25rem 0;
-}
-
-.gst-amend-submitted-info-desc {
-  font-size: 0.8125rem;
-  color: #3b82f6;
-  margin: 0;
-}
-
-/* Responsive adjustments */
 @media (max-width: 640px) {
+  .gst-amend-submitted-container {
+    padding: 1rem 1rem 3rem 1rem;
+  }
+
+  .gst-amend-submitted-card {
+    padding: 0.5rem 1.25rem;
+  }
+
   .gst-amend-submitted-actions-row {
     grid-template-columns: 1fr;
   }

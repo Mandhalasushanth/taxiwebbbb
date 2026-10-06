@@ -1,11 +1,10 @@
 import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
+import { GSTUpdateAndReviewButton } from '@modules/gst/shared/edit/GSTUpdateAndReviewButton'
 import { GST_FILE_MESSAGES, gstFileSizeError } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
-import React, { useState, type ChangeEvent, type FormEvent, useMemo } from 'react'
+import React, { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
-import { getCurrentAddressDetails } from '@modules/gst/services/gstProfileDetails'
-import GSTAmendmentProofsCard from './GSTAmendmentProofsCard'
 import GSTAmendmentAddressFields from './GSTAmendmentAddressFields'
 import GSTAmendmentProofUpload from './GSTAmendmentProofUpload'
 import './GSTAmendmentDetailForm.css'
@@ -22,39 +21,81 @@ export interface AddressDetails {
 interface GSTAmendmentAddressFormProps {
   title?: string
   currentDetails?: AddressDetails
+  initialDetails?: AddressDetails
+  initialFile?: File | null
+  initialFileName?: string
+  initialFileSize?: string
   isSubmitting?: boolean
+  isEditMode?: boolean
   onBack: () => void
-  onSaveDraft?: () => void
-  onSubmit: (payload: { newValue: string; file: File | null; addressDetails?: AddressDetails }) => void
+  onSaveDraft?: (data?: {
+    newValue: string
+    file: File | null
+    fileName?: string
+    fileSizeText?: string
+    addressDetails?: AddressDetails
+  }) => void
+  onSubmit: (payload: {
+    newValue: string
+    file: File | null
+    fileName?: string
+    fileSizeText?: string
+    addressDetails?: AddressDetails
+  }) => void
+  onChange?: (data: {
+    newValue: string
+    file: File | null
+    fileName?: string
+    fileSizeText?: string
+    addressDetails?: AddressDetails
+  }) => void
 }
-
-import {
-  ADDITIONAL_PROOFS,
-  PRINCIPAL_PROOFS,
-} from './gstAmendmentAddress.constants'
 
 export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = ({
   title = 'Principal Place of Business',
-  currentDetails,
+  currentDetails: _currentDetails,
+  initialDetails,
+  initialFile,
+  initialFileName,
+  initialFileSize,
   isSubmitting = false,
+  isEditMode = false,
   onBack,
   onSubmit,
   onSaveDraft,
+  onChange,
 }) => {
   const isAdditionalPlace = title === 'Additional Place of Business'
-  const activeDetails = useMemo(
-    () => currentDetails || getCurrentAddressDetails(isAdditionalPlace),
-    [currentDetails, isAdditionalPlace]
-  )
 
-  const [address, setAddress] = useState('')
-  const [city, setCity] = useState('')
-  const [district, setDistrict] = useState('')
-  const [stateUt, setStateUt] = useState('')
-  const [pinCode, setPinCode] = useState('')
-  const [natureOfPremises, setNatureOfPremises] = useState('')
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [address, setAddress] = useState(initialDetails?.address || '')
+  const [city, setCity] = useState(initialDetails?.city || '')
+  const [district, setDistrict] = useState(initialDetails?.district || '')
+  const [stateUt, setStateUt] = useState(initialDetails?.state || '')
+  const [pinCode, setPinCode] = useState(initialDetails?.pinCode || '')
+  const [natureOfPremises, setNatureOfPremises] = useState(initialDetails?.natureOfPremises || '')
+  const [selectedFile, setSelectedFile] = useState<File | null>(initialFile || null)
+  const [removedInitialFile, setRemovedInitialFile] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    if (initialDetails) {
+      if (initialDetails.address !== undefined) setAddress(initialDetails.address)
+      if (initialDetails.city !== undefined) setCity(initialDetails.city)
+      if (initialDetails.district !== undefined) setDistrict(initialDetails.district)
+      if (initialDetails.state !== undefined) setStateUt(initialDetails.state)
+      if (initialDetails.pinCode !== undefined) setPinCode(initialDetails.pinCode)
+      if (initialDetails.natureOfPremises !== undefined) setNatureOfPremises(initialDetails.natureOfPremises)
+    }
+  }, [initialDetails])
+
+  useEffect(() => {
+    if (initialFile !== undefined) {
+      setSelectedFile(initialFile)
+      if (initialFile) setRemovedInitialFile(false)
+    }
+  }, [initialFile])
+
+  const effectiveFileName = !removedInitialFile ? (selectedFile?.name || initialFileName) : selectedFile?.name
 
   const handlePinCodeChange = (e: ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/[^0-9]/g, '')
@@ -73,6 +114,7 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
         return
       }
       setSelectedFile(file)
+      setRemovedInitialFile(false)
       setErrors((prev) => ({ ...prev, file: '' }))
     }
   }
@@ -87,7 +129,7 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
       pinCode: rules.pinCode(pinCode),
     })
     if (!natureOfPremises) newErrors.natureOfPremises = 'Please select nature of premises.'
-    if (!selectedFile) newErrors.file = GST_FILE_MESSAGES.proofRequired
+    if (!selectedFile && !effectiveFileName) newErrors.file = GST_FILE_MESSAGES.proofRequired
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
@@ -111,6 +153,8 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
     onSubmit({
       newValue: formattedNewValue,
       file: selectedFile,
+      fileName: effectiveFileName,
+      fileSizeText: initialFileSize,
       addressDetails: addressDetailsData,
     })
   }
@@ -131,9 +175,6 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
             )}
             <div>
               <h1 className="gst-amend-detail-title">{title}</h1>
-              <p className="gst-amend-detail-subtitle">
-                Current details are read-only. Update the new details below.
-              </p>
             </div>
           </div>
         </div>
@@ -155,66 +196,7 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
       <form onSubmit={handleSubmitForm} noValidate>
         <div className="gst-amend-detail-grid">
           <main className="gst-amend-detail-main">
-            {/* Card 1: Read-only */}
-            <div className="gst-amend-card-box">
-              <div className="gst-amend-card-box__header-flex">
-                {isAdditionalPlace && (
-                  <div className="gst-amend-card-header-icon-box">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                      <polyline points="9 22 9 12 15 12 15 22" />
-                    </svg>
-                  </div>
-                )}
-                <h3 className="gst-amend-card-box__title">Currently registered (read-only)</h3>
-              </div>
-
-              {isAdditionalPlace ? (
-                <div className="gst-amend-readonly-2col-grid">
-                  <div className="gst-amend-readonly-col-item">
-                    <span className="gst-amend-readonly-label">Address</span>
-                    <span className="gst-amend-readonly-value">{activeDetails.address}</span>
-                  </div>
-                  <div className="gst-amend-readonly-col-item">
-                    <span className="gst-amend-readonly-label">PIN Code</span>
-                    <span className="gst-amend-readonly-value">{activeDetails.pinCode}</span>
-                  </div>
-                  <div className="gst-amend-readonly-col-item">
-                    <span className="gst-amend-readonly-label">City</span>
-                    <span className="gst-amend-readonly-value">{activeDetails.city}</span>
-                  </div>
-                  <div className="gst-amend-readonly-col-item">
-                    <span className="gst-amend-readonly-label">Nature of Premises</span>
-                    <span className="gst-amend-readonly-value">{activeDetails.natureOfPremises || 'Warehouse'}</span>
-                  </div>
-                </div>
-              ) : (
-                <div className="gst-amend-readonly-multiline-list">
-                  <div className="gst-amend-readonly-row">
-                    <span className="gst-amend-readonly-label">Address</span>
-                    <span className="gst-amend-readonly-value">{activeDetails.address}</span>
-                  </div>
-                  <div className="gst-amend-readonly-row">
-                    <span className="gst-amend-readonly-label">City</span>
-                    <span className="gst-amend-readonly-value">{activeDetails.city}</span>
-                  </div>
-                  <div className="gst-amend-readonly-row">
-                    <span className="gst-amend-readonly-label">District</span>
-                    <span className="gst-amend-readonly-value">{activeDetails.district || '—'}</span>
-                  </div>
-                  <div className="gst-amend-readonly-row">
-                    <span className="gst-amend-readonly-label">State</span>
-                    <span className="gst-amend-readonly-value">{activeDetails.state || '—'}</span>
-                  </div>
-                  <div className="gst-amend-readonly-row">
-                    <span className="gst-amend-readonly-label">PIN Code</span>
-                    <span className="gst-amend-readonly-value">{activeDetails.pinCode}</span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Card 2: New details */}
+            {/* New details */}
             <GSTAmendmentAddressFields
               isAdditionalPlace={isAdditionalPlace}
               address={address}
@@ -225,45 +207,98 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
               natureOfPremises={natureOfPremises}
               errors={errors}
               onAddressChange={(val) => {
-                setAddress(gstInput.address(val))
+                const updated = gstInput.address(val)
+                setAddress(updated)
                 if (errors.address) setErrors((prev) => ({ ...prev, address: '' }))
+                onChange?.({
+                  newValue: isAdditionalPlace
+                    ? `${updated.trim()}, ${city.trim()} - ${pinCode} (${natureOfPremises})`
+                    : `${updated.trim()}, ${city.trim()}, ${district.trim()}, ${stateUt} - ${pinCode} (${natureOfPremises})`,
+                  file: selectedFile,
+                  fileName: effectiveFileName,
+                  fileSizeText: initialFileSize,
+                  addressDetails: { address: updated.trim(), city: city.trim(), district: district.trim(), state: stateUt, pinCode: pinCode.trim(), natureOfPremises },
+                })
               }}
               onCityChange={(val) => {
-                setCity(gstInput.letters(val, 50))
+                const updated = gstInput.letters(val, 50)
+                setCity(updated)
                 if (errors.city) setErrors((prev) => ({ ...prev, city: '' }))
+                onChange?.({
+                  newValue: isAdditionalPlace
+                    ? `${address.trim()}, ${updated.trim()} - ${pinCode} (${natureOfPremises})`
+                    : `${address.trim()}, ${updated.trim()}, ${district.trim()}, ${stateUt} - ${pinCode} (${natureOfPremises})`,
+                  file: selectedFile,
+                  fileName: effectiveFileName,
+                  fileSizeText: initialFileSize,
+                  addressDetails: { address: address.trim(), city: updated.trim(), district: district.trim(), state: stateUt, pinCode: pinCode.trim(), natureOfPremises },
+                })
               }}
               onDistrictChange={(val) => {
-                setDistrict(gstInput.letters(val, 50))
+                const updated = gstInput.letters(val, 50)
+                setDistrict(updated)
                 if (errors.district) setErrors((prev) => ({ ...prev, district: '' }))
+                onChange?.({
+                  newValue: `${address.trim()}, ${city.trim()}, ${updated.trim()}, ${stateUt} - ${pinCode} (${natureOfPremises})`,
+                  file: selectedFile,
+                  fileName: effectiveFileName,
+                  fileSizeText: initialFileSize,
+                  addressDetails: { address: address.trim(), city: city.trim(), district: updated.trim(), state: stateUt, pinCode: pinCode.trim(), natureOfPremises },
+                })
               }}
               onStateUtChange={(val) => {
                 setStateUt(val)
                 if (errors.stateUt) setErrors((prev) => ({ ...prev, stateUt: '' }))
+                onChange?.({
+                  newValue: `${address.trim()}, ${city.trim()}, ${district.trim()}, ${val} - ${pinCode} (${natureOfPremises})`,
+                  file: selectedFile,
+                  fileName: effectiveFileName,
+                  fileSizeText: initialFileSize,
+                  addressDetails: { address: address.trim(), city: city.trim(), district: district.trim(), state: val, pinCode: pinCode.trim(), natureOfPremises },
+                })
               }}
-              onPinCodeChange={handlePinCodeChange}
+              onPinCodeChange={(e) => {
+                handlePinCodeChange(e)
+                const val = e.target.value.replace(/[^0-9]/g, '')
+                onChange?.({
+                  newValue: isAdditionalPlace
+                    ? `${address.trim()}, ${city.trim()} - ${val} (${natureOfPremises})`
+                    : `${address.trim()}, ${city.trim()}, ${district.trim()}, ${stateUt} - ${val} (${natureOfPremises})`,
+                  file: selectedFile,
+                  fileName: effectiveFileName,
+                  fileSizeText: initialFileSize,
+                  addressDetails: { address: address.trim(), city: city.trim(), district: district.trim(), state: stateUt, pinCode: val, natureOfPremises },
+                })
+              }}
               onNatureOfPremisesChange={(val) => {
                 setNatureOfPremises(val)
                 if (errors.natureOfPremises) setErrors((prev) => ({ ...prev, natureOfPremises: '' }))
+                onChange?.({
+                  newValue: isAdditionalPlace
+                    ? `${address.trim()}, ${city.trim()} - ${pinCode} (${val})`
+                    : `${address.trim()}, ${city.trim()}, ${district.trim()}, ${stateUt} - ${pinCode} (${val})`,
+                  file: selectedFile,
+                  fileName: effectiveFileName,
+                  fileSizeText: initialFileSize,
+                  addressDetails: { address: address.trim(), city: city.trim(), district: district.trim(), state: stateUt, pinCode: pinCode.trim(), natureOfPremises: val },
+                })
               }}
             />
 
-            {/* Card 3: Supporting proof */}
+            {/* Supporting proof */}
             <GSTAmendmentProofUpload
               selectedFile={selectedFile}
+              existingFileName={!selectedFile ? effectiveFileName : undefined}
+              existingFileSize={initialFileSize}
               error={errors.file}
               onFileChange={handleFileChange}
               onRemoveFile={(e) => {
                 e.stopPropagation()
                 setSelectedFile(null)
+                setRemovedInitialFile(true)
               }}
             />
           </main>
-
-          {/* Right Column */}
-          <GSTAmendmentProofsCard
-            showImportantInfo={true}
-            proofs={isAdditionalPlace ? ADDITIONAL_PROOFS : PRINCIPAL_PROOFS}
-          />
         </div>
 
         {/* Bottom Actions Row */}
@@ -276,14 +311,44 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
           </button>
 
           <div className="gst-actions-group">
-            {onSaveDraft && <GSTSaveDraftButton onClick={onSaveDraft} />}
-            <button type="submit" disabled={isSubmitting} className="gst-amend-submit-orange-btn">
-              {isSubmitting ? 'Submitting...' : 'Review Changes'}
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </button>
+            {onSaveDraft && (
+              <GSTSaveDraftButton
+                onClick={() => {
+                  const formattedVal = isAdditionalPlace
+                    ? `${address.trim()}, ${city.trim()} - ${pinCode} (${natureOfPremises})`
+                    : `${address.trim()}, ${city.trim()}, ${district.trim()}, ${stateUt} - ${pinCode} (${natureOfPremises})`
+                  onSaveDraft({
+                    newValue: formattedVal,
+                    file: selectedFile,
+                    fileName: effectiveFileName,
+                    fileSizeText: initialFileSize,
+                    addressDetails: {
+                      address: address.trim(),
+                      city: city.trim(),
+                      district: district.trim(),
+                      state: stateUt,
+                      pinCode: pinCode.trim(),
+                      natureOfPremises,
+                    },
+                  })
+                }}
+              />
+            )}
+            {isEditMode ? (
+              <GSTUpdateAndReviewButton
+                type="submit"
+                isSubmitting={isSubmitting}
+                label="Update & Review"
+              />
+            ) : (
+              <button type="submit" disabled={isSubmitting} className="gst-amend-submit-orange-btn">
+                {isSubmitting ? 'Submitting...' : 'Review Changes'}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </button>
+            )}
           </div>
         </div>
       </form>

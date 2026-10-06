@@ -1,8 +1,8 @@
 /* GST Amendment Detail Form Styling */
 .gst-amend-detail-container {
   width: 100%;
-  max-width: 100%;
-  margin: 0;
+  max-width: 1120px;
+  margin: 0 auto;
   padding: 1.5rem 2rem 4rem 2rem;
   box-sizing: border-box;
   font-family: inherit;
@@ -80,13 +80,18 @@
   margin-top: 0.125rem;
 }
 
-/* Grid Layout */
+/* Layout */
 .gst-amend-detail-grid {
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 2rem;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
   margin-bottom: 2rem;
+}
+
+.gst-amend-detail-main,
+.gst-amend-detail-main-col {
+  width: 100%;
 }
 
 
@@ -244,6 +249,8 @@
   justify-content: space-between;
   margin-top: 1.5rem;
   padding-top: 1rem;
+  width: 100%;
+  max-width: 100%;
 }
 
 .gst-amend-back-pill-btn {

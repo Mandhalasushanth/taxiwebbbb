@@ -54,7 +54,7 @@ export function buildReviewData(
   const isContactType = selectedOption.id === 'contact_details'
 
   const file = formData.file
-  const fileSizeText = file ? formatGstFileSize(file.size) : show('')
+  const fileSizeText = file ? formatGstFileSize(file.size) : (formData.fileSizeText || show(''))
 
   const currentAddress = isAddressType ? getCurrentAddressDetails(isAdditional) : undefined
 
@@ -113,7 +113,7 @@ export function buildReviewData(
     currentContact,
     requestedContact,
     reviewGstin: gstin || show(profile.gstin),
-    fileName: file?.name || show(''),
+    fileName: file?.name || formData.fileName || show(''),
     fileSizeText,
   }
 }

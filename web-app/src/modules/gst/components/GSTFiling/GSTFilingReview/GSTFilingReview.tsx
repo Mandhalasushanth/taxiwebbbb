@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
-import { GST_FEES, withPlatformGst } from '@modules/gst/constants/gstBusiness.constants'
+import { withPlatformGst } from '@modules/gst/constants/gstBusiness.constants'
 import { GSTFilingStepper } from '@modules/gst/shared/GSTFilingStepper/GSTFilingStepper'
 import type { FilingPeriodData } from '../GSTFilingPeriod/GSTFilingPeriod'
-import { GSTReviewFilingDetailsCard } from './GSTReviewFilingDetails'
+import {
+  GSTReviewFilingDetailsCard,
+  GSTReviewDocumentsCard,
+} from './GSTReviewFilingDetails'
 import {
   GSTReviewTaxComputationCard,
   GSTReviewFilingFeeCard,
@@ -10,7 +13,7 @@ import {
 import { GSTRequestChangesModal } from './GSTRequestChangesModal'
 import {
   getResolvedReviewDetails,
-  getTaxComputationRows,
+  getReconciledTaxComputation,
 } from '@modules/gst/utils/gstReviewData'
 import {
   DEFAULT_DOCUMENT_ITEMS,
@@ -33,6 +36,9 @@ export interface GSTFilingReviewProps {
   onApprove: () => void
   onSaveDraft?: () => void
   onEditFilingDetails?: () => void
+  onEditTaxComputation?: () => void
+  onEditFilingFee?: () => void
+  onEditDocuments?: () => void
 }
 
 export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
@@ -46,16 +52,47 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
   onApprove,
   onSaveDraft,
   onEditFilingDetails,
+  onEditTaxComputation,
+  onEditFilingFee,
+  onEditDocuments,
 }) => {
   const [showRequestModal, setShowRequestModal] = useState(false)
 
-  const handleEditDetails = () => {
+  const handleEditFilingDetails = () => {
     if (onEditFilingDetails) {
       onEditFilingDetails()
     } else if (onStepClick) {
       onStepClick(1)
-    } else if (onRequestChange) {
-      onRequestChange()
+    } else {
+      onBack()
+    }
+  }
+
+  const handleEditTaxComputation = () => {
+    if (onEditTaxComputation) {
+      onEditTaxComputation()
+    } else if (onStepClick) {
+      onStepClick(1)
+    } else {
+      onBack()
+    }
+  }
+
+  const handleEditFilingFee = () => {
+    if (onEditFilingFee) {
+      onEditFilingFee()
+    } else if (onStepClick) {
+      onStepClick(1)
+    } else {
+      onBack()
+    }
+  }
+
+  const handleEditDocuments = () => {
+    if (onEditDocuments) {
+      onEditDocuments()
+    } else if (onStepClick) {
+      onStepClick(2)
     } else {
       onBack()
     }
@@ -78,26 +115,19 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
     docSummaryResult.totalVerified
   )
 
-
-
-
-  const effectiveBaseFee = filingData?.baseFee && filingData.baseFee > 0 ? filingData.baseFee : GST_FEES.filingCombo
+  const effectiveBaseFee =
+    filingData?.baseFee && filingData.baseFee > 0 && filingData.baseFee !== 2500
+      ? filingData.baseFee
+      : 1986
   const { gst: gstAmount, total: totalPayableFee } = withPlatformGst(effectiveBaseFee)
-  const taxComputation = getTaxComputationRows(filingData?.filingType === 'nil')
-
-  const filingFeeItems = [
-    { particulars: 'CA Consultancy & Reconciliation', amount: effectiveBaseFee },
-    { particulars: 'Platform GST (18%)', amount: gstAmount },
-  ]
+  const taxFigures = getReconciledTaxComputation(filingData)
 
   return (
     <div className="gst-review-page">
       {/* Main Page Header */}
       <header className="gst-review-header">
-        <h1 className="gst-review-title">Filing Review &amp; Computation</h1>
-        <p className="gst-review-subtitle">
-          Review your details, check the computed tax figures and proceed to file your GST return.
-        </p>
+        <h1 className="gst-review-title">GST Filing</h1>
+        <p className="gst-review-subtitle">Step 3 of 4 • Review &amp; Summary</p>
       </header>
 
       {/* Stepper */}
@@ -107,42 +137,36 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
         </div>
       </div>
 
-      {/* Dark Navy "Ready for Review" Banner */}
-      <div className="gst-review-ready-banner" role="status">
-        <div className="gst-review-ready-banner__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        </div>
-        <div className="gst-review-ready-banner__content">
-          <h2 className="gst-review-ready-banner__title">Ready for Review</h2>
-          <p className="gst-review-ready-banner__subtitle">
-            TaxEdge CA has prepared return computation based on your verified business records.
-          </p>
-        </div>
-      </div>
-
-      {/* Review Content: 1st Section Full Width, 2nd Section Side by Side */}
+      {/* 4 Review Cards in Stack */}
       <div className="gst-review-main-content">
-        {/* 1st Section: Filing Details (Full Width) with Edit option */}
-        <div className="gst-review-section-details">
-          <GSTReviewFilingDetailsCard
-            details={details}
-            onEdit={handleEditDetails}
-          />
-        </div>
+        {/* Section 1: Filing Details */}
+        <GSTReviewFilingDetailsCard
+          details={details}
+          onEdit={handleEditFilingDetails}
+        />
 
-        {/* 2nd Section: Tax Computation & Professional Filing Fee (Side by Side) */}
-        <div className="gst-review-side-by-side-row">
-          <GSTReviewTaxComputationCard
-            items={taxComputation.items}
-            netLiability={taxComputation.netLiability}
-          />
-          <GSTReviewFilingFeeCard
-            items={filingFeeItems}
-            totalFee={totalPayableFee}
-          />
-        </div>
+        {/* Section 2: Tax Computation (Reconciled) */}
+        <GSTReviewTaxComputationCard
+          turnover={taxFigures.turnover}
+          outputGst={taxFigures.outputGst}
+          eligibleItc={taxFigures.eligibleItc}
+          netLiability={taxFigures.netLiability}
+          onEdit={handleEditTaxComputation}
+        />
+
+        {/* Section 3: Professional Filing Fee */}
+        <GSTReviewFilingFeeCard
+          baseFee={effectiveBaseFee}
+          gstFee={gstAmount}
+          totalFee={totalPayableFee}
+          onEdit={handleEditFilingFee}
+        />
+
+        {/* Section 4: Documents */}
+        <GSTReviewDocumentsCard
+          verifiedCount={docSummaryResult.totalVerified || 3}
+          onEdit={handleEditDocuments}
+        />
       </div>
 
       {/* Step Navigation Bar */}
@@ -159,10 +183,12 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
         onClose={() => {
           setShowRequestModal(false)
           if (onRequestChange) {
-            // keep user on page or allow further actions
+            onRequestChange()
           }
         }}
       />
     </div>
   )
 }
+
+export default GSTFilingReview

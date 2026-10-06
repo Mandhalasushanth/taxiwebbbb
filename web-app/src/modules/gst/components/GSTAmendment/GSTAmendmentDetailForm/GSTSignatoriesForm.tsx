@@ -1,13 +1,11 @@
 import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
+import { GSTUpdateAndReviewButton } from '@modules/gst/shared/edit/GSTUpdateAndReviewButton'
 import { GST_FILE_MESSAGES, gstFileSizeError } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
-import React, { useState, useRef, type ChangeEvent, type FormEvent, useMemo } from 'react'
+import React, { useState, useEffect, useRef, type ChangeEvent, type FormEvent } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
-import { getCurrentSignatoryDetails } from '@modules/gst/services/gstProfileDetails'
 import GSTAmendmentProofUpload from './GSTAmendmentProofUpload'
-import GSTSignatoriesSidebar from './GSTSignatoriesSidebar'
-import GSTSignatoriesReadonly from './GSTSignatoriesReadonly'
 import './GSTSignatoriesForm.css'
 
 interface GSTSignatoriesFormProps {
@@ -18,28 +16,78 @@ interface GSTSignatoriesFormProps {
     mobile: string
     email: string
   }
+  initialSignatoryDetails?: Record<string, string>
+  initialFile?: File | null
+  initialFileName?: string
+  initialFileSize?: string
   isSubmitting?: boolean
+  isEditMode?: boolean
   onBack: () => void
-  onSaveDraft?: () => void
-  onSubmit: (payload: { newValue: string; file: File | null; signatoryDetails?: Record<string, string> }) => void
+  onSaveDraft?: (data?: {
+    newValue: string
+    file: File | null
+    fileName?: string
+    fileSizeText?: string
+    signatoryDetails?: Record<string, string>
+  }) => void
+  onSubmit: (payload: {
+    newValue: string
+    file: File | null
+    fileName?: string
+    fileSizeText?: string
+    signatoryDetails?: Record<string, string>
+  }) => void
+  onChange?: (data: {
+    newValue: string
+    file: File | null
+    fileName?: string
+    fileSizeText?: string
+    signatoryDetails?: Record<string, string>
+  }) => void
 }
 
 export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
-  currentDetails: currentDetailsProp,
+  currentDetails: _currentDetailsProp,
+  initialSignatoryDetails,
+  initialFile,
+  initialFileName,
+  initialFileSize,
   isSubmitting = false,
+  isEditMode = false,
   onBack,
   onSubmit,
   onSaveDraft,
+  onChange: _onChange,
 }) => {
-  const currentDetails = useMemo(() => currentDetailsProp ?? getCurrentSignatoryDetails(), [currentDetailsProp])
-  const [name, setName] = useState('')
-  const [designation, setDesignation] = useState('')
-  const [pan, setPan] = useState('')
-  const [mobile, setMobile] = useState('')
-  const [dob, setDob] = useState('')
-  const [email, setEmail] = useState('')
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [name, setName] = useState(initialSignatoryDetails?.name || '')
+  const [designation, setDesignation] = useState(initialSignatoryDetails?.designation || '')
+  const [pan, setPan] = useState(initialSignatoryDetails?.pan || '')
+  const [mobile, setMobile] = useState(initialSignatoryDetails?.mobile || '')
+  const [dob, setDob] = useState(initialSignatoryDetails?.dob || '')
+  const [email, setEmail] = useState(initialSignatoryDetails?.email || '')
+  const [selectedFile, setSelectedFile] = useState<File | null>(initialFile || null)
+  const [removedInitialFile, setRemovedInitialFile] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    if (initialSignatoryDetails) {
+      if (initialSignatoryDetails.name !== undefined) setName(initialSignatoryDetails.name)
+      if (initialSignatoryDetails.designation !== undefined) setDesignation(initialSignatoryDetails.designation)
+      if (initialSignatoryDetails.pan !== undefined) setPan(initialSignatoryDetails.pan)
+      if (initialSignatoryDetails.mobile !== undefined) setMobile(initialSignatoryDetails.mobile)
+      if (initialSignatoryDetails.dob !== undefined) setDob(initialSignatoryDetails.dob)
+      if (initialSignatoryDetails.email !== undefined) setEmail(initialSignatoryDetails.email)
+    }
+  }, [initialSignatoryDetails])
+
+  useEffect(() => {
+    if (initialFile !== undefined) {
+      setSelectedFile(initialFile)
+      if (initialFile) setRemovedInitialFile(false)
+    }
+  }, [initialFile])
+
+  const effectiveFileName = !removedInitialFile ? (selectedFile?.name || initialFileName) : selectedFile?.name
 
   const dateRef = useRef<HTMLInputElement>(null)
 
@@ -52,6 +100,7 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
         return
       }
       setSelectedFile(file)
+      setRemovedInitialFile(false)
       setErrors((prev) => ({ ...prev, file: '' }))
     }
   }
@@ -73,7 +122,7 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
       dob: rules.signatoryDob(dob),
       email: rules.email(email),
     })
-    if (!selectedFile) newErrors.file = GST_FILE_MESSAGES.proofRequired
+    if (!selectedFile && !effectiveFileName) newErrors.file = GST_FILE_MESSAGES.proofRequired
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
@@ -90,7 +139,13 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
       email: email.trim(),
     }
     setErrors({})
-    onSubmit({ newValue: formattedNewValue, file: selectedFile, signatoryDetails: sigData })
+    onSubmit({
+      newValue: formattedNewValue,
+      file: selectedFile,
+      fileName: effectiveFileName,
+      fileSizeText: initialFileSize,
+      signatoryDetails: sigData,
+    })
   }
 
   return (
@@ -98,17 +153,12 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
       {/* Header */}
       <div className="gst-amend-detail-header">
         <h1 className="gst-amend-detail-title">Authorised Signatories</h1>
-        <p className="gst-amend-detail-subtitle">
-          Current details are read-only. Update the new details below.
-        </p>
       </div>
 
       <form onSubmit={handleSubmitForm} noValidate>
         <div className="gst-amend-detail-grid">
-          {/* Main Left Column */}
+          {/* Main Column */}
           <div className="gst-amend-detail-main-col">
-            {/* Card 1: Currently registered (read-only) */}
-            <GSTSignatoriesReadonly currentDetails={currentDetails} />
 
             {/* Card 2: New details */}
             <div className="gst-amend-card-box">
@@ -250,11 +300,14 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
             {/* Card 3: Supporting proof */}
             <GSTAmendmentProofUpload
               selectedFile={selectedFile}
+              existingFileName={!selectedFile ? effectiveFileName : undefined}
+              existingFileSize={initialFileSize}
               error={errors.file}
               onFileChange={handleFileChange}
               onRemoveFile={(e) => {
                 e.stopPropagation()
                 setSelectedFile(null)
+                setRemovedInitialFile(true)
               }}
             />
 
@@ -267,20 +320,45 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
                 Back
               </button>
               <div className="gst-actions-group">
-                {onSaveDraft && <GSTSaveDraftButton onClick={onSaveDraft} />}
-                <button type="submit" disabled={isSubmitting} className="gst-amend-submit-orange-btn">
-                  {isSubmitting ? 'Submitting...' : 'Review Changes'}
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </button>
+                {onSaveDraft && (
+                  <GSTSaveDraftButton
+                    onClick={() => {
+                      const formattedNewValue = `${name.trim()} (${designation.trim()}) · PAN: ${pan.toUpperCase().trim()}`
+                      onSaveDraft({
+                        newValue: formattedNewValue,
+                        file: selectedFile,
+                        fileName: effectiveFileName,
+                        fileSizeText: initialFileSize,
+                        signatoryDetails: {
+                          name: name.trim(),
+                          designation: designation.trim(),
+                          pan: pan.toUpperCase().trim(),
+                          mobile: mobile.trim(),
+                          dob: dob.trim(),
+                          email: email.trim(),
+                        },
+                      })
+                    }}
+                  />
+                )}
+                {isEditMode ? (
+                  <GSTUpdateAndReviewButton
+                    type="submit"
+                    isSubmitting={isSubmitting}
+                    label="Update & Review"
+                  />
+                ) : (
+                  <button type="submit" disabled={isSubmitting} className="gst-amend-submit-orange-btn">
+                    {isSubmitting ? 'Submitting...' : 'Review Changes'}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </button>
+                )}
               </div>
             </div>
           </div>
-
-          {/* Right Sidebar Column */}
-          <GSTSignatoriesSidebar />
         </div>
       </form>
     </div>

@@ -37,10 +37,43 @@
 .gst-canc-summary-card-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.625rem;
   margin-bottom: 1.25rem;
   padding-bottom: 0.875rem;
   border-bottom: 1px solid #e2e8f0;
+}
+
+.gst-canc-summary-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.gst-canc-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gst-canc-edit-btn:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.gst-canc-edit-icon {
+  width: 14px;
+  height: 14px;
 }
 
 .gst-canc-summary-icon {

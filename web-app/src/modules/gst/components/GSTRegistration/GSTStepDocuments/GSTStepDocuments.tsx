@@ -20,6 +20,7 @@ const SECTION_CONFIG: Array<{ key: DocumentCategory; title: string }> = [
 
 export const GSTStepDocuments: FC<GSTStepDocumentsProps> = ({
   initialDocuments,
+  isEditMode = false,
   onDocumentsChange,
   onBack,
   onNext,
@@ -119,7 +120,7 @@ export const GSTStepDocuments: FC<GSTStepDocumentsProps> = ({
         onBack={onBack}
         onSaveDraft={onSaveDraft}
         onNext={() => handleProceed(onNext)}
-        nextLabel="Continue"
+        nextLabel={isEditMode ? 'Update & Review' : 'Continue'}
       />
 
       {/* Document Preview Modal */}

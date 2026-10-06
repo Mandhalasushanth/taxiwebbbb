@@ -16,6 +16,7 @@ export type UploadedDoc = DocumentItem
 
 export interface GSTStepDocumentsProps {
   initialDocuments?: DocumentItem[]
+  isEditMode?: boolean
   onDocumentsChange?: (docs: DocumentItem[]) => void
   onBack: () => void
   onNext: () => void

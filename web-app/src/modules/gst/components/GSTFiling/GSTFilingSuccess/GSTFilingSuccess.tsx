@@ -1,114 +1,297 @@
-import { formatCurrency } from '@shared/utils'
-import { GSTFilingStepper } from '@modules/gst/shared/GSTFilingStepper/GSTFilingStepper'
+import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { routePaths } from '@core/config'
+import { userStorage } from '@core/storage/userStorage'
 import type { PaymentResult } from '@modules/gst/types/gst.types'
 import './GSTFilingSuccess.css'
 
-interface GSTFilingSuccessProps {
+export interface GSTFilingSuccessProps {
   details: PaymentResult
+  businessName?: string
   onBack?: () => void
-  onViewReceipt: () => void
-  onTrackApplication: () => void
-  onBackToDashboard: () => void
+  onViewReceipt?: () => void
+  onTrackApplication?: () => void
+  onBackToDashboard?: () => void
+  onContactSupport?: () => void
 }
 
-export const GSTFilingSuccess = ({
+interface TimelineStep {
+  id: number
+  title: string
+  subtitle: string
+  status: 'completed' | 'active' | 'pending'
+}
+
+const TIMELINE_STEPS: TimelineStep[] = [
+  {
+    id: 1,
+    title: 'Customer Request',
+    subtitle: 'Filing request initiated',
+    status: 'completed',
+  },
+  {
+    id: 2,
+    title: 'Document Upload',
+    subtitle: 'Sales & purchase registers submitted',
+    status: 'completed',
+  },
+  {
+    id: 3,
+    title: 'Staff Verification',
+    subtitle: 'Chartered Accountant reviewing invoices',
+    status: 'active',
+  },
+  {
+    id: 4,
+    title: 'Data Preparation',
+    subtitle: 'Accounting integration & ledger extraction',
+    status: 'pending',
+  },
+  {
+    id: 5,
+    title: 'Return Preparation',
+    subtitle: 'Form computation & ITC reconciliation',
+    status: 'pending',
+  },
+  {
+    id: 6,
+    title: 'Customer Review',
+    subtitle: 'Tax summary shared with business',
+    status: 'pending',
+  },
+  {
+    id: 7,
+    title: 'Customer Approval',
+    subtitle: 'Client signs off return computation',
+    status: 'pending',
+  },
+  {
+    id: 8,
+    title: 'GST Filing Submission',
+    subtitle: 'Return submitted to GSTN portal',
+    status: 'pending',
+  },
+  {
+    id: 9,
+    title: 'Acknowledgement Receipt',
+    subtitle: 'ARN generated & filed copy delivered',
+    status: 'pending',
+  },
+  {
+    id: 10,
+    title: 'Filing Completed',
+    subtitle: 'Compliance verified & closed',
+    status: 'pending',
+  },
+]
+
+export const GSTFilingSuccess: React.FC<GSTFilingSuccessProps> = ({
   details,
-  onBack,
-  onViewReceipt,
+  businessName,
   onTrackApplication,
   onBackToDashboard,
-}: GSTFilingSuccessProps) => {
-  return (
-    <div className="gst-success-wrapper">
-      <div className="gst-filing-success-stepper-wrap">
-        <GSTFilingStepper currentStep={5} />
-      </div>
+  onContactSupport,
+}) => {
+  const navigate = useNavigate()
 
-      <div className="gst-success-card">
-        <div className="gst-success-ring">
-          <svg viewBox="0 0 24 24" className="gst-success-check-svg">
-            <path d="M20 6.5 9.5 17.5 4 12" />
+  const rawRef = details.applicationRef || ''
+  const displayAppId = rawRef ? (rawRef.startsWith('FIL') ? rawRef : `FIL${rawRef.replace(/\D/g, '').slice(-6) || '165073'}`) : 'FIL165073'
+  const displayBusiness = businessName?.trim() || 'Shree Deshmukh Traders'
+
+  // Register filing application in user storage for tracking
+  useEffect(() => {
+    try {
+      const existing = userStorage.getUserApplications()
+      const alreadyPresent = existing.some((a) => a.code === displayAppId)
+      if (!alreadyPresent) {
+        userStorage.saveUserApplication({
+          id: `app-filing-${Date.now()}`,
+          code: displayAppId,
+          title: 'GST Filing',
+          meta: `${displayBusiness} · India`,
+          statusLabel: 'Under Verification',
+          statusTone: 'warning',
+          progress: 30,
+          icon: '📊',
+          to: `/applications/track/${displayAppId}`,
+        })
+      }
+    } catch {
+      // Storage write fallback
+    }
+  }, [displayAppId, displayBusiness])
+
+  const handleDashboard = () => {
+    if (onBackToDashboard) {
+      onBackToDashboard()
+    } else {
+      navigate(routePaths.dashboard)
+    }
+  }
+
+  const handleTrackInApplications = () => {
+    if (onTrackApplication) {
+      onTrackApplication()
+    } else {
+      navigate(routePaths.applications)
+    }
+  }
+
+  const handleContactSupport = () => {
+    if (onContactSupport) {
+      onContactSupport()
+    } else {
+      navigate(routePaths.support)
+    }
+  }
+
+  return (
+    <div className="gst-filing-status-container">
+      {/* Top Header Bar */}
+      <header className="gst-filing-status-header">
+        <h1 className="gst-filing-status-title">Application Status</h1>
+      </header>
+
+      {/* 1. Green Success Alert Banner */}
+      <div className="gst-filing-status-alert">
+        <div className="gst-filing-status-alert__icon" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
-
-        <h1 className="gst-success-title">Payment successful</h1>
-        <p className="gst-success-subtitle">
-          {formatCurrency(details.amount)} received. Your GST Filing application is now active and in process.
-        </p>
-
-        <div className="gst-success-action-buttons">
-          <button type="button" className="gst-success-btn-primary" onClick={onViewReceipt}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="gst-success-btn-icon">
-              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-            <span>View receipt</span>
-          </button>
-          <button type="button" className="gst-success-btn-secondary" onClick={onTrackApplication}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="gst-success-btn-icon">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-            </svg>
-            <span>Track application</span>
-          </button>
-        </div>
-
-        <div className="gst-success-details-table">
-          <div className="gst-success-row">
-            <span className="gst-success-label">Transaction ID</span>
-            <span className="gst-success-value">{details.transactionId}</span>
-          </div>
-          <div className="gst-success-row">
-            <span className="gst-success-label">Receipt number</span>
-            <span className="gst-success-value">{details.receiptNumber}</span>
-          </div>
-          <div className="gst-success-row">
-            <span className="gst-success-label">Payment Method</span>
-            <span className="gst-success-value">{details.method}</span>
-          </div>
-          <div className="gst-success-row">
-            <span className="gst-success-label">Date &amp; Time</span>
-            <span className="gst-success-value">{details.dateText}</span>
-          </div>
-          <div className="gst-success-row">
-            <span className="gst-success-label">Application Reference</span>
-            <span className="gst-success-value">{details.applicationRef}</span>
-          </div>
-          <div className="gst-success-row gst-success-row--total">
-            <span className="gst-success-total-label">Amount paid</span>
-            <span className="gst-success-total-val">{formatCurrency(details.amount)}</span>
-          </div>
+        <div className="gst-filing-status-alert__text">
+          <h2 className="gst-filing-status-alert__title">Application Submitted!</h2>
+          <p className="gst-filing-status-alert__subtitle">
+            Your GST application has been successfully filed with TaxEdge.
+          </p>
         </div>
       </div>
 
-      {/* Bottom Bar: Back button Left, Back to Dashboard button Right */}
-      <div className="gst-success-bottom-bar">
+      {/* 2. Dark Navy Summary Card */}
+      <section className="gst-filing-status-navy-card" aria-label="Application Summary">
+        <div className="gst-filing-status-navy-card__top">
+          <div className="gst-filing-status-navy-card__id-group">
+            <span className="gst-filing-status-navy-card__id-label">APPLICATION ID</span>
+            <span className="gst-filing-status-navy-card__id-value">{displayAppId}</span>
+          </div>
+          <span className="gst-filing-status-navy-card__badge">Under Verification</span>
+        </div>
+
+        <div className="gst-filing-status-navy-card__divider" />
+
+        <div className="gst-filing-status-navy-card__grid">
+          <div className="gst-filing-status-navy-card__col">
+            <span className="gst-filing-status-navy-card__label">Business</span>
+            <span className="gst-filing-status-navy-card__val" title={displayBusiness}>
+              {displayBusiness}
+            </span>
+          </div>
+          <div className="gst-filing-status-navy-card__col">
+            <span className="gst-filing-status-navy-card__label">Applied On</span>
+            <span className="gst-filing-status-navy-card__val">Today</span>
+          </div>
+          <div className="gst-filing-status-navy-card__col">
+            <span className="gst-filing-status-navy-card__label">Est. Completion</span>
+            <span className="gst-filing-status-navy-card__val">1-2 Business Days</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Application Progress Section */}
+      <section className="gst-filing-status-progress" aria-label="Application Progress">
+        <h3 className="gst-filing-status-progress__heading">Application Progress</h3>
+
+        <div className="gst-filing-status-timeline">
+          {TIMELINE_STEPS.map((step, idx) => {
+            const isLast = idx === TIMELINE_STEPS.length - 1
+            return (
+              <div key={step.id} className="gst-filing-timeline-item">
+                <div className="gst-filing-timeline-track">
+                  <div className={`gst-filing-timeline-circle gst-filing-timeline-circle--${step.status}`}>
+                    {step.status === 'completed' && (
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="gst-filing-timeline-check"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    )}
+                    {step.status === 'active' && (
+                      <span className="gst-filing-timeline-active-dot" />
+                    )}
+                    {step.status === 'pending' && (
+                      <span className="gst-filing-timeline-pending-dot" />
+                    )}
+                  </div>
+                  {!isLast && (
+                    <div
+                      className={`gst-filing-timeline-line ${
+                        step.status === 'completed' ? 'gst-filing-timeline-line--completed' : ''
+                      }`}
+                    />
+                  )}
+                </div>
+
+                <div className="gst-filing-timeline-content">
+                  <h4 className={`gst-filing-timeline-title gst-filing-timeline-title--${step.status}`}>
+                    {step.title}
+                  </h4>
+                  <p className={`gst-filing-timeline-subtitle gst-filing-timeline-subtitle--${step.status}`}>
+                    {step.subtitle}
+                  </p>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* 4. Action Buttons Stack */}
+      <div className="gst-filing-status-actions">
         <button
           type="button"
-          className="gst-success-btn-back"
-          onClick={() => {
-            if (onBack) {
-              onBack()
-            } else {
-              window.history.back()
-            }
-          }}
+          className="gst-filing-status-btn gst-filing-status-btn--dashboard"
+          onClick={handleDashboard}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="gst-success-nav-icon">
-            <line x1="19" y1="12" x2="5" y2="12" />
-            <polyline points="12 19 5 12 12 5" />
-          </svg>
-          <span>Back</span>
-        </button>
-
-        <button type="button" className="gst-success-btn-back-dash" onClick={onBackToDashboard}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="gst-success-nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
             <polyline points="9 22 9 12 15 12 15 22" />
           </svg>
-          <span>Back to dashboard</span>
+          <span>Go to Home Dashboard</span>
+        </button>
+
+        <button
+          type="button"
+          className="gst-filing-status-btn gst-filing-status-btn--track"
+          onClick={handleTrackInApplications}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+          </svg>
+          <span>Track in My Applications</span>
+        </button>
+
+        <button
+          type="button"
+          className="gst-filing-status-btn gst-filing-status-btn--support"
+          onClick={handleContactSupport}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+          <span>Contact Support / CA</span>
         </button>
       </div>
     </div>

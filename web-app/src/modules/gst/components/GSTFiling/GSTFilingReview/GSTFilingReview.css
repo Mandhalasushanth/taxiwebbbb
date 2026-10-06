@@ -1,10 +1,11 @@
 .gst-review-page {
   width: 100%;
-  max-width: 100%;
+  max-width: 860px;
   margin: 0 auto;
-  padding: 16px 24px 64px;
+  padding: 16px 20px 64px;
   font-family: inherit;
   color: #1e293b;
+  box-sizing: border-box;
 }
 
 /* Stepper and Top Bar */
@@ -12,7 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .gst-review-stepper-wrap {
@@ -21,253 +22,42 @@
   justify-content: center;
 }
 
-.gst-review-top-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  flex-shrink: 0;
-  background-color: #f0f7ff;
-  border: 1px solid #dbeafe;
-  border-radius: 14px;
-  padding: 10px 18px;
-  min-width: 170px;
-  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.04);
-}
-
-.gst-review-top-meta__label {
-  font-size: 12px;
-  color: #64748b;
-  font-weight: 500;
-  margin-bottom: 2px;
-}
-
-.gst-review-top-meta__return-type {
-  font-size: 15px;
-  font-weight: 800;
-  color: #0f172a;
-  letter-spacing: -0.01em;
-  margin-bottom: 2px;
-}
-
-.gst-review-top-meta__period {
-  font-size: 13px;
-  color: #1d4ed8;
-  font-weight: 600;
-}
-
 /* Page Header */
 .gst-review-header {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
+  text-align: center;
 }
 
 .gst-review-title {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
   color: #0f172a;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   letter-spacing: -0.02em;
 }
 
 .gst-review-subtitle {
-  font-size: 14.5px;
-  color: #64748b;
+  font-size: 14px;
+  color: #ea580c;
+  font-weight: 600;
   margin: 0;
   line-height: 1.5;
 }
 
-/* Dark Navy Status Banner */
-.gst-review-ready-banner {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background-color: #0b2545;
-  border-radius: 12px;
-  padding: 18px 24px;
-  margin-bottom: 32px;
-  box-shadow: 0 4px 14px rgba(11, 37, 69, 0.12);
-}
-
-.gst-review-ready-banner__icon {
-  width: 32px;
-  height: 32px;
-  background-color: #ffffff;
-  color: #059669;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gst-review-ready-banner__icon svg {
-  width: 20px;
-  height: 20px;
-}
-
-.gst-review-ready-banner__content {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.gst-review-ready-banner__title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0;
-}
-
-.gst-review-ready-banner__subtitle {
-  font-size: 13.5px;
-  color: #bfdbfe;
-  margin: 0;
-  line-height: 1.4;
-}
-
-/* Full-Width Main Content Layout */
+/* Main Content: 4 Cards in Stack */
 .gst-review-main-content {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-}
-
-.gst-review-section-details {
-  width: 100%;
-}
-
-/* 2nd Section: Tax Computation & Filing Fee (Side by Side) */
-.gst-review-side-by-side-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
-  width: 100%;
-  align-items: stretch;
-}
-
-@media (max-width: 900px) {
-  .gst-review-side-by-side-row {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-}
-
-/* Bottom Action Bar */
-.gst-review-divider {
-  border: none;
-  border-top: 1px solid #e2e8f0;
-  margin: 36px 0 24px;
-}
-
-.gst-review-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: 16px;
 }
 
-.gst-review-actions__right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.gst-review-btn-back {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: #ffffff;
-  color: #0f172a;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 9999px;
-  padding: 0.65rem 1.65rem;
-  font-size: 0.92rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.gst-review-btn-back:hover {
-  background-color: #f8fafc;
-  border-color: #94a3b8;
-  color: #0f172a;
-  transform: translateY(-1px);
-}
-
-.gst-review-btn-request {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background-color: #ffffff;
-  color: #ff5722;
-  border: 1.5px solid #ff5722;
-  border-radius: 8px;
-  padding: 11px 22px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.gst-review-btn-request:hover {
-  background-color: #fff7ed;
-  border-color: #f4511e;
-  color: #f4511e;
-}
-
-.gst-review-btn-request svg {
-  width: 16px;
-  height: 16px;
-}
-
-.gst-review-btn-approve {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #ff5722;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 28px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
-}
-
-.gst-review-btn-approve:hover {
-  background-color: #f4511e;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(255, 87, 34, 0.4);
-}
-
-.gst-review-btn-approve:active {
-  transform: translateY(0);
-}
-
-
 @media (max-width: 640px) {
-  .gst-review-top-bar {
-    flex-direction: column;
-    align-items: stretch;
+  .gst-review-page {
+    padding: 12px 14px 48px;
   }
 
-  .gst-review-actions {
-    flex-direction: column-reverse;
-  }
-
-  .gst-review-actions__right {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .gst-review-btn-back,
-  .gst-review-btn-request,
-  .gst-review-btn-approve {
-    width: 100%;
+  .gst-review-title {
+    font-size: 22px;
   }
 }

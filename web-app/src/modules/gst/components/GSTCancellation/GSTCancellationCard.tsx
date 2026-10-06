@@ -61,6 +61,8 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
     handleKeepEditing,
   } = useGSTCancellationForm({ onSubmit })
 
+  const [isEditMode, setIsEditMode] = React.useState(false)
+
   if (isSubmitted) {
     return (
       <GSTCancellationSubmitted
@@ -88,7 +90,14 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
             finalReturnDeclaration,
           }}
           isSubmitting={isSubmitting}
-          onBack={() => setIsReviewing(false)}
+          onBack={() => {
+            setIsEditMode(false)
+            setIsReviewing(false)
+          }}
+          onEdit={() => {
+            setIsEditMode(true)
+            setIsReviewing(false)
+          }}
           onSubmit={handleFinalSubmit}
           onSaveDraft={openDraftModal}
         />
@@ -204,7 +213,11 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
               disabled={isSubmitting}
               className="gst-canc-submit-orange-btn"
             >
-              {isSubmitting ? 'Submitting...' : 'Review Cancellation'}
+              {isSubmitting
+                ? 'Submitting...'
+                : isEditMode
+                ? 'Update & Review'
+                : 'Review Cancellation'}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12" />
                 <polyline points="12 5 19 12 12 19" />

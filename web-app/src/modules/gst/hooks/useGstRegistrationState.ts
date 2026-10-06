@@ -220,6 +220,13 @@ export const useGstRegistrationState = () => {
     recordApplication(result.applicationRef || applicationRef)
   }
 
+  const [editingFromReview, setEditingFromReview] = useState(false)
+
+  const startEditingFromReview = (step: number) => {
+    setEditingFromReview(true)
+    goToStep(step)
+  }
+
   const handleDiscardAndExit = () => {
     gstUploadedFiles.clear()
     draft.handleDiscardAndExit()
@@ -240,9 +247,21 @@ export const useGstRegistrationState = () => {
     handleBusinessChange,
     setDocuments,
     goToStep,
-    handleStep1Next: () => goToStep(2),
+    isEditMode: editingFromReview,
+    startEditingFromReview,
+    handleStep1Next: () => {
+      if (editingFromReview) {
+        setEditingFromReview(false)
+        goToStep(3)
+      } else {
+        goToStep(2)
+      }
+    },
     handleStep2Back: () => goToStep(1),
-    handleStep2Next: () => goToStep(3),
+    handleStep2Next: () => {
+      setEditingFromReview(false)
+      goToStep(3)
+    },
     handleStep3Back: () => goToStep(2),
     handleStep3Proceed: () => goToStep(4),
     handleStep4Back: () => goToStep(3),

@@ -1,9 +1,9 @@
 import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
+import { GSTUpdateAndReviewButton } from '@modules/gst/shared/edit/GSTUpdateAndReviewButton'
 import { GST_FILE_MESSAGES, gstFileSizeError } from '@modules/gst/utils/gstFile'
-import React, { useState, type ChangeEvent, type FormEvent } from 'react'
+import React, { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
 import { detectGstFieldKind, gstRuleForField } from '@modules/gst/validation/gstFieldRules'
 import { gstInputForKind } from '@modules/gst/utils/gstInputFormatters'
-import GSTAmendmentProofsCard from './GSTAmendmentProofsCard'
 import GSTAmendmentProofUpload from './GSTAmendmentProofUpload'
 import './GSTAmendmentDetailForm.css'
 
@@ -13,26 +13,52 @@ interface GSTAmendmentDetailFormProps {
   inputLabel?: string
   placeholder?: string
   proofs?: string[]
+  initialValue?: string
+  initialFile?: File | null
+  initialFileName?: string
+  initialFileSize?: string
   isSubmitting?: boolean
+  isEditMode?: boolean
   onBack: () => void
-  onSaveDraft?: () => void
-  onSubmit: (payload: { newValue: string; file: File | null }) => void
+  onSaveDraft?: (data?: { newValue: string; file: File | null; fileName?: string; fileSizeText?: string }) => void
+  onSubmit: (payload: { newValue: string; file: File | null; fileName?: string; fileSizeText?: string }) => void
+  onChange?: (data: { newValue: string; file: File | null; fileName?: string; fileSizeText?: string }) => void
 }
 
 export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
   title,
-  currentValue,
+  currentValue: _currentValue,
   inputLabel,
   placeholder,
-  proofs,
+  proofs: _proofs,
+  initialValue,
+  initialFile,
+  initialFileName,
+  initialFileSize,
   isSubmitting = false,
+  isEditMode = false,
   onBack,
   onSubmit,
   onSaveDraft,
+  onChange,
 }) => {
-  const [newValue, setNewValue] = useState<string>('')
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [newValue, setNewValue] = useState<string>(initialValue || '')
+  const [selectedFile, setSelectedFile] = useState<File | null>(initialFile || null)
+  const [removedInitialFile, setRemovedInitialFile] = useState(false)
   const [errors, setErrors] = useState<{ newValue?: string; file?: string }>({})
+
+  useEffect(() => {
+    if (initialValue !== undefined) setNewValue(initialValue)
+  }, [initialValue])
+
+  useEffect(() => {
+    if (initialFile !== undefined) {
+      setSelectedFile(initialFile)
+      if (initialFile) setRemovedInitialFile(false)
+    }
+  }, [initialFile])
+
+  const effectiveFileName = !removedInitialFile ? (selectedFile?.name || initialFileName) : selectedFile?.name
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -43,6 +69,7 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
         return
       }
       setSelectedFile(file)
+      setRemovedInitialFile(false)
       setErrors((prev) => ({ ...prev, file: undefined }))
     }
   }
@@ -50,6 +77,7 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
   const handleRemoveFile = (e: React.MouseEvent) => {
     e.stopPropagation()
     setSelectedFile(null)
+    setRemovedInitialFile(true)
   }
 
   // Validation and input filtering chosen from what the field asks for (label first, then placeholder)
@@ -66,7 +94,7 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
       newErrors.newValue = fieldError
     }
 
-    if (!selectedFile) {
+    if (!selectedFile && !effectiveFileName) {
       newErrors.file = GST_FILE_MESSAGES.proofRequired
     }
 
@@ -76,7 +104,12 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
     }
 
     setErrors({})
-    onSubmit({ newValue: newValue.trim(), file: selectedFile })
+    onSubmit({
+      newValue: newValue.trim(),
+      file: selectedFile,
+      fileName: effectiveFileName,
+      fileSizeText: initialFileSize,
+    })
   }
 
   return (
@@ -84,24 +117,13 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
       {/* Main Page Title Header */}
       <div className="gst-amend-detail-header">
         <h1 className="gst-amend-detail-title">{title}</h1>
-        <p className="gst-amend-detail-subtitle">Current details are read-only</p>
       </div>
 
       <form onSubmit={handleSubmitForm} noValidate>
-        {/* Two Column Grid */}
+        {/* Form Container */}
         <div className="gst-amend-detail-grid">
-          {/* Left Column: 3 Cards */}
           <main className="gst-amend-detail-main">
-            {/* Card 1: Currently registered (read-only) */}
-            <div className="gst-amend-card-box">
-              <h3 className="gst-amend-card-box__title">Currently registered (read-only)</h3>
-              <div className="gst-amend-readonly-box">
-                <span className="gst-amend-readonly-label">{title}</span>
-                <span className="gst-amend-readonly-value">{currentValue}</span>
-              </div>
-            </div>
-
-            {/* Card 2: New details */}
+            {/* New details */}
             <div className="gst-amend-card-box">
               <h3 className="gst-amend-card-box__title">New details</h3>
               <div className="gst-amend-field-group">
@@ -114,8 +136,15 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
                   placeholder={placeholder}
                   value={newValue}
                   onChange={(e) => {
-                    setNewValue(filterInput(e.target.value))
+                    const val = filterInput(e.target.value)
+                    setNewValue(val)
                     if (errors.newValue) setErrors((prev) => ({ ...prev, newValue: undefined }))
+                    onChange?.({
+                      newValue: val,
+                      file: selectedFile,
+                      fileName: effectiveFileName,
+                      fileSizeText: initialFileSize,
+                    })
                   }}
                   className={`gst-amend-text-input ${errors.newValue ? 'has-error' : ''}`}
                 />
@@ -125,17 +154,16 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
               </div>
             </div>
 
-            {/* Card 3: Supporting proof */}
+            {/* Supporting proof */}
             <GSTAmendmentProofUpload
               selectedFile={selectedFile}
+              existingFileName={!selectedFile ? effectiveFileName : undefined}
+              existingFileSize={initialFileSize}
               error={errors.file}
               onFileChange={handleFileChange}
               onRemoveFile={handleRemoveFile}
             />
           </main>
-
-          {/* Right Column: Accepted Proofs Sidebar Card */}
-          <GSTAmendmentProofsCard proofs={proofs} />
         </div>
 
         {/* Bottom Actions Row */}
@@ -152,18 +180,37 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
           </button>
 
           <div className="gst-actions-group">
-            {onSaveDraft && <GSTSaveDraftButton onClick={onSaveDraft} />}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="gst-amend-submit-orange-btn"
-            >
-              {isSubmitting ? 'Submitting...' : 'Review Changes'}
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </button>
+            {onSaveDraft && (
+              <GSTSaveDraftButton
+                onClick={() =>
+                  onSaveDraft({
+                    newValue: newValue.trim(),
+                    file: selectedFile,
+                    fileName: effectiveFileName,
+                    fileSizeText: initialFileSize,
+                  })
+                }
+              />
+            )}
+            {isEditMode ? (
+              <GSTUpdateAndReviewButton
+                type="submit"
+                isSubmitting={isSubmitting}
+                label="Update & Review"
+              />
+            ) : (
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="gst-amend-submit-orange-btn"
+              >
+                {isSubmitting ? 'Submitting...' : 'Review Changes'}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </button>
+            )}
           </div>
         </div>
       </form>

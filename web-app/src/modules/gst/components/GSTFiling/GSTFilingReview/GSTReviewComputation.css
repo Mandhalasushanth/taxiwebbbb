@@ -1,143 +1,83 @@
 .gst-comp-card {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 22px 24px;
+  border-radius: 16px;
+  padding: 20px 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 .gst-comp-card__header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
   margin-bottom: 18px;
 }
 
-.gst-comp-card__icon-wrap {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gst-comp-card__icon-wrap--yellow {
-  background-color: #fef3c7;
-  color: #d97706;
-}
-
-.gst-comp-card__icon-wrap--purple {
-  background-color: #f3e8ff;
-  color: #9333ea;
-}
-
-.gst-comp-card__icon-wrap svg {
-  width: 18px;
-  height: 18px;
-}
-
 .gst-comp-card__title {
-  font-size: 16px;
+  font-size: 1.125rem;
   font-weight: 700;
   color: #0f172a;
   margin: 0;
-}
-
-/* Computation Table */
-.gst-comp-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13.5px;
-}
-
-.gst-comp-table thead tr {
-  background-color: #f8fafc;
-  border-radius: 6px;
-}
-
-.gst-comp-table th {
-  padding: 14px 18px;
-  font-size: 12.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #64748b;
-  text-align: left;
-}
-
-.gst-comp-table th:last-child {
-  text-align: right;
-}
-
-.gst-comp-table tbody tr {
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.gst-comp-table td {
-  padding: 16px 18px;
-  color: #334155;
-  font-weight: 500;
-  line-height: 1.5;
-}
-
-.gst-comp-table td:last-child {
-  text-align: right;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-/* Highlighted Row for Net Tax Liability (Light Blue) */
-.gst-comp-table__highlight-row--blue td {
-  background-color: #f0f7ff;
-  color: #0f172a;
-  font-weight: 700;
-  font-size: 15px;
-  border-top: 1px solid #dbeafe;
-  border-bottom: 1px solid #dbeafe;
-  padding: 16px 18px;
-}
-
-.gst-comp-table__highlight-row--blue td:last-child {
-  font-size: 17px;
-  font-weight: 800;
-  color: #0f172a;
-}
-
-/* Prominent Row for Total Payable */
-.gst-comp-table__highlight-row--payable td {
-  background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
-  border-top: 2px solid #bfdbfe;
-  border-bottom: 2px solid #bfdbfe;
-  padding: 18px 20px;
-  vertical-align: middle;
-}
-
-.gst-comp-payable-label {
-  font-size: 16.5px;
-  font-weight: 800;
-  color: #1e3a8a;
   letter-spacing: -0.01em;
 }
 
-.gst-comp-payable-sub {
-  font-size: 12px;
+.gst-comp-card__rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.gst-comp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.gst-comp-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.gst-comp-row__label {
+  font-size: 0.925rem;
+  color: #64748b;
   font-weight: 500;
-  color: #2563eb;
-  margin-top: 2px;
 }
 
-.gst-comp-table__highlight-row--payable td.gst-comp-payable-amount {
+.gst-comp-row__value {
+  font-size: 0.95rem;
+  color: #0f172a;
+  font-weight: 700;
   text-align: right;
-  font-size: 24px;
-  font-weight: 900;
-  color: #1d4ed8;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-  text-shadow: 0 1px 2px rgba(29, 78, 216, 0.08);
 }
 
+.gst-comp-row__value--green {
+  color: #16a34a;
+}
+
+/* Peach/Light-Orange Payable Box */
+.gst-comp-payable-box {
+  background-color: #fff7ed;
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gst-comp-payable-label {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ea580c;
+}
+
+.gst-comp-payable-amount {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ea580c;
+  letter-spacing: -0.01em;
+}

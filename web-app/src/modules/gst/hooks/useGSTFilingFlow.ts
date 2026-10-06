@@ -135,12 +135,31 @@ export const useGSTFilingFlow = () => {
     if (stepId >= 1 && stepId <= TOTAL_STEPS) goToStep(stepId as FilingStep)
   }
 
-  // Leaving from step 1 asks to save when something was entered (same as the loans flows)
+  const [editingFromReview, setEditingFromReview] = useState(false)
+
+  const startEditingFromReview = (step: FilingStep) => {
+    setEditingFromReview(true)
+    goToStep(step)
+  }
+
+  const finishEditingToReview = (updatedData?: FilingPeriodData) => {
+    if (updatedData) {
+      setFilingData(updatedData)
+    }
+    setEditingFromReview(false)
+    goToStep(3)
+  }
+
   const handleStep1Back = () => navigate(routePaths.gst.root)
 
   const handleStep1Continue = (data: FilingPeriodData) => {
     setFilingData(data)
-    goToStep(2)
+    if (editingFromReview) {
+      setEditingFromReview(false)
+      goToStep(3)
+    } else {
+      goToStep(2)
+    }
   }
 
   const handleStep4Success = (res: PaymentResult) => {
@@ -179,11 +198,17 @@ export const useGSTFilingFlow = () => {
     handleStepClick,
     handleStep1Continue,
     handleStep1Back,
-    handleStep2Next: () => goToStep(3),
+    handleStep2Next: () => {
+      setEditingFromReview(false)
+      goToStep(3)
+    },
     handleStep3Approve: () => goToStep(4),
     handleStep4Success,
     handleFileUpload,
     handleFileRemove,
     handleToggleNotApplicable,
+    isEditMode: editingFromReview,
+    startEditingFromReview,
+    finishEditingToReview,
   }
 }

@@ -151,7 +151,36 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
   const key = (matched.title || appId).toLowerCase()
   const pan = currentUser?.pan ? currentUser.pan.toUpperCase() : 'Submitted in Application'
 
-  // 1. GST Registration & Filing
+  // 1. GST Amendment
+  if (key.includes('amendment')) {
+    return buildTracker(appId, entity, date, {
+      title: 'GST Amendment',
+      category: 'GST',
+      stageTitle: matched.statusLabel || 'Verification & Processing in Progress',
+      filingHeader: 'GST Amendment Request Details',
+      filingFields: [
+        { label: 'Business Entity', value: entity },
+        { label: 'Target GSTIN', value: (currentUser as { gstin?: string })?.gstin || '29AAAAA0000A1Z5', isHighlight: true },
+        { label: 'Application ARN', value: appId, isHighlight: true },
+        { label: 'Amended Section', value: metaParts[0] || 'Core Field' },
+        { label: 'Jurisdiction', value: currentUser?.state || 'India' },
+        { label: 'Status', value: matched.statusLabel || 'Submitted', isHighlight: true },
+      ],
+      steps: [
+        ['Amendment Request Submitted', 'Application received with uploaded proof', 'completed', 'Today'],
+        ['Officer Verification', 'Verification of requested modifications', 'current', 'Today'],
+        ['Portal Endorsement', 'Updating records on GST portal', 'pending'],
+        ['Amended Certificate Issued', 'Updated GST registration certificate generated', 'pending'],
+      ],
+      docs: [
+        ['d1', 'Supporting Proof Document', 'uploaded'],
+        ['d2', 'Identity & Authorization Proof', 'uploaded'],
+      ],
+      payment: ['Service Fee', '₹0', 'Included', 'Paid'],
+    })
+  }
+
+  // 2. GST Registration & Filing
   if (key.includes('gst')) {
     const isRegistration = key.includes('registration')
     return buildTracker(appId, entity, date, {
