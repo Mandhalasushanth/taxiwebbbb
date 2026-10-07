@@ -1,13 +1,13 @@
 import { SaveDraftButton } from '@shared/saveDraft'
 import { UpdateAndReviewButton } from '@shared/edit'
-import { GST_FILE_MESSAGES, gstFileSizeError } from '@modules/gst/utils/gstFile'
+import { GST_FILE_MESSAGES } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
-import React, { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
+import React, { useState, useEffect, type FormEvent } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
 import { lookupSampleBankByIfsc } from '@shared/services'
 import { ConfirmAccountNumberInput } from '@shared/components'
-import GSTAmendmentProofUpload from './GSTAmendmentProofUpload'
+import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
 import './GSTBankAccountsForm.css'
 
 interface GSTBankAccountsFormProps {
@@ -92,18 +92,11 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
 
   const effectiveFileName = !removedInitialFile ? (selectedFile?.name || initialFileName) : selectedFile?.name
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      const sizeError = gstFileSizeError(file)
-      if (sizeError) {
-        setErrors((prev) => ({ ...prev, file: sizeError }))
-        return
-      }
-      setSelectedFile(file)
-      setRemovedInitialFile(false)
-      setErrors((prev) => ({ ...prev, file: '' }))
-    }
+  // Type, size and content are already checked by the shared upload rule
+  const handleFileChange = (file: File) => {
+    setSelectedFile(file)
+    setRemovedInitialFile(false)
+    setErrors((prev) => ({ ...prev, file: '' }))
   }
 
   const handleSubmitForm = (e: FormEvent) => {
@@ -273,14 +266,13 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
         </div>
 
         {/* Card 3: Supporting proof */}
-        <GSTAmendmentProofUpload
+        <GSTProofUpload
           selectedFile={selectedFile}
           existingFileName={!selectedFile ? effectiveFileName : undefined}
           existingFileSize={initialFileSize}
           error={errors.file}
-          onFileChange={handleFileChange}
-          onRemoveFile={(e) => {
-            e.stopPropagation()
+          onFileSelect={handleFileChange}
+          onRemoveFile={() => {
             setSelectedFile(null)
             setRemovedInitialFile(true)
           }}

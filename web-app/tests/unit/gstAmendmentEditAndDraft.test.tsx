@@ -2,6 +2,7 @@
 process.env.VITE_API_BASE_URL = 'http://localhost:3000'
 
 import '@testing-library/jest-dom/vitest'
+import { pickFiles, uploadTestFile } from './helpers/uploadTestFiles'
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
@@ -51,10 +52,10 @@ describe('GST Amendment Edit Flow & Draft Persistence', () => {
     fireEvent.change(input, { target: { value: 'Acme Global Enterprises' } })
 
     // Create a mock file and upload
-    const file = new File(['mock content'], 'incorporation_cert.pdf', { type: 'application/pdf' })
+    const file = uploadTestFile('incorporation_cert.pdf')
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement
     expect(fileInput).toBeInTheDocument()
-    fireEvent.change(fileInput, { target: { files: [file] } })
+    await pickFiles(fileInput, [file])
 
     // Click Review Changes button
     const reviewBtn = screen.getByRole('button', { name: /Review Changes/i })

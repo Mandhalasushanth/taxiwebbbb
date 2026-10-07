@@ -199,7 +199,6 @@ export const UploadDocumentsSection: React.FC<UploadDocumentsSectionProps> = ({
                   isUploaded={isUploaded}
                   fileName={fileName}
                   fileSize={fileSize}
-                  accept=".pdf,.jpg,.jpeg,.png"
                   onUpload={(id, file) => handleFileUpload(id, file)}
                   onRemove={(id) => handleRemoveDoc(id)}
                   onView={() => handleViewDoc(doc.id, doc.title)}

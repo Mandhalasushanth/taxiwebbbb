@@ -1,6 +1,5 @@
-import { useState, useRef, useMemo, type ChangeEvent } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import type { DocumentItem, DocumentCategory, DocPreviewState } from '@modules/gst/types/gstDocuments.types'
-import { validateUploadFile } from '@shared/utils'
 import { INITIAL_DOCUMENTS, getGstDocUploadRule } from '@modules/gst/utils/gstDocuments.constants'
 import { getDocumentsStepError } from '@modules/gst/utils/gstRegistrationGuard'
 import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
@@ -72,15 +71,10 @@ export const useGstDocuments = (
   }
 
   /**
-   * Accepts a file for a document slot only after it passes the slot's rule
-   * (allowed type, max size, genuine file signature). Rejected files leave the slot unchanged.
+   * Stores a file for a document slot. Files reach here only after passing the slot's rule
+   * (allowed type, max size, genuine file signature) in the shared FileInput.
    */
-  const acceptFile = async (docId: string, file: File) => {
-    const error = await validateUploadFile(file, getGstDocUploadRule(docId))
-    if (error) {
-      setUploadErrors((prev) => ({ ...prev, [docId]: error }))
-      return
-    }
+  const storeFile = (docId: string, file: File) => {
     setUploadErrors(({ [docId]: _removed, ...rest }) => rest)
     gstUploadedFiles.set(docId, file)
     updateDocuments((prev) =>
@@ -90,13 +84,24 @@ export const useGstDocuments = (
     setValidationError(null)
   }
 
-  const handleFileSelected = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+  /** File picker / camera: a file that passed the active slot's rule */
+  const handleFileSelected = (file: File) => {
     const targetId = activeUploadTargetId
-    if (!file || !targetId) return
+    if (!targetId) return
     setActiveUploadTargetId(null)
-    await acceptFile(targetId, file)
+    storeFile(targetId, file)
   }
+
+  /** A picked file broke the slot's rule: show why next to that document */
+  const handleUploadRejected = (docId: string | null, message: string) => {
+    const targetId = docId ?? activeUploadTargetId
+    if (!targetId) return
+    setActiveUploadTargetId(null)
+    setUploadErrors((prev) => ({ ...prev, [targetId]: message }))
+  }
+
+  /** Rule for the shared picker: the slot being filled (photo slots accept JPG/PNG only) */
+  const activeUploadRule = getGstDocUploadRule(activeUploadTargetId ?? '')
 
   const handleDelete = (id: string) => {
     setUploadErrors(({ [id]: _removed, ...rest }) => rest)
@@ -262,9 +267,9 @@ export const useGstDocuments = (
     if (!stepError) onNext()
   }
 
-  const handleDirectUpload = async (id: string, file: File) => {
+  const handleDirectUpload = (id: string, file: File) => {
     setActiveUploadTargetId(null)
-    await acceptFile(id, file)
+    storeFile(id, file)
   }
 
   return {
@@ -281,6 +286,8 @@ export const useGstDocuments = (
     handleTriggerUpload,
     handleTriggerCamera,
     handleFileSelected,
+    handleUploadRejected,
+    activeUploadRule,
     handleDirectUpload,
     handleDelete,
     handleStartReplace,

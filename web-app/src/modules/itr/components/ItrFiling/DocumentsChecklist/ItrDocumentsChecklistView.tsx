@@ -1,6 +1,7 @@
+import { formatUploadSize } from '@shared/upload'
 import React from 'react'
 import { StepActionBar, DocumentSection, UploadDocument } from '@shared/components'
-import { viewItrDocument } from '../../../shared'
+import { viewUploadedDocument } from '@shared/upload'
 import {
   type UploadedDocInfo,
   type ChecklistDocConfig,
@@ -39,11 +40,10 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
 
   const handleFileUpload = (docId: string, file: File) => {
     try {
-      const sizeMb = (file.size / (1024 * 1024)).toFixed(2)
       onUploadDoc(docId, {
         id: docId,
         fileName: file.name,
-        fileSize: `${sizeMb} MB`,
+        fileSize: formatUploadSize(file.size),
         uploadedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         file,
       })
@@ -66,13 +66,12 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
         subtitle={doc.desc}
         isRequired={Boolean(doc.isMandatory)}
         icon={<doc.Icon />}
-        accept=".pdf,.jpg,.jpeg,.png"
         isUploaded={Boolean(uploaded)}
         fileName={uploaded?.fileName}
         fileSize={uploaded?.fileSize}
         file={uploaded?.file}
         onView={(d) => {
-          viewItrDocument({
+          viewUploadedDocument({
             id: d.id,
             title: d.title,
             fileName: d.fileName || uploaded?.fileName,

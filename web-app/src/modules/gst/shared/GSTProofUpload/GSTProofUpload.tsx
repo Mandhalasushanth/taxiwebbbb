@@ -1,56 +1,44 @@
-import React, { type ChangeEvent } from 'react'
+import type { FC } from 'react'
 import { UploadDocument } from '@shared/components'
+import { UPLOAD_HINT, formatUploadSize } from '@shared/upload'
 import './GSTProofUpload.css'
 
-interface GSTAmendmentProofUploadProps {
+export interface GSTProofUploadProps {
   selectedFile: File | null
+  /** Shown when editing a request whose proof was uploaded earlier */
+  existingFileName?: string
+  existingFileSize?: string
   error?: string
-  onFileChange: (e: ChangeEvent<HTMLInputElement>) => void
-  onRemoveFile: (e: React.MouseEvent) => void
+  /** A file that passed the application-wide upload rule (type, size, content) */
+  onFileSelect: (file: File) => void
+  onRemoveFile: () => void
 }
 
-export const GSTProofUpload: React.FC<GSTAmendmentProofUploadProps> = ({
+/** Supporting-proof upload for GST Amendment and Cancellation */
+export const GSTProofUpload: FC<GSTProofUploadProps> = ({
   selectedFile,
+  existingFileName,
+  existingFileSize,
   error,
-  onFileChange,
+  onFileSelect,
   onRemoveFile,
 }) => {
-  const handleUpload = (_: string, file: File) => {
-    try {
-      const dt = new DataTransfer()
-      dt.items.add(file)
-      const syntheticEvent = {
-        target: { files: dt.files, value: '' },
-        currentTarget: { files: dt.files, value: '' },
-      } as unknown as ChangeEvent<HTMLInputElement>
-      onFileChange(syntheticEvent)
-    } catch {
-      const syntheticEvent = {
-        target: { files: [file], value: '' },
-        currentTarget: { files: [file], value: '' },
-      } as unknown as ChangeEvent<HTMLInputElement>
-      onFileChange(syntheticEvent)
-    }
-  }
-
-  const handleRemove = () => {
-    onRemoveFile({} as React.MouseEvent)
-  }
+  const fileName = selectedFile?.name || existingFileName
+  const fileSize = selectedFile ? formatUploadSize(selectedFile.size) : existingFileSize
 
   return (
     <div className="gst-amend-proof-container">
       <UploadDocument
         id="gst-supporting-proof"
         title="Supporting proof"
-        subtitle="Attach the document that evidences this change (PDF, JPG, PNG - max 10 MB)"
-        isRequired={true}
-        isUploaded={Boolean(selectedFile)}
-        fileName={selectedFile?.name}
-        fileSize={selectedFile ? `${(selectedFile.size / 1024).toFixed(0)} KB` : undefined}
+        subtitle={`Attach the document that evidences this change (${UPLOAD_HINT})`}
+        isRequired
+        isUploaded={Boolean(fileName)}
+        fileName={fileName}
+        fileSize={fileSize}
         file={selectedFile || undefined}
-        accept=".pdf,.jpg,.jpeg,.png"
-        onUpload={handleUpload}
-        onRemove={handleRemove}
+        onUpload={(_, file) => onFileSelect(file)}
+        onRemove={onRemoveFile}
         className={error ? 'loan-doc-item--error' : ''}
       />
       {error && (
@@ -62,5 +50,4 @@ export const GSTProofUpload: React.FC<GSTAmendmentProofUploadProps> = ({
   )
 }
 
-export const GSTAmendmentProofUpload = GSTProofUpload
 export default GSTProofUpload

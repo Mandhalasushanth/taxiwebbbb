@@ -1,6 +1,7 @@
+import { formatUploadSize } from '@shared/upload'
 import React, { useRef, useState } from 'react'
 import { StepActionBar } from '@shared/components'
-import { viewItrDocument } from '../../../shared'
+import { viewUploadedDocument } from '@shared/upload'
 import {
   type NoticeFormData,
   SUPPORTING_DOCUMENT_LIST,
@@ -45,10 +46,7 @@ export const SupportingDocuments: React.FC<SupportingDocumentsProps> = ({
   const [remarks, setRemarks] = useState(formData.remarks || '')
 
   const handleFileUpload = (docId: string, file: File) => {
-    const formattedSize =
-      file.size > 1024 * 1024
-        ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
-        : `${Math.round(file.size / 1024)} KB`
+    const formattedSize = formatUploadSize(file.size)
 
     const fileUrl = URL.createObjectURL(file)
     const updated = {
@@ -77,7 +75,7 @@ export const SupportingDocuments: React.FC<SupportingDocumentsProps> = ({
   const handleViewDocument = (docId: string) => {
     const doc = uploadedDocs[docId]
     const docMeta = SUPPORTING_DOCUMENT_LIST.find((d) => d.id === docId)
-    viewItrDocument({
+    viewUploadedDocument({
       id: docId,
       title: docMeta?.title || doc?.fileName || 'Supporting Document',
       fileName: doc?.fileName,

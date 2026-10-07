@@ -1,5 +1,6 @@
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import React from 'react'
+import { FileInput } from '@shared/upload'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import {
   FieldRow,
@@ -163,14 +164,10 @@ export const GSTComplianceReconFields: React.FC<GSTComplianceReconFieldsProps> =
                 className="compliance-inline-upload-btn"
                 title="Upload statement file"
               >
-                <input
-                  type="file"
-                  accept=".pdf,.xlsx,.xls,.json,.csv"
-                  onChange={(e) => {
-                    if (e.target.files?.[0]) {
-                      setGstr2bFile(e.target.files[0])
-                      clearErr('gstr2bRef')
-                    }
+                <FileInput
+                  onFileSelected={(file) => {
+                    setGstr2bFile(file)
+                    clearErr('gstr2bRef')
                   }}
                   className="gst-hidden-input"
                 />

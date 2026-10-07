@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import React from 'react'
+import { pickFiles, uploadTestFile } from './helpers/uploadTestFiles'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
@@ -40,7 +41,7 @@ describe('ITR Modules Document Preview Consistency', () => {
   })
 
   it('TdsRefund: clicking View Document opens blob URL in new window', () => {
-    const dummyFile = new File(['tds-doc-data'], 'GST_Compliance.pdf', { type: 'application/pdf' })
+    const dummyFile = uploadTestFile('GST_Compliance.pdf')
 
     render(
       <MemoryRouter>
@@ -60,7 +61,7 @@ describe('ITR Modules Document Preview Consistency', () => {
     expect(openedUrls[0]).toMatch(/^blob:http:\/\/localhost:5173\//)
   })
 
-  it('ITR Filing: uploading and viewing document opens blob URL identically to TDS Refund', () => {
+  it('ITR Filing: uploading and viewing document opens blob URL identically to TDS Refund', async () => {
     let uploadedDocsState: any = {}
     const handleUploadDoc = vi.fn((docId, docInfo) => {
       uploadedDocsState = { [docId]: docInfo }
@@ -77,11 +78,11 @@ describe('ITR Modules Document Preview Consistency', () => {
       </MemoryRouter>
     )
 
-    const sampleFile = new File(['itr-file-bytes'], 'Form16_FY2024.pdf', { type: 'application/pdf' })
+    const sampleFile = uploadTestFile('Form16_FY2024.pdf')
     const fileInput = screen.getByTestId('doc-card-form16').querySelector('input[type="file"]') as HTMLInputElement
     expect(fileInput).toBeDefined()
 
-    fireEvent.change(fileInput, { target: { files: [sampleFile] } })
+    await pickFiles(fileInput, [sampleFile])
 
     expect(handleUploadDoc).toHaveBeenCalled()
     expect(handleUploadDoc.mock.calls[0][1].file).toBe(sampleFile)
@@ -105,7 +106,7 @@ describe('ITR Modules Document Preview Consistency', () => {
   })
 
   it('Tax Notice Assistance (NoticeDocument Step 2): viewing uploaded notice file opens blob URL', () => {
-    const noticeFile = new File(['notice-bytes'], 'Notice_143_1.pdf', { type: 'application/pdf' })
+    const noticeFile = uploadTestFile('Notice_143_1.pdf')
 
     render(
       <MemoryRouter>
@@ -139,7 +140,7 @@ describe('ITR Modules Document Preview Consistency', () => {
   })
 
   it('Tax Notice Assistance (SupportingDocuments Step 4): viewing supporting doc opens blob URL', () => {
-    const supportFile = new File(['supporting-data'], 'Bank_Statement.pdf', { type: 'application/pdf' })
+    const supportFile = uploadTestFile('Bank_Statement.pdf')
 
     render(
       <MemoryRouter>
@@ -180,7 +181,7 @@ describe('ITR Modules Document Preview Consistency', () => {
   })
 
   it('Revised ITR: viewing uploaded revision document opens blob URL', () => {
-    const revisionFile = new File(['revised-data'], 'Revised_Proof.pdf', { type: 'application/pdf' })
+    const revisionFile = uploadTestFile('Revised_Proof.pdf')
 
     render(
       <MemoryRouter>
@@ -219,64 +220,54 @@ describe('ITR Modules Document Preview Consistency', () => {
     expect(openedUrls[0]).toMatch(/^blob:http:\/\/localhost:5173\//)
   })
 
-  it('UploadDocument component preserves local file and opens blob URL even if parent lacks file prop', () => {
+  it('UploadDocument component preserves local file and opens blob URL even if parent lacks file prop', async () => {
     render(
       <MemoryRouter>
-        <UploadDocument
-          id="generic-doc"
-          title="Owner NOC"
-          isUploaded={true}
-          fileName="Previous_Year_ITR_Change_Report.docx"
-        />
+        <UploadDocument id="generic-doc" title="Owner NOC" isUploaded={true} fileName="Previous_Year_ITR_Change_Report.pdf" />
       </MemoryRouter>
     )
 
     const fileInput = screen.getByTestId('doc-card-generic-doc').querySelector('input[type="file"]') as HTMLInputElement
-    const uploadedFile = new File(['test doc content'], 'Previous_Year_ITR_Change_Report.docx', {
-      type: 'application/pdf',
-    })
+    await pickFiles(fileInput, [uploadTestFile('Previous_Year_ITR_Change_Report.pdf')])
 
-    fireEvent.change(fileInput, { target: { files: [uploadedFile] } })
-
-    const viewBtn = screen.getByTestId('view-doc-generic-doc')
-    expect(viewBtn).toBeDefined()
-    fireEvent.click(viewBtn)
+    fireEvent.click(screen.getByTestId('view-doc-generic-doc'))
 
     expect(window.open).toHaveBeenCalled()
     expect(openedUrls[0]).toMatch(/^blob:http:\/\/localhost:5173\//)
   })
 
-  it('ITR shared viewItrDocument utility directly opens blob URL in new window', async () => {
-    const { viewItrDocument, cacheItrUploadedFile } = await import('../../src/modules/itr/shared')
-    const testFile = new File(['shared-content'], 'Direct_View_Test.pdf', { type: 'application/pdf' })
-
-    cacheItrUploadedFile('direct-test', testFile)
-    viewItrDocument({ id: 'direct-test', title: 'Test Document', fileName: 'Direct_View_Test.pdf' })
-
-    expect(window.open).toHaveBeenCalled()
-    expect(openedUrls[0]).toMatch(/^blob:http:\/\/localhost:5173\//)
-  })
-
-  it('ITRProofUpload shared component wires viewItrDocument and opens blob URL', async () => {
-    const { ITRProofUpload } = await import('../../src/modules/itr/shared')
-    const sampleProof = new File(['proof-bytes'], 'Proof_Document.pdf', { type: 'application/pdf' })
-
+  it('upload pickers list only PDF, Excel, JPG and PNG and reject anything else that is picked', async () => {
+    const onUpload = vi.fn()
     render(
       <MemoryRouter>
-        <ITRProofUpload
-          title="Income Proof"
-          selectedFile={sampleProof}
-          onFileChange={vi.fn()}
-          onRemoveFile={vi.fn()}
-        />
+        <UploadDocument id="rule-doc" title="Rule check" onUpload={onUpload} />
       </MemoryRouter>
     )
+    const fileInput = screen.getByTestId('doc-card-rule-doc').querySelector('input[type="file"]') as HTMLInputElement
+    expect(fileInput.accept).toContain('.pdf')
+    expect(fileInput.accept).toContain('.xlsx')
+    expect(fileInput.accept).toContain('.png')
+    expect(fileInput.accept).not.toContain('.docx')
 
-    const viewBtn = screen.getByTestId('view-doc-itr-supporting-proof')
-    expect(viewBtn).toBeDefined()
-    fireEvent.click(viewBtn)
+    await pickFiles(fileInput, [new File(['word'], 'notes.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })])
+    expect(onUpload).not.toHaveBeenCalled()
 
+    await pickFiles(fileInput, [uploadTestFile('statement.xlsx')])
+    expect(onUpload).toHaveBeenCalledWith('rule-doc', expect.objectContaining({ name: 'statement.xlsx' }))
+  })
+
+  it('shared viewUploadedDocument opens a remembered file as a blob URL', async () => {
+    const { viewUploadedDocument, uploadedFileStore } = await import('../../src/shared/upload')
+    uploadedFileStore.remember('direct-test', uploadTestFile('Direct_View_Test.pdf'))
+
+    expect(viewUploadedDocument({ id: 'direct-test', title: 'Test Document', fileName: 'Direct_View_Test.pdf' })).toBe(true)
     expect(window.open).toHaveBeenCalled()
     expect(openedUrls[0]).toMatch(/^blob:http:\/\/localhost:5173\//)
+  })
+
+  it('with no file available it never opens a placeholder page', async () => {
+    const { viewUploadedDocument } = await import('../../src/shared/upload')
+    expect(viewUploadedDocument({ id: 'missing-doc', title: 'Missing', fileName: 'Never_Uploaded.pdf' })).toBe(false)
+    expect(window.open).not.toHaveBeenCalled()
   })
 })

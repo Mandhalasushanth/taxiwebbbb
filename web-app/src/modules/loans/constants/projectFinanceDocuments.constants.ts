@@ -1,3 +1,5 @@
+import { UPLOAD_HINT } from '@shared/upload'
+
 export interface UploadDocItem {
   id: string
   title: string
@@ -12,7 +14,7 @@ export const PROJECT_FINANCE_DOC_LIST: UploadDocItem[] = [
     id: 'identityProof',
     title: 'Identity Proof (Aadhaar / PAN)',
     category: 'Applicant',
-    subtitle: 'PDF, JPG, PNG (Max 5 MB)',
+    subtitle: UPLOAD_HINT,
     required: true,
     iconType: 'user',
   },
@@ -20,7 +22,7 @@ export const PROJECT_FINANCE_DOC_LIST: UploadDocItem[] = [
     id: 'businessRegistrationCertificate',
     title: 'Business Registration Certificate',
     category: 'Applicant',
-    subtitle: 'PDF, JPG, PNG (Max 5 MB)',
+    subtitle: UPLOAD_HINT,
     required: true,
     iconType: 'building',
   },
@@ -28,7 +30,7 @@ export const PROJECT_FINANCE_DOC_LIST: UploadDocItem[] = [
     id: 'projectDetailedReport',
     title: 'Project Detailed Report (DPR)',
     category: 'Project',
-    subtitle: 'PDF, JPG, PNG (Max 5 MB)',
+    subtitle: UPLOAD_HINT,
     required: true,
     iconType: 'file',
   },
@@ -36,7 +38,7 @@ export const PROJECT_FINANCE_DOC_LIST: UploadDocItem[] = [
     id: 'projectCostEstimate',
     title: 'Project Cost Estimate / Quotation',
     category: 'Project',
-    subtitle: 'PDF, JPG, PNG (Max 5 MB)',
+    subtitle: UPLOAD_HINT,
     required: true,
     iconType: 'chart',
   },
@@ -44,7 +46,7 @@ export const PROJECT_FINANCE_DOC_LIST: UploadDocItem[] = [
     id: 'financialStatements',
     title: 'Financial Statements (Last 3 Years)',
     category: 'Financial',
-    subtitle: 'PDF, JPG, PNG (Max 5 MB)',
+    subtitle: UPLOAD_HINT,
     required: true,
     iconType: 'money',
   },
@@ -52,7 +54,7 @@ export const PROJECT_FINANCE_DOC_LIST: UploadDocItem[] = [
     id: 'landPropertyDocuments',
     title: 'Land / Property Documents (if applicable)',
     category: 'Project',
-    subtitle: 'PDF, JPG, PNG (Max 5 MB)',
+    subtitle: UPLOAD_HINT,
     required: false,
     iconType: 'file',
   },
@@ -60,7 +62,7 @@ export const PROJECT_FINANCE_DOC_LIST: UploadDocItem[] = [
     id: 'otherSupportingDocuments',
     title: 'Other Supporting Documents',
     category: 'Project',
-    subtitle: 'PDF, JPG, PNG (Max 5 MB)',
+    subtitle: UPLOAD_HINT,
     required: false,
     iconType: 'attachment',
   },

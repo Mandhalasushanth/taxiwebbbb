@@ -20,7 +20,7 @@ export { CompleteProfileModal } from './CompleteProfileModal/CompleteProfileModa
 export type { CompleteProfileModalProps } from './CompleteProfileModal/CompleteProfileModal'
 export * from './StepActionBar'
 export * from './PaymentCheckout'
-export { DocumentCard, UploadDocument, uploadDocument, openDocumentPreview } from './DocumentCard/uploadDocument'
+export { DocumentCard, UploadDocument, uploadDocument } from './DocumentCard/uploadDocument'
 export type { DocumentCardProps, UploadDocumentProps } from './DocumentCard/uploadDocument'
 export { DocumentSection } from './DocumentCard/DocumentSection'
 export type { DocumentSectionProps } from './DocumentCard/DocumentSection'

@@ -17,7 +17,6 @@ import {
 } from '@modules/gst/utils/gstReviewData'
 import {
   DEFAULT_DOCUMENT_ITEMS,
-  DEFAULT_FILING_UPLOADED_FILES,
   calculateDocumentSummary,
   type UploadedFileInfo,
 } from '@modules/gst/utils/gstDocumentsData'
@@ -98,7 +97,7 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
     }
   }
 
-  const effectiveUploadedFiles = uploadedFiles ?? DEFAULT_FILING_UPLOADED_FILES
+  const effectiveUploadedFiles = uploadedFiles ?? {}
   const effectiveNotApplicableDocs = notApplicableDocs ?? {}
 
   const docSummaryResult = calculateDocumentSummary(

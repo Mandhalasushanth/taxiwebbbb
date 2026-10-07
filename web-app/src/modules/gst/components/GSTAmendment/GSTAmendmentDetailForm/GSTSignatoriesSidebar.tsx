@@ -1,4 +1,5 @@
 import React from 'react'
+import { UPLOAD_HINT } from '@shared/upload'
 
 export const GSTSignatoriesSidebar: React.FC = () => {
   return (
@@ -41,7 +42,7 @@ export const GSTSignatoriesSidebar: React.FC = () => {
           <li>Currently registered details are read-only and cannot be edited.</li>
           <li>Enter the new authorised signatory details exactly as per the supporting document.</li>
           <li>Upload a valid document from the accepted proofs list.</li>
-          <li>File size should not exceed 10 MB (PDF, JPG, PNG).</li>
+          <li>Allowed files: {UPLOAD_HINT}.</li>
         </ul>
       </div>
     </div>

@@ -2,6 +2,7 @@ import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import React from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { DocumentCard, DocumentSection } from '@shared/components'
+import { UPLOAD_HINT } from '@shared/upload'
 
 interface GSTReconciliationDocsSectionProps {
   purchaseFile: File | null
@@ -41,7 +42,7 @@ export const GSTReconciliationDocsSection: React.FC<GSTReconciliationDocsSection
             <DocumentCard
               id="purchase-register"
               title="Purchase Register"
-              subtitle="Upload inward purchase register or bills (PDF, Excel, CSV)"
+              subtitle={`Upload inward purchase register or bills (${UPLOAD_HINT})`}
               isRequired={true}
               isUploaded={Boolean(purchaseFile)}
               fileName={purchaseFile?.name}
@@ -51,7 +52,6 @@ export const GSTReconciliationDocsSection: React.FC<GSTReconciliationDocsSection
                   : undefined
               }
               file={purchaseFile || undefined}
-              accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls,.csv"
               className={errors.purchaseFile ? 'doc-card--has-error' : ''}
               onUpload={(_, file) => {
                 setPurchaseFile(file)
@@ -71,7 +71,7 @@ export const GSTReconciliationDocsSection: React.FC<GSTReconciliationDocsSection
             <DocumentCard
               id="sales-register"
               title="Sales Register"
-              subtitle="Upload outward sales register or invoices (PDF, Excel, CSV)"
+              subtitle={`Upload outward sales register or invoices (${UPLOAD_HINT})`}
               isRequired={true}
               isUploaded={Boolean(salesFile)}
               fileName={salesFile?.name}
@@ -81,7 +81,6 @@ export const GSTReconciliationDocsSection: React.FC<GSTReconciliationDocsSection
                   : undefined
               }
               file={salesFile || undefined}
-              accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls,.csv"
               className={errors.salesFile ? 'doc-card--has-error' : ''}
               onUpload={(_, file) => {
                 setSalesFile(file)

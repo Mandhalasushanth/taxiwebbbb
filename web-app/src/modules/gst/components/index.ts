@@ -8,4 +8,4 @@ export type { GSTSidebarProps } from '@modules/gst/shared/GSTSidebar/GSTSidebar'
 export { GSTOrderSummary } from '@modules/gst/shared/GSTOrderSummary/GSTOrderSummary'
 export type { GSTOrderSummaryProps } from '@modules/gst/shared/GSTOrderSummary/GSTOrderSummary'
 
-export { GSTProofUpload, GSTAmendmentProofUpload } from '@modules/gst/shared/GSTProofUpload/GSTProofUpload'
+export { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload/GSTProofUpload'

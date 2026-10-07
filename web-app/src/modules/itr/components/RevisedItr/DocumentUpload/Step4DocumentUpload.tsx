@@ -1,7 +1,7 @@
 import React from 'react'
 import type { DocumentTypeId, UploadedDocument } from '../../../types/revisedItr.types'
 import { DocumentCard } from '@shared/components'
-import { viewItrDocument } from '../../../shared'
+import { viewUploadedDocument } from '@shared/upload'
 import './Step4DocumentUpload.css'
 
 export interface DocumentSlotItem {
@@ -138,7 +138,7 @@ export const Step4DocumentUpload: React.FC<Step4DocumentUploadProps> = ({
                 fileName={doc?.fileName || doc?.file?.name}
                 file={doc?.file}
                 onView={(d) => {
-                  viewItrDocument({
+                  viewUploadedDocument({
                     id: d.id,
                     title: d.title,
                     fileName: d.fileName || doc?.fileName || doc?.file?.name,
@@ -172,7 +172,7 @@ export const Step4DocumentUpload: React.FC<Step4DocumentUploadProps> = ({
                 fileName={doc?.fileName || doc?.file?.name}
                 file={doc?.file}
                 onView={(d) => {
-                  viewItrDocument({
+                  viewUploadedDocument({
                     id: d.id,
                     title: d.title,
                     fileName: d.fileName || doc?.fileName || doc?.file?.name,

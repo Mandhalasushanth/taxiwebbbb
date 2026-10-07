@@ -5,6 +5,7 @@ import { loanDocumentService, createDocDef } from '@modules/loans/documents'
 import type { LoanDocumentDefinition } from '@modules/loans/documents/loanDocument.types'
 import type { VehicleLoanData } from '@modules/loans/types/vehicleLoan.types'
 import './DocumentDossier.css'
+import { UPLOAD_HINT } from '@shared/upload'
 
 export interface DocumentDossierProps {
   data: VehicleLoanData
@@ -184,7 +185,7 @@ export const DocumentDossier: React.FC<DocumentDossierProps> = ({
           <div className="vehicle-docs__progress-fill" style={{ width: `${progressPercent}%` }} />
         </div>
         <span className="vehicle-docs__supported-formats">
-          Supported formats: PDF, JPG, PNG, Word (.docx), Excel (.xlsx) • Max 10MB per file
+          Supported files: {UPLOAD_HINT} per file
         </span>
       </div>
 

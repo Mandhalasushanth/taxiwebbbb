@@ -1,4 +1,4 @@
-import { DOCUMENT_UPLOAD_RULE, MAX_UPLOAD_SIZE_MB, PHOTO_UPLOAD_RULE, type UploadRule } from '@shared/utils'
+import { DOCUMENT_UPLOAD_RULE, MAX_UPLOAD_SIZE_MB, PHOTO_UPLOAD_RULE, type UploadRule } from '@shared/upload'
 import type { DocumentItem } from '@modules/gst/types/gstDocuments.types'
 
 export const ADDRESS_PROOF_OPTIONS: readonly string[] = [

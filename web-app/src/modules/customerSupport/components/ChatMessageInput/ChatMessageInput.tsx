@@ -1,4 +1,5 @@
-import { useState, useRef, type KeyboardEvent, type ChangeEvent } from 'react'
+import { useState, useRef, type KeyboardEvent } from 'react'
+import { FileInput, formatUploadSize } from '@shared/upload'
 import type { SupportAttachment } from '../../types/customerSupport.types'
 import './ChatMessageInput.css'
 
@@ -34,21 +35,15 @@ export const ChatMessageInput = ({
     }
   }
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files || files.length === 0) return
-
-    const newFiles: SupportAttachment[] = Array.from(files).map((file, idx) => ({
-      id: `att_${Date.now()}_${idx}`,
+  /** One allowed file (PDF, Excel, JPG or PNG up to 10 MB) picked in the attachment dialog */
+  const handleFileChange = (file: File) => {
+    const attachment: SupportAttachment = {
+      id: `att_${Date.now()}_${file.name}`,
       name: file.name,
-      size: `${(file.size / 1024).toFixed(1)} KB`,
-      type: file.type || 'application/octet-stream',
-    }))
-
-    setAttachments((prev) => [...prev, ...newFiles])
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
+      size: formatUploadSize(file.size),
+      type: file.type,
     }
+    setAttachments((prev) => [...prev, attachment])
   }
 
   const handleRemoveAttachment = (id: string) => {
@@ -88,11 +83,10 @@ export const ChatMessageInput = ({
       )}
 
       <div className="cs-input-bar__controls">
-        <input
+        <FileInput
           ref={fileInputRef}
-          type="file"
           className="cs-input-bar__file-input"
-          onChange={handleFileChange}
+          onFileSelected={handleFileChange}
           multiple
           aria-label="Attach file"
         />

@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { AlertCircle } from 'lucide-react'
 import { StepActionBar, UploadDocument } from '@shared/components'
-import { viewItrDocument } from '../../../shared'
+import { viewUploadedDocument } from '@shared/upload'
 import { TDS_DOCUMENTS, DocIcons, TdsIcons, type TdsDocumentConfig } from '../../../utils/tdsRefund.constants'
 import { TdsRefundProgressTracker } from '../TdsRefundOverview'
 import './TdsRefundDocuments.css'
+import { UPLOAD_HINT, formatUploadSize } from '@shared/upload'
 
 import type { UploadedFileMeta } from '../../../types/tdsRefund.types'
 export type { UploadedFileMeta }
@@ -16,7 +17,7 @@ const VERIFICATION_CHECKLIST = [
 ]
 
 const DOCUMENT_GUIDELINES = [
-  'Supported: PDF, JPG, PNG (up to 25MB).',
+  `Supported: ${UPLOAD_HINT}.`,
   'Password-protected PDFs accepted (standard ITD format).',
   'Form 16 & AIS can be downloaded from ITD portal.',
   'Clear scans prevent verification delays.',
@@ -85,9 +86,6 @@ export interface TdsRefundDocumentsProps {
   onUploadsChange?: (uploads: Record<string, UploadedFileMeta>) => void
 }
 
-const formatFileSize = (bytes: number): string =>
-  bytes > 1024 * 1024 ? `${(bytes / (1024 * 1024)).toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`
-
 export const TdsRefundDocuments: React.FC<TdsRefundDocumentsProps> = ({
   onBack,
   onNext,
@@ -107,14 +105,12 @@ export const TdsRefundDocuments: React.FC<TdsRefundDocumentsProps> = ({
   const missingDocs = requiredDocs.filter((doc) => !uploads[doc.id])
   const isDocumentsValid = missingDocs.length === 0
 
-  const handleFileChange = (docId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+  /** A file that passed the application-wide upload rule (type, size, content) */
+  const handleFileChange = (docId: string, file: File) => {
     try {
-      const file = e.target.files?.[0]
-      if (!file) return
-
       const newUploads = {
         ...uploads,
-        [docId]: { name: file.name, size: formatFileSize(file.size), file },
+        [docId]: { name: file.name, size: formatUploadSize(file.size), file },
       }
       setUploads(newUploads)
       onUploadsChange?.(newUploads)
@@ -194,7 +190,7 @@ export const TdsRefundDocuments: React.FC<TdsRefundDocumentsProps> = ({
         key={doc.id}
         id={doc.id}
         title={doc.title}
-        subtitle={doc.subtitle}
+        subtitle={`${doc.subtitle} · ${UPLOAD_HINT}`}
         isRequired={Boolean(doc.required)}
         icon={<IconComp />}
         iconBg="#eff6ff"
@@ -203,7 +199,6 @@ export const TdsRefundDocuments: React.FC<TdsRefundDocumentsProps> = ({
         fileName={uploaded?.name}
         fileSize={uploaded?.size}
         file={uploaded?.file}
-        accept=".pdf,.jpg,.jpeg,.png"
         className={isMissing ? 'loan-doc-item--error' : ''}
         badge={
           isMissing ? (
@@ -211,18 +206,14 @@ export const TdsRefundDocuments: React.FC<TdsRefundDocumentsProps> = ({
           ) : undefined
         }
         onView={(d) => {
-          viewItrDocument({
+          viewUploadedDocument({
             id: d.id,
             title: d.title,
             fileName: d.fileName || uploaded?.name,
             file: d.file || uploaded?.file,
           })
         }}
-        onUpload={(id, file) => {
-          handleFileChange(id, {
-            target: { files: [file] },
-          } as unknown as React.ChangeEvent<HTMLInputElement>)
-        }}
+        onUpload={handleFileChange}
         onRemove={(id) => handleRemove(id)}
       />
     )

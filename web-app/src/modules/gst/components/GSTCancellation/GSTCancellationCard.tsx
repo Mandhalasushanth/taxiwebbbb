@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { ServiceDraftModal } from '@shared/saveDraft'
 import { useReviewEdit, UPDATE_AND_REVIEW_LABEL } from '@shared/edit'
-import { GSTAmendmentProofUpload as GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
+import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
 import { GSTCancellationSubmitted } from './GSTCancellationSubmitted'
 import { GSTCancellationFields } from './GSTCancellationFields'
 import { GSTCancellationReview } from './GSTCancellationReview'
@@ -144,9 +144,8 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
             <GSTProofUpload
               selectedFile={selectedFile}
               error={errors.file}
-              onFileChange={handleFileChange}
-              onRemoveFile={(e: React.MouseEvent) => {
-                e.stopPropagation()
+              onFileSelect={handleFileChange}
+              onRemoveFile={() => {
                 setSelectedFile(null)
               }}
             />

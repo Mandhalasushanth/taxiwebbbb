@@ -8,14 +8,8 @@ import { RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { authStorage } from '../../src/core/auth'
 import { localStore } from '../../src/core/storage/localStorage'
 import { userStorage } from '../../src/core/storage/userStorage'
-import {
-  getStatesForPincode,
-  validateCommencementDate,
-  validatePincodeMatchesState,
-  validateUploadFile,
-  DOCUMENT_UPLOAD_RULE,
-  PHOTO_UPLOAD_RULE,
-} from '../../src/shared/utils'
+import { getStatesForPincode, validateCommencementDate, validatePincodeMatchesState } from '../../src/shared/utils'
+import { validateUploadFile, DOCUMENT_UPLOAD_RULE, PHOTO_UPLOAD_RULE } from '../../src/shared/upload'
 import { validateGstBusinessForm } from '../../src/modules/gst/validation/gstStepBusiness.validator'
 import { validateBusinessPan, getCompositionConflicts } from '../../src/modules/gst/validation/gstBusinessRules'
 import { gstInput } from '../../src/modules/gst/utils/gstInputFormatters'
@@ -151,12 +145,20 @@ const fileFrom = (name: string, type: string, bytes: number[], size?: number) =>
 const PDF_BYTES = [0x25, 0x50, 0x44, 0x46, 0x2d, 0x31]
 const PNG_BYTES = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a]
 const EXE_BYTES = [0x4d, 0x5a, 0x90, 0x00]
+const XLSX_BYTES = [0x50, 0x4b, 0x03, 0x04, 0x14, 0x00]
+const XLS_BYTES = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1]
 
 describe('BUG-GST-009: upload type and size limits', () => {
   it('rejects executables, renamed executables and files over 10 MB', async () => {
-    expect(await validateUploadFile(fileFrom('setup.exe', 'application/x-msdownload', EXE_BYTES), DOCUMENT_UPLOAD_RULE)).toMatch(/Only PDF, JPG or PNG/)
+    expect(await validateUploadFile(fileFrom('setup.exe', 'application/x-msdownload', EXE_BYTES), DOCUMENT_UPLOAD_RULE)).toMatch(/Only PDF, Excel, JPG or PNG/)
     expect(await validateUploadFile(fileFrom('invoice.pdf', 'application/pdf', EXE_BYTES), DOCUMENT_UPLOAD_RULE)).toMatch(/not a valid/)
     expect(await validateUploadFile(fileFrom('big.pdf', 'application/pdf', PDF_BYTES, 15 * 1024 * 1024), DOCUMENT_UPLOAD_RULE)).toMatch(/too large/)
+  })
+  it('accepts genuine Excel workbooks (.xlsx and .xls) and rejects other spreadsheets', async () => {
+    expect(await validateUploadFile(fileFrom('gstr2b.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', XLSX_BYTES), DOCUMENT_UPLOAD_RULE)).toBeNull()
+    expect(await validateUploadFile(fileFrom('register.xls', 'application/vnd.ms-excel', XLS_BYTES), DOCUMENT_UPLOAD_RULE)).toBeNull()
+    expect(await validateUploadFile(fileFrom('fake.xlsx', '', PDF_BYTES), DOCUMENT_UPLOAD_RULE)).toMatch(/not a valid/)
+    expect(await validateUploadFile(fileFrom('data.csv', 'text/csv', PDF_BYTES), DOCUMENT_UPLOAD_RULE)).toMatch(/Only PDF, Excel, JPG or PNG/)
   })
   it('accepts genuine PDFs and images; the photo slot accepts images only', async () => {
     expect(await validateUploadFile(fileFrom('pan.pdf', 'application/pdf', PDF_BYTES), DOCUMENT_UPLOAD_RULE)).toBeNull()

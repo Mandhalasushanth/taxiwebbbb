@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { UPLOAD_HINT, formatUploadSize } from '@shared/upload'
 import { routePaths } from '@core/config'
 import type { GstAmendmentPayload } from '@modules/gst/types/gst.types'
 import { useGSTAmendmentForm } from '@modules/gst/hooks/useGSTAmendmentForm'
@@ -146,18 +147,13 @@ export const GSTAmendmentForm = ({
           <UploadDocument
             id="amendment-supporting-doc"
             title="Supporting Document"
-            subtitle="Proof of the change — e.g. new rental agreement, name-change certificate (PDF, JPG, PNG up to 10 MB)"
+            subtitle={`Proof of the change — e.g. new rental agreement, name-change certificate (${UPLOAD_HINT})`}
             isRequired={true}
             isUploaded={Boolean(selectedFile)}
             fileName={selectedFile?.name}
-            fileSize={selectedFile ? `${(selectedFile.size / 1024).toFixed(1)} KB` : undefined}
+            fileSize={selectedFile ? formatUploadSize(selectedFile.size) : undefined}
             file={selectedFile || undefined}
-            accept=".pdf,.jpg,.jpeg,.png"
-            onUpload={(_, file) => {
-              handleFileChange({
-                target: { files: [file] },
-              } as unknown as React.ChangeEvent<HTMLInputElement>)
-            }}
+            onUpload={(_, file) => handleFileChange(file)}
             onRemove={handleRemoveFile}
             className={errors.document ? 'loan-doc-item--error' : ''}
           />

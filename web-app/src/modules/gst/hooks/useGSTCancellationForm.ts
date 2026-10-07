@@ -1,5 +1,4 @@
-import { gstFileSizeError } from '@modules/gst/utils/gstFile'
-import { useState, type ChangeEvent, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { gstFieldRules } from '@modules/gst/validation/gstFieldRules'
 import { gstProfileService } from '@modules/gst/services/gstProfileService'
 import { generateGstReference } from '@modules/gst/utils/gstFormat'
@@ -91,17 +90,10 @@ export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps
     }
   }
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      const sizeError = gstFileSizeError(file)
-      if (sizeError) {
-        setErrors((prev) => ({ ...prev, file: sizeError }))
-        return
-      }
-      setSelectedFile(file)
-      clearError('file')
-    }
+  // Type, size and content are already checked by the shared upload rule
+  const handleFileChange = (file: File) => {
+    setSelectedFile(file)
+    clearError('file')
   }
 
   const handleReviewProceed = (e: FormEvent) => {

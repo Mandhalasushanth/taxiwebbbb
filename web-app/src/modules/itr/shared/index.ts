@@ -1,5 +1,3 @@
 export * from './ITRStepper'
-export * from './ITRProofUpload'
 export * from './TaxSummaryCard'
 export * from './ITRStatusBadge'
-export * from './itrDocumentPreview'
