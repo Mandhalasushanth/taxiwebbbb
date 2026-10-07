@@ -33,8 +33,16 @@ export const Step6ApplicationReceived: React.FC<Step6ApplicationReceivedProps> =
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const handleViewStatus = () => {
-    navigate(routePaths.applications)
+  const handleTrackApplication = () => {
+    if (applicationId) {
+      navigate(`/applications/track/${applicationId}`)
+    } else {
+      navigate(routePaths.applications)
+    }
+  }
+
+  const handleGoToDashboard = () => {
+    navigate(routePaths.dashboard)
   }
 
   return (
@@ -182,22 +190,33 @@ export const Step6ApplicationReceived: React.FC<Step6ApplicationReceivedProps> =
         <button
           type="button"
           className="step6-btn-primary"
-          onClick={handleViewStatus}
+          onClick={handleTrackApplication}
+          data-testid="track-application-btn"
         >
-          View Application Status &nbsp;→
+          Track My Application &nbsp;→
+        </button>
+
+        <button
+          type="button"
+          className="step6-btn-secondary"
+          onClick={handleGoToDashboard}
+          data-testid="go-to-dashboard-btn"
+        >
+          Go to Dashboard
         </button>
 
         <button
           type="button"
           className="step6-btn-secondary"
           onClick={onDownloadReceipt}
+          data-testid="download-receipt-btn"
         >
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
-          Download TaxEdge Application Receipt
+          Download Receipt
         </button>
       </div>
     </div>

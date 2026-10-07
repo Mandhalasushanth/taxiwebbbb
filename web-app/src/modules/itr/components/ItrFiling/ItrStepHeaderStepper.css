@@ -36,13 +36,14 @@
 /* 5-Step Desktop Stepper Track - Full Width Responsive */
 .itr-stepper-track {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
   max-width: 100%;
   margin: 0.75rem 0 0 0;
   padding: 0 0.5rem;
   box-sizing: border-box;
+  position: relative;
 }
 
 .itr-stepper-step-item {
@@ -90,16 +91,26 @@
   border: 2px solid #cbd5e1;
 }
 
+.itr-stepper-track .itr-stepper-line,
 .itr-stepper-line {
-  flex: 1;
-  height: 2.5px;
-  background: #e2e8f0;
-  margin: 0 0.75rem;
-  margin-bottom: 1.45rem;
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  flex: 1 1 0%;
+  min-width: 1.5rem;
+  height: 3px;
+  background: #cbd5e1;
+  align-self: flex-start;
+  margin-top: 19px;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0;
+  border-radius: 2px;
   transition: background 0.3s ease;
   z-index: 1;
 }
 
+.itr-stepper-track .itr-stepper-line--completed,
 .itr-stepper-line--completed {
   background: #083b75;
 }

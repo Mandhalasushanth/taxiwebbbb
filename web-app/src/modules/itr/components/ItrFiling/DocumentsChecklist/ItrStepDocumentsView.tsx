@@ -1,5 +1,6 @@
 import React from 'react'
 import { StepActionBar, UploadDocument } from '@shared/components'
+import { viewItrDocument } from '../../../shared'
 import {
   type UploadedDocInfo,
   type ChecklistDocConfig,
@@ -40,6 +41,15 @@ const ItrDocItemRow: React.FC<ItrDocItemRowProps> = ({
     isUploaded={Boolean(uploaded)}
     fileName={uploaded?.fileName}
     fileSize={uploaded?.fileSize}
+    file={uploaded?.file}
+    onView={(d) => {
+      viewItrDocument({
+        id: d.id,
+        title: d.title,
+        fileName: d.fileName || uploaded?.fileName,
+        file: d.file || uploaded?.file,
+      })
+    }}
     onUpload={(id, file) => {
       const sizeMb = (file.size / (1024 * 1024)).toFixed(2)
       onUploadDoc(id, {
@@ -47,6 +57,7 @@ const ItrDocItemRow: React.FC<ItrDocItemRowProps> = ({
         fileName: file.name,
         fileSize: `${sizeMb} MB`,
         uploadedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        file,
       })
     }}
     onRemove={(id) => onRemoveDoc(id)}

@@ -81,7 +81,18 @@ export const EMPTY_PROFILE: TdsProfile = {
   defaultBankName: '',
 }
 
-export const DEFAULT_TDS_TAXPAYER = EMPTY_PROFILE
+export const DEFAULT_TDS_TAXPAYER: TdsProfile = {
+  ...EMPTY_PROFILE,
+  name: 'Sagu',
+  fullName: 'Sagu',
+  pan: 'ABCDE5478Q',
+  aadhaar: '123456783690',
+  dob: '2000-01-29',
+  mobile: '+91 70081 38785',
+  email: 'sagu@gmail.com',
+  address: 'Nlr\nNellore, Assam - 523142',
+  defaultAccountHolder: 'Sagu',
+}
 export type TdsTaxpayerProfile = TdsProfile
 
 export const EMPTY_BANK: TdsBankDetails = {
@@ -99,11 +110,11 @@ export const EMPTY_TAX: TdsIncomeTaxData = {
   salaryIncome: '',
   otherIncome: '',
   interestIncome: '',
-  rentalIncome: null,
-  capitalGains: null,
-  businessIncome: null,
-  homeLoanInterest: null,
-  taxDeductions: null,
+  rentalIncome: 'no',
+  capitalGains: 'no',
+  businessIncome: 'no',
+  homeLoanInterest: 'no',
+  taxDeductions: 'no',
   annualRent: '',
   propertyTaxes: '',
   stcg: '',
@@ -171,7 +182,7 @@ export const HOW_IT_WORKS_STEPS: HowItWorksStep[] = [
   { stepNumber: 1, title: 'Submit Details', icon: 'edit' },
   { stepNumber: 2, title: 'Upload Documents', icon: 'upload' },
   { stepNumber: 3, title: 'Executive Verification', icon: 'verification' },
-  { stepNumber: 4, title: 'Refund Filing', icon: 'filing' },
+  { stepNumber: 4, title: 'Payment', icon: 'filing' },
   { stepNumber: 5, title: 'Refund Credited', icon: 'credit' },
 ]
 
@@ -275,6 +286,70 @@ export const fetchIfscDetails = async (ifsc: string): Promise<IfscDetails | null
     return null
   } catch {
     return null
+  }
+}
+
+export interface UserLike {
+  fullName?: string
+  name?: string
+  pan?: string
+  aadhaar?: string
+  dob?: string
+  mobile?: string
+  email?: string
+  address?: string
+  addressLine1?: string
+  addressLine2?: string
+  city?: string
+  state?: string
+  pincode?: string
+}
+
+export const syncProfileWithAuthUser = (
+  current: TdsTaxpayerProfile,
+  user?: UserLike | null
+): { profile: TdsTaxpayerProfile; hasChanges: boolean } => {
+  try {
+    if (!user) return { profile: current, hasChanges: false }
+
+    const addressParts = [
+      user.addressLine1,
+      user.addressLine2,
+      user.city,
+      user.state,
+      user.pincode,
+    ].filter(Boolean)
+    const formattedAddress = addressParts.length > 0 ? addressParts.join(', ') : user.address || ''
+
+    const cleanMobile = user.mobile
+      ? (user.mobile.startsWith('+91') ? user.mobile : `+91 ${user.mobile}`)
+      : ''
+
+    const sourceMap: Partial<TdsTaxpayerProfile> = {
+      fullName: user.fullName || user.name,
+      name: user.name || user.fullName,
+      pan: user.pan ? user.pan.toUpperCase() : undefined,
+      aadhaar: user.aadhaar ? user.aadhaar.replace(/\D/g, '').slice(0, 12) : undefined,
+      dob: user.dob,
+      mobile: cleanMobile || undefined,
+      email: user.email,
+      address: formattedAddress || undefined,
+    }
+
+    let hasChanges = false
+    const next = { ...current }
+
+    for (const [key, val] of Object.entries(sourceMap) as [keyof TdsTaxpayerProfile, string | undefined][]) {
+      if (!next[key] && val) {
+        next[key] = val as any
+        hasChanges = true
+      }
+    }
+
+    return { profile: next, hasChanges }
+  } catch (error) {
+    console.error('Failed to sync profile with user data:', error)
+    return { profile: current, hasChanges: false }
   }
 }
 

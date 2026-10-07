@@ -1,5 +1,6 @@
 import React from 'react'
 import { StepActionBar, DocumentSection, UploadDocument } from '@shared/components'
+import { viewItrDocument } from '../../../shared'
 import {
   type UploadedDocInfo,
   type ChecklistDocConfig,
@@ -41,6 +42,7 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
         fileName: file.name,
         fileSize: `${sizeMb} MB`,
         uploadedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        file,
       })
     } catch {
       // Fallback
@@ -65,6 +67,15 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
         isUploaded={Boolean(uploaded)}
         fileName={uploaded?.fileName}
         fileSize={uploaded?.fileSize}
+        file={uploaded?.file}
+        onView={(d) => {
+          viewItrDocument({
+            id: d.id,
+            title: d.title,
+            fileName: d.fileName || uploaded?.fileName,
+            file: d.file || uploaded?.file,
+          })
+        }}
         onUpload={(id, file) => handleFileUpload(id, file)}
         onRemove={(id) => onRemoveDoc(id)}
       />

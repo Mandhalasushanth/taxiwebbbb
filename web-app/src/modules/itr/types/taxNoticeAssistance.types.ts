@@ -9,7 +9,7 @@ export interface NoticeFormData {
   documentFile: File | null
   documentFileName: string
   documentFileSize: string
-  supportingDocuments?: Record<string, { fileName: string; fileSize: string; fileUrl?: string }>
+  supportingDocuments?: Record<string, { fileName: string; fileSize: string; fileUrl?: string; file?: File }>
   remarks?: string
   responseConfirmed?: boolean
   applicationCode?: string
@@ -19,6 +19,7 @@ export interface NoticeFormData {
 }
 
 export const ASSESSMENT_YEAR_OPTIONS = [
+  'AY 2027-28',
   'AY 2026-27',
   'AY 2025-26',
   'AY 2024-25',
@@ -26,16 +27,43 @@ export const ASSESSMENT_YEAR_OPTIONS = [
   'AY 2022-23',
 ]
 
-export const NOTICE_TYPE_OPTIONS = [
-  'Section 143(1)(a) - Proposed Adjustment',
-  'Section 139(9) - Defective Return',
-  'Section 142(1) - Inquiry Before Assessment',
-  'Section 148 - Income Escaping Assessment',
-  'Section 156 - Notice of Demand',
-  'Section 245 - Intimation for Adjustment of Refund',
-  'Section 143(2) - Scrutiny Assessment',
-  'Other Notice / IT Communication',
+export interface NoticeTypeOption {
+  title: string
+  description: string
+}
+
+export const NOTICE_TYPE_DETAILS: NoticeTypeOption[] = [
+  {
+    title: 'Section 143(1)(a) - Proposed Adjustment',
+    description: 'Discrepancy between reported income/deductions and AIS/26AS',
+  },
+  {
+    title: 'Section 139(9) - Defective Return',
+    description: 'Incomplete return, missing schedules, or audit discrepancies',
+  },
+  {
+    title: 'Section 142(1) - Inquiry / Production of Accounts',
+    description: 'Notice calling for specific documents or accounts before assessment',
+  },
+  {
+    title: 'Section 148 / 148A - Income Escaping Assessment',
+    description: 'Re-assessment notice for undisclosed or unassessed income',
+  },
+  {
+    title: 'Section 156 - Notice of Demand',
+    description: 'Demand notice for outstanding tax, interest, or penalty payable',
+  },
+  {
+    title: 'Section 245 - Refund Adjustment Intimation',
+    description: 'Intimation proposing to adjust pending refund against past demand',
+  },
+  {
+    title: 'Other Notice / Communication',
+    description: 'Any other official notice or query from the Income Tax Department',
+  },
 ]
+
+export const NOTICE_TYPE_OPTIONS = NOTICE_TYPE_DETAILS.map((opt) => opt.title)
 
 export interface SupportingDocumentItem {
   id: string

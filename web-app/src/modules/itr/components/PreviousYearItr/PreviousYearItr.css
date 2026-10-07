@@ -1,139 +1,251 @@
 /* ==========================================================================
-   Previous Year ITR - Desktop Web App Layout & Mobile Responsive
-   Theme: TaxEdge Navy Blue & Vibrant Orange
+   Previous Year ITR - Single Column Desktop & Mobile Responsive Redesign
+   Matching TaxEdge Dark Navy & Vibrant Orange Brand Reference
    ========================================================================== */
 
 .prev-itr-page-container {
   width: 100%;
-  max-width: 1100px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 1.25rem 1rem 3.5rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: 1rem;
 }
 
-/* Header Section */
-.prev-itr-header {
+/* --------------------------------------------------------------------------
+   1. Dark Navy Hero Section
+   -------------------------------------------------------------------------- */
+.prev-itr-hero-card {
+  width: 100%;
+  box-sizing: border-box;
+  background: linear-gradient(105deg, #052652 0%, #031c3c 65%, #021630 100%);
+  border-radius: 18px;
+  padding: 1.85rem 2.25rem;
   display: flex;
   align-items: center;
-  gap: 1.25rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 1.5px solid #e2e8f0;
+  justify-content: space-between;
+  gap: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(5, 38, 82, 0.16);
 }
-.prev-itr-header-titles { display: flex; flex-direction: column; gap: 0.25rem; }
-.prev-itr-header-title {
+
+.prev-itr-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  z-index: 1;
+}
+
+.prev-itr-hero-title {
   font-size: 1.85rem;
   font-weight: 800;
-  color: #083b75;
+  color: #ffffff;
   margin: 0;
   letter-spacing: -0.02em;
+  line-height: 1.2;
 }
-.prev-itr-header-subtitle { font-size: 0.95rem; color: #64748b; margin: 0; }
 
-/* PAGE 1: 2-Column Desktop Grid */
-.prev-itr-page1-grid {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 2rem;
-  align-items: start;
+.prev-itr-hero-subtitle {
+  font-size: 0.96rem;
+  color: #cbd5e1;
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.45;
 }
-.prev-itr-page1-main,
-.prev-itr-page1-sidebar { display: flex; flex-direction: column; gap: 1.25rem; }
-.prev-itr-page1-sidebar { position: sticky; top: 1.5rem; }
 
-/* Hero Banner Card */
-.prev-itr-hero-card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 18px;
-  padding: 1.4rem 1.65rem;
+.prev-itr-hero-graphic {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 1.25rem;
-  box-shadow: 0 2px 10px rgba(8, 59, 117, 0.04);
+  justify-content: center;
+  z-index: 1;
 }
-.prev-itr-hero-icon-box {
-  width: 52px;
-  height: 52px;
+
+.prev-itr-hero-svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* --------------------------------------------------------------------------
+   2. Choose Assessment Year Header Card (Page 1)
+   -------------------------------------------------------------------------- */
+.prev-itr-choose-card {
+  width: 100%;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.15rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+  box-shadow: 0 2px 8px rgba(8, 59, 117, 0.04);
+}
+
+.prev-itr-choose-icon-wrap {
+  width: 48px;
+  height: 48px;
   border-radius: 14px;
   background: #fff7ed;
-  color: #ea580c;
   border: 1.5px solid #fed7aa;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
-.prev-itr-hero-text-wrap { display: flex; flex-direction: column; gap: 0.25rem; }
-.prev-itr-hero-title {
-  font-size: 1.15rem;
+
+.prev-itr-icon--orange {
+  color: #ea580c;
+}
+
+.prev-itr-choose-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.prev-itr-choose-title {
+  font-size: 1.08rem;
   font-weight: 800;
   color: #083b75;
   margin: 0;
+  letter-spacing: -0.01em;
 }
-.prev-itr-hero-desc {
+
+.prev-itr-choose-desc {
   font-size: 0.88rem;
   color: #64748b;
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
-/* AY Options List */
-.prev-itr-ay-list { display: flex; flex-direction: column; gap: 0.85rem; }
+/* --------------------------------------------------------------------------
+   3. Assessment Year Selection Cards (Page 1)
+   -------------------------------------------------------------------------- */
+.prev-itr-ay-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .prev-itr-ay-card {
+  width: 100%;
+  box-sizing: border-box;
   background: #ffffff;
   border: 1.5px solid #e2e8f0;
   border-radius: 16px;
-  padding: 1.15rem 1.35rem;
+  padding: 1.15rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 1.25rem;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
+  box-shadow: 0 1px 4px rgba(8, 59, 117, 0.02);
+  outline: none;
 }
-.prev-itr-ay-card--eligible { cursor: pointer; }
+
+.prev-itr-ay-card--eligible {
+  cursor: pointer;
+}
+
 .prev-itr-ay-card--eligible:hover {
   border-color: #cbd5e1;
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(8, 59, 117, 0.06);
 }
-.prev-itr-ay-card--selected {
-  border-color: #f97316;
-  background: #fffaf5;
-  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.18);
+
+.prev-itr-ay-card--eligible:focus-visible {
+  border-color: #ea580c;
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
 }
-.prev-itr-ay-card--closed { background: #f8fafc; opacity: 0.7; cursor: not-allowed; }
+
+.prev-itr-ay-card--selected {
+  border: 2px solid #ea580c;
+  background: #fffaf5;
+  box-shadow: 0 0 0 1px rgba(234, 88, 12, 0.15), 0 2px 10px rgba(234, 88, 12, 0.08);
+}
+
+.prev-itr-ay-card--selected:hover {
+  border-color: #ea580c;
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 1px rgba(234, 88, 12, 0.2), 0 4px 14px rgba(234, 88, 12, 0.12);
+}
+
+.prev-itr-ay-card--closed {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  opacity: 0.78;
+  cursor: not-allowed;
+}
 
 .prev-itr-ay-card-left {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.15rem;
   flex: 1;
   min-width: 0;
 }
+
 .prev-itr-ay-icon-wrap {
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  color: #1e293b;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: all 0.2s ease;
 }
-.prev-itr-ay-card--selected .prev-itr-ay-icon-wrap { background: #fff7ed; border-color: #fed7aa; color: #ea580c; }
-.prev-itr-ay-info { display: flex; flex-direction: column; gap: 0.25rem; }
-.prev-itr-ay-title { font-size: 1.08rem; font-weight: 800; color: #083b75; }
-.prev-itr-ay-subtitle { font-size: 0.86rem; color: #64748b; line-height: 1.4; }
+
+.prev-itr-ay-icon-wrap--closed {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #94a3b8;
+}
+
+.prev-itr-ay-icon-wrap--eligible {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #083b75;
+}
+
+.prev-itr-ay-icon-wrap--selected {
+  background: #fff7ed;
+  border: 1.5px solid #fed7aa;
+  color: #ea580c;
+}
+
+.prev-itr-ay-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.prev-itr-ay-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #083b75;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.prev-itr-ay-subtitle {
+  font-size: 0.86rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}
+
 .prev-itr-ay-card-right {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
   flex-shrink: 0;
 }
 
@@ -141,18 +253,37 @@
 .prev-itr-badge {
   font-size: 0.82rem;
   font-weight: 700;
-  padding: 0.4rem 0.95rem;
   border-radius: 9999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  line-height: 1;
 }
-.prev-itr-badge--closed { background: #f1f5f9; color: #94a3b8; border: 1px solid #e2e8f0; }
-.prev-itr-badge--eligible { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
-.prev-itr-badge--selected { background: #ea580c; color: #ffffff; border: 1px solid #ea580c; }
+
+.prev-itr-badge--closed {
+  background: #f1f5f9;
+  color: #64748b;
+  padding: 0.45rem 1.25rem;
+  border: none;
+}
+
+.prev-itr-badge--eligible {
+  background: #ffffff;
+  border: 1.5px solid #fed7aa;
+  color: #ea580c;
+  padding: 0.4rem 1.25rem;
+}
+
+.prev-itr-badge--selected {
+  background: #ea580c;
+  color: #ffffff;
+  padding: 0.5rem 1.35rem;
+  border: none;
+}
+
 .prev-itr-check-circle {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: #ea580c;
   color: #ffffff;
@@ -162,209 +293,287 @@
   flex-shrink: 0;
 }
 
-/* Sidebar Summary Card */
-.prev-itr-summary-card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 18px;
-  padding: 1.5rem;
+/* --------------------------------------------------------------------------
+   4. Filing Overview View (Page 2)
+   -------------------------------------------------------------------------- */
+.prev-itr-filing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #fff7ed;
+  border: 1.5px solid #fed7aa;
+  color: #ea580c;
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 0.38rem 0.95rem;
+  border-radius: 9999px;
+  width: fit-content;
+  margin-top: 0.2rem;
+}
+
+.prev-itr-filing-badge-dot {
+  color: #ea580c;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.prev-itr-intro-wrap {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
-  box-shadow: 0 2px 8px rgba(8, 59, 117, 0.04);
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
 }
-.prev-itr-summary-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 0.85rem;
-  border-bottom: 1px solid #f1f5f9;
-}
-.prev-itr-summary-title { font-size: 1.05rem; font-weight: 800; color: #083b75; }
-.prev-itr-summary-rows { display: flex; flex-direction: column; gap: 0.75rem; }
-.prev-itr-summary-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.88rem;
-}
-.prev-itr-summary-label { color: #64748b; font-weight: 500; }
-.prev-itr-summary-value { color: #083b75; font-weight: 700; }
-.prev-itr-summary-value--green { color: #059669; }
-.prev-itr-pill-dot { color: #ea580c; font-weight: 800; }
 
-.prev-itr-continue-btn {
+.prev-itr-intro-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #083b75;
+  margin: 0;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+
+.prev-itr-intro-desc {
+  font-size: 0.92rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+  max-width: 950px;
+}
+
+/* 3 Cards in ONE ROW on Desktop */
+.prev-itr-steps-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
   width: 100%;
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-  color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  padding: 0.85rem;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
-  font-family: inherit;
-}
-.prev-itr-continue-btn:hover {
-  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
-  transform: translateY(-1px);
+  box-sizing: border-box;
+  align-items: stretch;
 }
 
-/* Info Box */
-.prev-itr-info-box {
+.prev-itr-step-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.35rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  box-shadow: 0 2px 8px rgba(8, 59, 117, 0.03);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+}
+
+.prev-itr-step-card:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(8, 59, 117, 0.06);
+}
+
+.prev-itr-step-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.prev-itr-step-card-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #fff7ed;
+  border: 1.5px solid #fed7aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.prev-itr-step-card-badge {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #ea580c;
+  background: #ffffff;
+  border: 1.5px solid #fed7aa;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.prev-itr-step-card-title {
+  font-size: 1.06rem;
+  font-weight: 800;
+  color: #083b75;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.prev-itr-step-card-desc {
+  font-size: 0.88rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   5. Eligibility / No Need to Rebuild Information Card
+   -------------------------------------------------------------------------- */
+.prev-itr-info-card {
+  width: 100%;
+  box-sizing: border-box;
   background: #eff6ff;
   border: 1.5px solid #bfdbfe;
   border-radius: 16px;
-  padding: 1.25rem 1.4rem;
+  padding: 1rem 1.35rem;
   display: flex;
-  align-items: flex-start;
-  gap: 0.85rem;
+  align-items: center;
+  gap: 1rem;
 }
+
 .prev-itr-info-icon-circle {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: #2563eb;
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 0.85rem;
+  font-family: serif;
+  font-size: 1.15rem;
+  font-weight: 700;
   flex-shrink: 0;
 }
-.prev-itr-info-content { display: flex; flex-direction: column; gap: 0.25rem; }
+
+.prev-itr-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
 .prev-itr-info-title {
   font-size: 0.95rem;
   font-weight: 800;
-  color: #1e3a8a;
-  margin: 0;
-}
-.prev-itr-info-desc {
-  font-size: 0.85rem;
   color: #1e40af;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.prev-itr-info-desc {
+  font-size: 0.84rem;
+  color: #2563eb;
   margin: 0;
   line-height: 1.45;
 }
 
-/* PAGE 2: Step Preview & Grid */
-.prev-itr-page2-container { display: flex; flex-direction: column; gap: 1.75rem; }
-.prev-itr-pill-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  background: #f1f5f9;
-  color: #334155;
-  font-size: 0.82rem;
+/* --------------------------------------------------------------------------
+   6. Full-width Continue CTA Button
+   -------------------------------------------------------------------------- */
+.prev-itr-continue-cta {
+  width: 100%;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  padding: 0.95rem 1.5rem;
+  font-size: 1rem;
   font-weight: 700;
-  padding: 0.35rem 0.85rem;
-  border-radius: 9999px;
-  width: fit-content;
-}
-.prev-itr-intro-group { display: flex; flex-direction: column; gap: 0.35rem; }
-.prev-itr-intro-title {
-  font-size: 1.45rem;
-  font-weight: 800;
-  color: #083b75;
-  margin: 0;
-}
-.prev-itr-intro-desc {
-  font-size: 0.92rem;
-  color: #64748b;
-  margin: 0;
-  max-width: 750px;
-  line-height: 1.5;
-}
-
-.prev-itr-step-cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
-.prev-itr-step-card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 1.35rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  box-shadow: 0 2px 6px rgba(8, 59, 117, 0.03);
-}
-.prev-itr-step-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-.prev-itr-step-card-left { display: flex; align-items: center; gap: 0.75rem; }
-.prev-itr-step-card-icon-box {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: #eff6ff;
-  color: #2563eb;
-  border: 1px solid #bfdbfe;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
+  font-family: inherit;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-}
-.prev-itr-step-card-title { font-size: 1.05rem; font-weight: 800; color: #083b75; }
-.prev-itr-step-card-badge {
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 0.25rem 0.65rem;
-  border-radius: 9999px;
-  background: #f1f5f9;
-  color: #475569;
-}
-.prev-itr-step-card-desc {
-  font-size: 0.86rem;
-  color: #64748b;
-  line-height: 1.5;
-  margin: 0;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
 }
 
-/* Page 2 Action Buttons */
-.prev-itr-action-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-top: 1rem;
-  border-top: 1.5px solid #e2e8f0;
-}
-.prev-itr-btn-back,
-.prev-itr-btn-submit {
-  padding: 0.85rem 1.6rem;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: inherit;
-}
-.prev-itr-btn-back { background: #ffffff; border: 1.5px solid #e2e8f0; color: #475569; }
-.prev-itr-btn-back:hover { background: #f8fafc; border-color: #cbd5e1; color: #0f172a; }
-.prev-itr-btn-submit {
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-  border: none;
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
-}
-.prev-itr-btn-submit:hover {
+.prev-itr-continue-cta:hover:not(:disabled) {
   background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
   transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.42);
 }
 
-/* Responsive Media Queries */
-@media (max-width: 900px) {
-  .prev-itr-page1-grid { grid-template-columns: 1fr; }
-  .prev-itr-page1-sidebar { position: static; }
-  .prev-itr-step-cards-grid { grid-template-columns: 1fr; }
+.prev-itr-continue-cta:focus-visible {
+  outline: 2px solid #ea580c;
+  outline-offset: 3px;
 }
-@media (max-width: 640px) {
-  .prev-itr-page-container { padding: 1rem; }
-  .prev-itr-action-row { flex-direction: column-reverse; }
-  .prev-itr-btn-back,
-  .prev-itr-btn-submit { width: 100%; text-align: center; }
+
+.prev-itr-continue-cta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .prev-itr-steps-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .prev-itr-hero-card {
+    padding: 1.5rem 1.25rem;
+    gap: 1rem;
+  }
+
+  .prev-itr-hero-title {
+    font-size: 1.5rem;
+  }
+
+  .prev-itr-hero-subtitle {
+    font-size: 0.88rem;
+  }
+
+  .prev-itr-hero-graphic {
+    max-width: 130px;
+  }
+
+  .prev-itr-choose-card {
+    padding: 1rem 1.15rem;
+    gap: 0.85rem;
+  }
+
+  .prev-itr-choose-icon-wrap {
+    width: 42px;
+    height: 42px;
+  }
+
+  .prev-itr-ay-card {
+    padding: 1rem 1.15rem;
+  }
+
+  .prev-itr-ay-icon-wrap {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 520px) {
+  .prev-itr-hero-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .prev-itr-hero-graphic {
+    align-self: center;
+    margin-top: 0.5rem;
+  }
+
+  .prev-itr-ay-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+
+  .prev-itr-ay-card-right {
+    align-self: flex-end;
+  }
 }

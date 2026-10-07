@@ -45,9 +45,12 @@ const computeRevisionFigures = (
   deductionCorrections: DeductionCorrectionState,
   bankCorrections: BankCorrectionState
 ): ComputedRevisionSummary => {
-  const originalGross = returnDetails?.salaryOriginal || 812400
-  const originalTaxable = returnDetails?.taxableOriginal || 492400
-  const originalDeductions = Math.max(0, originalGross - originalTaxable)
+  const originalGross = Number(returnDetails?.salaryOriginal ?? 812400)
+  const originalTaxable = Number(returnDetails?.taxableOriginal ?? 492400)
+  const originalDeductions =
+    returnDetails?.deductionsOriginal !== undefined
+      ? Number(returnDetails.deductionsOriginal)
+      : Math.max(0, originalGross - originalTaxable)
 
   const sumEnteredDeductions =
     Number(deductionCorrections?.section80c || 0) +
@@ -150,13 +153,16 @@ export const RevisionReviewSummary: React.FC<RevisionReviewSummaryProps> = ({
     bankCorrections
   )
 
-  const originalGross = returnDetails?.salaryOriginal || 0
-  const originalTaxable = returnDetails?.taxableOriginal || 0
-  const originalDeductions = Math.max(0, originalGross - originalTaxable)
+  const originalGross = Number(returnDetails?.salaryOriginal ?? 812400)
+  const originalTaxable = Number(returnDetails?.taxableOriginal ?? 492400)
+  const originalDeductions =
+    returnDetails?.deductionsOriginal !== undefined
+      ? Number(returnDetails.deductionsOriginal)
+      : Math.max(0, originalGross - originalTaxable)
   const originalTaxAndCess = calculateTaxLiability(originalTaxable)
   const revisedTaxAndCess = calculateTaxLiability(revisedTaxable)
-  const originalTaxesPaid = 31200
-  const revisedTaxesPaid = 31200
+  const originalTaxesPaid = Number(returnDetails?.taxesPaidOriginal ?? 31200)
+  const revisedTaxesPaid = originalTaxesPaid
   const originalRefund = Math.max(0, originalTaxesPaid - originalTaxAndCess)
   const netBalance = revisedTaxesPaid - revisedTaxAndCess
   const isRefund = netBalance >= 0

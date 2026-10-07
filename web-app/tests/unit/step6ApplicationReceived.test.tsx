@@ -110,20 +110,26 @@ describe('Step6ApplicationReceived', () => {
     )
 
     const downloadBtn = screen.getByRole('button', {
-      name: /Download TaxEdge Application Receipt/i,
+      name: /Download Receipt/i,
     })
     fireEvent.click(downloadBtn)
     expect(mockProps.onDownloadReceipt).toHaveBeenCalledTimes(1)
   })
 
-  it('renders View Application Status button', () => {
+  it('renders Track My Application, Go to Dashboard, and Download Receipt buttons', () => {
     render(
       <MemoryRouter>
         <Step6ApplicationReceived {...mockProps} />
       </MemoryRouter>
     )
 
-    const viewStatusBtn = screen.getByRole('button', { name: /View Application Status/i })
-    expect(viewStatusBtn).toBeDefined()
+    const trackBtn = screen.getByRole('button', { name: /Track My Application/i })
+    expect(trackBtn).toBeDefined()
+
+    const dashboardBtn = screen.getByRole('button', { name: /Go to Dashboard/i })
+    expect(dashboardBtn).toBeDefined()
+
+    const downloadBtn = screen.getByRole('button', { name: /Download Receipt/i })
+    expect(downloadBtn).toBeDefined()
   })
 })

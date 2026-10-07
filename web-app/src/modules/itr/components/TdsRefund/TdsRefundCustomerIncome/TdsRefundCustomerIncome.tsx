@@ -1,372 +1,1077 @@
-import React, { useState } from 'react'
-import { User, Landmark, Calculator, ShieldCheck } from 'lucide-react'
-import { StepActionBar, ConfirmAccountNumberInput } from '@shared/components'
-import { formatMobile, validatePan, validateMobileNumber, validateAadhaar, validateIfsc, validateBankAccNumber, validateName, validateEmail } from '@shared/utils/validationUtils'
-import { DEFAULT_TDS_TAXPAYER, EMPTY_BANK, EMPTY_TAX, TdsIcons, fetchIfscDetails, type TdsTaxpayerProfile } from '../../../utils/tdsRefund.constants'
-import type { TdsBankDetails, TdsIncomeTaxData } from '../../../types/tdsRefund.types'
-import { TdsRefundProgressTracker } from '../TdsRefundOverview'
-import './TdsRefundCustomerIncome.css'
+import React, { useState, useEffect } from "react";
+import { User, Landmark, Calculator, ShieldCheck, Pencil, Check } from "lucide-react";
+import { useAuthStore } from "@store/index";
+import { authStorage } from "@core/auth";
+import { StepActionBar, ConfirmAccountNumberInput } from "@shared/components";
+import {
+  formatMobile,
+  validatePan,
+  validateMobileNumber,
+  validateIfsc,
+  validateBankAccNumber,
+  validateName,
+  validateEmail,
+} from "@shared/utils/validationUtils";
+import {
+  DEFAULT_TDS_TAXPAYER,
+  EMPTY_BANK,
+  EMPTY_TAX,
+  TdsIcons,
+  fetchIfscDetails,
+  syncProfileWithAuthUser,
+  type TdsTaxpayerProfile,
+} from "../../../utils/tdsRefund.constants";
+import type {
+  TdsBankDetails,
+  TdsIncomeTaxData,
+} from "../../../types/tdsRefund.types";
+import { TdsRefundProgressTracker } from "../TdsRefundOverview";
+import "./TdsRefundCustomerIncome.css";
 
-export type { TdsBankDetails, TdsIncomeTaxData }
+export type { TdsBankDetails, TdsIncomeTaxData };
 
-export interface TdsRefundPrelimBannerProps { assessmentYear?: string; refundAmount: string }
+export interface TdsRefundPrelimBannerProps {
+  assessmentYear?: string;
+  refundAmount: string;
+}
 
-export const TdsRefundPrelimBanner: React.FC<TdsRefundPrelimBannerProps> = ({ assessmentYear = 'AY 2026-27', refundAmount }) => (
+export const TdsRefundPrelimBanner: React.FC<TdsRefundPrelimBannerProps> = ({
+  assessmentYear = "AY 2026-27",
+  refundAmount,
+}) => (
   <section className="tds-prelim-card">
     <div className="tds-prelim-left">
-      <div className="tds-prelim-tag-row"><span className="tds-prelim-tag">PRELIMINARY ESTIMATED REFUND</span><span className="tds-prelim-ay">{assessmentYear}</span></div>
-      <div className="tds-prelim-amount" data-testid="prelim-refund-amount">{refundAmount}</div>
-      <p className="tds-prelim-desc">Estimated from verified Form 26AS, AIS, and advance TDS deduction records.</p>
-    </div>
-    <div className="tds-prelim-badge-box">
-      <div className="tds-prelim-badge-item"><TdsIcons.Checkmark /><span>ITD Pre-reconciled</span></div>
-      <div className="tds-prelim-badge-item"><TdsIcons.Shield /><span>100% Audit Protected</span></div>
+      <div className="tds-prelim-tag-row">
+        <span className="tds-prelim-tag">PRELIMINARY ESTIMATED REFUND</span>
+        <span className="tds-prelim-ay">{assessmentYear}</span>
+      </div>
+      <div className="tds-prelim-amount" data-testid="prelim-refund-amount">
+        {refundAmount}
+      </div>
     </div>
   </section>
-)
+);
 
-const PROGRESSION_CHECKLIST = ['Pre-filled from ITD Portal', 'Bank verified for direct credit', 'Next: Upload Form 16 / AIS / Bank Stmt']
+const PROGRESSION_CHECKLIST = [
+  "Pre-filled from ITD Portal",
+  "Bank verified for direct credit",
+  "Next: Upload Form 16 / AIS / Bank Stmt",
+];
 
 export const TdsRefundProgressionSidebar: React.FC = () => (
-  <aside className="tds-step1-sidebar" aria-label="Claim progression and verification">
+  <aside
+    className="tds-step1-sidebar"
+    aria-label="Claim progression and verification"
+  >
     <div className="tds-progression-card">
       <span className="tds-progression-badge">Stage 1 Completed</span>
       <h3 className="tds-progression-title">Claim Progression</h3>
-      <p className="tds-progression-desc">Review profile details, income information and bank account before proceeding.</p>
+      <p className="tds-progression-desc">
+        Review profile details, income information and bank account before
+        proceeding.
+      </p>
       <div className="tds-progression-checklist">
         {PROGRESSION_CHECKLIST.map((item) => (
-          <div key={item} className="tds-progression-item"><TdsIcons.Checkmark /><span>{item}</span></div>
+          <div key={item} className="tds-progression-item">
+            <TdsIcons.Checkmark />
+            <span>{item}</span>
+          </div>
         ))}
       </div>
       <div className="tds-progression-security">
-        <div className="tds-prog-sec-row"><TdsIcons.Shield /><span>256-bit Bank Grade Security</span></div>
-        <div className="tds-prog-sec-row"><TdsIcons.Zap /><span>Instant CA validation upon filing</span></div>
+        <div className="tds-prog-sec-row">
+          <TdsIcons.Shield />
+          <span>256-bit Bank Grade Security</span>
+        </div>
+        <div className="tds-prog-sec-row">
+          <TdsIcons.Zap />
+          <span>Instant CA validation upon filing</span>
+        </div>
       </div>
     </div>
     <div className="tds-sidebar-card tds-sidebar-trust-card">
-      <div className="tds-trust-icon-box"><TdsIcons.Shield /></div>
+      <div className="tds-trust-icon-box">
+        <TdsIcons.Shield />
+      </div>
       <div>
         <h4 className="tds-trust-title">Expert CA Verification</h4>
-        <p className="tds-trust-desc">Your refund claim and bank details are cross-verified by a Senior Chartered Accountant before submission to ITD.</p>
+        <p className="tds-trust-desc">
+          Your refund claim and bank details are cross-verified by a Senior
+          Chartered Accountant before submission to ITD.
+        </p>
       </div>
     </div>
   </aside>
-)
+);
 
 interface CategoryToggleConfig {
-  key: 'rentalIncome' | 'capitalGains' | 'businessIncome' | 'homeLoanInterest' | 'taxDeductions'
-  title: string
-  subtitle: string
-  twoColumn?: boolean
-  fields: Array<{ id: string; label: string; key: keyof TdsIncomeTaxData; placeholder: string }>
+  key:
+    | "rentalIncome"
+    | "capitalGains"
+    | "businessIncome"
+    | "homeLoanInterest"
+    | "taxDeductions";
+  title: string;
+  subtitle: string;
+  twoColumn?: boolean;
+  fields: Array<{
+    id: string;
+    label: string;
+    key: keyof TdsIncomeTaxData;
+    placeholder: string;
+  }>;
 }
 
 const CATEGORY_TOGGLE_CONFIGS: CategoryToggleConfig[] = [
-  { key: 'rentalIncome', title: 'Rental Income', subtitle: 'House property rent', fields: [{ id: 'tds-annual-rent', label: 'Annual Rent Received (₹)', key: 'annualRent', placeholder: 'Enter rental income' }, { id: 'tds-property-taxes', label: 'Property Taxes Paid (₹)', key: 'propertyTaxes', placeholder: 'Enter municipal taxes' }] },
-  { key: 'capitalGains', title: 'Capital Gains', subtitle: 'Stocks / MF / Property', twoColumn: true, fields: [{ id: 'tds-stcg', label: 'Short-Term Gains (₹)', key: 'stcg', placeholder: 'Enter STCG' }, { id: 'tds-ltcg', label: 'Long-Term Gains (₹)', key: 'ltcg', placeholder: 'Enter LTCG' }] },
-  { key: 'businessIncome', title: 'Business / Profession', subtitle: 'Freelance or business income', twoColumn: true, fields: [{ id: 'tds-turnover', label: 'Turnover (₹)', key: 'turnover', placeholder: 'Enter turnover' }, { id: 'tds-net-profit', label: 'Net Profit (₹)', key: 'netProfit', placeholder: 'Enter profit' }] },
-  { key: 'homeLoanInterest', title: 'Home Loan Interest', subtitle: 'Self-occupied house property', fields: [{ id: 'tds-interest-paid', label: 'Interest Paid (Sec 24b) (₹)', key: 'homeLoanInterestAmount', placeholder: 'Enter interest paid' }] },
-  { key: 'taxDeductions', title: 'Tax Deductions', subtitle: 'Section 80C, 80D, 80G', twoColumn: true, fields: [{ id: 'tds-deduction-80c', label: '80C (PPF, ELSS, LIC) (₹)', key: 'deduction80C', placeholder: 'Up to ₹1.5L' }, { id: 'tds-deduction-80d', label: '80D (Health Ins.) (₹)', key: 'deduction80D', placeholder: 'Up to ₹75k' }] },
-]
+  {
+    key: "rentalIncome",
+    title: "Rental Income",
+    subtitle: "House property rent",
+    fields: [
+      {
+        id: "tds-annual-rent",
+        label: "Annual Rent Received (₹)",
+        key: "annualRent",
+        placeholder: "Enter rental income",
+      },
+      {
+        id: "tds-property-taxes",
+        label: "Property Taxes Paid (₹)",
+        key: "propertyTaxes",
+        placeholder: "Enter municipal taxes",
+      },
+    ],
+  },
+  {
+    key: "capitalGains",
+    title: "Capital Gains",
+    subtitle: "Stocks / MF / Property",
+    twoColumn: true,
+    fields: [
+      {
+        id: "tds-stcg",
+        label: "Short-Term Gains (₹)",
+        key: "stcg",
+        placeholder: "Enter STCG",
+      },
+      {
+        id: "tds-ltcg",
+        label: "Long-Term Gains (₹)",
+        key: "ltcg",
+        placeholder: "Enter LTCG",
+      },
+    ],
+  },
+  {
+    key: "businessIncome",
+    title: "Business / Profession",
+    subtitle: "Freelance or business income",
+    twoColumn: true,
+    fields: [
+      {
+        id: "tds-turnover",
+        label: "Turnover (₹)",
+        key: "turnover",
+        placeholder: "Enter turnover",
+      },
+      {
+        id: "tds-net-profit",
+        label: "Net Profit (₹)",
+        key: "netProfit",
+        placeholder: "Enter profit",
+      },
+    ],
+  },
+  {
+    key: "homeLoanInterest",
+    title: "Home Loan Interest",
+    subtitle: "Self-occupied house property",
+    fields: [
+      {
+        id: "tds-interest-paid",
+        label: "Interest Paid (Sec 24b) (₹)",
+        key: "homeLoanInterestAmount",
+        placeholder: "Enter interest paid",
+      },
+    ],
+  },
+  {
+    key: "taxDeductions",
+    title: "Tax Deductions",
+    subtitle: "Section 80C, 80D, 80G",
+    twoColumn: true,
+    fields: [
+      {
+        id: "tds-deduction-80c",
+        label: "80C (PPF, ELSS, LIC) (₹)",
+        key: "deduction80C",
+        placeholder: "Up to ₹1.5L",
+      },
+      {
+        id: "tds-deduction-80d",
+        label: "80D (Health Ins.) (₹)",
+        key: "deduction80D",
+        placeholder: "Up to ₹75k",
+      },
+    ],
+  },
+];
 
-const CORE_INCOME_FIELDS: Array<{ id: string; label: string; key: keyof TdsIncomeTaxData; placeholder: string; required?: boolean }> = [
-  { id: 'tds-salary-income', label: 'Annual Salary Income (₹)', key: 'salaryIncome', placeholder: 'Enter your salary income', required: true },
-  { id: 'tds-other-income', label: 'Other Income / Moonlighting (₹)', key: 'otherIncome', placeholder: 'Enter other income' },
-  { id: 'tds-interest-income', label: 'Interest Income (Savings/FD) (₹)', key: 'interestIncome', placeholder: 'Enter interest income' },
-]
+const SALARY_INCOME_FIELD = {
+  id: "tds-salary-income",
+  label: "Salaried Gross Income (₹)",
+  key: "salaryIncome" as keyof TdsIncomeTaxData,
+  placeholder: "Enter your salary income",
+  required: true,
+};
 
-const TAXES_PAID_FIELDS: Array<{ id: string; label: string; key: keyof TdsIncomeTaxData; placeholder: string; required?: boolean }> = [
-  { id: 'tds-total-tds', label: 'Total TDS Deducted (₹)', key: 'totalTdsDeducted', placeholder: 'Enter total TDS deducted', required: true },
-  { id: 'tds-tcs-amount', label: 'TCS Collected (₹)', key: 'tcsAmount', placeholder: 'Enter TCS amount' },
-  { id: 'tds-advance-tax', label: 'Advance Tax Paid (₹)', key: 'advanceTax', placeholder: 'Enter advance tax paid' },
-  { id: 'tds-self-tax', label: 'Self-Assessment Tax Paid (₹)', key: 'selfAssessmentTax', placeholder: 'Enter self-assessment tax paid' },
-]
+const OTHER_INCOME_FIELDS: Array<{
+  id: string;
+  label: string;
+  key: keyof TdsIncomeTaxData;
+  placeholder: string;
+  required?: boolean;
+}> = [
+  {
+    id: "tds-other-income",
+    label: "Other Income (₹)",
+    key: "otherIncome",
+    placeholder: "Enter other income",
+  },
+  {
+    id: "tds-interest-income",
+    label: "Interest Income (₹)",
+    key: "interestIncome",
+    placeholder: "Enter interest income",
+  },
+];
+
+const TAXES_PAID_FIELDS: Array<{
+  id: string;
+  label: string;
+  key: keyof TdsIncomeTaxData;
+  placeholder: string;
+  required?: boolean;
+}> = [
+  {
+    id: "tds-total-tds",
+    label: "Total TDS Deducted (₹)",
+    key: "totalTdsDeducted",
+    placeholder: "Enter TDS Amount",
+    required: true,
+  },
+  {
+    id: "tds-tcs-amount",
+    label: "TCS Amount (₹)",
+    key: "tcsAmount",
+    placeholder: "Enter TCS Amount",
+  },
+  {
+    id: "tds-advance-tax",
+    label: "Advance Tax (₹)",
+    key: "advanceTax",
+    placeholder: "Enter Advance Tax",
+  },
+  {
+    id: "tds-self-tax",
+    label: "Self-Assessment Tax (₹)",
+    key: "selfAssessmentTax",
+    placeholder: "Enter Self Assessment Tax",
+  },
+];
 
 export interface TdsRefundCustomerIncomeProps {
-  onBack: () => void
-  onNext: () => void
-  onSaveDraft?: () => void
-  currentStep?: number
-  initialProfile?: TdsTaxpayerProfile
-  onProfileChange?: (profile: TdsTaxpayerProfile) => void
-  initialBankDetails?: TdsBankDetails
-  onBankChange?: (details: TdsBankDetails) => void
-  initialTaxData?: TdsIncomeTaxData
-  onTaxChange?: (data: TdsIncomeTaxData) => void
+  onBack: () => void;
+  onNext: () => void;
+  onSaveDraft?: () => void;
+  currentStep?: number;
+  initialProfile?: TdsTaxpayerProfile;
+  onProfileChange?: (profile: TdsTaxpayerProfile) => void;
+  initialBankDetails?: TdsBankDetails;
+  onBankChange?: (details: TdsBankDetails) => void;
+  initialTaxData?: TdsIncomeTaxData;
+  onTaxChange?: (data: TdsIncomeTaxData) => void;
 }
 
-export type TdsRefundStepCustomerIncomeProps = TdsRefundCustomerIncomeProps
+export type TdsRefundStepCustomerIncomeProps = TdsRefundCustomerIncomeProps;
 
 const parseAmount = (val?: string) => {
   try {
-    return Number((val || '').replace(/[^0-9.]/g, '') || 0)
+    return Number((val || "").replace(/[^0-9.]/g, "") || 0);
   } catch {
-    return 0
+    return 0;
   }
-}
+};
 
-const getCategoryClearUpdates = (key: CategoryToggleConfig['key']): Partial<TdsIncomeTaxData> => {
-  if (key === 'rentalIncome') return { rentalIncome: 'no', annualRent: '', propertyTaxes: '' }
-  if (key === 'capitalGains') return { capitalGains: 'no', stcg: '', ltcg: '' }
-  if (key === 'businessIncome') return { businessIncome: 'no', turnover: '', netProfit: '' }
-  if (key === 'homeLoanInterest') return { homeLoanInterest: 'no', homeLoanInterestAmount: '' }
-  if (key === 'taxDeductions') return { taxDeductions: 'no', deduction80C: '', deduction80D: '' }
-  return { [key]: 'no' }
-}
+const getCategoryClearUpdates = (
+  key: CategoryToggleConfig["key"],
+): Partial<TdsIncomeTaxData> => {
+  if (key === "rentalIncome")
+    return { rentalIncome: "no", annualRent: "", propertyTaxes: "" };
+  if (key === "capitalGains") return { capitalGains: "no", stcg: "", ltcg: "" };
+  if (key === "businessIncome")
+    return { businessIncome: "no", turnover: "", netProfit: "" };
+  if (key === "homeLoanInterest")
+    return { homeLoanInterest: "no", homeLoanInterestAmount: "" };
+  if (key === "taxDeductions")
+    return { taxDeductions: "no", deduction80C: "", deduction80D: "" };
+  return { [key]: "no" };
+};
 
-export const TdsRefundCustomerIncome: React.FC<TdsRefundCustomerIncomeProps> = ({
-  onBack, onNext, onSaveDraft, currentStep = 1, initialProfile, onProfileChange,
-  initialBankDetails, onBankChange, initialTaxData, onTaxChange,
+const formatMaskedPan = (pan?: string) => {
+  if (!pan) return "—";
+  const clean = pan.toUpperCase().trim();
+  if (clean.length === 10) {
+    return `XXXXX${clean.slice(5)}`;
+  }
+  return clean;
+};
+
+const formatMaskedAadhaar = (aadhaar?: string) => {
+  if (!aadhaar) return "—";
+  const digits = aadhaar.replace(/\D/g, "");
+  if (digits.length >= 4) {
+    const last4 = digits.slice(-4);
+    return `XXXX XXXX ${last4}`;
+  }
+  return aadhaar;
+};
+
+const formatDob = (dob?: string) => {
+  if (!dob) return "—";
+  if (dob.includes("-")) {
+    const [y, m, d] = dob.split("-");
+    if (y && m && d && y.length === 4) {
+      return `${d}/${m}/${y}`;
+    }
+  }
+  return dob;
+};
+
+const formatMobileDisplay = (mobile?: string) => {
+  if (!mobile) return "—";
+  const clean = mobile.trim();
+  const digits = clean.replace(/\D/g, "");
+  if (digits.length === 10) {
+    return `+91 ${digits.slice(0, 5)} ${digits.slice(5)}`;
+  }
+  if (clean.startsWith("+91") && digits.length === 12) {
+    const num = digits.slice(2);
+    return `+91 ${num.slice(0, 5)} ${num.slice(5)}`;
+  }
+  return clean;
+};
+
+const renderAddressDisplay = (address?: string) => {
+  if (!address) return <span>—</span>;
+  if (address.includes("\n")) {
+    const lines = address.split("\n");
+    return (
+      <div className="tds-personal-address">
+        {lines.map((l, i) => (
+          <div key={i}>{l}</div>
+        ))}
+      </div>
+    );
+  }
+  if (address.includes(", ")) {
+    const parts = address.split(", ");
+    return (
+      <div className="tds-personal-address">
+        <div>{parts[0]}</div>
+        <div>{parts.slice(1).join(", ")}</div>
+      </div>
+    );
+  }
+  return <span>{address}</span>;
+};
+
+const getResolvedProfile = (
+  initial?: TdsTaxpayerProfile,
+  user?: ReturnType<typeof authStorage.getUser> | null,
+): TdsTaxpayerProfile => {
+  try {
+    const base = initial || DEFAULT_TDS_TAXPAYER;
+    return syncProfileWithAuthUser(base, user).profile;
+  } catch (err) {
+    console.error("Failed to resolve profile from user data:", err);
+    return initial || DEFAULT_TDS_TAXPAYER;
+  }
+};
+
+export const TdsRefundCustomerIncome: React.FC<
+  TdsRefundCustomerIncomeProps
+> = ({
+  onBack,
+  onNext,
+  onSaveDraft,
+  currentStep = 1,
+  initialProfile,
+  onProfileChange,
+  initialBankDetails,
+  onBankChange,
+  initialTaxData,
+  onTaxChange,
 }) => {
-  const [profile, setProfile] = useState<TdsTaxpayerProfile>(initialProfile || DEFAULT_TDS_TAXPAYER)
-  const [error, setError] = useState<string | null>(null)
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
-  const [isFetchingIfsc, setIsFetchingIfsc] = useState(false)
-  const [bankDetails, setBankDetails] = useState<TdsBankDetails>(initialBankDetails || { ...EMPTY_BANK })
-  const [taxData, setTaxData] = useState<TdsIncomeTaxData>(initialTaxData || { ...EMPTY_TAX })
+  const authUser = useAuthStore((state) => state.user) || authStorage.getUser();
+  const [profile, setProfile] = useState<TdsTaxpayerProfile>(() =>
+    getResolvedProfile(initialProfile, authUser),
+  );
+  const [isEditingPersonal, setIsEditingPersonal] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [isFetchingIfsc, setIsFetchingIfsc] = useState(false);
+  const [bankDetails, setBankDetails] = useState<TdsBankDetails>(
+    initialBankDetails || { ...EMPTY_BANK },
+  );
+  const [taxData, setTaxData] = useState<TdsIncomeTaxData>(
+    initialTaxData || { ...EMPTY_TAX },
+  );
+
+  // Auto-fetch and sync personal details if authUser is loaded or updated
+  useEffect(() => {
+    try {
+      if (!authUser) return;
+      const timer = setTimeout(() => {
+        setProfile((prev) => {
+          const { profile: nextProfile, hasChanges } = syncProfileWithAuthUser(
+            prev,
+            authUser,
+          );
+          if (hasChanges) {
+            onProfileChange?.(nextProfile);
+            return nextProfile;
+          }
+          return prev;
+        });
+      }, 0);
+      return () => clearTimeout(timer);
+    } catch (err) {
+      console.error("Failed to sync personal details:", err);
+    }
+  }, [authUser, onProfileChange]);
+
+  // Auto-fill account holder with taxpayer full name if empty
+  useEffect(() => {
+    try {
+      const holderName = profile.fullName || authUser?.fullName || "";
+      if (holderName && !bankDetails.accountHolder) {
+        const timer = setTimeout(() => {
+          setBankDetails((prev) => {
+            if (!prev.accountHolder) {
+              const next = { ...prev, accountHolder: holderName };
+              onBankChange?.(next);
+              return next;
+            }
+            return prev;
+          });
+        }, 0);
+        return () => clearTimeout(timer);
+      }
+    } catch (err) {
+      console.error("Failed to auto-fill account holder:", err);
+    }
+  }, [
+    profile.fullName,
+    authUser?.fullName,
+    bankDetails.accountHolder,
+    onBankChange,
+  ]);
 
   const handleProfileChange = (updated: Partial<TdsTaxpayerProfile>) => {
-    if (error) setError(null)
-    const next = { ...profile, ...updated }
-    setProfile(next)
-    onProfileChange?.(next)
-    const changedKey = Object.keys(updated)[0]
+    if (error) setError(null);
+    const next = { ...profile, ...updated };
+    setProfile(next);
+    onProfileChange?.(next);
+    const changedKey = Object.keys(updated)[0];
     if (changedKey && fieldErrors[changedKey]) {
-      setFieldErrors((prev) => ({ ...prev, [changedKey]: '' }))
+      setFieldErrors((prev) => ({ ...prev, [changedKey]: "" }));
     }
-  }
+  };
 
   const handleBankChange = (updated: Partial<TdsBankDetails>) => {
-    if (error) setError(null)
-    const next = { ...bankDetails, ...updated }
-    setBankDetails(next)
-    onBankChange?.(next)
-    const changedKey = Object.keys(updated)[0]
+    if (error) setError(null);
+    const next = { ...bankDetails, ...updated };
+    setBankDetails(next);
+    onBankChange?.(next);
+    const changedKey = Object.keys(updated)[0];
     if (changedKey && fieldErrors[changedKey]) {
-      setFieldErrors((prev) => ({ ...prev, [changedKey]: '' }))
+      setFieldErrors((prev) => ({ ...prev, [changedKey]: "" }));
     }
-  }
+  };
 
   const handleTaxChange = (updated: Partial<TdsIncomeTaxData>) => {
-    const next = { ...taxData, ...updated }
-    setTaxData(next)
-    onTaxChange?.(next)
-    const changedKey = Object.keys(updated)[0]
+    const next = { ...taxData, ...updated };
+    setTaxData(next);
+    onTaxChange?.(next);
+    const changedKey = Object.keys(updated)[0];
     if (changedKey && fieldErrors[changedKey]) {
-      setFieldErrors((prev) => ({ ...prev, [changedKey]: '' }))
+      setFieldErrors((prev) => ({ ...prev, [changedKey]: "" }));
     }
-  }
+  };
 
   const handleIfscChange = async (rawVal: string) => {
     try {
-      const formatted = rawVal.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11)
-      handleBankChange({ ifsc: formatted })
+      const formatted = rawVal
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "")
+        .slice(0, 11);
+      handleBankChange({ ifsc: formatted });
       if (formatted.length === 11) {
-        setIsFetchingIfsc(true)
+        setIsFetchingIfsc(true);
         try {
-          const match = await fetchIfscDetails(formatted)
-          if (match) handleBankChange({ ifsc: formatted, bankName: match.bankName, branch: match.branch })
+          const match = await fetchIfscDetails(formatted);
+          if (match)
+            handleBankChange({
+              ifsc: formatted,
+              bankName: match.bankName,
+              branch: match.branch,
+            });
         } finally {
-          setIsFetchingIfsc(false)
+          setIsFetchingIfsc(false);
         }
-      } else if (formatted === '') {
-        handleBankChange({ ifsc: '', bankName: '', branch: '' })
+      } else if (formatted === "") {
+        handleBankChange({ ifsc: "", bankName: "", branch: "" });
       }
     } catch {
-      setIsFetchingIfsc(false)
+      setIsFetchingIfsc(false);
     }
-  }
+  };
 
   const handleContinue = (e?: React.FormEvent) => {
     try {
-      if (e) e.preventDefault()
-      setError(null)
-      const errs: Record<string, string> = {}
+      if (e) e.preventDefault();
+      setError(null);
+      const errs: Record<string, string> = {};
 
       if (!profile.fullName?.trim()) {
-        errs.fullName = 'Name is required'
+        errs.fullName = "Name is required";
       } else {
-        const err = validateName(profile.fullName)
-        if (err) errs.fullName = err
+        const err = validateName(profile.fullName);
+        if (err) errs.fullName = err;
       }
 
       if (!profile.pan?.trim()) {
-        errs.pan = 'PAN is required'
+        errs.pan = "PAN is required";
       } else {
-        const err = validatePan(profile.pan)
-        if (err) errs.pan = err
+        const err = validatePan(profile.pan);
+        if (err) errs.pan = err;
       }
 
       if (profile.mobile?.trim()) {
-        const err = validateMobileNumber(profile.mobile)
-        if (err) errs.mobile = err
+        let cleanMobile = profile.mobile.replace(/\D/g, "").trim();
+        if (cleanMobile.length === 12 && cleanMobile.startsWith("91")) {
+          cleanMobile = cleanMobile.slice(2);
+        }
+        const err = validateMobileNumber(cleanMobile);
+        if (err) errs.mobile = err;
       }
 
       if (profile.aadhaar?.trim()) {
-        const err = validateAadhaar(profile.aadhaar)
-        if (err) errs.aadhaar = err
+        const cleanAadhaar = profile.aadhaar.replace(/\D/g, "");
+        if (cleanAadhaar.length > 0 && cleanAadhaar.length !== 12) {
+          errs.aadhaar = "Enter a valid 12-digit Aadhaar number";
+        }
       }
 
       if (profile.email?.trim()) {
-        const err = validateEmail(profile.email)
-        if (err) errs.email = err
+        const err = validateEmail(profile.email);
+        if (err) errs.email = err;
       }
 
       if (!bankDetails.accountHolder?.trim()) {
-        errs.accountHolder = 'Account holder name is required'
+        errs.accountHolder = "Account holder name is required";
       }
 
-      const acct = bankDetails.accountNumber?.trim() || ''
-      const confirmAcct = bankDetails.confirmAccountNumber?.trim() || ''
-      const ifsc = bankDetails.ifsc?.trim() || ''
+      const acct = bankDetails.accountNumber?.trim() || "";
+      const confirmAcct = bankDetails.confirmAccountNumber?.trim() || "";
+      const ifsc = bankDetails.ifsc?.trim() || "";
 
       if (!acct) {
-        errs.accountNumber = 'Bank account number is required'
+        errs.accountNumber = "Bank account number is required";
       } else {
-        const err = validateBankAccNumber(acct)
-        if (err) errs.accountNumber = err
+        const err = validateBankAccNumber(acct);
+        if (err) errs.accountNumber = err;
       }
 
       if (!confirmAcct) {
-        errs.confirmAccountNumber = 'Bank account number is required'
+        errs.confirmAccountNumber = "Bank account number is required";
       } else if (acct !== confirmAcct) {
-        errs.confirmAccountNumber = 'Account numbers do not match'
+        errs.confirmAccountNumber = "Account numbers do not match";
       }
 
       if (!ifsc) {
-        errs.ifsc = 'IFSC code is required'
+        errs.ifsc = "IFSC code is required";
       } else {
-        const err = validateIfsc(ifsc)
-        if (err) errs.ifsc = err
+        const err = validateIfsc(ifsc);
+        if (err) errs.ifsc = err;
+      }
+
+      if (!taxData.salaryIncome?.trim() || parseAmount(taxData.salaryIncome) <= 0) {
+        errs.salaryIncome = "Salaried Gross Income is required";
       }
 
       if (parseAmount(taxData.totalTdsDeducted) <= 0) {
-        errs.totalTdsDeducted = 'Total TDS Deducted is required'
+        errs.totalTdsDeducted = "Total TDS Deducted is required";
       }
 
       if (Object.keys(errs).length > 0) {
-        setFieldErrors(errs)
-        setError(Object.values(errs)[0])
-        return
+        setFieldErrors(errs);
+        setError(Object.values(errs)[0]);
+        if (errs.fullName || errs.pan) {
+          setIsEditingPersonal(true);
+        }
+        return;
       }
 
-      setFieldErrors({})
-      onNext()
+      setFieldErrors({});
+      onNext();
     } catch {
-      onNext()
+      onNext();
     }
-  }
+  };
 
-  const totalTaxCredits = parseAmount(taxData.totalTdsDeducted) + parseAmount(taxData.tcsAmount) + parseAmount(taxData.advanceTax) + parseAmount(taxData.selfAssessmentTax)
-  const computedRefundTotal = totalTaxCredits > 0 ? `₹${totalTaxCredits.toLocaleString('en-IN')}` : profile.preliminaryRefund || '₹0'
-  const isProfileValid = Boolean(profile.fullName?.trim() && profile.pan?.trim() && profile.pan.trim().length === 10)
-  const isBankValidated = Boolean(bankDetails.accountNumber && bankDetails.ifsc && bankDetails.bankName)
+  const totalTaxCredits =
+    parseAmount(taxData.totalTdsDeducted) +
+    parseAmount(taxData.tcsAmount) +
+    parseAmount(taxData.advanceTax) +
+    parseAmount(taxData.selfAssessmentTax);
+  const computedRefundTotal =
+    totalTaxCredits > 0
+      ? `₹${totalTaxCredits.toLocaleString("en-IN")}`
+      : profile.preliminaryRefund || "₹0";
+
+  const isProfileValid = Boolean(
+    profile.fullName?.trim() &&
+    profile.pan?.trim() &&
+    profile.pan.trim().length === 10,
+  );
   const isFormValid = Boolean(
-    isProfileValid && bankDetails.accountHolder?.trim() && bankDetails.accountNumber?.trim() &&
-    bankDetails.accountNumber.trim().length >= 10 && bankDetails.accountNumber.trim().length <= 15 &&
-    bankDetails.confirmAccountNumber?.trim() && bankDetails.accountNumber.trim() === bankDetails.confirmAccountNumber.trim() &&
-    bankDetails.ifsc?.trim().length === 11 && parseAmount(taxData.totalTdsDeducted) > 0
-  )
+    isProfileValid &&
+    bankDetails.accountHolder?.trim() &&
+    bankDetails.accountNumber?.trim() &&
+    bankDetails.accountNumber.trim().length >= 10 &&
+    bankDetails.accountNumber.trim().length <= 15 &&
+    bankDetails.confirmAccountNumber?.trim() &&
+    bankDetails.accountNumber.trim() ===
+      bankDetails.confirmAccountNumber.trim() &&
+    bankDetails.ifsc?.trim().length === 11 &&
+    taxData.salaryIncome?.trim() &&
+    parseAmount(taxData.salaryIncome) > 0 &&
+    parseAmount(taxData.totalTdsDeducted) > 0,
+  );
 
-  const handleContinueRef = React.useRef(handleContinue)
+  const handleContinueRef = React.useRef(handleContinue);
   React.useEffect(() => {
-    handleContinueRef.current = handleContinue
-  })
+    handleContinueRef.current = handleContinue;
+  });
 
   React.useEffect(() => {
     const handleAttempt = () => {
-      handleContinueRef.current()
-    }
-    window.addEventListener('step-action-bar:submit-attempt', handleAttempt)
-    return () => window.removeEventListener('step-action-bar:submit-attempt', handleAttempt)
-  }, [])
+      handleContinueRef.current();
+    };
+    window.addEventListener("step-action-bar:submit-attempt", handleAttempt);
+    return () =>
+      window.removeEventListener(
+        "step-action-bar:submit-attempt",
+        handleAttempt,
+      );
+  }, []);
 
-  const renderTaxFieldInput = (field: { id: string; label: string; key: keyof TdsIncomeTaxData; placeholder: string; required?: boolean }) => (
+  const renderTaxFieldInput = (field: {
+    id: string;
+    label: string;
+    key: keyof TdsIncomeTaxData;
+    placeholder: string;
+    required?: boolean;
+  }) => (
     <div key={field.id} className="tds-form-group">
-      <label htmlFor={field.id} className="tds-label">{field.label} {field.required && <span className="tds-required">*</span>}</label>
-      <input id={field.id} type="text" className="tds-input" placeholder={field.placeholder} value={(taxData[field.key] as string) || ''} onChange={(e) => handleTaxChange({ [field.key]: e.target.value } as Partial<TdsIncomeTaxData>)} />
+      <label htmlFor={field.id} className="tds-label">
+        {field.label}{" "}
+        {field.required && <span className="tds-required">*</span>}
+      </label>
+      <input
+        id={field.id}
+        type="text"
+        className={`tds-input ${fieldErrors[field.key] ? "has-error" : ""}`}
+        placeholder={field.placeholder}
+        value={(taxData[field.key] as string) || ""}
+        onChange={(e) =>
+          handleTaxChange({
+            [field.key]: e.target.value,
+          } as Partial<TdsIncomeTaxData>)
+        }
+        required={field.required}
+      />
+      {fieldErrors[field.key] && (
+        <span
+          className="tds-field-error"
+          style={{
+            color: "#ef4444",
+            fontSize: "0.75rem",
+            marginTop: "0.25rem",
+            display: "block",
+          }}
+        >
+          {fieldErrors[field.key]}
+        </span>
+      )}
     </div>
-  )
+  );
 
   return (
     <div className="tds-step1-page">
       <TdsRefundProgressTracker currentStep={currentStep} />
-      <TdsRefundPrelimBanner assessmentYear={profile.assessmentYear || 'AY 2026-27'} refundAmount={computedRefundTotal} />
+      <TdsRefundPrelimBanner
+        assessmentYear={profile.assessmentYear || "AY 2026-27"}
+        refundAmount={computedRefundTotal}
+      />
       <div className="tds-step1-layout">
         <form className="tds-step1-main" onSubmit={handleContinue}>
           <div className="tds-card" data-testid="tds-card-personal">
             <div className="tds-card-header">
               <div className="tds-card-title-wrap">
-                <div className="tds-card-icon-box tds-card-icon-box--user" aria-hidden="true">
+                <div
+                  className="tds-card-icon-box tds-card-icon-box--user"
+                  aria-hidden="true"
+                >
                   <User size={20} strokeWidth={2.2} />
                 </div>
-                <div>
-                  <h2 className="tds-card-title">Personal Information</h2>
-                  <span className="tds-card-subtitle">Taxpayer identity and contact details</span>
+                <h2 className="tds-card-title">Personal Information</h2>
+              </div>
+              <button
+                type="button"
+                className="tds-card-edit-btn"
+                onClick={() => setIsEditingPersonal((prev) => !prev)}
+                data-testid="tds-personal-edit-btn"
+              >
+                {isEditingPersonal ? (
+                  <>
+                    <Check size={14} strokeWidth={2.5} />
+                    <span>Done</span>
+                  </>
+                ) : (
+                  <>
+                    <Pencil size={14} strokeWidth={2.4} />
+                    <span>Edit</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {!isEditingPersonal ? (
+              <div className="tds-personal-list" data-testid="tds-personal-summary-list">
+                <div className="tds-personal-row">
+                  <span className="tds-personal-label">Full Name</span>
+                  <span className="tds-personal-val">{profile.fullName || profile.name || "Sagu"}</span>
+                </div>
+                <div className="tds-personal-row">
+                  <span className="tds-personal-label">PAN</span>
+                  <span className="tds-personal-val tds-personal-val--mono">
+                    {formatMaskedPan(profile.pan || "ABCDE5478Q")}
+                  </span>
+                </div>
+                <div className="tds-personal-row">
+                  <span className="tds-personal-label">Aadhaar</span>
+                  <span className="tds-personal-val tds-personal-val--mono">
+                    {formatMaskedAadhaar(profile.aadhaar || "123456783690")}
+                  </span>
+                </div>
+                <div className="tds-personal-row">
+                  <span className="tds-personal-label">Date of Birth</span>
+                  <span className="tds-personal-val">
+                    {formatDob(profile.dob || "2000-01-29")}
+                  </span>
+                </div>
+                <div className="tds-personal-row">
+                  <span className="tds-personal-label">Mobile</span>
+                  <span className="tds-personal-val">
+                    {formatMobileDisplay(profile.mobile || "+91 70081 38785")}
+                  </span>
+                </div>
+                <div className="tds-personal-row">
+                  <span className="tds-personal-label">Email</span>
+                  <span className="tds-personal-val">{profile.email || "sagu@gmail.com"}</span>
+                </div>
+                <div className="tds-personal-row">
+                  <span className="tds-personal-label">Address</span>
+                  <div className="tds-personal-val tds-personal-address">
+                    {renderAddressDisplay(profile.address || "Nlr\nNellore, Assam - 523142")}
+                  </div>
                 </div>
               </div>
-              {isProfileValid && <span className="tds-pill-verified"><TdsIcons.Checkmark /> Ready</span>}
-            </div>
-            <div className="tds-personal-grid">
-              <div className="tds-form-group">
-                <label htmlFor="tds-profile-fullname" className="tds-label">Full Name <span className="tds-required">*</span></label>
-                <input id="tds-profile-fullname" type="text" className={`tds-input ${fieldErrors.fullName ? 'has-error' : ''}`} value={profile.fullName} onChange={(e) => handleProfileChange({ fullName: e.target.value, name: e.target.value })} placeholder="Enter your name" required />
-                {fieldErrors.fullName && <span className="tds-field-error" style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem', display: 'block' }}>{fieldErrors.fullName}</span>}
+            ) : (
+              <div className="tds-personal-grid">
+                <div className="tds-form-group">
+                  <label htmlFor="tds-profile-fullname" className="tds-label">
+                    Full Name <span className="tds-required">*</span>
+                  </label>
+                  <input
+                    id="tds-profile-fullname"
+                    type="text"
+                    className={`tds-input ${fieldErrors.fullName ? "has-error" : ""}`}
+                    value={profile.fullName}
+                    onChange={(e) =>
+                      handleProfileChange({
+                        fullName: e.target.value,
+                        name: e.target.value,
+                      })
+                    }
+                    placeholder="Enter your name"
+                    required
+                  />
+                  {fieldErrors.fullName && (
+                    <span
+                      className="tds-field-error"
+                      style={{
+                        color: "#ef4444",
+                        fontSize: "0.75rem",
+                        marginTop: "0.25rem",
+                        display: "block",
+                      }}
+                    >
+                      {fieldErrors.fullName}
+                    </span>
+                  )}
+                </div>
+                <div className="tds-form-group">
+                  <label htmlFor="tds-profile-pan" className="tds-label">
+                    PAN Number <span className="tds-required">*</span>
+                  </label>
+                  <input
+                    id="tds-profile-pan"
+                    type="text"
+                    className={`tds-input tds-input--upper ${fieldErrors.pan ? "has-error" : ""}`}
+                    value={profile.pan}
+                    onChange={(e) =>
+                      handleProfileChange({ pan: e.target.value.toUpperCase() })
+                    }
+                    placeholder="Enter your PAN"
+                    maxLength={10}
+                    required
+                  />
+                  {fieldErrors.pan && (
+                    <span
+                      className="tds-field-error"
+                      style={{
+                        color: "#ef4444",
+                        fontSize: "0.75rem",
+                        marginTop: "0.25rem",
+                        display: "block",
+                      }}
+                    >
+                      {fieldErrors.pan}
+                    </span>
+                  )}
+                </div>
+                <div className="tds-form-group">
+                  <label htmlFor="tds-profile-aadhaar" className="tds-label">
+                    Aadhaar Number
+                  </label>
+                  <input
+                    id="tds-profile-aadhaar"
+                    type="text"
+                    className={`tds-input ${fieldErrors.aadhaar ? "has-error" : ""}`}
+                    value={profile.aadhaar}
+                    onChange={(e) =>
+                      handleProfileChange({
+                        aadhaar: e.target.value.replace(/\D/g, "").slice(0, 12),
+                      })
+                    }
+                    placeholder="Enter your Aadhaar number"
+                    maxLength={12}
+                  />
+                  {fieldErrors.aadhaar && (
+                    <span
+                      className="tds-field-error"
+                      style={{
+                        color: "#ef4444",
+                        fontSize: "0.75rem",
+                        marginTop: "0.25rem",
+                        display: "block",
+                      }}
+                    >
+                      {fieldErrors.aadhaar}
+                    </span>
+                  )}
+                </div>
+                <div className="tds-form-group">
+                  <label htmlFor="tds-profile-dob" className="tds-label">
+                    Date of Birth
+                  </label>
+                  <input
+                    id="tds-profile-dob"
+                    type="date"
+                    className="tds-input"
+                    value={profile.dob}
+                    onChange={(e) => handleProfileChange({ dob: e.target.value })}
+                  />
+                </div>
+                <div className="tds-form-group">
+                  <label htmlFor="tds-profile-mobile" className="tds-label">
+                    Mobile Number
+                  </label>
+                  <input
+                    id="tds-profile-mobile"
+                    type="tel"
+                    className={`tds-input ${fieldErrors.mobile ? "has-error" : ""}`}
+                    value={profile.mobile}
+                    onChange={(e) =>
+                      handleProfileChange({
+                        mobile: formatMobile(e.target.value),
+                      })
+                    }
+                    placeholder="Enter your mobile number"
+                  />
+                  {fieldErrors.mobile && (
+                    <span
+                      className="tds-field-error"
+                      style={{
+                        color: "#ef4444",
+                        fontSize: "0.75rem",
+                        marginTop: "0.25rem",
+                        display: "block",
+                      }}
+                    >
+                      {fieldErrors.mobile}
+                    </span>
+                  )}
+                </div>
+                <div className="tds-form-group">
+                  <label htmlFor="tds-profile-email" className="tds-label">
+                    Email Address
+                  </label>
+                  <input
+                    id="tds-profile-email"
+                    type="email"
+                    className={`tds-input ${fieldErrors.email ? "has-error" : ""}`}
+                    value={profile.email}
+                    onChange={(e) =>
+                      handleProfileChange({ email: e.target.value })
+                    }
+                    placeholder="Enter your email address"
+                  />
+                  {fieldErrors.email && (
+                    <span
+                      className="tds-field-error"
+                      style={{
+                        color: "#ef4444",
+                        fontSize: "0.75rem",
+                        marginTop: "0.25rem",
+                        display: "block",
+                      }}
+                    >
+                      {fieldErrors.email}
+                    </span>
+                  )}
+                </div>
+                <div className="tds-form-group tds-form-group--full">
+                  <label htmlFor="tds-profile-address" className="tds-label">
+                    Address
+                  </label>
+                  <input
+                    id="tds-profile-address"
+                    type="text"
+                    className="tds-input"
+                    value={profile.address}
+                    onChange={(e) =>
+                      handleProfileChange({ address: e.target.value })
+                    }
+                    placeholder="Enter your address"
+                  />
+                </div>
               </div>
-              <div className="tds-form-group">
-                <label htmlFor="tds-profile-pan" className="tds-label">PAN Number <span className="tds-required">*</span></label>
-                <input id="tds-profile-pan" type="text" className={`tds-input tds-input--upper ${fieldErrors.pan ? 'has-error' : ''}`} value={profile.pan} onChange={(e) => handleProfileChange({ pan: e.target.value.toUpperCase() })} placeholder="Enter your PAN" maxLength={10} required />
-                {fieldErrors.pan && <span className="tds-field-error" style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem', display: 'block' }}>{fieldErrors.pan}</span>}
-              </div>
-              <div className="tds-form-group">
-                <label htmlFor="tds-profile-aadhaar" className="tds-label">Aadhaar Number</label>
-                <input id="tds-profile-aadhaar" type="text" className={`tds-input ${fieldErrors.aadhaar ? 'has-error' : ''}`} value={profile.aadhaar} onChange={(e) => handleProfileChange({ aadhaar: e.target.value.replace(/\D/g, '').slice(0, 12) })} placeholder="Enter your Aadhaar number" maxLength={12} />
-                {fieldErrors.aadhaar && <span className="tds-field-error" style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem', display: 'block' }}>{fieldErrors.aadhaar}</span>}
-              </div>
-              <div className="tds-form-group"><label htmlFor="tds-profile-dob" className="tds-label">Date of Birth</label><input id="tds-profile-dob" type="date" className="tds-input" value={profile.dob} onChange={(e) => handleProfileChange({ dob: e.target.value })} /></div>
-              <div className="tds-form-group">
-                <label htmlFor="tds-profile-mobile" className="tds-label">Mobile Number</label>
-                <input id="tds-profile-mobile" type="tel" className={`tds-input ${fieldErrors.mobile ? 'has-error' : ''}`} value={profile.mobile} onChange={(e) => handleProfileChange({ mobile: formatMobile(e.target.value) })} placeholder="Enter your mobile number" />
-                {fieldErrors.mobile && <span className="tds-field-error" style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem', display: 'block' }}>{fieldErrors.mobile}</span>}
-              </div>
-              <div className="tds-form-group">
-                <label htmlFor="tds-profile-email" className="tds-label">Email Address</label>
-                <input id="tds-profile-email" type="email" className={`tds-input ${fieldErrors.email ? 'has-error' : ''}`} value={profile.email} onChange={(e) => handleProfileChange({ email: e.target.value })} placeholder="Enter your email address" />
-                {fieldErrors.email && <span className="tds-field-error" style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem', display: 'block' }}>{fieldErrors.email}</span>}
-              </div>
-              <div className="tds-form-group tds-form-group--full"><label htmlFor="tds-profile-address" className="tds-label">Address</label><input id="tds-profile-address" type="text" className="tds-input" value={profile.address} onChange={(e) => handleProfileChange({ address: e.target.value })} placeholder="Enter your address" /></div>
-            </div>
+            )}
           </div>
 
           <div className="tds-card" data-testid="tds-card-bank">
             <div className="tds-card-header">
               <div className="tds-card-title-wrap">
-                <div className="tds-card-icon-box tds-card-icon-box--bank" aria-hidden="true">
+                <div
+                  className="tds-card-icon-box tds-card-icon-box--bank"
+                  aria-hidden="true"
+                >
                   <Landmark size={20} strokeWidth={2.2} />
                 </div>
                 <div>
                   <h2 className="tds-card-title">Refund Bank Account</h2>
-                  <span className="tds-card-subtitle">Excess TDS will be credited directly to this account</span>
+                  <span className="tds-card-subtitle">
+                    Excess TDS will be credited directly to this account
+                  </span>
                 </div>
               </div>
-              {isBankValidated && <span className="tds-pill-verified"><TdsIcons.Checkmark /> Validated</span>}
             </div>
-            {error && <div className="tds-form-error" role="alert">{error}</div>}
             <div className="tds-bank-form">
               <div className="tds-form-group">
-                <label htmlFor="tds-account-holder" className="tds-label">Account Holder Name <span className="tds-required">*</span></label>
-                <input id="tds-account-holder" type="text" className={`tds-input ${fieldErrors.accountHolder ? 'has-error' : ''}`} value={bankDetails.accountHolder} onChange={(e) => handleBankChange({ accountHolder: e.target.value })} placeholder="Enter account holder name" required />
-                {fieldErrors.accountHolder && <span className="tds-field-error" style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem', display: 'block' }}>{fieldErrors.accountHolder}</span>}
+                <label htmlFor="tds-account-holder" className="tds-label">
+                  Account Holder Name <span className="tds-required">*</span>
+                </label>
+                <input
+                  id="tds-account-holder"
+                  type="text"
+                  className={`tds-input ${fieldErrors.accountHolder ? "has-error" : ""}`}
+                  value={bankDetails.accountHolder}
+                  onChange={(e) =>
+                    handleBankChange({ accountHolder: e.target.value })
+                  }
+                  placeholder="Enter account holder name"
+                  required
+                />
+                {fieldErrors.accountHolder && (
+                  <span
+                    className="tds-field-error"
+                    style={{
+                      color: "#ef4444",
+                      fontSize: "0.75rem",
+                      marginTop: "0.25rem",
+                      display: "block",
+                    }}
+                  >
+                    {fieldErrors.accountHolder}
+                  </span>
+                )}
               </div>
               <div className="tds-form-grid-2">
                 <div className="tds-form-group">
-                  <label htmlFor="tds-account-number" className="tds-label">Bank Account Number <span className="tds-required">*</span></label>
-                  <input id="tds-account-number" type="text" inputMode="numeric" pattern="[0-9]*" maxLength={18} className={`tds-input ${fieldErrors.accountNumber ? 'has-error' : ''}`} value={bankDetails.accountNumber} onChange={(e) => handleBankChange({ accountNumber: e.target.value.replace(/\D/g, '').slice(0, 18) })} placeholder="Enter your bank account number" required />
-                  {fieldErrors.accountNumber && <span className="tds-field-error" style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem', display: 'block' }}>{fieldErrors.accountNumber}</span>}
+                  <label htmlFor="tds-account-number" className="tds-label">
+                    Bank Account Number <span className="tds-required">*</span>
+                  </label>
+                  <input
+                    id="tds-account-number"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={18}
+                    className={`tds-input ${fieldErrors.accountNumber ? "has-error" : ""}`}
+                    value={bankDetails.accountNumber}
+                    onChange={(e) =>
+                      handleBankChange({
+                        accountNumber: e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 18),
+                      })
+                    }
+                    placeholder="Enter your bank account number"
+                    required
+                  />
+                  {fieldErrors.accountNumber && (
+                    <span
+                      className="tds-field-error"
+                      style={{
+                        color: "#ef4444",
+                        fontSize: "0.75rem",
+                        marginTop: "0.25rem",
+                        display: "block",
+                      }}
+                    >
+                      {fieldErrors.accountNumber}
+                    </span>
+                  )}
                 </div>
                 <div className="tds-form-group">
                   <label htmlFor="tds-confirm-account" className="tds-label">
-                    Confirm Account Number <span className="tds-required">*</span>
+                    Confirm Account Number{" "}
+                    <span className="tds-required">*</span>
                   </label>
                   <ConfirmAccountNumberInput
                     id="tds-confirm-account"
@@ -374,7 +1079,9 @@ export const TdsRefundCustomerIncome: React.FC<TdsRefundCustomerIncomeProps> = (
                     maxLength={18}
                     className="tds-input"
                     value={bankDetails.confirmAccountNumber}
-                    onChange={(val) => handleBankChange({ confirmAccountNumber: val })}
+                    onChange={(val) =>
+                      handleBankChange({ confirmAccountNumber: val })
+                    }
                     placeholder="Enter your bank account number"
                     hasError={Boolean(fieldErrors.confirmAccountNumber)}
                     error={fieldErrors.confirmAccountNumber}
@@ -382,79 +1089,212 @@ export const TdsRefundCustomerIncome: React.FC<TdsRefundCustomerIncomeProps> = (
                   />
                 </div>
               </div>
-              <div className="tds-form-group">
-                <label htmlFor="tds-ifsc" className="tds-label">IFSC Code <span className="tds-required">*</span></label>
-                <input id="tds-ifsc" type="text" className={`tds-input tds-input--upper ${fieldErrors.ifsc ? 'has-error' : ''}`} value={bankDetails.ifsc} onChange={(e) => handleIfscChange(e.target.value)} placeholder="Enter your IFSC code" maxLength={11} required />
-                {fieldErrors.ifsc && <span className="tds-field-error" style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem', display: 'block' }}>{fieldErrors.ifsc}</span>}
-                {isFetchingIfsc && <span className="tds-field-hint tds-field-hint--warning">Fetching bank details...</span>}
+              <div className="tds-form-grid-3">
+                <div className="tds-form-group">
+                  <label htmlFor="tds-ifsc" className="tds-label">
+                    IFSC Code <span className="tds-required">*</span>
+                  </label>
+                  <input
+                    id="tds-ifsc"
+                    type="text"
+                    className={`tds-input tds-input--upper ${fieldErrors.ifsc ? "has-error" : ""}`}
+                    value={bankDetails.ifsc}
+                    onChange={(e) => handleIfscChange(e.target.value)}
+                    placeholder="Enter your IFSC code"
+                    maxLength={11}
+                    required
+                  />
+                  {fieldErrors.ifsc && (
+                    <span
+                      className="tds-field-error"
+                      style={{
+                        color: "#ef4444",
+                        fontSize: "0.75rem",
+                        marginTop: "0.25rem",
+                        display: "block",
+                      }}
+                    >
+                      {fieldErrors.ifsc}
+                    </span>
+                  )}
+                  {isFetchingIfsc && (
+                    <span className="tds-field-hint tds-field-hint--warning">
+                      Fetching bank details...
+                    </span>
+                  )}
+                </div>
+                <div className="tds-form-group">
+                  <label htmlFor="tds-bank-name" className="tds-label">
+                    Bank Name
+                  </label>
+                  <input
+                    id="tds-bank-name"
+                    type="text"
+                    className="tds-input"
+                    value={bankDetails.bankName}
+                    onChange={(e) =>
+                      handleBankChange({ bankName: e.target.value })
+                    }
+                    placeholder="Enter your bank name"
+                  />
+                </div>
+                <div className="tds-form-group">
+                  <label htmlFor="tds-bank-branch" className="tds-label">
+                    Branch
+                  </label>
+                  <input
+                    id="tds-bank-branch"
+                    type="text"
+                    className="tds-input"
+                    value={bankDetails.branch}
+                    onChange={(e) =>
+                      handleBankChange({ branch: e.target.value })
+                    }
+                    placeholder="Enter branch name"
+                  />
+                </div>
               </div>
               {bankDetails.bankName && bankDetails.branch && (
-                <div className="tds-bank-status-pill" data-testid="tds-bank-verified-pill"><span className="tds-bank-status-icon"><TdsIcons.Checkmark /></span><span className="tds-bank-status-text">{bankDetails.bankName} • {bankDetails.branch}</span></div>
+                <div
+                  className="tds-bank-status-pill"
+                  data-testid="tds-bank-verified-pill"
+                >
+                  <span className="tds-bank-status-icon">
+                    <TdsIcons.Checkmark />
+                  </span>
+                  <span className="tds-bank-status-text">
+                    {bankDetails.bankName} • {bankDetails.branch}
+                  </span>
+                </div>
               )}
-              <div className="tds-form-grid-2">
-                <div className="tds-form-group"><label htmlFor="tds-bank-name" className="tds-label">Bank Name</label><input id="tds-bank-name" type="text" className="tds-input" value={bankDetails.bankName} onChange={(e) => handleBankChange({ bankName: e.target.value })} placeholder="Enter your bank name" /></div>
-                <div className="tds-form-group"><label htmlFor="tds-bank-branch" className="tds-label">Branch</label><input id="tds-bank-branch" type="text" className="tds-input" value={bankDetails.branch} onChange={(e) => handleBankChange({ branch: e.target.value })} placeholder="Enter branch name" /></div>
+              <div className="tds-form-group">
+                <span className="tds-label">Account Type</span>
+                <div className="tds-type-pills">
+                  {(["savings", "current"] as const).map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      className={`tds-type-pill ${bankDetails.accountType === type ? "tds-type-pill--active" : ""}`}
+                      onClick={() => handleBankChange({ accountType: type })}
+                    >
+                      {type === "savings"
+                        ? "Savings Account"
+                        : "Current Account"}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="tds-form-group"><span className="tds-label">Account Type</span><div className="tds-type-pills">{((['savings', 'current'] as const)).map((type) => (<button key={type} type="button" className={`tds-type-pill ${bankDetails.accountType === type ? 'tds-type-pill--active' : ''}`} onClick={() => handleBankChange({ accountType: type })}>{type === 'savings' ? 'Savings Account' : 'Current Account'}</button>))}</div></div>
             </div>
           </div>
 
           <div className="tds-card" data-testid="tds-card-income">
             <div className="tds-card-header">
               <div className="tds-card-title-wrap">
-                <div className="tds-card-icon-box tds-card-icon-box--calc" aria-hidden="true">
+                <div
+                  className="tds-card-icon-box tds-card-icon-box--calc"
+                  aria-hidden="true"
+                >
                   <Calculator size={20} strokeWidth={2.2} />
                 </div>
                 <div>
-                  <h2 className="tds-card-title">Income &amp; Tax Information</h2>
-                  <span className="tds-card-subtitle">Tax calculation breakdown and additional earnings</span>
+                  <h2 className="tds-card-title">
+                    Income &amp; Tax Information
+                  </h2>
+                  <span className="tds-card-subtitle">
+                    Tax calculation breakdown and additional earnings
+                  </span>
                 </div>
               </div>
             </div>
             <div className="tds-income-form">
               <div className="tds-form-group">
-                <label className="tds-label">Income Tax Regime <span className="tds-required">*</span></label>
+                <label className="tds-label">
+                  Income Tax Regime <span className="tds-required">*</span>
+                </label>
                 <div className="tds-taxRegime-grid">
-                  <button type="button" className={`tds-taxRegime-card ${taxData.taxRegime === 'new' ? 'tds-taxRegime-card--active' : ''}`} onClick={() => handleTaxChange({ taxRegime: 'new' })} data-testid="taxRegime-new"><div className="tds-taxRegime-title">New Tax Regime</div><div className="tds-taxRegime-sub">Default (Lower tax slabs, standard deduction)</div></button>
-                  <button type="button" className={`tds-taxRegime-card ${taxData.taxRegime === 'old' ? 'tds-taxRegime-card--active' : ''}`} onClick={() => handleTaxChange({ taxRegime: 'old' })} data-testid="taxRegime-old"><div className="tds-taxRegime-title">Old Tax Regime</div><div className="tds-taxRegime-sub">With 80C, 80D, HRA &amp; Home Loan deductions</div></button>
+                  <button
+                    type="button"
+                    className={`tds-taxRegime-card ${taxData.taxRegime === "new" ? "tds-taxRegime-card--active" : ""}`}
+                    onClick={() => handleTaxChange({ taxRegime: "new" })}
+                    data-testid="taxRegime-new"
+                  >
+                    <div className="tds-taxRegime-title">New Tax Regime</div>
+                    <div className="tds-taxRegime-sub">
+                      Default (Lower tax slabs, standard deduction)
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    className={`tds-taxRegime-card ${taxData.taxRegime === "old" ? "tds-taxRegime-card--active" : ""}`}
+                    onClick={() => handleTaxChange({ taxRegime: "old" })}
+                    data-testid="taxRegime-old"
+                  >
+                    <div className="tds-taxRegime-title">Old Tax Regime</div>
+                    <div className="tds-taxRegime-sub">
+                      With 80C, 80D, HRA &amp; Home Loan deductions
+                    </div>
+                  </button>
                 </div>
               </div>
-              <div className="tds-form-grid-2">{CORE_INCOME_FIELDS.map(renderTaxFieldInput)}</div>
+              {renderTaxFieldInput(SALARY_INCOME_FIELD)}
+              <div className="tds-form-grid-2">
+                {OTHER_INCOME_FIELDS.map(renderTaxFieldInput)}
+              </div>
               <div className="tds-form-group">
-                <label className="tds-label">Additional Income Streams &amp; Deductions</label>
+                <label className="tds-label">
+                  Additional Income Streams &amp; Deductions
+                </label>
                 <div className="tds-toggles-list">
                   {CATEGORY_TOGGLE_CONFIGS.map((cfg) => {
-                    const activeVal = taxData[cfg.key]
+                    const activeVal =
+                      taxData[cfg.key] === "yes" ? "yes" : "no";
                     return (
-                      <div key={cfg.key} className="tds-toggle-card" data-testid={`toggle-row-${cfg.key}`}>
+                      <div
+                        key={cfg.key}
+                        className="tds-toggle-card"
+                        data-testid={`toggle-row-${cfg.key}`}
+                      >
                         <div className="tds-toggle-header">
-                          <div className="tds-toggle-info"><span className="tds-toggle-title">{cfg.title}</span><span className="tds-toggle-subtitle">{cfg.subtitle}</span></div>
+                          <div className="tds-toggle-info">
+                            <span className="tds-toggle-title">
+                              {cfg.title}
+                            </span>
+                            <span className="tds-toggle-subtitle">
+                              {cfg.subtitle}
+                            </span>
+                          </div>
                           <div className="tds-yes-no-group">
-                            {((['yes', 'no'] as const)).map((opt) => (
+                            {(["yes", "no"] as const).map((opt) => (
                               <button
                                 key={opt}
                                 type="button"
-                                className={`tds-yes-no-btn ${activeVal === opt ? 'tds-yes-no-btn--active' : ''}`}
+                                className={`tds-yes-no-btn tds-yes-no-btn--${opt} ${activeVal === opt ? "tds-yes-no-btn--active" : ""}`}
                                 onClick={() => {
-                                  if (opt === 'no') {
-                                    handleTaxChange(getCategoryClearUpdates(cfg.key))
+                                  if (opt === "no") {
+                                    handleTaxChange(
+                                      getCategoryClearUpdates(cfg.key),
+                                    );
                                   } else {
-                                    handleTaxChange({ [cfg.key]: 'yes' } as Partial<TdsIncomeTaxData>)
+                                    handleTaxChange({
+                                      [cfg.key]: "yes",
+                                    } as Partial<TdsIncomeTaxData>);
                                   }
                                 }}
                               >
-                                {opt === 'yes' ? 'Yes' : 'No'}
+                                {opt === "yes" ? "Yes" : "No"}
                               </button>
                             ))}
                           </div>
                         </div>
-                        {activeVal === 'yes' && (
-                          <div className={`tds-toggle-subfields ${cfg.twoColumn ? 'tds-form-grid-2' : ''}`}>
+                        {activeVal === "yes" && (
+                          <div
+                            className={`tds-toggle-subfields ${cfg.twoColumn ? "tds-form-grid-2" : ""}`}
+                          >
                             {cfg.fields.map(renderTaxFieldInput)}
                           </div>
                         )}
                       </div>
-                    )
+                    );
                   })}
                 </div>
               </div>
@@ -464,28 +1304,35 @@ export const TdsRefundCustomerIncome: React.FC<TdsRefundCustomerIncomeProps> = (
           <div className="tds-card" data-testid="tds-card-taxes-paid">
             <div className="tds-card-header">
               <div className="tds-card-title-wrap">
-                <div className="tds-card-icon-box tds-card-icon-box--shield" aria-hidden="true">
+                <div
+                  className="tds-card-icon-box tds-card-icon-box--shield"
+                  aria-hidden="true"
+                >
                   <ShieldCheck size={20} strokeWidth={2.2} />
                 </div>
                 <div>
-                  <h2 className="tds-card-title">Taxes Already Paid (As per 26AS / AIS)</h2>
-                  <span className="tds-card-subtitle">Tax credits deducted at source or paid in advance</span>
+                  <h2 className="tds-card-title">TDS & Taxes Paid</h2>
                 </div>
               </div>
             </div>
-            <div className="tds-income-form"><div className="tds-form-grid-2">{TAXES_PAID_FIELDS.map(renderTaxFieldInput)}</div></div>
+            <div className="tds-income-form">
+              <div className="tds-form-grid-2">
+                {TAXES_PAID_FIELDS.map(renderTaxFieldInput)}
+              </div>
+            </div>
           </div>
         </form>
       </div>
-      {error && (
-        <div className="tds-form-error" role="alert" style={{ margin: '0.75rem 0' }}>
-          {error}
-        </div>
-      )}
-      <StepActionBar onBack={onBack} onNext={handleContinue} onSaveDraft={onSaveDraft} nextLabel="Continue" nextDisabled={!isFormValid} />
+      <StepActionBar
+        onBack={onBack}
+        onNext={handleContinue}
+        onSaveDraft={onSaveDraft}
+        nextLabel="Continue"
+        nextDisabled={!isFormValid}
+      />
     </div>
-  )
-}
+  );
+};
 
-export const TdsRefundStepCustomerIncome = TdsRefundCustomerIncome
-export default TdsRefundCustomerIncome
+export const TdsRefundStepCustomerIncome = TdsRefundCustomerIncome;
+export default TdsRefundCustomerIncome;

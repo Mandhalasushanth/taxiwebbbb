@@ -18,3 +18,10 @@ export type {
   RevisedItrFormState,
   RevisedItrValidationErrors,
 } from './types/revisedItr.types'
+export {
+  viewItrDocument,
+  cacheItrUploadedFile,
+  getCachedItrUploadedFile,
+  removeCachedItrUploadedFile,
+} from './shared'
+export type { ItrDocumentViewParams } from './shared'

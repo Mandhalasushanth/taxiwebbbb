@@ -3,6 +3,7 @@
   <path d="M190 40L192 45L197 47L192 49L190 54L188 49L183 47L188 45Z" fill="#FBBF24" opacity="0.9" />
   <path d="M195 95L196 99L200 100L196 101L195 105L194 101L190 100L194 99Z" fill="#FBBF24" opacity="0.6" />
   <rect x="75" y="15" width="85" height="110" rx="10" fill="#FFFFFF" />
+  <text x="88" y="27" fill="#0F172A" font-size="10" font-weight="800" font-family="system-ui, -apple-system, sans-serif">TDS</text>
   <rect x="88" y="32" width="45" height="6" rx="3" fill="#E2E8F0" />
   <rect x="88" y="46" width="60" height="4" rx="2" fill="#CBD5E1" />
   <rect x="88" y="56" width="52" height="4" rx="2" fill="#CBD5E1" />

@@ -59,6 +59,7 @@ export const ItrFiling: React.FC = () => {
     handleSaveAndExit,
     handleDiscardAndExit,
     handleKeepEditing,
+    isDirty,
   } = useItrFilingState();
 
   const navigateToStep = (step: number) => {
@@ -73,7 +74,13 @@ export const ItrFiling: React.FC = () => {
   const stepRenderers: Record<number, () => React.ReactNode> = {
     1: () => (
       <ItrPersonalInfoView
-        onBack={() => setIsStarted(false)}
+        onBack={() => {
+          if (isDirty) {
+            openModal();
+          } else {
+            setIsStarted(false);
+          }
+        }}
         onNext={() => navigateToStep(2)}
         onSaveDraft={openModal}
         initialAssessmentYear={assessmentYear}

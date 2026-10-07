@@ -191,8 +191,14 @@ export const ItrFilingSubmittedView: React.FC<ItrFilingSubmittedViewProps> = ({
 
   const renderActions = () => (
     <div className="itr-success-actions">
-      <Link to={routePaths.dashboard} className="itr-success-btn-primary">
-        View Application Status &nbsp;→
+      <Link
+        to={submittedRef ? `/applications/track/${submittedRef}` : routePaths.applications}
+        className="itr-success-btn-primary"
+      >
+        Track My Application &nbsp;→
+      </Link>
+      <Link to={routePaths.dashboard} className="itr-success-btn-secondary">
+        Go to Dashboard
       </Link>
       <button
         type="button"
@@ -200,7 +206,7 @@ export const ItrFilingSubmittedView: React.FC<ItrFilingSubmittedViewProps> = ({
         onClick={handleDownloadReceipt}
       >
         <DownloadIcon size={16} />
-        Download TaxEdge Application Receipt
+        Download Receipt
       </button>
     </div>
   )

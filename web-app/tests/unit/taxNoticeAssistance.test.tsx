@@ -241,4 +241,35 @@ describe('TaxNoticeAssistance Component', () => {
     // File should be removed and "Upload File" button restored
     expect(screen.queryByText(/GST_Compliance_10_Fields_Professional\.docx/i)).toBeNull()
   })
+
+  it('supports selecting AY 2027-28 and custom Other assessment year', () => {
+    render(
+      <MemoryRouter>
+        <TaxNoticeAssistance />
+      </MemoryRouter>
+    )
+
+    // Verify AY 2027-28 and Other exist in select
+    const select = screen.getByLabelText(/Assessment Year/i) as HTMLSelectElement
+    const optionValues = Array.from(select.options).map((o) => o.value)
+    expect(optionValues).toContain('AY 2027-28')
+    expect(optionValues).toContain('Other')
+
+    // Selecting Other swaps select for custom text input in the same area
+    fireEvent.change(select, { target: { value: 'Other' } })
+
+    const customInput = screen.getByPlaceholderText(/E.g., AY 2028-29/i) as HTMLInputElement
+    expect(customInput).toBeDefined()
+
+    // Type a custom AY
+    fireEvent.change(customInput, { target: { value: 'AY 2020-21' } })
+    expect(customInput.value).toBe('AY 2020-21')
+
+    // Click circular cross button to clear and switch back to select
+    const clearCrossBtn = screen.getByRole('button', { name: /Clear and choose from list/i })
+    fireEvent.click(clearCrossBtn)
+
+    const restoredSelect = screen.getByLabelText(/Assessment Year/i) as HTMLSelectElement
+    expect(restoredSelect).toBeDefined()
+  })
 })

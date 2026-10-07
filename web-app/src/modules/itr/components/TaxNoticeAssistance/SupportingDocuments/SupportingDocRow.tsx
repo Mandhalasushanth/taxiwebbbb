@@ -86,7 +86,7 @@ export const getDocIcon = (id: string) => {
 export interface SupportingDocRowProps {
   doc: SupportingDocumentItem
   isUploaded: boolean
-  uploadInfo?: { fileName: string; fileSize: string }
+  uploadInfo?: { fileName: string; fileSize: string; fileUrl?: string; file?: File }
   fileInputRef?: (el: HTMLInputElement | null) => void
   onFileUpload: (file: File) => void
   onView: () => void
@@ -115,6 +115,7 @@ export const SupportingDocRow: React.FC<SupportingDocRowProps> = ({
       isUploaded={isUploaded}
       fileName={uploadInfo?.fileName}
       fileSize={uploadInfo?.fileSize}
+      file={uploadInfo?.file}
       accept=".pdf,.jpg,.jpeg,.png,.docx,.xlsx"
       ariaLabel="Upload File"
       onUpload={(_, file) => onFileUpload(file)}

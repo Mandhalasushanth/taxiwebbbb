@@ -377,7 +377,9 @@
 
 .supporting-docs-remarks__textarea::placeholder {
   color: #94a3b8;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  opacity: 0.85;
 }
 
 .supporting-docs-remarks__counter {

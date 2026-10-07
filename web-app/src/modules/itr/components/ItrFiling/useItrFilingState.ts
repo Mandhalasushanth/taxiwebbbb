@@ -220,12 +220,33 @@ export function useItrFilingState() {
     uploadedDocs,
   ]);
 
+  const isDirty = Boolean(
+    isStarted &&
+      !isSubmitted &&
+      (currentStep > 1 ||
+        Boolean(selectedCategoryId) ||
+        Boolean(assessmentYear) ||
+        Boolean(residentialStatus) ||
+        Boolean(filingType) ||
+        bankAccounts.length > 0 ||
+        Boolean(previousItr?.hasPreviousReturn) ||
+        selectedSources.length > 0 ||
+        salaryDetails.grossSalary > 0 ||
+        housePropertyDetails.rentalIncome > 0 ||
+        businessDetails.grossTurnover > 0 ||
+        capitalGainsDetails.shortTermGains > 0 ||
+        capitalGainsDetails.longTermGains > 0 ||
+        otherSourcesDetails.interestIncome > 0 ||
+        deductions.section80C > 0 ||
+        Object.keys(uploadedDocs).length > 0 ||
+        Boolean(existingDraft))
+  );
+
   useEffect(() => {
-    if (isStarted && currentStep > 1 && !isSubmitted) {
+    if (isDirty) {
       saveCurrentDraft();
     }
-  }, [isStarted, currentStep, isSubmitted, saveCurrentDraft]);
-
+  }, [currentStep, isDirty, saveCurrentDraft]);
 
   const {
     isModalOpen,
@@ -234,7 +255,7 @@ export function useItrFilingState() {
     handleDiscardAndExit,
     handleKeepEditing,
   } = useDraftBlocker({
-    shouldBlock: isStarted && currentStep > 1 && !isSubmitted,
+    shouldBlock: isDirty,
     onSaveDraft: () => {
       saveCurrentDraft();
       pushToast("Application saved as draft", "success");
@@ -242,8 +263,10 @@ export function useItrFilingState() {
     onDiscardDraft: () => {
       userStorage.deleteDraft("itr-filing");
       pushToast("Draft discarded", "info");
+      setIsStarted(false);
+      setCurrentStep(1);
     },
-    defaultExitRoute: routePaths.dashboard,
+    defaultExitRoute: routePaths.itr.root,
   });
 
   const handleUploadDoc = (docId: string, docInfo: UploadedDocInfo) => {
@@ -363,5 +386,6 @@ export function useItrFilingState() {
     handleSaveAndExit,
     handleDiscardAndExit,
     handleKeepEditing,
+    isDirty,
   };
 }

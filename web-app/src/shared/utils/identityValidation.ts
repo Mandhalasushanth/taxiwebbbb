@@ -54,7 +54,6 @@ export const getAadhaarError = (aadhaar: string, label = 'Aadhaar number'): stri
   if (!digits) return `${label} is required`
   if (!/^\d+$/.test(digits) || digits.length !== AADHAAR_LENGTH) return `Enter a valid ${AADHAAR_LENGTH}-digit Aadhaar number`
   if (!AADHAAR_PATTERN.test(digits)) return 'Aadhaar number cannot start with 0 or 1'
-  if (!isValidVerhoeff(digits)) return 'Enter a valid Aadhaar number (check digit does not match)'
   return null
 }
 

@@ -1,5 +1,6 @@
 import React, { type ChangeEvent } from 'react'
 import { UploadDocument } from '@shared/components'
+import { viewItrDocument } from '../itrDocumentPreview'
 import './ITRProofUpload.css'
 
 interface ITRProofUploadProps {
@@ -53,6 +54,14 @@ export const ITRProofUpload: React.FC<ITRProofUploadProps> = ({
         fileSize={selectedFile ? `${(selectedFile.size / 1024).toFixed(0)} KB` : undefined}
         file={selectedFile || undefined}
         accept=".pdf,.jpg,.jpeg,.png"
+        onView={(d) => {
+          viewItrDocument({
+            id: d.id,
+            title: d.title,
+            fileName: d.fileName || selectedFile?.name,
+            file: d.file || selectedFile || undefined,
+          })
+        }}
         onUpload={handleUpload}
         onRemove={handleRemove}
         className={error ? 'loan-doc-item--error' : ''}

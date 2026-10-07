@@ -1,291 +1,486 @@
-/* TDS Refund SaaS Web Application Layout */
+/* TDS Refund SaaS Web Application - Single Column Modern Redesign */
 .tds-web-page {
   width: 100%;
   margin: 0;
   padding: 0.25rem 0 3.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: 1.5rem;
   box-sizing: border-box;
 }
 
-.tds-web-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 2rem;
-  align-items: start;
-}
-@media (max-width: 1100px) {
-  .tds-web-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-.tds-web-main,
-.tds-section,
-.tds-why-text,
-.tds-how-step,
-.tds-action-card,
-.tds-action-benefits,
-.tds-modal-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
+/* =========================================================
+   1. FULL-WIDTH HERO SECTION
+   ========================================================= */
 .tds-hero-banner {
-  background: linear-gradient(135deg, #022145 0%, #063160 55%, #0a4382 100%);
-  border-radius: 20px;
+  background: linear-gradient(135deg, #021e42 0%, #052954 48%, #083c75 100%);
+  border-radius: 18px;
   padding: 2.25rem 2.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  color: #fff;
+  color: #ffffff;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(2, 30, 66, 0.12);
 }
+
 .tds-hero-left {
   flex: 1;
-  max-width: 680px;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
 }
+
 .tds-hero-tag {
   display: inline-block;
-  background: rgba(255, 255, 255, 0.14);
-  padding: 0.35rem 0.85rem;
-  border-radius: 8px;
-  font-size: 0.82rem;
-  font-weight: 600;
+  background: #ea580c;
+  color: #ffffff;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   margin-bottom: 0.85rem;
+  line-height: 1.2;
 }
+
 .tds-hero-title {
-  font-size: 2rem;
+  font-size: 2.15rem;
   font-weight: 800;
   margin: 0 0 0.75rem;
   line-height: 1.2;
+  color: #ffffff;
+  letter-spacing: -0.02em;
 }
+
 .tds-hero-desc {
   font-size: 0.95rem;
   line-height: 1.55;
   color: #cbd5e1;
-  margin: 0;
+  margin: 0 0 1.5rem;
+  max-width: 540px;
 }
 
-.tds-section-header-row,
-.tds-why-card,
-.tds-how-track,
-.tds-doc-card,
-.tds-info-box,
-.tds-action-benefit-row,
-.tds-trust-item,
-.tds-modal-header {
+.tds-hero-start-btn {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.75rem 1.6rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+}
+
+.tds-hero-start-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(234, 88, 12, 0.45);
+}
+
+.tds-hero-start-btn:active {
+  transform: translateY(0);
+}
+
+.tds-hero-arrow {
+  font-size: 1.1rem;
+  transition: transform 0.2s ease;
+}
+
+.tds-hero-start-btn:hover .tds-hero-arrow {
+  transform: translateX(3px);
+}
+
+.tds-hero-right {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-}
-.tds-section-header-row,
-.tds-how-track,
-.tds-modal-header {
-  justify-content: space-between;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 2;
 }
 
-.tds-section-title,
-.tds-why-card-title,
-.tds-action-title,
-.tds-modal-title {
+.tds-hero-illustration-glow {
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.45) 0%, rgba(14, 165, 233, 0) 70%);
+  filter: blur(14px);
+  pointer-events: none;
+}
+
+.tds-hero-illustration-img {
+  position: relative;
+  z-index: 3;
+  display: block;
+}
+
+/* =========================================================
+   2. SHARED CARD SECTIONS (How it works & Documents Required)
+   ========================================================= */
+.tds-card-section {
+  background: #ffffff;
+  border: 1px solid #eef2f6;
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-sizing: border-box;
+}
+
+.tds-card-section-title {
+  font-size: 1.15rem;
   font-weight: 800;
   color: #0f172a;
   margin: 0;
+  letter-spacing: -0.01em;
 }
-.tds-section-title {
-  font-size: 1.2rem;
+
+/* =========================================================
+   3. HOW IT WORKS STEPPER
+   ========================================================= */
+.tds-how-it-works-track {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  padding: 0.5rem 0 0.25rem;
 }
-.tds-section-subtitle,
-.tds-why-card-desc,
-.tds-action-desc,
-.tds-modal-item-desc {
-  font-size: 0.82rem;
-  color: #64748b;
+
+.tds-how-connector-line {
+  position: absolute;
+  top: 19px;
+  left: 9%;
+  right: 9%;
+  height: 0;
+  border-top: 1.5px dashed #fed7aa;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.tds-how-step-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  min-width: 0;
+}
+
+.tds-how-node-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tds-how-badge-number {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ea580c;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 4px rgba(234, 88, 12, 0.2);
+}
+
+.tds-how-icon-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1.5px solid #fed7aa;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ea580c;
+  margin-bottom: 0.65rem;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.06);
+}
+
+.tds-how-step-node:hover .tds-how-icon-circle {
+  transform: scale(1.06);
+  border-color: #f97316;
+}
+
+.tds-how-node-label {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+  white-space: pre-line;
+}
+
+/* =========================================================
+   4. DOCUMENTS REQUIRED GRID
+   ========================================================= */
+.tds-docs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem 1.15rem;
+  width: 100%;
+}
+
+.tds-doc-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  min-height: 56px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-sizing: border-box;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tds-doc-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
+}
+
+.tds-doc-card-icon {
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tds-doc-card-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+  white-space: pre-line;
+}
+
+.tds-doc-card--more {
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.tds-doc-card--more:hover {
+  border-color: #f97316;
+  background: #fffaf5;
+}
+
+.tds-doc-card--more:hover .tds-doc-card-icon,
+.tds-doc-card--more:hover .tds-doc-card-label {
+  color: #ea580c;
+}
+
+/* =========================================================
+   5. COMPACT INFORMATION BANNER
+   ========================================================= */
+.tds-info-banner {
+  background: #fffbeb;
+  border: 1px solid #fed7aa;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-sizing: border-box;
+}
+
+.tds-info-banner-icon {
+  color: #ea580c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tds-info-banner-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #9a3412;
   margin: 0;
   line-height: 1.45;
 }
 
-.tds-why-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.15rem;
-}
-.tds-why-card,
-.tds-how-container,
-.tds-action-card,
-.tds-modal-card {
-  background: #fff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 1.25rem 1.5rem;
-  box-sizing: border-box;
-}
-
-.tds-why-icon-box {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: #eff6ff;
-  color: #2563eb;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-}
-
-.tds-how-track {
-  position: relative;
-  overflow-x: auto;
-}
-.tds-how-step {
-  align-items: center;
-  text-align: center;
-  gap: 0.65rem;
-  flex: 1;
-  min-width: 80px;
-}
-.tds-how-circle {
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  border: 2px solid #e2e8f0;
-  display: grid;
-  place-items: center;
-  font-weight: 800;
-  color: #ea580c;
-  background: #fff;
-}
-.tds-how-step-label {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.tds-docs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0.65rem;
-  width: 100%;
-}
-.tds-doc-card {
-  padding: 0.6rem 0.75rem;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 10px;
-  background: #fff;
-  box-sizing: border-box;
-}
-.tds-doc-card--more {
-  border-style: dashed;
-  border-color: #ea580c;
-  background: #fffaf5;
-  cursor: pointer;
-  justify-content: center;
-}
-.tds-doc-title {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.tds-info-box {
-  background: #fff8ed;
-  border: 1.5px solid #fed7aa;
-  border-radius: 14px;
-  padding: 1rem 1.35rem;
-  color: #78350f;
-  font-size: 0.88rem;
-}
-
-.tds-web-sidebar {
-  position: sticky;
-  top: 5rem;
-}
-.tds-action-card {
-  border-color: #fed7aa;
-  background: linear-gradient(180deg, #fff 0%, #fffbf7 100%);
-  gap: 1.25rem;
-}
-.tds-action-badge {
-  background: #fff7ed;
-  border: 1px solid #fdba74;
-  color: #c2410c;
-  padding: 0.2rem 0.65rem;
-  border-radius: 6px;
-  font-size: 0.74rem;
-  font-weight: 800;
-  width: fit-content;
-}
-
-.tds-action-benefits {
-  border-block: 1px solid #fed7aa;
-  padding: 1rem 0;
-  gap: 0.75rem;
-}
-.tds-action-benefit-row {
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: #1e293b;
-}
-
-.tds-web-start-btn {
-  width: 100%;
-  height: 50px;
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-  color: #fff;
-  font-size: 1.02rem;
-  font-weight: 800;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.65rem;
-  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
-}
-
-.tds-action-trust-box {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 0.85rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.tds-trust-item {
-  font-size: 0.78rem;
-  color: #475569;
-  font-weight: 600;
-}
-
+/* =========================================================
+   6. ADDITIONAL DOCUMENTS MODAL
+   ========================================================= */
 .tds-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
   display: grid;
   place-items: center;
   z-index: 1000;
+  padding: 1rem;
 }
+
 .tds-modal-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
   max-width: 480px;
-  width: 90%;
-  padding: 1.75rem;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border: 1.5px solid #e2e8f0;
 }
+
+.tds-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.tds-modal-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
 .tds-modal-close-btn {
   background: #f1f5f9;
   border: none;
+  border-radius: 8px;
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  display: grid;
+  place-items: center;
   cursor: pointer;
+  color: #64748b;
+  font-weight: 700;
+  transition: all 0.15s ease;
 }
+
+.tds-modal-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.tds-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
 .tds-modal-item {
-  padding: 0.85rem 1rem;
-  border-radius: 10px;
+  padding: 0.75rem 1rem;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.tds-modal-item-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #0f172a;
+}
+
+.tds-modal-item-desc {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.2rem;
+}
+
+/* =========================================================
+   7. RESPONSIVE DESIGN (Tablet / Mobile)
+   ========================================================= */
+@media (max-width: 992px) {
+  .tds-docs-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .tds-hero-banner {
+    padding: 1.5rem 1.25rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .tds-hero-title {
+    font-size: 1.65rem;
+  }
+
+  .tds-hero-right {
+    align-self: center;
+  }
+
+  .tds-card-section {
+    padding: 1.25rem 1rem;
+  }
+
+  .tds-how-it-works-track {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.15rem;
+    padding-left: 0.5rem;
+  }
+
+  .tds-how-connector-line {
+    top: 15px;
+    bottom: 15px;
+    left: 17px;
+    width: 0;
+    height: auto;
+    border-top: none;
+    border-left: 1.5px dashed #fed7aa;
+    right: auto;
+  }
+
+  .tds-how-step-node {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+  }
+
+  .tds-how-node-top {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .tds-how-badge-number {
+    margin-bottom: 0;
+  }
+
+  .tds-how-icon-circle {
+    margin-bottom: 0;
+    width: 44px;
+    height: 44px;
+  }
+
+  .tds-how-node-label {
+    text-align: left;
+    white-space: normal;
+    font-size: 0.85rem;
+  }
+
+  .tds-docs-grid {
+    grid-template-columns: 1fr;
+  }
 }

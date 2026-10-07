@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { StepActionBar } from '@shared/components'
 import {
   type NoticeFormData,
   ASSESSMENT_YEAR_OPTIONS,
-  NOTICE_TYPE_OPTIONS,
+  NOTICE_TYPE_DETAILS,
 } from '../../../types/taxNoticeAssistance.types'
 import './NoticeInformation.css'
 
@@ -23,10 +23,29 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
   onSaveDraftAndExit,
 }) => {
   const [touched, setTouched] = useState<Record<string, boolean>>({})
+  const [noticeTypeOpen, setNoticeTypeOpen] = useState(false)
+  const noticeTypeRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (noticeTypeRef.current && !noticeTypeRef.current.contains(event.target as Node)) {
+        setNoticeTypeOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+  const [isOtherAy, setIsOtherAy] = useState<boolean>(() => {
+    return Boolean(
+      formData.assessmentYear &&
+      formData.assessmentYear !== 'Other' &&
+      !ASSESSMENT_YEAR_OPTIONS.includes(formData.assessmentYear)
+    )
+  })
 
   const panValid = !formData.pan || /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.pan.trim().toUpperCase())
   const hasPan = formData.pan.trim().length === 10 && panValid
-  const hasAy = formData.assessmentYear.trim().length > 0
+  const hasAy = formData.assessmentYear.trim().length > 0 && formData.assessmentYear !== 'Other'
   const hasNoticeType = formData.noticeType.trim().length > 0
   const hasNoticeDate = formData.noticeDate.trim().length > 0
   const hasNoticeRef = formData.noticeReference.trim().length > 0
@@ -101,53 +120,163 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
           <label htmlFor="notice-ay" className="notice-field__label">
             Assessment Year (AY) <span className="notice-field__required">*</span>
           </label>
-          <div className="notice-field__select-wrapper">
-            <select
-              id="notice-ay"
-              className={`notice-field__select ${touched.assessmentYear && !hasAy ? 'notice-field__select--error' : ''}`}
-              value={formData.assessmentYear}
-              onChange={(e) => onChange({ assessmentYear: e.target.value })}
-              onBlur={() => handleBlur('assessmentYear')}
-            >
-              <option value="">Select Assessment Year</option>
-              {ASSESSMENT_YEAR_OPTIONS.map((ay) => (
-                <option key={ay} value={ay}>
-                  {ay}
-                </option>
-              ))}
-            </select>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="notice-field__select-icon">
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </div>
+          {!isOtherAy ? (
+            <div className="notice-field__select-wrapper">
+              <select
+                id="notice-ay"
+                className={`notice-field__select ${
+                  !formData.assessmentYear ? 'notice-field__select--placeholder' : ''
+                } ${touched.assessmentYear && !hasAy ? 'notice-field__select--error' : ''}`}
+                value={formData.assessmentYear}
+                onChange={(e) => {
+                  if (e.target.value === 'Other') {
+                    setIsOtherAy(true)
+                    onChange({ assessmentYear: '' })
+                  } else {
+                    onChange({ assessmentYear: e.target.value })
+                  }
+                }}
+                onBlur={() => handleBlur('assessmentYear')}
+              >
+                <option value="" className="notice-field__option-placeholder">Select Assessment Year</option>
+                {ASSESSMENT_YEAR_OPTIONS.map((ay) => (
+                  <option key={ay} value={ay}>
+                    {ay}
+                  </option>
+                ))}
+                <option value="Other">Other</option>
+              </select>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="notice-field__select-icon">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </div>
+          ) : (
+            <div className="notice-field__other-input-wrapper">
+              <input
+                id="notice-ay"
+                type="text"
+                className={`notice-field__input ${
+                  touched.assessmentYear && !hasAy ? 'notice-field__input--error' : ''
+                }`}
+                placeholder="E.g., AY 2028-29"
+                value={formData.assessmentYear}
+                onChange={(e) => onChange({ assessmentYear: e.target.value })}
+                onBlur={() => handleBlur('assessmentYear')}
+                autoFocus
+              />
+              <button
+                type="button"
+                className="notice-field__clear-cross-btn"
+                onClick={() => {
+                  setIsOtherAy(false)
+                  onChange({ assessmentYear: '' })
+                }}
+                aria-label="Clear and choose from list"
+                title="Clear and choose from list"
+              >
+                <svg viewBox="0 0 20 20" width="18" height="18" fill="currentColor">
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+          )}
           {touched.assessmentYear && !hasAy && (
-            <span className="notice-field__error">Please select an Assessment Year.</span>
+            <span className="notice-field__error">
+              {isOtherAy ? 'Please enter an Assessment Year.' : 'Please select an Assessment Year.'}
+            </span>
           )}
         </div>
 
         {/* Notice Type / Section Field */}
-        <div className="notice-field">
+        <div className="notice-field" ref={noticeTypeRef}>
           <label htmlFor="notice-type" className="notice-field__label">
             Notice Type / Section <span className="notice-field__required">*</span>
           </label>
-          <div className="notice-field__select-wrapper">
+          <div className="notice-field__custom-select-container">
+            {/* Hidden native select for accessibility and test runner compatibility */}
             <select
               id="notice-type"
-              className={`notice-field__select ${touched.noticeType && !hasNoticeType ? 'notice-field__select--error' : ''}`}
+              aria-hidden="true"
+              tabIndex={-1}
+              className="notice-field__select-hidden-native"
               value={formData.noticeType}
-              onChange={(e) => onChange({ noticeType: e.target.value })}
-              onBlur={() => handleBlur('noticeType')}
+              onChange={(e) => {
+                onChange({ noticeType: e.target.value })
+                handleBlur('noticeType')
+              }}
             >
-              <option value="">Select Notice Type / Section</option>
-              {NOTICE_TYPE_OPTIONS.map((type) => (
-                <option key={type} value={type}>
-                  {type}
+              <option value="">Select Notice Type</option>
+              {NOTICE_TYPE_DETAILS.map((opt) => (
+                <option key={opt.title} value={opt.title}>
+                  {opt.title}
                 </option>
               ))}
             </select>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="notice-field__select-icon">
-              <path d="M6 9l6 6 6-6" />
-            </svg>
+
+            {/* Custom Interactive Dropdown Trigger matching Image 2 */}
+            <button
+              type="button"
+              className={`notice-field__select-trigger ${
+                !formData.noticeType ? 'notice-field__select-trigger--placeholder' : ''
+              } ${noticeTypeOpen ? 'notice-field__select-trigger--open' : ''} ${
+                touched.noticeType && !hasNoticeType ? 'notice-field__select-trigger--error' : ''
+              }`}
+              onClick={() => setNoticeTypeOpen((prev) => !prev)}
+              aria-haspopup="listbox"
+              aria-expanded={noticeTypeOpen}
+            >
+              <span className="notice-field__select-trigger-text">
+                {formData.noticeType || 'Select Notice Type'}
+              </span>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                className={`notice-field__chevron-icon ${noticeTypeOpen ? 'icon-chevron-up' : 'icon-chevron-down'}`}
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+
+            {/* Custom Options List Menu matching Image 2 */}
+            {noticeTypeOpen && (
+              <div className="notice-type-dropdown-menu" role="listbox">
+                {NOTICE_TYPE_DETAILS.map((option) => {
+                  const isSelected = formData.noticeType === option.title
+                  return (
+                    <div
+                      key={option.title}
+                      role="option"
+                      aria-selected={isSelected}
+                      tabIndex={0}
+                      className={`notice-type-option-item ${
+                        isSelected ? 'notice-type-option-item--selected' : ''
+                      }`}
+                      onClick={() => {
+                        onChange({ noticeType: option.title })
+                        setNoticeTypeOpen(false)
+                        handleBlur('noticeType')
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          onChange({ noticeType: option.title })
+                          setNoticeTypeOpen(false)
+                          handleBlur('noticeType')
+                        }
+                      }}
+                    >
+                      <div className="notice-type-option-title">{option.title}</div>
+                      <div className="notice-type-option-desc">{option.description}</div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
           {touched.noticeType && !hasNoticeType && (
             <span className="notice-field__error">Please select a Notice Type / Section.</span>
@@ -164,6 +293,8 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
               id="notice-date"
               type="date"
               className={`notice-field__input notice-field__input--date ${
+                !formData.noticeDate ? 'notice-field__input--date-empty' : ''
+              } ${
                 touched.noticeDate && !hasNoticeDate ? 'notice-field__input--error' : ''
               }`}
               value={formData.noticeDate}
@@ -211,6 +342,8 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
               id="notice-due-date"
               type="date"
               className={`notice-field__input notice-field__input--date ${
+                !formData.responseDueDate ? 'notice-field__input--date-empty' : ''
+              } ${
                 touched.responseDueDate && !hasDueDate ? 'notice-field__input--error' : ''
               }`}
               value={formData.responseDueDate}
@@ -221,18 +354,6 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
           {touched.responseDueDate && !hasDueDate && (
             <span className="notice-field__error">Please specify the deadline date.</span>
           )}
-        </div>
-
-        {/* Info Banner */}
-        <div className="notice-info-card notice-info-card--full">
-          <svg className="notice-info-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="16" x2="12" y2="12" />
-            <line x1="12" y1="8" x2="12.01" y2="8" />
-          </svg>
-          <p className="notice-info-card__text">
-            <strong>Timely responses prevent penalty:</strong> If the due date has already lapsed or is within 7 days, our assigned Tax Professional will flag your case as high priority for expedited filing.
-          </p>
         </div>
 
         {/* Issue Description / Explanation */}
@@ -254,6 +375,18 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
           {touched.explanation && !hasExplanation && (
             <span className="notice-field__error">Please provide a brief explanation.</span>
           )}
+        </div>
+
+        {/* Info Banner */}
+        <div className="notice-info-card notice-info-card--full">
+          <svg className="notice-info-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="16" x2="12" y2="12" />
+            <line x1="12" y1="8" x2="12.01" y2="8" />
+          </svg>
+          <p className="notice-info-card__text">
+            <strong>Timely responses prevent penalty:</strong> If the due date has already lapsed or is within 7 days, our assigned Tax Professional will flag your case as high priority for expedited filing.
+          </p>
         </div>
       </div>
 

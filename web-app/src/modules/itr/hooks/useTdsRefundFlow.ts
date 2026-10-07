@@ -3,7 +3,8 @@ import { routePaths } from '@core/config'
 import { useAppStore, useAuthStore } from '@store/index'
 import { userStorage } from '@core/storage/userStorage'
 import { useDraftBlocker } from '@shared/hooks'
-import { EMPTY_PROFILE, EMPTY_BANK, EMPTY_TAX } from '../utils/tdsRefund.constants'
+import { authStorage } from '@core/auth'
+import { EMPTY_PROFILE, EMPTY_BANK, EMPTY_TAX, syncProfileWithAuthUser } from '../utils/tdsRefund.constants'
 import type { TdsProfile, TdsBankDetails, TdsIncomeTaxData, UploadedFileMeta } from '../types/tdsRefund.types'
 
 const STEP_LABELS: Record<number, string> = {
@@ -33,12 +34,45 @@ export const useTdsRefundFlow = () => {
     draft && draft.currentStep >= 1 && draft.currentStep <= 4 ? draft.currentStep : 0
   )
 
-  const [profile, setProfile] = useState<TdsProfile>(
-    () => (draft?.formData?.profile as TdsProfile) || { ...EMPTY_PROFILE }
-  )
-  const [bankDetails, setBankDetails] = useState<TdsBankDetails>(
-    () => (draft?.formData?.bankDetails as TdsBankDetails) || { ...EMPTY_BANK }
-  )
+  const [profile, setProfile] = useState<TdsProfile>(() => {
+    try {
+      const draftProf = draft?.formData?.profile as TdsProfile | undefined
+      const u = user || authStorage.getUser()
+      const base = { ...EMPTY_PROFILE, ...draftProf }
+      return syncProfileWithAuthUser(base, u).profile
+    } catch (err) {
+      console.error('Failed to initialize TDS refund profile:', err)
+      return { ...EMPTY_PROFILE }
+    }
+  })
+
+  const [bankDetails, setBankDetails] = useState<TdsBankDetails>(() => {
+    const draftBank = draft?.formData?.bankDetails as TdsBankDetails | undefined
+    const u = user || authStorage.getUser()
+    return {
+      ...EMPTY_BANK,
+      ...draftBank,
+      accountHolder: draftBank?.accountHolder || u?.fullName || '',
+    }
+  })
+
+  // Sync profile if user details become available/updated
+  useEffect(() => {
+    try {
+      const u = user || authStorage.getUser()
+      if (!u) return
+      const timer = setTimeout(() => {
+        setProfile((prev) => {
+          const { profile: nextProfile, hasChanges } = syncProfileWithAuthUser(prev, u)
+          return hasChanges ? nextProfile : prev
+        })
+      }, 0)
+      return () => clearTimeout(timer)
+    } catch (err) {
+      console.error('Failed to sync TDS refund profile:', err)
+    }
+  }, [user])
+
   const [taxData, setTaxData] = useState<TdsIncomeTaxData>(
     () => (draft?.formData?.taxData as TdsIncomeTaxData) || { ...EMPTY_TAX }
   )
@@ -70,15 +104,38 @@ export const useTdsRefundFlow = () => {
     }
   }, [currentStep, profile, bankDetails, taxData, uploads])
 
+  const isDirty = Boolean(
+    currentStep >= 1 &&
+      currentStep <= 4 &&
+      (currentStep > 1 ||
+        Boolean(draft) ||
+        taxData.taxRegime !== null ||
+        profile.pan.trim() !== '' ||
+        profile.dob.trim() !== '' ||
+        bankDetails.accountNumber.trim() !== '' ||
+        bankDetails.ifsc.trim() !== '' ||
+        taxData.salaryIncome !== '' ||
+        taxData.otherIncome !== '' ||
+        taxData.interestIncome !== '' ||
+        (taxData.totalTdsDeducted !== '' && taxData.totalTdsDeducted !== '0') ||
+        (taxData.tcsAmount !== '' && taxData.tcsAmount !== '0') ||
+        taxData.rentalIncome === 'yes' ||
+        taxData.capitalGains === 'yes' ||
+        taxData.businessIncome === 'yes' ||
+        taxData.homeLoanInterest === 'yes' ||
+        taxData.taxDeductions === 'yes' ||
+        Object.keys(uploads).length > 0)
+  )
+
   useEffect(() => {
-    if (currentStep > 1 && currentStep <= 4) {
+    if (isDirty) {
       saveCurrentDraft()
     }
-  }, [currentStep, profile, bankDetails, taxData, uploads, saveCurrentDraft])
+  }, [currentStep, isDirty, saveCurrentDraft])
 
   const { isModalOpen, openModal, handleSaveAndExit, handleDiscardAndExit, handleKeepEditing } =
     useDraftBlocker({
-      shouldBlock: currentStep > 1 && currentStep <= 4,
+      shouldBlock: isDirty,
       onSaveDraft: () => {
         saveCurrentDraft()
         pushToast('Application saved as draft', 'success')
@@ -86,8 +143,9 @@ export const useTdsRefundFlow = () => {
       onDiscardDraft: () => {
         userStorage.deleteDraft('tds-refund')
         pushToast('Draft discarded', 'info')
+        setCurrentStep(0)
       },
-      defaultExitRoute: routePaths.dashboard,
+      defaultExitRoute: routePaths.itr.root,
     })
 
   const handleFinishSubmission = () => {
@@ -136,5 +194,6 @@ export const useTdsRefundFlow = () => {
     handleDiscardAndExit,
     handleKeepEditing,
     handleFinishSubmission,
+    isDirty,
   }
 }

@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { StepActionBar } from '@shared/components'
+import { viewItrDocument } from '../../../shared'
 import {
   type NoticeFormData,
   SUPPORTING_DOCUMENT_LIST,
@@ -25,8 +26,8 @@ export const SupportingDocuments: React.FC<SupportingDocumentsProps> = ({
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({})
 
   // Initialize uploaded docs map from formData
-  const [uploadedDocs, setUploadedDocs] = useState<Record<string, { fileName: string; fileSize: string; fileUrl?: string }>>(() => {
-    const initial: Record<string, { fileName: string; fileSize: string; fileUrl?: string }> = {
+  const [uploadedDocs, setUploadedDocs] = useState<Record<string, { fileName: string; fileSize: string; fileUrl?: string; file?: File }>>(() => {
+    const initial: Record<string, { fileName: string; fileSize: string; fileUrl?: string; file?: File }> = {
       ...(formData.supportingDocuments || {}),
     }
     // Pre-populate tax-notice if uploaded in step 2
@@ -34,6 +35,8 @@ export const SupportingDocuments: React.FC<SupportingDocumentsProps> = ({
       initial['tax-notice'] = {
         fileName: formData.documentFileName,
         fileSize: formData.documentFileSize || '2.4 MB',
+        file: formData.documentFile || undefined,
+        fileUrl: formData.documentFile ? URL.createObjectURL(formData.documentFile) : undefined,
       }
     }
     return initial
@@ -54,6 +57,7 @@ export const SupportingDocuments: React.FC<SupportingDocumentsProps> = ({
         fileName: file.name,
         fileSize: formattedSize,
         fileUrl,
+        file,
       },
     }
     setUploadedDocs(updated)
@@ -72,11 +76,14 @@ export const SupportingDocuments: React.FC<SupportingDocumentsProps> = ({
 
   const handleViewDocument = (docId: string) => {
     const doc = uploadedDocs[docId]
-    if (doc?.fileUrl) {
-      window.open(doc.fileUrl, '_blank')
-    } else {
-      alert(`Viewing ${doc?.fileName || 'document'}`)
-    }
+    const docMeta = SUPPORTING_DOCUMENT_LIST.find((d) => d.id === docId)
+    viewItrDocument({
+      id: docId,
+      title: docMeta?.title || doc?.fileName || 'Supporting Document',
+      fileName: doc?.fileName,
+      file: doc?.file,
+      fileUrl: doc?.fileUrl,
+    })
   }
 
   const handleReplaceDocument = (docId: string) => {

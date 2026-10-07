@@ -121,11 +121,23 @@ export const RevisionApplicationReceived: React.FC<RevisionApplicationReceivedPr
     }
   }
 
-  const handleViewStatus = () => {
+  const handleTrackApplication = () => {
     try {
-      navigate(routePaths.applications)
+      if (applicationId) {
+        navigate(`/applications/track/${applicationId}`)
+      } else {
+        navigate(routePaths.applications)
+      }
     } catch {
-      // Safe fallback
+      navigate(routePaths.applications)
+    }
+  }
+
+  const handleGoToDashboard = () => {
+    try {
+      navigate(routePaths.dashboard)
+    } catch {
+      navigate(routePaths.dashboard)
     }
   }
 
@@ -226,13 +238,32 @@ export const RevisionApplicationReceived: React.FC<RevisionApplicationReceivedPr
 
   const renderActionsWrap = () => (
     <div className="step6-actions-wrap">
-      <button type="button" className="step6-btn-primary" onClick={handleViewStatus}>
-        View Application Status &nbsp;→
+      <button
+        type="button"
+        className="step6-btn-primary"
+        onClick={handleTrackApplication}
+        data-testid="track-application-btn"
+      >
+        Track My Application &nbsp;→
       </button>
 
-      <button type="button" className="step6-btn-secondary" onClick={onDownloadReceipt}>
+      <button
+        type="button"
+        className="step6-btn-secondary"
+        onClick={handleGoToDashboard}
+        data-testid="go-to-dashboard-btn"
+      >
+        Go to Dashboard
+      </button>
+
+      <button
+        type="button"
+        className="step6-btn-secondary"
+        onClick={onDownloadReceipt}
+        data-testid="download-receipt-btn"
+      >
         <DownloadIcon size={18} />
-        Download TaxEdge Application Receipt
+        Download Receipt
       </button>
     </div>
   )

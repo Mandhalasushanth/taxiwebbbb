@@ -1,4 +1,6 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { routePaths } from '@core/config/routePaths'
 import { DraftConfirmModal, PaymentCheckout } from '@shared/components'
 import { TdsRefundOverview, TdsRefundProgressTracker } from './TdsRefundOverview'
 import { TdsRefundCustomerIncome } from './TdsRefundCustomerIncome'
@@ -9,6 +11,7 @@ import { useTdsRefundFlow } from '../../hooks/useTdsRefundFlow'
 import './TdsRefund.css'
 
 export const TdsRefund: React.FC = () => {
+  const navigate = useNavigate()
   const {
     user,
     tdsRef,
@@ -28,13 +31,20 @@ export const TdsRefund: React.FC = () => {
     handleDiscardAndExit,
     handleKeepEditing,
     handleFinishSubmission,
+    isDirty,
   } = useTdsRefundFlow()
 
   const stageRenderers: Record<number, () => React.ReactNode> = {
     0: () => <TdsRefundOverview onStart={() => setCurrentStep(1)} />,
     1: () => (
       <TdsRefundCustomerIncome
-        onBack={() => setCurrentStep(0)}
+        onBack={() => {
+          if (isDirty) {
+            openModal()
+          } else {
+            setCurrentStep(0)
+          }
+        }}
         onNext={() => setCurrentStep(2)}
         onSaveDraft={openModal}
         currentStep={1}
@@ -86,8 +96,9 @@ export const TdsRefund: React.FC = () => {
     5: () => (
       <TdsRefundStatus
         applicationId={tdsRef}
-        onBack={() => setCurrentStep(4)}
-        onBackToDashboard={() => setCurrentStep(0)}
+        appliedDate={new Date().toISOString()}
+        assessmentYear={(profile.assessmentYear || '2025-26').replace(/^AY\s*/i, '')}
+        onBackToDashboard={() => navigate(routePaths.dashboard)}
       />
     ),
   }

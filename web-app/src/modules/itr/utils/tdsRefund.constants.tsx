@@ -51,7 +51,7 @@ export const HOW_IT_WORKS_STEPS: HowItWorksStep[] = [
   { stepNumber: 1, title: 'Submit Details', icon: 'edit' },
   { stepNumber: 2, title: 'Upload Documents', icon: 'upload' },
   { stepNumber: 3, title: 'Executive Verification', icon: 'verification' },
-  { stepNumber: 4, title: 'Refund Filing', icon: 'filing' },
+  { stepNumber: 4, title: 'Payment', icon: 'filing' },
   { stepNumber: 5, title: 'Refund Credited', icon: 'credit' },
 ]
 

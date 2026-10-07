@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
+import { AlertCircle } from 'lucide-react'
 import { StepActionBar, UploadDocument } from '@shared/components'
+import { viewItrDocument } from '../../../shared'
 import { TDS_DOCUMENTS, DocIcons, TdsIcons, type TdsDocumentConfig } from '../../../utils/tdsRefund.constants'
 import { TdsRefundProgressTracker } from '../TdsRefundOverview'
 import './TdsRefundDocuments.css'
@@ -92,10 +94,15 @@ export const TdsRefundDocuments: React.FC<TdsRefundDocumentsProps> = ({
   onUploadsChange,
 }) => {
   const [uploads, setUploads] = useState<Record<string, UploadedFileMeta>>(initialUploads || {})
+  const [showWarning, setShowWarning] = useState(false)
 
   const totalCount = TDS_DOCUMENTS.length
   const uploadedCount = Math.min(totalCount, Object.keys(uploads).length)
   const percent = Math.round((uploadedCount / totalCount) * 100)
+
+  const requiredDocs = TDS_DOCUMENTS.filter((doc) => doc.required)
+  const missingDocs = requiredDocs.filter((doc) => !uploads[doc.id])
+  const isDocumentsValid = missingDocs.length === 0
 
   const handleFileChange = (docId: string, e: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -108,6 +115,11 @@ export const TdsRefundDocuments: React.FC<TdsRefundDocumentsProps> = ({
       }
       setUploads(newUploads)
       onUploadsChange?.(newUploads)
+
+      const remainingMissing = requiredDocs.filter((doc) => doc.id !== docId && !newUploads[doc.id])
+      if (remainingMissing.length === 0) {
+        setShowWarning(false)
+      }
     } catch {
       // Safe fallback
     }
@@ -124,7 +136,36 @@ export const TdsRefundDocuments: React.FC<TdsRefundDocumentsProps> = ({
     }
   }
 
-  const isDocumentsValid = Boolean(uploads['pan'] && (uploads['aadhaar'] || uploads['form16']))
+  const handleContinue = () => {
+    if (missingDocs.length > 0) {
+      setShowWarning(true)
+      setTimeout(() => {
+        const warningEl = document.querySelector('.tds-docs-warning-banner')
+        if (warningEl) {
+          warningEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        } else {
+          const firstMissing = document.querySelector('.loan-doc-item--error')
+          firstMissing?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }, 50)
+      return
+    }
+    setShowWarning(false)
+    onNext?.()
+  }
+
+  const handleContinueRef = React.useRef(handleContinue)
+  React.useEffect(() => {
+    handleContinueRef.current = handleContinue
+  })
+
+  React.useEffect(() => {
+    const handleAttempt = () => {
+      handleContinueRef.current()
+    }
+    window.addEventListener('step-action-bar:submit-attempt', handleAttempt)
+    return () => window.removeEventListener('step-action-bar:submit-attempt', handleAttempt)
+  }, [])
 
   const renderProgressCard = () => (
     <div className="tds-docs-progress-card">
@@ -143,6 +184,7 @@ export const TdsRefundDocuments: React.FC<TdsRefundDocumentsProps> = ({
   const renderDocumentCard = (doc: TdsDocumentConfig) => {
     const uploaded = uploads[doc.id]
     const IconComp = DocIcons[doc.id] || DocIcons.pan
+    const isMissing = showWarning && Boolean(doc.required) && !uploaded
 
     return (
       <UploadDocument
@@ -151,7 +193,6 @@ export const TdsRefundDocuments: React.FC<TdsRefundDocumentsProps> = ({
         title={doc.title}
         subtitle={doc.subtitle}
         isRequired={Boolean(doc.required)}
-        badge={!doc.required ? <span className="loan-doc-item__badge loan-doc-item__badge--optional">Optional</span> : undefined}
         icon={<IconComp />}
         iconBg="#eff6ff"
         iconColor="#2563eb"
@@ -160,6 +201,20 @@ export const TdsRefundDocuments: React.FC<TdsRefundDocumentsProps> = ({
         fileSize={uploaded?.size}
         file={uploaded?.file}
         accept=".pdf,.jpg,.jpeg,.png"
+        className={isMissing ? 'loan-doc-item--error' : ''}
+        badge={
+          isMissing ? (
+            <span className="tds-doc-error-badge">Upload Required</span>
+          ) : undefined
+        }
+        onView={(d) => {
+          viewItrDocument({
+            id: d.id,
+            title: d.title,
+            fileName: d.fileName || uploaded?.name,
+            file: d.file || uploaded?.file,
+          })
+        }}
         onUpload={(id, file) => {
           handleFileChange(id, {
             target: { files: [file] },
@@ -178,15 +233,33 @@ export const TdsRefundDocuments: React.FC<TdsRefundDocumentsProps> = ({
       <div className="tds-docs-layout">
         <main className="tds-docs-main">
           {renderProgressCard()}
+
+          {showWarning && missingDocs.length > 0 && (
+            <div className="tds-docs-warning-banner" role="alert" data-testid="tds-docs-warning-banner">
+              <div className="tds-docs-warning-icon-wrap" aria-hidden="true">
+                <AlertCircle className="tds-docs-warning-icon" size={18} />
+              </div>
+              <div className="tds-docs-warning-body">
+                <strong className="tds-docs-warning-title">Required Documents Missing</strong>
+                <p className="tds-docs-warning-text">
+                  Please upload all required documents marked with an asterisk (*) to continue:
+                  {' '}
+                  <span className="tds-docs-warning-missing-list">
+                    {missingDocs.map((d) => d.title).join(', ')}
+                  </span>
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="tds-docs-list">
             {TDS_DOCUMENTS.map(renderDocumentCard)}
           </div>
         </main>
-        <TdsRefundDocumentsSidebar />
       </div>
       <StepActionBar
         onBack={onBack}
-        onNext={onNext}
+        onNext={handleContinue}
         onSaveDraft={onSaveDraft}
         nextLabel="Continue"
         nextDisabled={!isDocumentsValid}

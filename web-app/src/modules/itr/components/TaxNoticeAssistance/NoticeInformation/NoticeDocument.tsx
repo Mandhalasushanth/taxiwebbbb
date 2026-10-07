@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { StepActionBar, UploadDocument } from '@shared/components'
+import { viewItrDocument } from '../../../shared'
 import type { NoticeFormData } from '../../../types/taxNoticeAssistance.types'
 import './NoticeDocument.css'
 
@@ -101,10 +102,19 @@ export const NoticeDocument: React.FC<NoticeDocumentProps> = ({
             title="Notice Document"
             subtitle="PDF, JPG or PNG • Up to 10 MB"
             isRequired={true}
-            isUploaded={Boolean(formData.documentFileName)}
+            isUploaded={Boolean(formData.documentFileName || formData.documentFile)}
             fileName={formData.documentFileName || undefined}
             fileSize={formData.documentFileSize || undefined}
+            file={formData.documentFile || undefined}
             accept=".pdf,.jpg,.jpeg,.png"
+            onView={(doc) => {
+              viewItrDocument({
+                id: doc.id,
+                title: doc.title,
+                fileName: doc.fileName || formData.documentFileName,
+                file: doc.file || formData.documentFile || undefined,
+              })
+            }}
             onUpload={(_, file) => {
               handleFileChange({
                 target: { files: [file] },

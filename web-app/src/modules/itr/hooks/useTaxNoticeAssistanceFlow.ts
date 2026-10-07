@@ -106,13 +106,27 @@ export const useTaxNoticeAssistanceFlow = () => {
     }
   }, [step, formData])
 
+  const isDirty = Boolean(
+    step > 1 ||
+    formData.pan.trim() !== '' ||
+    formData.assessmentYear.trim() !== '' ||
+    formData.noticeType.trim() !== '' ||
+    formData.noticeReference.trim() !== '' ||
+    formData.noticeDate.trim() !== '' ||
+    formData.responseDueDate.trim() !== '' ||
+    formData.explanation.trim() !== '' ||
+    formData.documentFileName !== '' ||
+    Object.keys(formData.supportingDocuments || {}).length > 0 ||
+    formData.remarks.trim() !== ''
+  )
+
   useEffect(() => {
-    if (step > 1 && step <= 5) {
+    if (isDirty && step <= 5) {
       handleSaveDraft()
     }
-  }, [step, formData, handleSaveDraft])
+  }, [step, formData, isDirty, handleSaveDraft])
 
-  const shouldBlock = step > 1 && step <= 5
+  const shouldBlock = step <= 5 && isDirty
   const {
     isModalOpen,
     openModal,
@@ -128,6 +142,8 @@ export const useTaxNoticeAssistanceFlow = () => {
     onDiscardDraft: () => {
       userStorage.deleteDraft(DRAFT_SERVICE_ID)
       pushToast('Draft discarded', 'info')
+      setStep(1)
+      setFormData(INITIAL_NOTICE_FORM_DATA)
     },
     defaultExitRoute: routePaths.itr.root,
   })
@@ -149,7 +165,11 @@ export const useTaxNoticeAssistanceFlow = () => {
         return
       }
       if (step === 1) {
-        openModal()
+        if (isDirty) {
+          openModal()
+        } else {
+          navigate(routePaths.itr.root)
+        }
         return
       }
       navigate(routePaths.itr.root)
@@ -216,5 +236,6 @@ export const useTaxNoticeAssistanceFlow = () => {
     handleSaveAndExit,
     handleDiscardAndExit,
     handleKeepEditing,
+    isDirty,
   }
 }

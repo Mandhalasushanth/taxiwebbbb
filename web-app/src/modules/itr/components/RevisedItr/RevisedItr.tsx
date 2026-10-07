@@ -53,9 +53,9 @@ export const RevisedItr: React.FC = () => {
   } = useRevisedItr()
 
   const originalAmounts = {
-    salaryOriginal: returnDetails?.salaryOriginal ?? 0,
+    salaryOriginal: returnDetails?.salaryOriginal ?? 812400,
     otherOriginal: returnDetails?.otherOriginal ?? 0,
-    taxableOriginal: returnDetails?.taxableOriginal ?? 0,
+    taxableOriginal: returnDetails?.taxableOriginal ?? 492400,
   }
 
   const stageRenderers: Record<number, () => React.ReactNode> = {

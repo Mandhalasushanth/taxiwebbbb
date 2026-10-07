@@ -1,6 +1,6 @@
 import React from 'react'
 import { StepActionBar } from '@shared/components'
-import { TdsIcons, type TdsTaxpayerProfile } from '../../../utils/tdsRefund.constants'
+import { TDS_DOCUMENTS, TdsIcons, type TdsTaxpayerProfile } from '../../../utils/tdsRefund.constants'
 import type { TdsBankDetails, TdsIncomeTaxData } from '../TdsRefundCustomerIncome'
 import type { UploadedFileMeta } from '../TdsRefundDocuments'
 import { TdsRefundProgressTracker } from '../TdsRefundOverview'
@@ -9,8 +9,8 @@ import './TdsRefundReview.css'
 const REVIEW_SIDEBAR_CHECKLIST = [
   { text: 'Step 1: Customer & Income Details', status: 'done', icon: '✓' },
   { text: 'Step 2: Upload Documents', status: 'done', icon: '✓' },
-  { text: 'Step 3: Review & Computation', status: 'active', icon: '●', isStrong: true },
-  { text: 'Step 4: CA Review & E-filing', status: 'pending', icon: '○' },
+  { text: 'Step 3: Review & Estimate', status: 'active', icon: '●', isStrong: true },
+  { text: 'Step 4: Payment', status: 'pending', icon: '○' },
   { text: 'Step 5: Direct Bank Credit', status: 'pending', icon: '○' },
 ]
 
@@ -56,18 +56,6 @@ export interface TdsRefundComputationCardProps {
 export const TdsRefundComputationCard: React.FC<TdsRefundComputationCardProps> = ({
   grossIncome, totalDeductions, taxableIncome, tdsDeducted, tcsCollected, advanceAndSelfTax, totalTaxCredits, estimatedRefund,
 }) => {
-  const incomeRows = [
-    { label: 'Gross Total Income', value: `₹${grossIncome.toLocaleString('en-IN')}` },
-    { label: 'Total Deductions', value: `₹${totalDeductions.toLocaleString('en-IN')}` },
-    { label: 'Total Taxable Income', value: `₹${taxableIncome.toLocaleString('en-IN')}` },
-    { label: 'Total Tax Calculated', value: '₹0' },
-  ]
-  const creditRows = [
-    { label: 'Total TDS Deducted', value: `₹${tdsDeducted.toLocaleString('en-IN')}` },
-    { label: 'Total TCS Collected', value: `₹${tcsCollected.toLocaleString('en-IN')}` },
-    { label: 'Advance & Self Assessment Tax', value: `₹${advanceAndSelfTax.toLocaleString('en-IN')}` },
-  ]
-
   return (
     <section className="tds-review-card" data-testid="tds-review-computation">
       <div className="tds-review-card-header">
@@ -75,19 +63,20 @@ export const TdsRefundComputationCard: React.FC<TdsRefundComputationCardProps> =
         <span className="tds-computation-prelim-badge">Preliminary</span>
       </div>
       <div className="tds-review-rows">
-        {incomeRows.map((row) => (
-          <div key={row.label} className="tds-review-row"><span className="tds-review-label">{row.label}</span><span className="tds-review-value">{row.value}</span></div>
-        ))}
+        <div className="tds-review-row"><span className="tds-review-label">Gross Total Income</span><span className="tds-review-value">₹{grossIncome.toLocaleString('en-IN')}</span></div>
+        <div className="tds-review-row"><span className="tds-review-label">Less: Eligible Deductions</span><span className="tds-review-value tds-review-value--deduction">- ₹{totalDeductions.toLocaleString('en-IN')}</span></div>
+        <div className="tds-review-row tds-review-row--bold-line"><span className="tds-review-label tds-review-label--bold">Taxable Income</span><span className="tds-review-value tds-review-value--bold">₹{taxableIncome.toLocaleString('en-IN')}</span></div>
+        <div className="tds-review-row"><span className="tds-review-label">Estimated Tax Liability (incl. 4% Cess)</span><span className="tds-review-value">₹0</span></div>
         <div className="tds-computation-divider" />
-        <div className="tds-computation-subhead">TAX CREDITS</div>
-        {creditRows.map((row) => (
-          <div key={row.label} className="tds-review-row"><span className="tds-review-label">{row.label}</span><span className="tds-review-value">{row.value}</span></div>
-        ))}
+        <div className="tds-computation-subhead">TAX CREDITS &amp; PREPAID TAXES</div>
+        <div className="tds-review-row"><span className="tds-review-label">Total TDS Deducted</span><span className="tds-review-value">₹{tdsDeducted.toLocaleString('en-IN')}</span></div>
+        <div className="tds-review-row"><span className="tds-review-label">Total TCS Collected</span><span className="tds-review-value">₹{tcsCollected.toLocaleString('en-IN')}</span></div>
+        <div className="tds-review-row"><span className="tds-review-label">Advance &amp; Self Assessment Tax</span><span className="tds-review-value">₹{advanceAndSelfTax.toLocaleString('en-IN')}</span></div>
         <div className="tds-computation-divider" />
-        <div className="tds-computation-total-row"><span>Total Tax Credits</span><span className="tds-computation-credits-val">₹{totalTaxCredits.toLocaleString('en-IN')}</span></div>
+        <div className="tds-computation-total-row"><span>Total Tax Credits / Claim</span><span className="tds-computation-credits-val">₹{totalTaxCredits.toLocaleString('en-IN')}</span></div>
       </div>
       <div className="tds-refund-box" data-testid="tds-refund-amount-box"><span className="tds-refund-box-label">Estimated Refund</span><span className="tds-refund-box-amount">₹{estimatedRefund.toLocaleString('en-IN')}</span></div>
-      <div className="tds-disclaimer-box"><TdsIcons.InfoCircle className="tds-disclaimer-icon" /><span>This is an estimated refund based on the details provided and Form 26AS data. The final refund amount will be confirmed after Chartered Accountant verification and Income Tax Department processing.</span></div>
+      <div className="tds-disclaimer-box"><TdsIcons.InfoCircle className="tds-disclaimer-icon" /><span>Preliminary estimate based on the information provided. Final refund/tax payable will be determined after CA verification, ITR filing and Income Tax Department processing.</span></div>
     </section>
   )
 }
@@ -159,10 +148,10 @@ export const TdsRefundReview: React.FC<TdsRefundReviewProps> = ({
       ],
     },
     {
-      testId: 'tds-review-deductions', title: 'Deductions', Icon: TdsIcons.Rupee, editTestId: 'edit-deductions-btn', onEdit: onEditStep1,
+      testId: 'tds-review-deductions', title: 'Deductions', Icon: TdsIcons.Wallet || TdsIcons.Briefcase, editTestId: 'edit-deductions-btn', onEdit: onEditStep1,
       rows: [
-        { label: 'Section 80C (Life Insurance, PF, etc.)', value: `₹${Number(taxData?.deduction80C || 0).toLocaleString('en-IN')}` },
-        { label: 'Section 80D (Health Insurance)', value: `₹${Number(taxData?.deduction80D || 0).toLocaleString('en-IN')}` },
+        { label: 'Section 80C', value: `₹${Number(taxData?.deduction80C || 0).toLocaleString('en-IN')}` },
+        { label: 'Section 80D', value: `₹${Number(taxData?.deduction80D || 0).toLocaleString('en-IN')}` },
       ],
     },
     {
@@ -203,10 +192,17 @@ export const TdsRefundReview: React.FC<TdsRefundReviewProps> = ({
               <EditButton onClick={onEditStep2} testId="edit-documents-btn" />
             </div>
             {entries.length > 0 ? (
-              <div className="tds-review-rows">
-                {entries.map(([docId, meta]) => (
-                  <div key={docId} className="tds-review-row"><span className="tds-review-label">{meta.name}</span><span className="tds-review-value">{meta.size}</span></div>
-                ))}
+              <div className="tds-review-docs-pills">
+                {entries.map(([docId, meta]) => {
+                  const docConfig = TDS_DOCUMENTS.find((d) => d.id === docId)
+                  const label = docConfig?.title || meta.name || docId
+                  return (
+                    <span key={docId} className="tds-review-doc-pill">
+                      <span className="tds-review-doc-pill-check" aria-hidden="true">✓</span>
+                      <span>{label}</span>
+                    </span>
+                  )
+                })}
               </div>
             ) : (
               <p className="tds-review-empty-text">No documents uploaded yet</p>
@@ -219,7 +215,6 @@ export const TdsRefundReview: React.FC<TdsRefundReviewProps> = ({
             totalTaxCredits={totalTaxCredits} estimatedRefund={totalTaxCredits}
           />
         </main>
-        <TdsRefundReviewSidebar />
       </div>
       <StepActionBar onBack={onBack} onNext={onNext} onSaveDraft={onSaveDraft} nextLabel="Continue" nextDisabled={!isReviewValid} backTestId="tds-step3-back-btn" nextTestId="tds-proceed-payment-btn" />
     </div>

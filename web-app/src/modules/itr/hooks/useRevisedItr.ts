@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { userStorage } from '@core/storage/userStorage'
@@ -130,14 +130,56 @@ export const useRevisedItr = () => {
     }
   }, [isSubmitted, step, ackNumber, selectedAy, isReturnFound, returnDetails, selectedReason, otherReasonText, incomeCorrections, deductionCorrections, bankCorrections, uploadedDocuments])
 
+  const isDirty = useMemo(() => {
+    return Boolean(
+      step > 1 ||
+      Boolean(existingDraft) ||
+      ackNumber.trim() !== '' ||
+      selectedAy.trim() !== '' ||
+      isReturnFound ||
+      selectedReason !== null ||
+      otherReasonText.trim() !== '' ||
+      incomeCorrections.salaryIncome !== '' ||
+      incomeCorrections.otherIncome !== '' ||
+      incomeCorrections.taxableIncome !== '' ||
+      deductionCorrections.section80c !== '' ||
+      deductionCorrections.section80d !== '' ||
+      deductionCorrections.homeLoanInterest !== '' ||
+      deductionCorrections.taxableIncome !== '' ||
+      bankCorrections.accountNumber !== '' ||
+      bankCorrections.ifsc !== '' ||
+      Object.keys(uploadedDocuments).length > 0
+    )
+  }, [
+    step,
+    existingDraft,
+    ackNumber,
+    selectedAy,
+    isReturnFound,
+    selectedReason,
+    otherReasonText,
+    incomeCorrections,
+    deductionCorrections,
+    bankCorrections,
+    uploadedDocuments,
+  ])
+
   useEffect(() => {
-    if (!isSubmitted && step > 1) saveCurrentDraft()
-  }, [step, isSubmitted, saveCurrentDraft])
+    if (!isSubmitted && isDirty) saveCurrentDraft()
+  }, [step, isSubmitted, isDirty, saveCurrentDraft])
 
   const { isModalOpen, openModal, handleSaveAndExit, handleDiscardAndExit, handleKeepEditing } = useDraftBlocker({
-    shouldBlock: !isSubmitted && step > 1,
+    shouldBlock: !isSubmitted && isDirty,
     onSaveDraft: () => { saveCurrentDraft(); pushToast('Revised ITR draft saved', 'success') },
-    onDiscardDraft: () => { userStorage.deleteDraft('revised-itr'); pushToast('Draft discarded', 'info') },
+    onDiscardDraft: () => {
+      userStorage.deleteDraft('revised-itr')
+      pushToast('Draft discarded', 'info')
+      setStep(1)
+      setAckNumber('')
+      setSelectedAy('')
+      setIsReturnFound(false)
+      setReturnDetails(null)
+    },
     defaultExitRoute: routePaths.itr.root,
   })
 
@@ -203,9 +245,9 @@ export const useRevisedItr = () => {
     if (isSubmitted) { navigate(routePaths.itr.root); return }
     if (showPayment) { setShowPayment(false); return }
     if (step > 1) { setStep((prev) => (prev - 1) as 1 | 2 | 3 | 4 | 5); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
-    if (isReturnFound || Boolean(ackNumber)) { openModal(); return }
+    if (isDirty) { openModal(); return }
     navigate(routePaths.itr.root)
-  }, [step, isReturnFound, ackNumber, showPayment, isSubmitted, openModal, navigate])
+  }, [step, isDirty, showPayment, isSubmitted, openModal, navigate])
 
   const handlePaymentSuccess = useCallback((result?: { paymentId?: string }) => {
     try {
@@ -266,6 +308,6 @@ export const useRevisedItr = () => {
     handleToggleDropdown, handleCloseDropdown, handleSelectReason, handleOtherReasonChange, handleIncomeChange,
     handleDeductionChange, handleBankChange, handleFileUpload, handleFileRemove, handleBack, handleContinue,
     handlePaymentSuccess, handleDownloadReceipt, goToStep, isModalOpen, openModal, handleSaveAndExit,
-    handleDiscardAndExit, handleKeepEditing,
+    handleDiscardAndExit, handleKeepEditing, isDirty,
   }
 }

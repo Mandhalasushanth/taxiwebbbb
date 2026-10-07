@@ -1,6 +1,7 @@
 import React from 'react'
 import { authStorage } from '@core/auth/authStorage'
 import type { AuthUser } from '@core/auth/authTypes'
+import './ItrStepHeaderStepper.css'
 import {
   ArrowRight as ArrowRightIcon, CreditCard as BankCardIcon, Calculator as CalculatorIcon,
   Calendar as CalendarIcon, CheckCircle2 as CheckCircleIcon, Check as CheckIcon,
@@ -156,6 +157,7 @@ export interface UploadedDocInfo {
   fileName: string
   fileSize: string
   uploadedAt: string
+  file?: File
 }
 
 export interface ChecklistDocConfig {

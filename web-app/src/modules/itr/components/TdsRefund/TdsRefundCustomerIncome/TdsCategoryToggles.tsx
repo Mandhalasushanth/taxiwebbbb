@@ -20,14 +20,14 @@ export const TdsCategoryToggles: React.FC<TdsCategoryTogglesProps> = ({ data, on
           <div className="tds-yes-no-group">
             <button
               type="button"
-              className={`tds-yes-no-btn ${data.rentalIncome === 'yes' ? 'tds-yes-no-btn--active' : ''}`}
+              className={`tds-yes-no-btn tds-yes-no-btn--yes ${data.rentalIncome === 'yes' ? 'tds-yes-no-btn--active' : ''}`}
               onClick={() => onChange({ rentalIncome: 'yes' })}
             >
               Yes
             </button>
             <button
               type="button"
-              className={`tds-yes-no-btn ${data.rentalIncome === 'no' ? 'tds-yes-no-btn--active' : ''}`}
+              className={`tds-yes-no-btn tds-yes-no-btn--no ${data.rentalIncome !== 'yes' ? 'tds-yes-no-btn--active' : ''}`}
               onClick={() => onChange({ rentalIncome: 'no', annualRent: '', propertyTaxes: '' })}
             >
               No
@@ -72,14 +72,14 @@ export const TdsCategoryToggles: React.FC<TdsCategoryTogglesProps> = ({ data, on
           <div className="tds-yes-no-group">
             <button
               type="button"
-              className={`tds-yes-no-btn ${data.capitalGains === 'yes' ? 'tds-yes-no-btn--active' : ''}`}
+              className={`tds-yes-no-btn tds-yes-no-btn--yes ${data.capitalGains === 'yes' ? 'tds-yes-no-btn--active' : ''}`}
               onClick={() => onChange({ capitalGains: 'yes' })}
             >
               Yes
             </button>
             <button
               type="button"
-              className={`tds-yes-no-btn ${data.capitalGains === 'no' ? 'tds-yes-no-btn--active' : ''}`}
+              className={`tds-yes-no-btn tds-yes-no-btn--no ${data.capitalGains !== 'yes' ? 'tds-yes-no-btn--active' : ''}`}
               onClick={() => onChange({ capitalGains: 'no', stcg: '', ltcg: '' })}
             >
               No
@@ -124,14 +124,14 @@ export const TdsCategoryToggles: React.FC<TdsCategoryTogglesProps> = ({ data, on
           <div className="tds-yes-no-group">
             <button
               type="button"
-              className={`tds-yes-no-btn ${data.businessIncome === 'yes' ? 'tds-yes-no-btn--active' : ''}`}
+              className={`tds-yes-no-btn tds-yes-no-btn--yes ${data.businessIncome === 'yes' ? 'tds-yes-no-btn--active' : ''}`}
               onClick={() => onChange({ businessIncome: 'yes' })}
             >
               Yes
             </button>
             <button
               type="button"
-              className={`tds-yes-no-btn ${data.businessIncome === 'no' ? 'tds-yes-no-btn--active' : ''}`}
+              className={`tds-yes-no-btn tds-yes-no-btn--no ${data.businessIncome !== 'yes' ? 'tds-yes-no-btn--active' : ''}`}
               onClick={() => onChange({ businessIncome: 'no', turnover: '', netProfit: '' })}
             >
               No
@@ -176,14 +176,14 @@ export const TdsCategoryToggles: React.FC<TdsCategoryTogglesProps> = ({ data, on
           <div className="tds-yes-no-group">
             <button
               type="button"
-              className={`tds-yes-no-btn ${data.homeLoanInterest === 'yes' ? 'tds-yes-no-btn--active' : ''}`}
+              className={`tds-yes-no-btn tds-yes-no-btn--yes ${data.homeLoanInterest === 'yes' ? 'tds-yes-no-btn--active' : ''}`}
               onClick={() => onChange({ homeLoanInterest: 'yes' })}
             >
               Yes
             </button>
             <button
               type="button"
-              className={`tds-yes-no-btn ${data.homeLoanInterest === 'no' ? 'tds-yes-no-btn--active' : ''}`}
+              className={`tds-yes-no-btn tds-yes-no-btn--no ${data.homeLoanInterest !== 'yes' ? 'tds-yes-no-btn--active' : ''}`}
               onClick={() => onChange({ homeLoanInterest: 'no', homeLoanInterestAmount: '' })}
             >
               No
@@ -217,14 +217,14 @@ export const TdsCategoryToggles: React.FC<TdsCategoryTogglesProps> = ({ data, on
           <div className="tds-yes-no-group">
             <button
               type="button"
-              className={`tds-yes-no-btn ${data.taxDeductions === 'yes' ? 'tds-yes-no-btn--active' : ''}`}
+              className={`tds-yes-no-btn tds-yes-no-btn--yes ${data.taxDeductions === 'yes' ? 'tds-yes-no-btn--active' : ''}`}
               onClick={() => onChange({ taxDeductions: 'yes' })}
             >
               Yes
             </button>
             <button
               type="button"
-              className={`tds-yes-no-btn ${data.taxDeductions === 'no' ? 'tds-yes-no-btn--active' : ''}`}
+              className={`tds-yes-no-btn tds-yes-no-btn--no ${data.taxDeductions !== 'yes' ? 'tds-yes-no-btn--active' : ''}`}
               onClick={() => onChange({ taxDeductions: 'no', deduction80C: '', deduction80D: '' })}
             >
               No

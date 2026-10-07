@@ -1,10 +1,14 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { routePaths } from '@core/config/routePaths'
 import { TdsIcons } from '../../../utils/tdsRefund.constants'
 import { TdsRefundProgressTracker } from '../TdsRefundOverview'
 import './TdsRefundStatus.css'
 
 export interface TdsRefundStatusProps {
   applicationId?: string
+  appliedDate?: string
+  assessmentYear?: string
   onBack?: () => void
   onBackToDashboard?: () => void
   onContactSupport?: () => void
@@ -29,33 +33,44 @@ const TIMELINE_STAGES: TimelineStage[] = [
   { num: 9, title: 'Refund / Tax Payable', desc: 'Direct credit to bank account ••••6068', status: 'pending' },
 ]
 
-const OVERVIEW_META_ITEMS = [
-  { label: 'Service', value: 'TDS Refund' },
-  { label: 'AY', value: '2025-26' },
-  { label: 'Applied', value: '17 Sept 2026' },
-]
+export const formatAppliedDate = (dateInput?: string | Date): string => {
+  try {
+    const d = dateInput ? new Date(dateInput) : new Date()
+    const date = isNaN(d.getTime()) ? new Date() : d
+    const day = date.getDate()
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+    const month = months[date.getMonth()]
+    const year = date.getFullYear()
+    return `${day} ${month} ${year}`
+  } catch {
+    return 'Today'
+  }
+}
 
 export const TdsRefundStatus: React.FC<TdsRefundStatusProps> = ({
   applicationId = 'TDS-2026-59303',
+  appliedDate,
+  assessmentYear = '2025-26',
   onBack,
   onBackToDashboard,
   onContactSupport,
 }) => {
+  const navigate = useNavigate()
+  const displayAppliedDate = React.useMemo(
+    () => formatAppliedDate(appliedDate),
+    [appliedDate]
+  )
+
+  const overviewMetaItems = [
+    { label: 'Service', value: 'TDS Refund' },
+    { label: 'AY', value: assessmentYear },
+    { label: 'Applied', value: displayAppliedDate },
+  ]
+
   const renderOverviewCard = () => (
     <section className="tds-status-card" data-testid="tds-status-overview">
       <div className="tds-status-overview-header">
         <div className="tds-status-header-left">
-          {onBack && (
-            <button
-              type="button"
-              className="tds-action-back-btn tds-action-back-btn--compact"
-              onClick={onBack}
-              data-testid="tds-status-back-btn"
-              title="Back"
-            >
-              ←
-            </button>
-          )}
           <div>
             <div className="tds-status-app-id-label">Application ID</div>
             <h2 className="tds-status-app-id-val" data-testid="status-application-id">{applicationId}</h2>
@@ -68,7 +83,7 @@ export const TdsRefundStatus: React.FC<TdsRefundStatusProps> = ({
       </div>
 
       <div className="tds-status-grid">
-        {OVERVIEW_META_ITEMS.map((item) => (
+        {overviewMetaItems.map((item) => (
           <div key={item.label} className="tds-status-item">
             <span className="tds-status-item-label">{item.label}</span>
             <span className="tds-status-item-val">{item.value}</span>
@@ -108,6 +123,14 @@ export const TdsRefundStatus: React.FC<TdsRefundStatusProps> = ({
     </section>
   )
 
+  const handleDashboardClick = () => {
+    if (onBackToDashboard) {
+      onBackToDashboard()
+    } else {
+      navigate(routePaths.dashboard)
+    }
+  }
+
   const renderActionsRow = () => (
     <div className="tds-status-actions-row">
       <button
@@ -122,7 +145,7 @@ export const TdsRefundStatus: React.FC<TdsRefundStatusProps> = ({
       <button
         type="button"
         className="tds-btn-dashboard"
-        onClick={onBackToDashboard}
+        onClick={handleDashboardClick}
         data-testid="tds-btn-dashboard"
       >
         Back to Dashboard

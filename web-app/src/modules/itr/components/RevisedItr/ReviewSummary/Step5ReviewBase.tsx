@@ -50,21 +50,24 @@ export const Step5ReviewBase: React.FC<Step5ReviewBaseProps> = ({
     return '₹' + num.toLocaleString('en-IN')
   }
 
-  const originalGross = returnDetails?.salaryOriginal || 0
+  const originalGross = Number(returnDetails?.salaryOriginal ?? 812400)
   const grossDiff = revisedGross - originalGross
 
-  const originalTaxable = returnDetails?.taxableOriginal || 0
+  const originalTaxable = Number(returnDetails?.taxableOriginal ?? 492400)
   const taxableDiff = revisedTaxable - originalTaxable
 
-  const originalDeductions = Math.max(0, originalGross - originalTaxable)
+  const originalDeductions =
+    returnDetails?.deductionsOriginal !== undefined
+      ? Number(returnDetails.deductionsOriginal)
+      : Math.max(0, originalGross - originalTaxable)
   const deductionsDiff = revisedDeductions - originalDeductions
 
   const originalTaxAndCess = calculateTaxLiability(originalTaxable)
   const revisedTaxAndCess = calculateTaxLiability(revisedTaxable)
   const taxDiff = revisedTaxAndCess - originalTaxAndCess
 
-  const originalTaxesPaid = 31200
-  const revisedTaxesPaid = 31200
+  const originalTaxesPaid = Number(returnDetails?.taxesPaidOriginal ?? 31200)
+  const revisedTaxesPaid = originalTaxesPaid
   const taxesPaidDiff = 0
 
   const originalRefund = Math.max(0, originalTaxesPaid - originalTaxAndCess)

@@ -8,8 +8,8 @@ export interface TdsRefundStepTrackerProps {
 const STEPS = [
   { num: 1, label: 'Customer & Income' },
   { num: 2, label: 'Upload Documents' },
-  { num: 3, label: 'CA Verification' },
-  { num: 4, label: 'Refund Filing' },
+  { num: 3, label: 'Review & Estimate' },
+  { num: 4, label: 'Payment' },
   { num: 5, label: 'Refund Credited' },
 ]
 

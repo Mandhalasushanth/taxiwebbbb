@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import "./uploadDocument.css";
 
 export interface UploadDocumentProps {
@@ -98,12 +98,16 @@ export function openDocumentPreview(params: {
   }) => void;
 }): void {
   try {
+    const cacheMap =
+      typeof window !== "undefined"
+        ? (window as unknown as { __taxedge_uploaded_files?: Map<string, File> })
+            .__taxedge_uploaded_files
+        : undefined;
+
     const rawFile: unknown =
       params.file ||
-      (typeof window !== "undefined"
-        ? (window as unknown as { __taxedge_uploaded_files?: Map<string, File> })
-            .__taxedge_uploaded_files?.get(params.id)
-        : undefined);
+      cacheMap?.get(params.id) ||
+      (params.fileName ? cacheMap?.get(params.fileName) : undefined);
 
     if (rawFile && rawFile instanceof Blob) {
       try {
@@ -164,88 +168,103 @@ export function openDocumentPreview(params: {
     <title>${docTitle} - ${docName}</title>
     <style>
       * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; }
-      header { background: #1e293b; border-bottom: 1px solid #334155; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
-      .header-left { display: flex; align-items: center; gap: 12px; }
-      .brand-badge { background: #2563eb; color: white; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.5px; }
-      .header-title { font-size: 1.1rem; font-weight: 600; color: #f8fafc; }
-      .header-sub { font-size: 0.85rem; color: #94a3b8; }
-      .header-actions { display: flex; gap: 10px; }
-      .btn { padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; border: 1px solid #475569; background: #334155; color: #f8fafc; text-decoration: none; transition: background 0.2s; }
-      .btn:hover { background: #475569; }
-      .btn-primary { background: #2563eb; border-color: #3b82f6; }
-      .btn-primary:hover { background: #1d4ed8; }
-      main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem; }
-      .sheet { background: white; color: #0f172a; width: 100%; max-width: 720px; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); overflow: hidden; border: 1px solid #e2e8f0; position: relative; }
-      .sheet-header { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; padding: 1.75rem 2rem; position: relative; }
-      .sheet-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
-      .sheet-sub { font-size: 0.9rem; opacity: 0.9; }
-      .sheet-body { padding: 2.25rem 2rem; }
-      .meta-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 2rem; }
-      .meta-item { background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0; }
-      .meta-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; font-weight: 600; margin-bottom: 4px; }
-      .meta-value { font-size: 0.95rem; font-weight: 600; color: #0f172a; word-break: break-all; }
-      .verified-badge { display: inline-flex; align-items: center; gap: 8px; background: #ecfdf5; color: #059669; padding: 6px 14px; border-radius: 9999px; font-weight: 600; font-size: 0.85rem; border: 1px solid #a7f3d0; margin-bottom: 1.5rem; }
-      .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 4rem; font-weight: 900; color: rgba(148, 163, 184, 0.08); pointer-events: none; user-select: none; white-space: nowrap; }
-      .notice-box { background: #f1f5f9; border-left: 4px solid #2563eb; padding: 1rem 1.25rem; border-radius: 0 8px 8px 0; font-size: 0.85rem; color: #475569; line-height: 1.6; }
-      footer { background: #1e293b; color: #64748b; text-align: center; padding: 0.75rem; font-size: 0.75rem; border-top: 1px solid #334155; }
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #525659; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
+      .toolbar { background: #323639; color: #f1f5f9; padding: 0.6rem 1.5rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.3); position: sticky; top: 0; z-index: 50; }
+      .toolbar-title { font-size: 0.95rem; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+      .toolbar-badge { background: #2563eb; color: #fff; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+      .toolbar-actions { display: flex; gap: 8px; }
+      .toolbar-btn { background: #475569; color: #f8fafc; border: 1px solid #64748b; padding: 4px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: background 0.15s; }
+      .toolbar-btn:hover { background: #64748b; }
+      .toolbar-btn-primary { background: #2563eb; border-color: #3b82f6; }
+      .toolbar-btn-primary:hover { background: #1d4ed8; }
+      .viewer-main { flex: 1; display: flex; justify-content: center; padding: 2rem 1rem; overflow-y: auto; }
+      .page-sheet { background: #ffffff; width: 100%; max-width: 820px; min-height: 1050px; box-shadow: 0 10px 35px rgba(0,0,0,0.4); border-radius: 2px; padding: 3.5rem 3rem; display: flex; flex-direction: column; position: relative; }
+      .doc-top-bar { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 1.5rem; border-bottom: 2px solid #0f172a; margin-bottom: 2rem; }
+      .doc-emblem { font-size: 1.1rem; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; }
+      .doc-emblem-sub { font-size: 0.8rem; color: #64748b; margin-top: 2px; }
+      .doc-heading-block { text-align: right; }
+      .doc-type-title { font-size: 1.35rem; font-weight: 800; color: #1e3a8a; text-transform: uppercase; letter-spacing: 0.5px; }
+      .doc-ref-text { font-size: 0.8rem; color: #64748b; margin-top: 4px; }
+      .doc-body-section { flex: 1; }
+      .doc-meta-table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; font-size: 0.9rem; }
+      .doc-meta-table th { background: #f8fafc; text-align: left; padding: 10px 14px; border: 1px solid #e2e8f0; color: #475569; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; width: 35%; }
+      .doc-meta-table td { padding: 10px 14px; border: 1px solid #e2e8f0; color: #0f172a; font-weight: 500; }
+      .doc-status-banner { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 12px; margin-bottom: 2rem; }
+      .doc-status-badge { background: #16a34a; color: #ffffff; font-weight: 700; font-size: 0.75rem; padding: 3px 10px; border-radius: 9999px; text-transform: uppercase; }
+      .doc-status-text { font-size: 0.85rem; color: #166534; font-weight: 500; }
+      .doc-preview-content { border: 1px dashed #cbd5e1; border-radius: 8px; padding: 2rem; background: #fafafa; margin-bottom: 2rem; }
+      .doc-preview-content h4 { font-size: 1rem; color: #1e293b; margin-bottom: 0.75rem; }
+      .doc-preview-content p { font-size: 0.85rem; color: #475569; line-height: 1.6; margin-bottom: 0.5rem; }
+      .doc-watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-35deg); font-size: 5rem; font-weight: 900; color: rgba(148, 163, 184, 0.08); pointer-events: none; user-select: none; }
+      .doc-footer-bar { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; font-size: 0.75rem; color: #94a3b8; }
+      @media print {
+        body { background: white; }
+        .toolbar { display: none; }
+        .page-sheet { box-shadow: none; padding: 1rem; min-height: auto; }
+      }
     </style>
   </head>
   <body>
-    <header>
-      <div class="header-left">
-        <span class="brand-badge">TaxEdge</span>
-        <div>
-          <div class="header-title">${docTitle}</div>
-          <div class="header-sub">${docName}</div>
-        </div>
+    <div class="toolbar">
+      <div class="toolbar-title">
+        <span class="toolbar-badge">Document</span>
+        <span>${docName}</span>
       </div>
-      <div class="header-actions">
-        <button class="btn" onclick="window.print()">Print</button>
-        <button class="btn btn-primary" onclick="window.close()">Close</button>
+      <div class="toolbar-actions">
+        <button class="toolbar-btn" onclick="window.print()">Print</button>
+        <button class="toolbar-btn toolbar-btn-primary" onclick="window.close()">Close</button>
       </div>
-    </header>
-    <main>
-      <div class="sheet">
-        <div class="watermark">TAXEDGE VERIFIED</div>
-        <div class="sheet-header">
-          <div class="sheet-title">${docTitle}</div>
-          <div class="sheet-sub">Official Tax & Compliance Supporting Document</div>
+    </div>
+    <main class="viewer-main">
+      <div class="page-sheet">
+        <div class="doc-watermark">OFFICIAL COPY</div>
+        <div class="doc-top-bar">
+          <div>
+            <div class="doc-emblem">TaxEdge Compliance Portal</div>
+            <div class="doc-emblem-sub">Official Tax & Compliance Document Records</div>
+          </div>
+          <div class="doc-heading-block">
+            <div class="doc-type-title">${docTitle}</div>
+            <div class="doc-ref-text">Reference: ${docName}</div>
+          </div>
         </div>
-        <div class="sheet-body">
-          <div class="verified-badge">
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-            </svg>
-            Digitally Attached & Verified
+        <div class="doc-body-section">
+          <div class="doc-status-banner">
+            <span class="doc-status-badge">Attached</span>
+            <span class="doc-status-text">Document attached to compliance filing and ready for assessment processing.</span>
           </div>
-          <div class="meta-grid">
-            <div class="meta-item">
-              <div class="meta-label">Document Name</div>
-              <div class="meta-value">${docName}</div>
-            </div>
-            <div class="meta-item">
-              <div class="meta-label">Document Classification</div>
-              <div class="meta-value">${docTitle}</div>
-            </div>
-            <div class="meta-item">
-              <div class="meta-label">Document Identifier</div>
-              <div class="meta-value">DOC-${params.id.toUpperCase()}</div>
-            </div>
-            <div class="meta-item">
-              <div class="meta-label">Storage Integrity</div>
-              <div class="meta-value">AES-256 Encrypted & Secure</div>
-            </div>
+          <table class="doc-meta-table">
+            <tbody>
+              <tr>
+                <th>Document Classification</th>
+                <td>${docTitle}</td>
+              </tr>
+              <tr>
+                <th>File Name</th>
+                <td>${docName}</td>
+              </tr>
+              <tr>
+                <th>Identifier</th>
+                <td>DOC-${params.id.toUpperCase()}</td>
+              </tr>
+              <tr>
+                <th>Security & Verification</th>
+                <td>End-to-End Encrypted File Record</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="doc-preview-content">
+            <h4>Document Filing Record</h4>
+            <p>This document record represents the attached ${docTitle} file (${docName}) provided for submission and verification in this application.</p>
+            <p>During live filing or CA verification, the document is accessible by assigned compliance officers for schedule matching and assessment validation.</p>
           </div>
-          <div class="notice-box">
-            This document record is verified and securely linked to your registration application. You may print this verification record or replace the uploaded file from the application dashboard anytime.
-          </div>
+        </div>
+        <div class="doc-footer-bar">
+          <span>TaxEdge Compliance Records</span>
+          <span>Page 1 of 1</span>
         </div>
       </div>
     </main>
-    <footer>
-      TaxEdge Compliance System · 256-bit Secure TLS Encryption
-    </footer>
   </body>
 </html>`;
       const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
@@ -313,11 +332,43 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
   className = "",
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [localFile, setLocalFile] = useState<File | undefined>(file);
+
+  useEffect(() => {
+    if (file) {
+      setLocalFile(file);
+      if (typeof window !== "undefined") {
+        const win = window as unknown as {
+          __taxedge_uploaded_files?: Map<string, File>;
+        };
+        if (!win.__taxedge_uploaded_files) {
+          win.__taxedge_uploaded_files = new Map<string, File>();
+        }
+        win.__taxedge_uploaded_files.set(id, file);
+        if (file.name) {
+          win.__taxedge_uploaded_files.set(file.name, file);
+        }
+      }
+    }
+  }, [file, id]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     executeSafely(
       () => {
         const selectedFile = extractUploadedFile(e);
+        setLocalFile(selectedFile);
+        if (typeof window !== "undefined") {
+          const win = window as unknown as {
+            __taxedge_uploaded_files?: Map<string, File>;
+          };
+          if (!win.__taxedge_uploaded_files) {
+            win.__taxedge_uploaded_files = new Map<string, File>();
+          }
+          win.__taxedge_uploaded_files.set(id, selectedFile);
+          if (selectedFile.name) {
+            win.__taxedge_uploaded_files.set(selectedFile.name, selectedFile);
+          }
+        }
         onUpload?.(id, selectedFile);
       },
       undefined,
@@ -326,7 +377,24 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
   };
 
   const handleView = () => {
-    openDocumentPreview({ id, title, fileName, file, onView });
+    const cachedFile =
+      typeof window !== "undefined"
+        ? (
+            window as unknown as {
+              __taxedge_uploaded_files?: Map<string, File>;
+            }
+          ).__taxedge_uploaded_files?.get(id) ||
+          (fileName
+            ? (
+                window as unknown as {
+                  __taxedge_uploaded_files?: Map<string, File>;
+                }
+              ).__taxedge_uploaded_files?.get(fileName)
+            : undefined)
+        : undefined;
+
+    const activeFile = file || localFile || cachedFile;
+    openDocumentPreview({ id, title, fileName, file: activeFile, onView });
   };
 
   const handleReplaceClick = (e: React.MouseEvent) => {
@@ -365,7 +433,19 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
 
   const handleDeleteClick = () => {
     executeSafely(
-      () => onRemove?.(id),
+      () => {
+        setLocalFile(undefined);
+        if (typeof window !== "undefined") {
+          const win = window as unknown as {
+            __taxedge_uploaded_files?: Map<string, File>;
+          };
+          win.__taxedge_uploaded_files?.delete(id);
+          if (fileName) {
+            win.__taxedge_uploaded_files?.delete(fileName);
+          }
+        }
+        onRemove?.(id);
+      },
       undefined,
       (err) =>
         console.error("UploadDocument: Delete action failed safely:", err),

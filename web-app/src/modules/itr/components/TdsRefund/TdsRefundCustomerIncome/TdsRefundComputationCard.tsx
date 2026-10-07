@@ -87,7 +87,7 @@ export const TdsRefundComputationCard: React.FC<TdsRefundComputationCardProps> =
           <line x1="12" y1="8" x2="12.01" y2="8" />
         </svg>
         <span>
-          This is an estimated refund based on the details provided and Form 26AS data. The final refund amount will be confirmed after Chartered Accountant verification and Income Tax Department processing.
+          Preliminary estimate based on the information provided. Final refund/tax payable will be determined after CA verification, ITR filing and Income Tax Department processing.
         </span>
       </div>
     </section>

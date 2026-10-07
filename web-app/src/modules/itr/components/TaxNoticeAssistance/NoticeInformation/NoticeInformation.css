@@ -118,10 +118,72 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
+/* Placeholder styling for text inputs and textareas */
 .notice-field__input::placeholder,
 .notice-field__textarea::placeholder {
   color: #94a3b8;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+/* Select element placeholder styling */
+.notice-field__select--placeholder,
+.notice-field__select:has(option[value=""]:checked) {
+  color: #94a3b8 !important;
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.notice-field__select option {
+  color: #0f172a;
+  font-size: 0.9375rem;
+  font-weight: 400;
+}
+
+.notice-field__select option[value=""],
+.notice-field__option-placeholder {
+  color: #94a3b8;
+  font-size: 0.8125rem;
+}
+
+/* Date input placeholder (dd-mm-yyyy) styling */
+.notice-field__input--date-empty {
+  color: #94a3b8 !important;
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.notice-field__input--date-empty::-webkit-datetime-edit,
+.notice-field__input--date-empty::-webkit-datetime-edit-fields-wrapper,
+.notice-field__input--date-empty::-webkit-datetime-edit-text,
+.notice-field__input--date-empty::-webkit-datetime-edit-month-field,
+.notice-field__input--date-empty::-webkit-datetime-edit-day-field,
+.notice-field__input--date-empty::-webkit-datetime-edit-year-field {
+  color: #94a3b8 !important;
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.notice-field__input--date:not(.notice-field__input--date-empty) {
+  color: #0f172a;
+  font-size: 0.9375rem;
+}
+
+.notice-field__input--date:not(.notice-field__input--date-empty)::-webkit-datetime-edit {
+  color: #0f172a;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.notice-field__input--date::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 150ms ease;
+}
+
+.notice-field__input--date:hover::-webkit-calendar-picker-indicator {
+  opacity: 0.95;
 }
 
 .notice-field__input:focus,
@@ -154,10 +216,172 @@
 }
 
 .notice-field__select-wrapper,
-.notice-field__date-wrapper {
+.notice-field__date-wrapper,
+.notice-field__other-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
+}
+
+.notice-field__other-input-wrapper .notice-field__input {
+  padding-right: 2.75rem;
+}
+
+/* Circular Cross Button for Assessment Year (matches Image 2) */
+.notice-field__clear-cross-btn {
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  border-radius: 50%;
+  transition: all 150ms ease;
+}
+
+.notice-field__clear-cross-btn:hover {
+  color: #64748b;
+  transform: translateY(-50%) scale(1.08);
+}
+
+/* Custom Select Container & Hidden Native */
+.notice-field__custom-select-container {
+  position: relative;
+  width: 100%;
+}
+
+.notice-field__select-hidden-native {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* Custom Select Trigger (matches Image 2) */
+.notice-field__select-trigger {
+  width: 100%;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.825rem 1rem;
+  font-size: 0.9375rem;
+  color: #0f172a;
+  font-family: inherit;
+  transition: all 180ms ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  text-align: left;
+}
+
+.notice-field__select-trigger:focus,
+.notice-field__select-trigger--open {
+  border-color: #ff6a00;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.12);
+}
+
+.notice-field__select-trigger--placeholder .notice-field__select-trigger-text {
+  color: #94a3b8;
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.notice-field__select-trigger-text {
+  color: #0f172a;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 0.75rem;
+}
+
+.notice-field__chevron-icon {
+  width: 18px;
+  height: 18px;
+  color: #64748b;
+  flex-shrink: 0;
+  transition: transform 200ms ease;
+}
+
+.notice-field__select-trigger--open .notice-field__chevron-icon {
+  transform: rotate(180deg);
+}
+
+.notice-field__select-trigger--error {
+  border-color: #ef4444;
+  background: #fffafa;
+}
+
+/* Custom Dropdown Menu (matches Image 2) */
+.notice-type-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
+  z-index: 50;
+  max-height: 380px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Dropdown Option Items */
+.notice-type-option-item {
+  padding: 0.9rem 1.15rem;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.notice-type-option-item:last-child {
+  border-bottom: none;
+}
+
+.notice-type-option-item:hover,
+.notice-type-option-item:focus {
+  background: #f8fafc;
+  outline: none;
+}
+
+.notice-type-option-item--selected {
+  background: #fff7ed;
+}
+
+.notice-type-option-title {
+  font-size: 0.885rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+  margin-bottom: 0.25rem;
+}
+
+.notice-type-option-item--selected .notice-type-option-title {
+  color: #ea580c;
+}
+
+.notice-type-option-desc {
+  font-size: 0.765rem;
+  color: #64748b;
+  line-height: 1.35;
 }
 
 .notice-field__select {

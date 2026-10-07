@@ -66,12 +66,18 @@ export const validateEmail = (email: string, label = 'Email address'): string | 
  * Exactly 10 digits and must start with 6, 7, 8, or 9
  */
 export const isValidMobile = (value: string): boolean => {
-  const digits = (value || '').replace(/\D/g, '').trim()
+  let digits = (value || '').replace(/\D/g, '').trim()
+  if (digits.length === 12 && digits.startsWith('91')) {
+    digits = digits.slice(2)
+  }
   return /^[6-9]\d{9}$/.test(digits)
 }
 
 export const validateMobileNumber = (mobile: string, label = 'Mobile number'): string | null => {
-  const digits = (mobile || '').replace(/\D/g, '').trim()
+  let digits = (mobile || '').replace(/\D/g, '').trim()
+  if (digits.length === 12 && digits.startsWith('91')) {
+    digits = digits.slice(2)
+  }
   if (!digits) {
     return `${label} is required`
   }

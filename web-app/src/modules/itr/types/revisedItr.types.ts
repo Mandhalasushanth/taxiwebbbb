@@ -37,6 +37,8 @@ export interface OriginalReturnDetails {
   salaryOriginal?: number
   otherOriginal?: number
   taxableOriginal?: number
+  deductionsOriginal?: number
+  taxesPaidOriginal?: number
   personalInfo?: PersonalInfoDetails
 }
 
