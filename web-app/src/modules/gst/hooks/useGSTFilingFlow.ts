@@ -6,8 +6,8 @@ import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import { generateGstReference } from '@modules/gst/utils/gstFormat'
 import { GST_FEES, withPlatformGst } from '@modules/gst/constants/gstBusiness.constants'
 import { getDefaultFilingData, STEP_LABELS } from '@modules/gst/utils/gstFiling.constants'
-import { useGstDraft, readGstDraft, hasGstFormChanged } from '@modules/gst/hooks/useGstDraft'
-import { useReviewEdit } from '@shared/hooks'
+import { useServiceDraft, readServiceDraft, hasFormChanged, DRAFT_NAMESPACES } from '@shared/saveDraft'
+import { useReviewEdit } from '@shared/edit'
 import type { FilingPeriodData } from '../components/GSTFiling'
 import type { PaymentResult } from '@modules/gst/types/gst.types'
 import type { UploadedFileInfo } from '@modules/gst/utils/gstDocumentsData'
@@ -60,7 +60,7 @@ const withoutKey = <V>(record: Record<string, V>, key: string): Record<string, V
 export const useGSTFilingFlow = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const [savedDraft] = useState(() => readGstDraft<FilingDraft>(SERVICE_ID))
+  const [savedDraft] = useState(() => readServiceDraft<FilingDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst))
   const [defaultFilingData] = useState(getDefaultFilingData)
   const [filingRef] = useState(() => generateGstReference('GST-FIL'))
 
@@ -84,11 +84,12 @@ export const useGSTFilingFlow = () => {
 
   const hasEnteredData =
     currentStep > 1 ||
-    hasGstFormChanged(filingData, defaultFilingData) ||
+    hasFormChanged(filingData, defaultFilingData) ||
     Object.keys(uploadedFiles).length > 0 ||
     Object.keys(notApplicableDocs).length > 0
 
-  const draft = useGstDraft<FilingDraft>({
+  const draft = useServiceDraft<FilingDraft>({
+    storageNamespace: DRAFT_NAMESPACES.gst,
     serviceId: SERVICE_ID,
     serviceTitle: SERVICE_TITLE,
     totalSteps: TOTAL_STEPS,

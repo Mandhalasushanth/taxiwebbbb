@@ -10,6 +10,7 @@ import { localStore } from '../../src/core/storage/localStorage'
 import { userStorage } from '../../src/core/storage/userStorage'
 import { IncorporationWizardLayout } from '../../src/modules/incorporation/components/IncorporationWizardLayout/IncorporationWizardLayout'
 import { useIncorporationFlow } from '../../src/modules/incorporation/hooks'
+import { deleteServiceDraft } from '../../src/shared/saveDraft'
 
 /** A wizard step that types into the application and offers "Save Draft & Exit" */
 const CompanyStep = () => {
@@ -70,6 +71,32 @@ describe('Incorporation draft works like loans and GST (shared useServiceDraft)'
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Discard/i }))
     })
+    expect(userStorage.getDraft('incorporation')).toBeNull()
+
+    cleanup()
+    render(<RouterProvider router={makeRouter()} />)
+    expect(screen.getByTestId('company-name')).toHaveTextContent('')
+  })
+})
+
+describe('deleteServiceDraft (dashboard "Discard" on a draft card)', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    localStore.clear()
+    authStorage.setUser({ id: 'inc-user', mobile: '9876543210', fullName: 'Test User', isLoggedIn: true, role: 'customer' })
+  })
+
+  it('removes the dashboard entry and the auto-saved copy, so reopening starts empty', async () => {
+    const router = makeRouter()
+    render(<RouterProvider router={router} />)
+    fireEvent.click(screen.getByText('type'))
+    fireEvent.click(screen.getByText('save-draft'))
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Save as Draft/i }))
+    })
+    expect(userStorage.getDraft('incorporation')).not.toBeNull()
+
+    deleteServiceDraft('incorporation')
     expect(userStorage.getDraft('incorporation')).toBeNull()
 
     cleanup()

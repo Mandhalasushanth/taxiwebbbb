@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { routePaths } from "@core/config";
 import { userStorage } from "@core/storage/userStorage";
-import { useServiceDraft, readServiceDraft, hasFormChanged } from "@shared/hooks";
-import { ITR_DRAFT_NAMESPACE } from "../../utils/itrDraft.constants";
+import { useServiceDraft, readServiceDraft, hasFormChanged, DRAFT_NAMESPACES } from "@shared/saveDraft"
 import { calculateItrTax } from "./itrTaxCalculator";
 import {
   DEFAULT_PREVIOUS_ITR,
@@ -57,7 +56,7 @@ const TOTAL_STEPS = 5;
 
 export function useItrFilingState() {
   const [existingDraft] = useState(() =>
-    readServiceDraft<Record<string, unknown>>(SERVICE_ID, ITR_DRAFT_NAMESPACE),
+    readServiceDraft<Record<string, unknown>>(SERVICE_ID, DRAFT_NAMESPACES.itr),
   );
 
   const [isStarted, setIsStarted] = useState<boolean>(() =>
@@ -196,7 +195,7 @@ export function useItrFilingState() {
     formData: { isStarted, currentStep, ...draftFields },
     hasEnteredData: isDirty,
     isComplete: isSubmitted,
-    storageNamespace: ITR_DRAFT_NAMESPACE,
+    storageNamespace: DRAFT_NAMESPACES.itr,
     onDiscard: () => {
       setIsStarted(false);
       setCurrentStep(1);

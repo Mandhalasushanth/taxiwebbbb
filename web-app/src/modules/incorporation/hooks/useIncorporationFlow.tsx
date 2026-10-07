@@ -1,18 +1,11 @@
 import React, { createContext, useContext, useState, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
-import {
-  useServiceDraft,
-  readServiceDraft,
-  hasFormChanged,
-  useReviewEdit,
-  type ServiceDraft,
-  type ReviewEdit,
-} from '@shared/hooks'
+import { useServiceDraft, readServiceDraft, hasFormChanged, DRAFT_NAMESPACES, type ServiceDraft } from '@shared/saveDraft'
+import { useReviewEdit, type ReviewEdit } from '@shared/edit'
 import {
   INCORPORATION_SERVICE_ID,
   INCORPORATION_SERVICE_TITLE,
-  INCORPORATION_DRAFT_NAMESPACE,
   INCORPORATION_WIZARD_ROUTES,
   INCORPORATION_STEP_LABELS,
   isIncorporationWizardRoute,
@@ -82,7 +75,7 @@ export const IncorporationProvider: React.FC<{ children: React.ReactNode }> = ({
   const navigate = useNavigate()
 
   const [formData, setFormData] = useState<IncorporationFormData>(() => {
-    const saved = readServiceDraft<IncorporationDraft>(INCORPORATION_SERVICE_ID, INCORPORATION_DRAFT_NAMESPACE)
+    const saved = readServiceDraft<IncorporationDraft>(INCORPORATION_SERVICE_ID, DRAFT_NAMESPACES.incorporation)
     return saved?.formData?.applicationData
       ? { ...DEFAULT_INCORPORATION_DATA, ...saved.formData.applicationData }
       : DEFAULT_INCORPORATION_DATA
@@ -108,7 +101,7 @@ export const IncorporationProvider: React.FC<{ children: React.ReactNode }> = ({
     // Off the wizard (landing, success, tracking) or paid: nothing to save or block
     isComplete: !isWizardStep || Boolean(formData.paymentCompleted),
     isFlowRoute: isIncorporationFlowRoute,
-    storageNamespace: INCORPORATION_DRAFT_NAMESPACE,
+    storageNamespace: DRAFT_NAMESPACES.incorporation,
     onDiscard: () => setFormData(DEFAULT_INCORPORATION_DATA),
   })
 

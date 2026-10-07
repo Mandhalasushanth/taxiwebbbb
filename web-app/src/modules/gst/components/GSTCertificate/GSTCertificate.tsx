@@ -1,10 +1,11 @@
-import { DraftConfirmModal } from '@shared/components'
+import { ServiceDraftModal } from '@shared/saveDraft'
 import { useGSTCertificateFlow } from '@modules/gst/hooks/useGSTCertificateFlow'
 import { GSTCertificateForm } from './GSTCertificateForm/GSTCertificateForm'
 import { GSTCertificateSubmitted } from './GSTCertificateSubmitted/GSTCertificateSubmitted'
 import './GSTCertificate.css'
 
 export default function GSTCertificate() {
+  const flow = useGSTCertificateFlow()
   const {
     user,
     fields,
@@ -16,12 +17,8 @@ export default function GSTCertificate() {
     handleSubmit,
     handleBackToForm,
     handleAllForms,
-    isDraftModalOpen,
     openDraftModal,
-    handleSaveAndExit,
-    handleDiscardAndExit,
-    handleKeepEditing,
-  } = useGSTCertificateFlow()
+  } = flow
 
   if (submittedRecord) {
     return (
@@ -65,13 +62,7 @@ export default function GSTCertificate() {
         />
       </main>
 
-      <DraftConfirmModal
-        isOpen={isDraftModalOpen}
-        serviceTitle="GST Certificate"
-        onSaveAndExit={handleSaveAndExit}
-        onDiscardAndExit={handleDiscardAndExit}
-        onKeepEditing={handleKeepEditing}
-      />
+      <ServiceDraftModal draft={flow} serviceTitle="GST Certificate" />
     </div>
   )
 }

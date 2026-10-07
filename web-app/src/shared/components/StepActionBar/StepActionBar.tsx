@@ -1,5 +1,6 @@
 import React from 'react'
-import { UPDATE_AND_REVIEW_LABEL } from '@shared/constants'
+import { UPDATE_AND_REVIEW_LABEL } from '@shared/edit'
+import { SAVE_DRAFT_LABEL } from '@shared/saveDraft'
 import './StepActionBar.css'
 
 export interface StepActionBarProps {
@@ -31,7 +32,7 @@ export const StepActionBar: React.FC<StepActionBarProps> = ({
   onBack,
   onNext,
   onSaveDraft,
-  saveDraftLabel = 'Save Draft & Exit',
+  saveDraftLabel = SAVE_DRAFT_LABEL,
   backLabel = 'Back',
   nextLabel = 'Continue',
   isEditMode = false,
@@ -120,7 +121,7 @@ export const StepActionBar: React.FC<StepActionBarProps> = ({
       ? UPDATE_AND_REVIEW_LABEL
       : nextLabel || 'Continue'
   const displayBackLabel = backLabel || 'Back'
-  const displaySaveDraftLabel = saveDraftLabel || 'Save Draft & Exit'
+  const displaySaveDraftLabel = saveDraftLabel || SAVE_DRAFT_LABEL
 
   return (
     <div className={`step-action-bar ${className}`} data-testid="step-action-bar">

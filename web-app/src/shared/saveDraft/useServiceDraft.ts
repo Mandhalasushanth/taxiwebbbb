@@ -5,6 +5,7 @@ import { localStore } from '@core/storage/localStorage'
 import { userStorage } from '@core/storage/userStorage'
 import { useAppStore } from '@store/index'
 import { useDraftBlocker } from './useDraftBlocker'
+import { DRAFT_NAMESPACES } from './draftNamespaces'
 
 /**
  * Draft handling shared by every multi-step service (GST, ITR, Incorporation), matching the loans flows:
@@ -41,6 +42,17 @@ export const readServiceDraft = <T>(
   } catch {
     return null
   }
+}
+
+/**
+ * Removes a service's draft everywhere: the dashboard entry and the auto-saved copy in every
+ * module namespace. Used where only the service id is known (e.g. "Discard" on a dashboard draft card).
+ */
+export const deleteServiceDraft = (serviceId: string): void => {
+  userStorage.deleteDraft(serviceId)
+  ;[DEFAULT_NAMESPACE, ...Object.values(DRAFT_NAMESPACES)].forEach((namespace) =>
+    localStore.remove(autosaveKey(serviceId, namespace)),
+  )
 }
 
 /** True when two plain form values differ (used to tell whether the user has typed anything) */

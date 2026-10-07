@@ -1,5 +1,5 @@
-import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
-import { GSTUpdateAndReviewButton } from '@modules/gst/shared/edit/GSTUpdateAndReviewButton'
+import { SaveDraftButton } from '@shared/saveDraft'
+import { UpdateAndReviewButton } from '@shared/edit'
 import { GST_FILE_MESSAGES, gstFileSizeError } from '@modules/gst/utils/gstFile'
 import React, { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
 import { detectGstFieldKind, gstRuleForField } from '@modules/gst/validation/gstFieldRules'
@@ -179,9 +179,9 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
             Back
           </button>
 
-          <div className="gst-actions-group">
+          <div className="form-actions-group">
             {onSaveDraft && (
-              <GSTSaveDraftButton
+              <SaveDraftButton
                 onClick={() =>
                   onSaveDraft({
                     newValue: newValue.trim(),
@@ -193,10 +193,9 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
               />
             )}
             {isEditMode ? (
-              <GSTUpdateAndReviewButton
+              <UpdateAndReviewButton
                 type="submit"
                 isSubmitting={isSubmitting}
-                label="Update & Review"
               />
             ) : (
               <button

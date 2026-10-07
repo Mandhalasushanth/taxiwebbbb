@@ -1,5 +1,6 @@
 import React from 'react'
-import { StepActionBar, DraftConfirmModal } from '@shared/components'
+import { StepActionBar } from '@shared/components'
+import { ServiceDraftModal } from '@shared/saveDraft'
 import { LoanSubmitSuccessModal } from '../LoanSubmitSuccessModal/LoanSubmitSuccessModal'
 import type { LoanStepFlow } from '@modules/loans/hooks/useLoanStepFlow'
 
@@ -44,13 +45,7 @@ export function LoanStepFlowFooter<T extends object>({
         nextAriaLabel={flow.isLastStep ? 'Submit Application' : undefined}
       />
 
-      <DraftConfirmModal
-        isOpen={flow.isDraftModalOpen}
-        serviceTitle={serviceTitle}
-        onSaveAndExit={flow.handleSaveAndExit}
-        onDiscardAndExit={flow.handleDiscardAndExit}
-        onKeepEditing={flow.handleKeepEditing}
-      />
+      <ServiceDraftModal draft={flow} serviceTitle={serviceTitle} />
 
       {successModal ?? (
         <LoanSubmitSuccessModal

@@ -120,7 +120,7 @@ export const GSTStepDocuments: FC<GSTStepDocumentsProps> = ({
         onBack={onBack}
         onSaveDraft={onSaveDraft}
         onNext={() => handleProceed(onNext)}
-        nextLabel={isEditMode ? 'Update & Review' : 'Continue'}
+        isEditMode={isEditMode}
       />
 
       {/* Document Preview Modal */}

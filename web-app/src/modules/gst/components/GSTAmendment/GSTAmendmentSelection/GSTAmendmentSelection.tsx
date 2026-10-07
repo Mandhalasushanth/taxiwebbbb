@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { gstFieldRules } from '@modules/gst/validation/gstFieldRules'
-import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
+import { SaveDraftButton } from '@shared/saveDraft'
 import './GSTAmendmentSelection.css'
 
 import { CORE_AMENDMENTS, NON_CORE_AMENDMENTS, type AmendmentCardItem } from '@modules/gst/constants/gstAmendmentOptions'
@@ -214,7 +214,7 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
 
       {onSaveDraft && gstin && (
         <div className="gst-amend-select-footer">
-          <GSTSaveDraftButton onClick={onSaveDraft} />
+          <SaveDraftButton onClick={onSaveDraft} />
         </div>
       )}
     </div>

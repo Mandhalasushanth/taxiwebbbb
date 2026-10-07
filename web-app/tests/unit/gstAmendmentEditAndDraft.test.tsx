@@ -9,7 +9,7 @@ import { GSTAmendment } from '../../src/modules/gst/components/GSTAmendment/GSTA
 import { authStorage } from '../../src/core/auth'
 import { localStore } from '../../src/core/storage/localStorage'
 import { userStorage } from '../../src/core/storage/userStorage'
-import { readGstDraft } from '../../src/modules/gst/hooks/useGstDraft'
+import { readServiceDraft, DRAFT_NAMESPACES } from '../../src/shared/saveDraft'
 
 describe('GST Amendment Edit Flow & Draft Persistence', () => {
   afterEach(cleanup)

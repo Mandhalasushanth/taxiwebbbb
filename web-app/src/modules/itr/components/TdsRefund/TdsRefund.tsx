@@ -1,8 +1,9 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config/routePaths'
-import { DraftConfirmModal, PaymentCheckout } from '@shared/components'
-import { useReviewEdit } from '@shared/hooks'
+import { PaymentCheckout } from '@shared/components'
+import { ServiceDraftModal } from '@shared/saveDraft'
+import { useReviewEdit } from '@shared/edit'
 import { TdsRefundOverview, TdsRefundProgressTracker } from './TdsRefundOverview'
 import { TdsRefundCustomerIncome } from './TdsRefundCustomerIncome'
 import { TdsRefundDocuments } from './TdsRefundDocuments'
@@ -15,6 +16,7 @@ const REVIEW_STEP = 3
 
 export const TdsRefund: React.FC = () => {
   const navigate = useNavigate()
+  const flow = useTdsRefundFlow()
   const {
     user,
     tdsRef,
@@ -28,14 +30,10 @@ export const TdsRefund: React.FC = () => {
     setTaxData,
     uploads,
     setUploads,
-    isModalOpen,
     openModal,
-    handleSaveAndExit,
-    handleDiscardAndExit,
-    handleKeepEditing,
     handleFinishSubmission,
     isDirty,
-  } = useTdsRefundFlow()
+  } = flow
 
   // "Edit" from the review: the step shows "Update & Review" and Continue / Back return to the review
   const reviewEdit = useReviewEdit(() => setCurrentStep(REVIEW_STEP))
@@ -124,13 +122,7 @@ export const TdsRefund: React.FC = () => {
   return (
     <>
       {renderCurrentStage()}
-      <DraftConfirmModal
-        isOpen={isModalOpen}
-        serviceTitle="TDS refund"
-        onSaveAndExit={handleSaveAndExit}
-        onDiscardAndExit={handleDiscardAndExit}
-        onKeepEditing={handleKeepEditing}
-      />
+      <ServiceDraftModal draft={flow} serviceTitle="TDS refund" />
     </>
   )
 }

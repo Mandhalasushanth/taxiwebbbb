@@ -1,6 +1,6 @@
 import { routePaths } from '@core/config'
 import { GST_FEES } from '@modules/gst/constants/gstBusiness.constants'
-import { DraftConfirmModal } from '@shared/components'
+import { ServiceDraftModal } from '@shared/saveDraft'
 import { GSTStepBusiness } from './GSTStepBusiness/GSTStepBusiness'
 import { GSTStepDocuments } from './GSTStepDocuments/GSTStepDocuments'
 import { GSTStepReview } from './GSTStepReview/GSTStepReview'
@@ -11,18 +11,15 @@ import { useGstRegistrationState } from '@modules/gst/hooks/useGstRegistrationSt
 import './GSTRegistration.css'
 
 export const GSTRegistration = () => {
+  const flow = useGstRegistrationState()
   const {
     currentStep,
     businessData,
     documents,
     paymentResult,
     applicationRef,
-    isDraftModalOpen,
     openDraftModal,
     handleCancel,
-    handleSaveAndExit,
-    handleDiscardAndExit,
-    handleKeepEditing,
     handleBusinessChange,
     setDocuments,
     goToStep,
@@ -37,7 +34,7 @@ export const GSTRegistration = () => {
     handleStep4Back,
     handlePaymentSuccess,
     navigate,
-  } = useGstRegistrationState()
+  } = flow
 
   const getHeaderTitle = () => {
     switch (currentStep) {
@@ -151,13 +148,7 @@ export const GSTRegistration = () => {
       )}
 
       {/* Save Application Progress Confirmation Popup on Leaving */}
-      <DraftConfirmModal
-        isOpen={isDraftModalOpen}
-        serviceTitle="GST registration"
-        onSaveAndExit={handleSaveAndExit}
-        onDiscardAndExit={handleDiscardAndExit}
-        onKeepEditing={handleKeepEditing}
-      />
+      <ServiceDraftModal draft={flow} serviceTitle="GST registration" />
     </div>
   )
 }

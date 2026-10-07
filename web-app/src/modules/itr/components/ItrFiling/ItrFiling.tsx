@@ -1,6 +1,6 @@
 import React from "react";
-import { DraftConfirmModal } from "@shared/components";
-import { useReviewEdit } from "@shared/hooks";
+import { ServiceDraftModal } from "@shared/saveDraft"
+import { useReviewEdit } from "@shared/edit"
 import { ItrCategorySelectionView } from "./CategorySelection";
 import { ItrPersonalInfoView } from "./PersonalInfo";
 import { ItrIncomeSourcesView } from "./IncomeSources";
@@ -14,6 +14,7 @@ import "./ItrFiling.css";
 const REVIEW_STEP = 5;
 
 export const ItrFiling: React.FC = () => {
+  const flow = useItrFilingState()
   const {
     isStarted,
     setIsStarted,
@@ -57,13 +58,9 @@ export const ItrFiling: React.FC = () => {
     submittedRef,
     isSubmitting,
     handleFinalSubmit,
-    isModalOpen,
     openModal,
-    handleSaveAndExit,
-    handleDiscardAndExit,
-    handleKeepEditing,
     isDirty,
-  } = useItrFilingState();
+  } = flow;
 
   const navigateToStep = (step: number) => {
     try {
@@ -214,13 +211,7 @@ export const ItrFiling: React.FC = () => {
   return (
     <>
       {renderActiveContent()}
-      <DraftConfirmModal
-        isOpen={isModalOpen}
-        serviceTitle="ITR filing"
-        onSaveAndExit={handleSaveAndExit}
-        onDiscardAndExit={handleDiscardAndExit}
-        onKeepEditing={handleKeepEditing}
-      />
+      <ServiceDraftModal draft={flow} serviceTitle="ITR filing" />
     </>
   );
 };

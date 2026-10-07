@@ -1,7 +1,7 @@
 import React from 'react'
 import { routePaths } from '@core/config/routePaths'
-import { DraftConfirmModal } from '@shared/components'
-import { useReviewEdit } from '@shared/hooks'
+import { ServiceDraftModal } from '@shared/saveDraft'
+import { useReviewEdit } from '@shared/edit'
 import { Check as CheckIcon } from 'lucide-react'
 import { NoticeInformation, NoticeDocument } from './NoticeInformation'
 import { NoticeSummary } from './NoticeSummary'
@@ -86,6 +86,7 @@ export const NoticeStepper: React.FC<NoticeStepperProps> = ({
 }
 
 export const TaxNoticeAssistance: React.FC = () => {
+  const flow = useTaxNoticeAssistanceFlow()
   const {
     navigate,
     user,
@@ -93,15 +94,11 @@ export const TaxNoticeAssistance: React.FC = () => {
     setStep,
     formData,
     isSubmitting,
-    isModalOpen,
     handleUpdateFormData,
     handleSaveDraftAndExit,
     handleBack,
     handleFinalApproveAndSubmit,
-    handleSaveAndExit,
-    handleDiscardAndExit,
-    handleKeepEditing,
-  } = useTaxNoticeAssistanceFlow()
+  } = flow
 
   const goToStep = (targetStep: 1 | 2 | 3 | 4 | 5) => {
     try {
@@ -196,13 +193,7 @@ export const TaxNoticeAssistance: React.FC = () => {
         {renderActiveStep()}
       </div>
 
-      <DraftConfirmModal
-        isOpen={isModalOpen}
-        serviceTitle="Tax Notice Assistance"
-        onSaveAndExit={handleSaveAndExit}
-        onDiscardAndExit={handleDiscardAndExit}
-        onKeepEditing={handleKeepEditing}
-      />
+      <ServiceDraftModal draft={flow} serviceTitle="Tax Notice Assistance" />
     </div>
   )
 }

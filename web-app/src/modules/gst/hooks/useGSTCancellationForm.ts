@@ -4,7 +4,7 @@ import { gstFieldRules } from '@modules/gst/validation/gstFieldRules'
 import { gstProfileService } from '@modules/gst/services/gstProfileService'
 import { generateGstReference } from '@modules/gst/utils/gstFormat'
 import { routePaths } from '@core/config'
-import { useGstDraft, readGstDraft, hasGstFormChanged } from '@modules/gst/hooks/useGstDraft'
+import { useServiceDraft, readServiceDraft, hasFormChanged, DRAFT_NAMESPACES } from '@shared/saveDraft'
 
 export interface CancellationFormData {
   gstin: string
@@ -40,7 +40,7 @@ export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps
   const [initialValues] = useState(buildInitialCancellation)
   const [restored] = useState<CancellationDraft>(() => ({
     ...initialValues,
-    ...readGstDraft<CancellationDraft>(SERVICE_ID)?.formData,
+    ...readServiceDraft<CancellationDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst)?.formData,
   }))
   const [gstin, setGstin] = useState(restored.gstin)
   const [reason, setReason] = useState(restored.reason)
@@ -67,7 +67,8 @@ export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps
     finalReturnDeclaration,
   }
 
-  const draft = useGstDraft<CancellationDraft>({
+  const draft = useServiceDraft<CancellationDraft>({
+    storageNamespace: DRAFT_NAMESPACES.gst,
     serviceId: SERVICE_ID,
     serviceTitle: 'GST Cancellation',
     totalSteps: 2,
@@ -76,7 +77,7 @@ export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps
     resumeRoute: routePaths.gst.cancellation,
     exitRoute: routePaths.gst.root,
     formData: draftData,
-    hasEnteredData: isReviewing || Boolean(selectedFile) || hasGstFormChanged(draftData, initialValues),
+    hasEnteredData: isReviewing || Boolean(selectedFile) || hasFormChanged(draftData, initialValues),
     isComplete: isSubmitted,
   })
 

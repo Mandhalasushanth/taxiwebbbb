@@ -176,11 +176,11 @@
 }
 
 /* Submit row: Save Draft beside the full-width submit button */
-.submit-btn-wrapper.gst-actions-group {
+.submit-btn-wrapper.form-actions-group {
   flex-wrap: nowrap;
 }
 
-.submit-btn-wrapper.gst-actions-group .gst-btn-submit-primary {
+.submit-btn-wrapper.form-actions-group .gst-btn-submit-primary {
   flex: 1;
   width: auto;
 }

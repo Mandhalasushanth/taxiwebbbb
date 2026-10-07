@@ -6,9 +6,9 @@ import { GSTSuccessView } from './GSTSuccessView'
 import { useGSTComplianceState, type ComplianceRequestOption } from '@modules/gst/hooks/useGSTComplianceState'
 import { FINANCIAL_YEAR_OPTIONS } from '@modules/gst/utils/gstPeriodOptions'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
-import { DraftConfirmModal } from '@shared/components'
+import { ServiceDraftModal } from '@shared/saveDraft'
 import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
-import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
+import { SaveDraftButton } from '@shared/saveDraft'
 import { GSTReconciliationDocsSection } from './GSTReconciliationDocsSection'
 import './GSTCompliance.css'
 import './GSTCompliance.sidebar.css'
@@ -16,6 +16,7 @@ import './GSTCompliance.sidebar.css'
 export type { ComplianceRequestOption }
 
 export const GSTCompliance: React.FC = () => {
+  const flow = useGSTComplianceState()
   const {
     fields,
     setField,
@@ -38,12 +39,8 @@ export const GSTCompliance: React.FC = () => {
     handleSubmit,
     handleConfirmSubmit,
     handleReset,
-    isDraftModalOpen,
     openDraftModal,
-    handleSaveAndExit,
-    handleDiscardAndExit,
-    handleKeepEditing,
-  } = useGSTComplianceState()
+  } = flow
   const { gstin, financialYear, requestType } = fields
 
   if (isSubmitted) {
@@ -194,8 +191,8 @@ export const GSTCompliance: React.FC = () => {
               <GSTStepErrorBanner message={stepError} />
 
               {/* Submit Request Button */}
-              <div className="submit-btn-wrapper gst-actions-group">
-                <GSTSaveDraftButton onClick={openDraftModal} />
+              <div className="submit-btn-wrapper form-actions-group">
+                <SaveDraftButton onClick={openDraftModal} />
                 <button
                   type="button"
                   onClick={() => handleSubmit()}
@@ -229,13 +226,7 @@ export const GSTCompliance: React.FC = () => {
         isSubmitting={isSubmitting}
       />
 
-      <DraftConfirmModal
-        isOpen={isDraftModalOpen}
-        serviceTitle="GST Compliance"
-        onSaveAndExit={handleSaveAndExit}
-        onDiscardAndExit={handleDiscardAndExit}
-        onKeepEditing={handleKeepEditing}
-      />
+      <ServiceDraftModal draft={flow} serviceTitle="GST Compliance" />
     </div>
   )
 }

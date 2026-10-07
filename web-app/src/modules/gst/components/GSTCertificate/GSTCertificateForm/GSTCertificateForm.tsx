@@ -2,7 +2,7 @@ import type { ChangeEvent, FormEvent } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { GST_CERTIFICATE_REQUEST_TYPES } from '@modules/gst/data/gstCertificateData'
 import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
-import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
+import { SaveDraftButton } from '@shared/saveDraft'
 import type { CertificateFields } from '@modules/gst/hooks/useGSTCertificateFlow'
 import './GSTCertificateForm.css'
 
@@ -144,7 +144,7 @@ export const GSTCertificateForm = ({
 
           <GSTStepErrorBanner message={stepError} />
 
-          <GSTSaveDraftButton onClick={onSaveDraft} />
+          <SaveDraftButton onClick={onSaveDraft} />
 
           {/* Submit button */}
           <button type="submit" disabled={isSubmitting} className="gcf-submit-btn">

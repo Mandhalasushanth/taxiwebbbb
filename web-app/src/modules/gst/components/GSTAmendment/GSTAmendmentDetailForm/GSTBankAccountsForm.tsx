@@ -1,5 +1,5 @@
-import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
-import { GSTUpdateAndReviewButton } from '@modules/gst/shared/edit/GSTUpdateAndReviewButton'
+import { SaveDraftButton } from '@shared/saveDraft'
+import { UpdateAndReviewButton } from '@shared/edit'
 import { GST_FILE_MESSAGES, gstFileSizeError } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
 import React, { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
@@ -299,9 +299,9 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
             Back
           </button>
 
-          <div className="gst-actions-group">
+          <div className="form-actions-group">
             {onSaveDraft && (
-              <GSTSaveDraftButton
+              <SaveDraftButton
                 onClick={() => {
                   const formattedNewValue = `${bankName.trim()} · A/C ${accountNumber.trim()} · ${ifscCode.toUpperCase().trim()} (${accountType})`
                   onSaveDraft({
@@ -320,10 +320,9 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
               />
             )}
             {isEditMode ? (
-              <GSTUpdateAndReviewButton
+              <UpdateAndReviewButton
                 type="submit"
                 isSubmitting={isSubmitting}
-                label="Update & Review"
               />
             ) : (
               <button

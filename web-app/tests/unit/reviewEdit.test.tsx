@@ -7,7 +7,7 @@ import { act, cleanup, fireEvent, render, renderHook, screen } from '@testing-li
 import { RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { authStorage } from '../../src/core/auth'
 import { localStore } from '../../src/core/storage/localStorage'
-import { useReviewEdit } from '../../src/shared/hooks'
+import { useReviewEdit } from '../../src/shared/edit'
 import { StepActionBar } from '../../src/shared/components'
 import { IncorporationWizardLayout } from '../../src/modules/incorporation/components/IncorporationWizardLayout/IncorporationWizardLayout'
 import { useIncorporationFlow } from '../../src/modules/incorporation/hooks'

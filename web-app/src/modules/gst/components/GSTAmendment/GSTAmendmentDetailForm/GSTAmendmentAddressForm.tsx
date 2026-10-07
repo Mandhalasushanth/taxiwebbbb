@@ -1,5 +1,5 @@
-import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
-import { GSTUpdateAndReviewButton } from '@modules/gst/shared/edit/GSTUpdateAndReviewButton'
+import { SaveDraftButton } from '@shared/saveDraft'
+import { UpdateAndReviewButton } from '@shared/edit'
 import { GST_FILE_MESSAGES, gstFileSizeError } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
 import React, { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
@@ -310,9 +310,9 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
             Back
           </button>
 
-          <div className="gst-actions-group">
+          <div className="form-actions-group">
             {onSaveDraft && (
-              <GSTSaveDraftButton
+              <SaveDraftButton
                 onClick={() => {
                   const formattedVal = isAdditionalPlace
                     ? `${address.trim()}, ${city.trim()} - ${pinCode} (${natureOfPremises})`
@@ -335,10 +335,9 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
               />
             )}
             {isEditMode ? (
-              <GSTUpdateAndReviewButton
+              <UpdateAndReviewButton
                 type="submit"
                 isSubmitting={isSubmitting}
-                label="Update & Review"
               />
             ) : (
               <button type="submit" disabled={isSubmitting} className="gst-amend-submit-orange-btn">

@@ -283,7 +283,7 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
         onBack={onBack}
         onNext={handleNext}
         onSaveDraft={onSaveDraft}
-        nextLabel={isEditMode ? 'Update & Review' : 'Continue'}
+        isEditMode={isEditMode}
       />
     </div>
   )

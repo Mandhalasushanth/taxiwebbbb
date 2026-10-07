@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { useAppStore } from '@store/index'
 import { userStorage } from '@core/storage/userStorage'
-import { useGstDraft, readGstDraft } from '@modules/gst/hooks/useGstDraft'
-import { useReviewEdit } from '@shared/hooks'
+import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '@shared/saveDraft'
+import { useReviewEdit } from '@shared/edit'
 import { AMENDMENT_OPTIONS } from '@modules/gst/constants/gstAmendmentOptions'
 import { getAmendmentConfig } from '@modules/gst/components/GSTAmendment/amendmentConfigs'
 import { gstService } from '@modules/gst/services/gstService'
@@ -46,7 +46,7 @@ export const useGSTAmendmentFlow = () => {
   const navigate = useNavigate()
   const pushToast = useAppStore((state) => state.pushToast)
 
-  const [restored] = useState(() => readGstDraft<AmendmentDraft>(SERVICE_ID)?.formData)
+  const [restored] = useState(() => readServiceDraft<AmendmentDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst)?.formData)
   const [gstin, setGstin] = useState(restored?.gstin || '')
   const [selectedOption, setSelectedOption] = useState<AmendmentCardItem | null>(
     () => AMENDMENT_OPTIONS.find((option) => option.id === restored?.selectedOptionId) || null
@@ -90,7 +90,8 @@ export const useGSTAmendmentFlow = () => {
       }
     : null
 
-  const draft = useGstDraft<AmendmentDraft>({
+  const draft = useServiceDraft<AmendmentDraft>({
+    storageNamespace: DRAFT_NAMESPACES.gst,
     serviceId: SERVICE_ID,
     serviceTitle: 'GST Amendment',
     totalSteps: 3,

@@ -1,4 +1,4 @@
-import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
+import { SaveDraftButton } from '@shared/saveDraft'
 import React, { useState } from 'react'
 import { getAddressRows, getBankRows, getContactRows, getSignatoryRows, type RowItem } from './getComparisonRows'
 import './GSTAmendmentReview.css'
@@ -232,7 +232,7 @@ export const GSTAmendmentReview: React.FC<GSTAmendmentReviewProps> = ({
           </button>
 
           <div className="gst-amend-review-actions-right">
-            {onSaveDraft && <GSTSaveDraftButton onClick={onSaveDraft} />}
+            {onSaveDraft && <SaveDraftButton onClick={onSaveDraft} />}
             <button
               type="submit"
               disabled={isSubmitting}

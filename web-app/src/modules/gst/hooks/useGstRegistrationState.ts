@@ -9,8 +9,8 @@ import { GST_FEES } from '@modules/gst/constants/gstBusiness.constants'
 import { INITIAL_DOCUMENTS } from '@modules/gst/utils/gstDocuments.constants'
 import { clampRegistrationStep } from '@modules/gst/utils/gstRegistrationGuard'
 import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
-import { useGstDraft, readGstDraft, hasGstFormChanged } from '@modules/gst/hooks/useGstDraft'
-import { useReviewEdit } from '@shared/hooks'
+import { useServiceDraft, readServiceDraft, hasFormChanged, DRAFT_NAMESPACES } from '@shared/saveDraft'
+import { useReviewEdit } from '@shared/edit'
 import type { DocumentItem } from '@modules/gst/types/gstDocuments.types'
 import type { GstBusinessFormData } from '@modules/gst/types/gstBusiness.types'
 import type { PaymentResult } from '@modules/gst/types/gst.types'
@@ -83,7 +83,7 @@ export const useGstRegistrationState = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const location = useLocation()
 
-  const [savedDraft] = useState(() => readGstDraft<RegistrationDraft>(SERVICE_ID))
+  const [savedDraft] = useState(() => readServiceDraft<RegistrationDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst))
   const [initialBusinessData] = useState(() => buildInitialBusinessData(user))
 
   const [businessData, setBusinessData] = useState<GstBusinessFormData>(() => ({
@@ -113,10 +113,11 @@ export const useGstRegistrationState = () => {
 
   const hasEnteredData =
     currentStep > 1 ||
-    hasGstFormChanged(businessData, initialBusinessData) ||
+    hasFormChanged(businessData, initialBusinessData) ||
     documents.some((doc) => doc.isUploaded)
 
-  const draft = useGstDraft<RegistrationDraft>({
+  const draft = useServiceDraft<RegistrationDraft>({
+    storageNamespace: DRAFT_NAMESPACES.gst,
     serviceId: SERVICE_ID,
     serviceTitle: SERVICE_TITLE,
     totalSteps: TOTAL_STEPS,

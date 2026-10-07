@@ -1,6 +1,6 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import { DraftConfirmModal } from '@shared/components'
+import { ServiceDraftModal } from '@shared/saveDraft'
 import { IncorporationProvider, useIncorporationFlow } from '../../hooks'
 import { INCORPORATION_SERVICE_TITLE } from '../../utils/incorporationDraft.constants'
 
@@ -8,13 +8,7 @@ import { INCORPORATION_SERVICE_TITLE } from '../../utils/incorporationDraft.cons
 const IncorporationDraftModal: React.FC = () => {
   const { draft } = useIncorporationFlow()
   return (
-    <DraftConfirmModal
-      isOpen={draft.isDraftModalOpen}
-      serviceTitle={INCORPORATION_SERVICE_TITLE}
-      onSaveAndExit={draft.handleSaveAndExit}
-      onDiscardAndExit={draft.handleDiscardAndExit}
-      onKeepEditing={draft.handleKeepEditing}
-    />
+    <ServiceDraftModal draft={draft} serviceTitle={INCORPORATION_SERVICE_TITLE} />
   )
 }
 

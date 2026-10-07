@@ -127,7 +127,7 @@ export const GSTStepBusiness = ({
         onBack={onCancel}
         onSaveDraft={onSaveDraft}
         onNext={handleSubmit}
-        nextLabel={isEditMode ? 'Update & Review' : 'Continue'}
+        isEditMode={isEditMode}
       />
     </form>
   )

@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { localStore } from '@core/storage/localStorage'
-import { useServiceDraft, readServiceDraft } from '@shared/hooks'
+import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '@shared/saveDraft'
 import { useAuthStore } from '@store/index'
 import { loanApplicationService, loanStorageKey } from '@modules/loans/services/loanApplicationService'
 
@@ -12,8 +12,6 @@ export interface UseLoanApplicationOptions {
   resumeRoute?: string
 }
 
-/** Auto-save storage namespace for loan drafts (taxedge_loan_draft_<user>_<loanType>) */
-const LOAN_DRAFT_NAMESPACE = 'loan'
 const LOANS_ROUTE = '/loans'
 const DEFAULT_TOTAL_STEPS = 4
 
@@ -121,7 +119,7 @@ export function useLoanApplication<T extends object>(
   }, [user, navigate])
 
   // Resume: the shared draft first, then a draft saved by the earlier loan storage
-  const [savedDraft] = useState(() => readServiceDraft<T>(loanType, LOAN_DRAFT_NAMESPACE))
+  const [savedDraft] = useState(() => readServiceDraft<T>(loanType, DRAFT_NAMESPACES.loan))
 
   const [formData, setFormData] = useState<T>(() => {
     const restored = savedDraft?.formData ?? loanApplicationService.getDraft<T>(loanType)
@@ -175,7 +173,7 @@ export function useLoanApplication<T extends object>(
     isComplete: isSubmitted || isSubmitting,
     // The status page after submitting belongs to the flow
     isFlowRoute: (pathname) => pathname.includes('/loans/status'),
-    storageNamespace: LOAN_DRAFT_NAMESPACE,
+    storageNamespace: DRAFT_NAMESPACES.loan,
     onDiscard: () => {
       clearLegacyDraft(loanType)
       setFormData(initialValues)

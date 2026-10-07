@@ -1,5 +1,5 @@
-import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
-import { GSTUpdateAndReviewButton } from '@modules/gst/shared/edit/GSTUpdateAndReviewButton'
+import { SaveDraftButton } from '@shared/saveDraft'
+import { UpdateAndReviewButton } from '@shared/edit'
 import { GST_FILE_MESSAGES, gstFileSizeError } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
 import React, { useState, useEffect, useRef, type ChangeEvent, type FormEvent } from 'react'
@@ -319,9 +319,9 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
                 </svg>
                 Back
               </button>
-              <div className="gst-actions-group">
+              <div className="form-actions-group">
                 {onSaveDraft && (
-                  <GSTSaveDraftButton
+                  <SaveDraftButton
                     onClick={() => {
                       const formattedNewValue = `${name.trim()} (${designation.trim()}) · PAN: ${pan.toUpperCase().trim()}`
                       onSaveDraft({
@@ -342,10 +342,9 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
                   />
                 )}
                 {isEditMode ? (
-                  <GSTUpdateAndReviewButton
+                  <UpdateAndReviewButton
                     type="submit"
                     isSubmitting={isSubmitting}
-                    label="Update & Review"
                   />
                 ) : (
                   <button type="submit" disabled={isSubmitting} className="gst-amend-submit-orange-btn">

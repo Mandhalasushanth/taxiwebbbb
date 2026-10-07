@@ -19,7 +19,7 @@ import {
 import { validateGstBusinessForm } from '../../src/modules/gst/validation/gstStepBusiness.validator'
 import { validateBusinessPan, getCompositionConflicts } from '../../src/modules/gst/validation/gstBusinessRules'
 import { gstInput } from '../../src/modules/gst/utils/gstInputFormatters'
-import { useGstDraft, readGstDraft } from '../../src/modules/gst/hooks/useGstDraft'
+import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '../../src/shared/saveDraft'
 import { useGstRegistrationState } from '../../src/modules/gst/hooks/useGstRegistrationState'
 import type { GstBusinessFormData } from '../../src/modules/gst/types/gstBusiness.types'
 import { INITIAL_DOCUMENTS } from '../../src/modules/gst/utils/gstDocuments.constants'
@@ -174,7 +174,8 @@ describe('BUG-GST-008: Discard & Exit purges the draft', () => {
   })
 
   const DraftHarness = () => {
-    const draft = useGstDraft({
+    const draft = useServiceDraft({
+    storageNamespace: DRAFT_NAMESPACES.gst,
       serviceId: 'gst-registration',
       serviceTitle: 'GST Registration',
       totalSteps: 4,
@@ -203,12 +204,12 @@ describe('BUG-GST-008: Discard & Exit purges the draft', () => {
     )
     render(<RouterProvider router={router} />)
     fireEvent.click(screen.getByText('save'))
-    expect(readGstDraft('gst-registration')).not.toBeNull()
+    expect(readServiceDraft('gst-registration', DRAFT_NAMESPACES.gst)).not.toBeNull()
 
     fireEvent.click(screen.getByText('open'))
     fireEvent.click(screen.getByText('discard'))
 
-    expect(readGstDraft('gst-registration')).toBeNull()
+    expect(readServiceDraft('gst-registration', DRAFT_NAMESPACES.gst)).toBeNull()
     expect(userStorage.getDraft('gst-registration')).toBeNull()
     expect(localStore.get(`taxedge_gst_draft_${SIGNED_IN_USER.id}_gst-registration`)).toBeNull()
   })

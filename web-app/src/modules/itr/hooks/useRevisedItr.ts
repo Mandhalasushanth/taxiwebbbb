@@ -2,8 +2,8 @@ import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { userStorage } from '@core/storage/userStorage'
-import { useServiceDraft, readServiceDraft, useReviewEdit } from '@shared/hooks'
-import { ITR_DRAFT_NAMESPACE } from '../utils/itrDraft.constants'
+import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '@shared/saveDraft'
+import { useReviewEdit } from '@shared/edit'
 import { revisedItrService } from '../services/revisedItrService'
 import type {
   OriginalReturnDetails, RevisionReasonKey, IncomeCorrectionState, DeductionCorrectionState,
@@ -72,7 +72,7 @@ const downloadRevisedReceipt = (params: { applicationId: string; ackNumber: stri
 
 export const useRevisedItr = () => {
   const navigate = useNavigate()
-  const [existingDraft] = useState(() => readServiceDraft<RevisedItrDraftData>(SERVICE_ID, ITR_DRAFT_NAMESPACE))
+  const [existingDraft] = useState(() => readServiceDraft<RevisedItrDraftData>(SERVICE_ID, DRAFT_NAMESPACES.itr))
 
   const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(() =>
     existingDraft?.currentStep && existingDraft.currentStep >= 1 && existingDraft.currentStep <= 5 ? (existingDraft.currentStep as 1 | 2 | 3 | 4 | 5) : 1
@@ -157,7 +157,7 @@ export const useRevisedItr = () => {
     },
     hasEnteredData: isDirty,
     isComplete: isSubmitted,
-    storageNamespace: ITR_DRAFT_NAMESPACE,
+    storageNamespace: DRAFT_NAMESPACES.itr,
     onDiscard: () => {
       setStep(1)
       setAckNumber('')

@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react'
 import { routePaths } from '@core/config'
 import { useAuthStore } from '@store/index'
 import { userStorage } from '@core/storage/userStorage'
-import { useServiceDraft, readServiceDraft } from '@shared/hooks'
+import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '@shared/saveDraft'
 import { authStorage } from '@core/auth'
 import { EMPTY_PROFILE, EMPTY_BANK, EMPTY_TAX, syncProfileWithAuthUser } from '../utils/tdsRefund.constants'
-import { ITR_DRAFT_NAMESPACE } from '../utils/itrDraft.constants'
 import type { TdsProfile, TdsBankDetails, TdsIncomeTaxData, UploadedFileMeta } from '../types/tdsRefund.types'
 
 const SERVICE_ID = 'tds-refund'
@@ -29,7 +28,7 @@ interface TdsRefundDraft {
 export const useTdsRefundFlow = () => {
   const user = useAuthStore((s) => s.user)
 
-  const [draft] = useState(() => readServiceDraft<TdsRefundDraft>(SERVICE_ID, ITR_DRAFT_NAMESPACE))
+  const [draft] = useState(() => readServiceDraft<TdsRefundDraft>(SERVICE_ID, DRAFT_NAMESPACES.itr))
 
   const [tdsRef] = useState(
     () => `TDS-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`
@@ -118,7 +117,7 @@ export const useTdsRefundFlow = () => {
     formData: { profile, bankDetails, taxData, uploads },
     hasEnteredData: isDirty,
     isComplete: currentStep >= SUCCESS_STEP,
-    storageNamespace: ITR_DRAFT_NAMESPACE,
+    storageNamespace: DRAFT_NAMESPACES.itr,
     onDiscard: () => setCurrentStep(0),
   })
 

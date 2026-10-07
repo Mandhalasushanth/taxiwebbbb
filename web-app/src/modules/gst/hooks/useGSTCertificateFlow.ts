@@ -6,7 +6,7 @@ import { useAppStore } from '@store/index'
 import { gstService } from '@modules/gst/services/gstService'
 import { gstProfileService } from '@modules/gst/services/gstProfileService'
 import { gstFieldRules, collectGstErrors, GST_STEP_ERROR } from '@modules/gst/validation/gstFieldRules'
-import { useGstDraft, readGstDraft, hasGstFormChanged } from '@modules/gst/hooks/useGstDraft'
+import { useServiceDraft, readServiceDraft, hasFormChanged, DRAFT_NAMESPACES } from '@shared/saveDraft'
 import type { GstCertificateRecord } from '@modules/gst/types/gst.types'
 
 export interface CertificateFields {
@@ -25,13 +25,14 @@ export const useGSTCertificateFlow = () => {
   const [initialFields] = useState<CertificateFields>(() => ({ gstin: gstProfileService.get().gstin, requestType: '' }))
   const [fields, setFields] = useState<CertificateFields>(() => ({
     ...initialFields,
-    ...readGstDraft<CertificateFields>(SERVICE_ID)?.formData,
+    ...readServiceDraft<CertificateFields>(SERVICE_ID, DRAFT_NAMESPACES.gst)?.formData,
   }))
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submittedRecord, setSubmittedRecord] = useState<GstCertificateRecord | null>(null)
 
-  const draft = useGstDraft<CertificateFields>({
+  const draft = useServiceDraft<CertificateFields>({
+    storageNamespace: DRAFT_NAMESPACES.gst,
     serviceId: SERVICE_ID,
     serviceTitle: 'GST Certificate',
     totalSteps: 1,
@@ -40,7 +41,7 @@ export const useGSTCertificateFlow = () => {
     resumeRoute: routePaths.gst.certificate,
     exitRoute: routePaths.gst.root,
     formData: fields,
-    hasEnteredData: hasGstFormChanged(fields, initialFields),
+    hasEnteredData: hasFormChanged(fields, initialFields),
     isComplete: Boolean(submittedRecord),
   })
 

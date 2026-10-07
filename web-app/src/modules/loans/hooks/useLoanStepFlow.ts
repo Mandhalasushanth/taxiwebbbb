@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useReviewEdit } from '@shared/hooks'
+import { useReviewEdit } from '@shared/edit'
 import { useLoanApplication } from './useLoanApplication'
 import type { UseLoanApplicationOptions } from './useLoanApplication'
 import { loanApplicationService } from '@modules/loans/services/loanApplicationService'

@@ -1,4 +1,4 @@
-import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
+import { SaveDraftButton } from '@shared/saveDraft'
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import React, { useState } from 'react'
 import { orNotAvailable } from '@modules/gst/services/gstProfileService'
@@ -193,8 +193,8 @@ export const GSTCancellationReview: React.FC<GSTCancellationReviewProps> = ({
             Back
           </button>
 
-          <div className="gst-actions-group">
-            {onSaveDraft && <GSTSaveDraftButton onClick={onSaveDraft} />}
+          <div className="form-actions-group">
+            {onSaveDraft && <SaveDraftButton onClick={onSaveDraft} />}
             <button type="submit" disabled={isSubmitting} className="gst-canc-submit-orange-btn">
               {isSubmitting ? 'Submitting...' : 'Submit Application'}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

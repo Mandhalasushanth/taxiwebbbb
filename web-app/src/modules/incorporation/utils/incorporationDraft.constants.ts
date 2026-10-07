@@ -2,8 +2,6 @@ import { routePaths } from '@core/config'
 
 export const INCORPORATION_SERVICE_ID = 'incorporation'
 export const INCORPORATION_SERVICE_TITLE = 'Company Incorporation'
-/** Auto-save storage namespace (taxedge_incorporation_draft_<user>_incorporation) */
-export const INCORPORATION_DRAFT_NAMESPACE = 'incorporation'
 
 /** Wizard steps in order; moving between them never asks to save */
 export const INCORPORATION_WIZARD_ROUTES: readonly string[] = [

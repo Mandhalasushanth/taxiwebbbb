@@ -4,7 +4,7 @@ import { useAppStore } from '@store/index'
 import { gstFieldRules, collectGstErrors, GST_STEP_ERROR } from '@modules/gst/validation/gstFieldRules'
 import { gstProfileService } from '@modules/gst/services/gstProfileService'
 import { generateGstReference } from '@modules/gst/utils/gstFormat'
-import { useGstDraft, readGstDraft, hasGstFormChanged } from '@modules/gst/hooks/useGstDraft'
+import { useServiceDraft, readServiceDraft, hasFormChanged, DRAFT_NAMESPACES } from '@shared/saveDraft'
 
 export type ComplianceRequestOption = 'Reconciliation Support' | 'Notice Response'
 
@@ -64,7 +64,7 @@ export const useGSTComplianceState = () => {
   const [initialFields] = useState(buildInitialFields)
   const [fields, setFields] = useState<ComplianceFields>(() => ({
     ...initialFields,
-    ...readGstDraft<ComplianceFields>(SERVICE_ID)?.formData,
+    ...readServiceDraft<ComplianceFields>(SERVICE_ID, DRAFT_NAMESPACES.gst)?.formData,
   }))
   const [purchaseFile, setPurchaseFile] = useState<File | null>(null)
   const [salesFile, setSalesFile] = useState<File | null>(null)
@@ -78,9 +78,10 @@ export const useGSTComplianceState = () => {
   const [applicationId, setApplicationId] = useState('')
 
   const hasEnteredData =
-    hasGstFormChanged(fields, initialFields) || Boolean(purchaseFile || salesFile || noticeFile)
+    hasFormChanged(fields, initialFields) || Boolean(purchaseFile || salesFile || noticeFile)
 
-  const draft = useGstDraft<ComplianceFields>({
+  const draft = useServiceDraft<ComplianceFields>({
+    storageNamespace: DRAFT_NAMESPACES.gst,
     serviceId: SERVICE_ID,
     serviceTitle: SERVICE_TITLE,
     totalSteps: 1,

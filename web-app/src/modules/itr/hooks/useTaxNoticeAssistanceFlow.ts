@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config/routePaths'
 import { useAuthStore } from '@store/index'
 import { userStorage } from '@core/storage/userStorage'
-import { useServiceDraft, readServiceDraft } from '@shared/hooks'
-import { ITR_DRAFT_NAMESPACE } from '../utils/itrDraft.constants'
+import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '@shared/saveDraft'
 import type { NoticeFormData } from '../types/taxNoticeAssistance.types'
 
 export const DRAFT_SERVICE_ID = 'tax-notice-assistance'
@@ -54,7 +53,7 @@ export const useTaxNoticeAssistanceFlow = () => {
   const user = useAuthStore((state) => state.user)
 
   // Resume a saved / auto-saved draft (restored on first render, no effect needed)
-  const [existingDraft] = useState(() => readServiceDraft<NoticeFormData>(DRAFT_SERVICE_ID, ITR_DRAFT_NAMESPACE))
+  const [existingDraft] = useState(() => readServiceDraft<NoticeFormData>(DRAFT_SERVICE_ID, DRAFT_NAMESPACES.itr))
   const [step, setStep] = useState<1 | 2 | 3 | 4 | 5 | 6>(() => {
     const draftStep = existingDraft?.currentStep
     return draftStep && draftStep >= 1 && draftStep <= TOTAL_STEPS ? (draftStep as 1 | 2 | 3 | 4 | 5) : 1
@@ -108,7 +107,7 @@ export const useTaxNoticeAssistanceFlow = () => {
     formData: { ...formData, documentFile: null },
     hasEnteredData: isDirty,
     isComplete: step > TOTAL_STEPS,
-    storageNamespace: ITR_DRAFT_NAMESPACE,
+    storageNamespace: DRAFT_NAMESPACES.itr,
     onDiscard: () => {
       setStep(1)
       setFormData(INITIAL_NOTICE_FORM_DATA)
