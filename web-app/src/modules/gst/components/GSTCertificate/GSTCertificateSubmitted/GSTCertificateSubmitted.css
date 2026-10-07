@@ -1,11 +1,11 @@
 /* ── Screen 2: GST Certificate Ready Container ── */
 .gst-cert-ready-container {
-  max-width: 460px;
   width: 100%;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 1.15rem;
+  gap: 1.5rem;
   font-family: var(--font-sans);
   box-sizing: border-box;
 }
@@ -149,13 +149,14 @@
 .gst-cert-ready-card {
   background: #ffffff;
   border: 1.5px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 1.15rem 1.4rem;
+  border-radius: 18px;
+  padding: 1.5rem 2.25rem;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  gap: 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
   box-sizing: border-box;
+  width: 100%;
 }
 
 .gst-cert-ready-row {
@@ -255,24 +256,24 @@
 .gst-cert-ready-bottom-actions {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
+  gap: 1rem;
   margin-top: 0.35rem;
   width: 100%;
 }
 
 .gst-cert-btn-nav {
-  height: 44px;
-  border-radius: 10px;
-  font-size: 0.8rem;
+  height: 48px;
+  border-radius: 12px;
+  font-size: 0.92rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
+  gap: 0.55rem;
   cursor: pointer;
   transition: all 0.18s ease;
   box-sizing: border-box;
-  padding: 0 0.35rem;
+  padding: 0 1rem;
   white-space: nowrap;
 }
 
@@ -280,12 +281,12 @@
   background: #083b75;
   color: #ffffff;
   border: none;
-  box-shadow: 0 2px 8px rgba(8, 59, 117, 0.2);
+  box-shadow: 0 2px 10px rgba(8, 59, 117, 0.22);
 }
 
 .gst-cert-btn-nav--dashboard:hover {
   background: #062f5e;
-  box-shadow: 0 4px 14px rgba(8, 59, 117, 0.32);
+  box-shadow: 0 4px 16px rgba(8, 59, 117, 0.35);
   transform: translateY(-1px);
 }
 
@@ -293,12 +294,12 @@
   background: #ff7a00;
   color: #ffffff;
   border: none;
-  box-shadow: 0 2px 8px rgba(255, 122, 0, 0.22);
+  box-shadow: 0 2px 10px rgba(255, 122, 0, 0.24);
 }
 
 .gst-cert-btn-nav--applications:hover {
   background: #e66e00;
-  box-shadow: 0 4px 14px rgba(255, 122, 0, 0.32);
+  box-shadow: 0 4px 16px rgba(255, 122, 0, 0.35);
   transform: translateY(-1px);
 }
 
@@ -315,18 +316,18 @@
 }
 
 .gst-cert-nav-icon {
-  width: 15px;
-  height: 15px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
 }
 
-@media (max-width: 480px) {
-  .gst-cert-ready-container {
-    padding: 0 0.5rem;
+@media (max-width: 640px) {
+  .gst-cert-ready-card {
+    padding: 1.15rem 1.25rem;
   }
 
   .gst-cert-ready-bottom-actions {
     grid-template-columns: 1fr;
-    gap: 0.6rem;
+    gap: 0.75rem;
   }
 }

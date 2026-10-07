@@ -1,11 +1,11 @@
 /* ── GST Certificate Container & Layout ── */
 .gst-cert-container {
-  max-width: 460px;
   width: 100%;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 1.15rem;
+  gap: 1.35rem;
   font-family: var(--font-sans);
   box-sizing: border-box;
 }
@@ -363,10 +363,6 @@
 }
 
 @media (max-width: 640px) {
-  .gst-cert-container {
-    padding: 0 0.5rem;
-  }
-
   .gst-cert-heading {
     font-size: 1.2rem;
   }
@@ -375,3 +371,4 @@
     padding: 1rem 1.15rem;
   }
 }
+
