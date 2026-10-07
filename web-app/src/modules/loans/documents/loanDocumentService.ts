@@ -3,7 +3,7 @@ import { formatUploadSize, getUploadFileError } from '@shared/upload'
 import type { UploadedLoanDocument } from './loanDocument.types'
 
 export const loanDocumentService = {
-  /** The application-wide upload rule (PDF, Excel, JPG or PNG up to 10 MB); returns an error or undefined */
+  /** The application-wide upload rule (PDF, Excel, JPG or PNG up to 15 MB); returns an error or undefined */
   validateFile: (file: File): string | undefined => getUploadFileError(file) ?? undefined,
 
   /** Returns true when the file is acceptable; otherwise shows the reason as an error toast */

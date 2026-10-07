@@ -72,7 +72,7 @@ describe('BusinessLoan Step 4 (Document Verification)', () => {
     expect(
       screen.getByText('Upload the required documents based on your business profile and loan purpose.')
     ).toBeInTheDocument()
-    expect(screen.getByText('Accepted files: PDF, Excel, JPG or PNG · max 10 MB')).toBeInTheDocument()
+    expect(screen.getByText('Accepted files: PDF, Excel, JPG or PNG · max 15 MB')).toBeInTheDocument()
 
     // 14 Document cards
     // 1. PAN Card
@@ -133,8 +133,8 @@ describe('BusinessLoan Step 4 (Document Verification)', () => {
     expect(screen.getByText('Certificate of Incorporation / Business license')).toBeInTheDocument()
   })
 
-  it('validates files against the application-wide rule (PDF, Excel, JPG, PNG · max 10 MB)', () => {
-    // Valid PDF file under 10 MB
+  it('validates files against the application-wide rule (PDF, Excel, JPG, PNG · max 15 MB)', () => {
+    // Valid PDF file under 15 MB
     const validPdf = uploadTestFile('pan_card.pdf')
     const resValid = validateDocumentFile(validPdf)
     expect(resValid.isValid).toBe(true)
@@ -156,12 +156,12 @@ describe('BusinessLoan Step 4 (Document Verification)', () => {
     // Valid Excel workbook
     expect(validateDocumentFile(uploadTestFile('bank_statement.xlsx')).isValid).toBe(true)
 
-    // File over 10 MB
+    // File over 15 MB
     const largeFile = uploadTestFile('large.pdf')
-    Object.defineProperty(largeFile, 'size', { value: 11 * 1024 * 1024 })
+    Object.defineProperty(largeFile, 'size', { value: 16 * 1024 * 1024 })
     const resLarge = validateDocumentFile(largeFile)
     expect(resLarge.isValid).toBe(false)
-    expect(resLarge.error).toContain('Maximum size is 10.0 MB')
+    expect(resLarge.error).toContain('Maximum size is 15.0 MB')
   })
 
   it('handles uploading, viewing, and removing a document correctly', async () => {

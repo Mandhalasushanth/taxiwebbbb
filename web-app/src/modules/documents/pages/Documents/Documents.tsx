@@ -15,7 +15,7 @@ export const Documents = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const pushToast = useAppStore((state) => state.pushToast)
 
-  /** An allowed file (PDF, Excel, JPG or PNG up to 10 MB) */
+  /** An allowed file (PDF, Excel, JPG or PNG up to 15 MB) */
   const handleFileUpload = (file: File) => {
 
     const newDoc: DocumentsItem = {

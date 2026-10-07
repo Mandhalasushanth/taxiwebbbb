@@ -4,7 +4,7 @@ import { DOCUMENT_UPLOAD_RULE, acceptAttributeFor, validateUploadFile, type Uplo
 
 export interface FileInputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'accept' | 'onChange'> {
-  /** Which files are allowed (default: PDF, Excel, JPG, PNG up to 10 MB) */
+  /** Which files are allowed (default: PDF, Excel, JPG, PNG up to 15 MB) */
   rule?: UploadRule
   /** Called once per picked file that passed validation */
   onFileSelected: (file: File) => void

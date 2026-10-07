@@ -41,7 +41,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     setAvatarUrl(null)
   }
 
-  /** A JPG or PNG photo up to 10 MB */
+  /** A JPG or PNG photo up to 15 MB */
   const handleFileChange = (file: File) => {
     setAvatarUrl(URL.createObjectURL(file))
   }

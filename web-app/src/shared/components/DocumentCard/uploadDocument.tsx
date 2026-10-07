@@ -23,7 +23,7 @@ export interface UploadDocumentProps {
   fileSize?: string;
   file?: File;
   icon?: React.ReactNode;
-  /** Allowed files (default: PDF, Excel, JPG or PNG up to 10 MB — the application-wide rule) */
+  /** Allowed files (default: PDF, Excel, JPG or PNG up to 15 MB — the application-wide rule) */
   rule?: UploadRule;
   uploadLabel?: string;
   onUpload?: (id: string, file: File) => void;

@@ -149,10 +149,11 @@ const XLSX_BYTES = [0x50, 0x4b, 0x03, 0x04, 0x14, 0x00]
 const XLS_BYTES = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1]
 
 describe('BUG-GST-009: upload type and size limits', () => {
-  it('rejects executables, renamed executables and files over 10 MB', async () => {
+  it('rejects executables, renamed executables and files over 15 MB', async () => {
     expect(await validateUploadFile(fileFrom('setup.exe', 'application/x-msdownload', EXE_BYTES), DOCUMENT_UPLOAD_RULE)).toMatch(/Only PDF, Excel, JPG or PNG/)
     expect(await validateUploadFile(fileFrom('invoice.pdf', 'application/pdf', EXE_BYTES), DOCUMENT_UPLOAD_RULE)).toMatch(/not a valid/)
-    expect(await validateUploadFile(fileFrom('big.pdf', 'application/pdf', PDF_BYTES, 15 * 1024 * 1024), DOCUMENT_UPLOAD_RULE)).toMatch(/too large/)
+    expect(await validateUploadFile(fileFrom('big.pdf', 'application/pdf', PDF_BYTES, 16 * 1024 * 1024), DOCUMENT_UPLOAD_RULE)).toMatch(/too large/)
+    expect(await validateUploadFile(fileFrom('scan.pdf', 'application/pdf', PDF_BYTES, 12 * 1024 * 1024), DOCUMENT_UPLOAD_RULE)).toBeNull()
   })
   it('accepts genuine Excel workbooks (.xlsx and .xls) and rejects other spreadsheets', async () => {
     expect(await validateUploadFile(fileFrom('gstr2b.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', XLSX_BYTES), DOCUMENT_UPLOAD_RULE)).toBeNull()

@@ -50,7 +50,7 @@ export const PendingOnYou = ({ tasks = [] }: PendingOnYouProps) => {
     fileInputRef.current?.click()
   }
 
-  /** An allowed file (PDF, Excel, JPG or PNG up to 10 MB) for the task being completed */
+  /** An allowed file (PDF, Excel, JPG or PNG up to 15 MB) for the task being completed */
   const handleFileChange = (file: File) => {
     if (!activeTaskIdRef.current) return
 

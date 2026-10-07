@@ -35,7 +35,7 @@ export const ChatMessageInput = ({
     }
   }
 
-  /** One allowed file (PDF, Excel, JPG or PNG up to 10 MB) picked in the attachment dialog */
+  /** One allowed file (PDF, Excel, JPG or PNG up to 15 MB) picked in the attachment dialog */
   const handleFileChange = (file: File) => {
     const attachment: SupportAttachment = {
       id: `att_${Date.now()}_${file.name}`,
