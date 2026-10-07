@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
-import { userStorage } from '@core/storage/userStorage'
 import { useAppStore } from '@store/index'
 import './GSTCertificateSubmitted.css'
 
@@ -19,46 +18,24 @@ interface GSTCertificateSubmittedProps {
  * (Go to Dashboard, My Applications, Chat with CA) using TaxEdge color codes.
  */
 export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = ({
-  applicationId = 'CRT-192842',
-  gstin = '29AAAAA0000A1Z4',
+  applicationId = '',
+  gstin = '',
 }) => {
   const navigate = useNavigate()
   const pushToast = useAppStore((state) => state.pushToast)
 
-  // Register in userStorage so it shows up in "My Applications"
-  useEffect(() => {
-    try {
-      const existing = userStorage.getUserApplications()
-      const alreadyPresent = existing.some((a) => a.code === applicationId)
-      if (!alreadyPresent) {
-        userStorage.saveUserApplication({
-          id: `app-cert-${Date.now()}`,
-          code: applicationId,
-          title: 'GST Certificate (REG-06)',
-          meta: `${gstin} · Form REG-06`,
-          statusLabel: 'Generated & Saved',
-          statusTone: 'success',
-          progress: 100,
-          icon: '📜',
-          to: `/applications`,
-        })
-      }
-    } catch {
-      // storage fallback
-    }
-  }, [applicationId, gstin])
-
   const handleShareOrDownload = () => {
     // Generate simulated download
+    const filename = gstin ? `GST-Certificate-${gstin}.pdf` : 'GST-Certificate.pdf'
     const link = document.createElement('a')
     link.href = '#download-cert'
-    link.download = `GST-Certificate-${gstin}.pdf`
-    pushToast(`Certificate GST-Certificate-${gstin}.pdf saved successfully!`, 'success')
+    link.download = filename
+    pushToast(`Certificate ${filename} saved successfully!`, 'success')
 
     if (navigator.share) {
       navigator.share({
         title: 'GST Registration Certificate (REG-06)',
-        text: `GST Certificate for ${gstin}`,
+        text: gstin ? `GST Certificate for ${gstin}` : 'GST Certificate',
         url: window.location.href,
       }).catch(() => {})
     }
@@ -81,7 +58,6 @@ export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = (
       {/* ── Top Bar Header ── */}
       <div className="gst-cert-ready-top-bar">
         <h2 className="gst-cert-top-title">GST Certificate (REG-06)</h2>
-        <div className="gst-cert-taxedge-pill">TaxEdge</div>
       </div>
 
       {/* ── Hero Certificate Illustration ── */}
@@ -128,7 +104,7 @@ export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = (
             </div>
             <span className="gst-cert-ready-label">GSTIN</span>
           </div>
-          <span className="gst-cert-ready-value">{gstin}</span>
+          <span className="gst-cert-ready-value">{gstin || '—'}</span>
         </div>
 
         <div className="gst-cert-ready-divider" />

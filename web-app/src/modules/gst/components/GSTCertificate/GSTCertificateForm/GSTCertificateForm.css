@@ -26,16 +26,6 @@
   letter-spacing: -0.01em;
 }
 
-.gst-cert-taxedge-pill {
-  padding: 4px 13px;
-  border-radius: 9999px;
-  background: #eff6ff;
-  color: #1d4ed8;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  border: 1px solid rgba(29, 78, 216, 0.12);
-}
 
 /* ── Heading Banner Card ── */
 .gst-cert-header-card {

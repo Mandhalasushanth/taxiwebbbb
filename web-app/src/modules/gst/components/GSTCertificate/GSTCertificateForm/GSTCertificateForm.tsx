@@ -13,7 +13,6 @@ interface GSTCertificateFormProps {
   contact: { mobile?: string; email?: string } | null
   isSubmitting?: boolean
   onSubmit: (e?: FormEvent) => void
-  onSaveDraft?: () => void
 }
 
 /**
@@ -31,15 +30,14 @@ export const GSTCertificateForm = ({
 }: GSTCertificateFormProps) => {
   const { gstin, requestType: selectedRequestType } = values
 
-  const displayPhone = user?.mobile ? `+91 ${user.mobile}` : '+91 9494949949'
-  const displayEmail = user?.email || 'hi@gmail.com'
+  const displayPhone = user?.mobile ? `+91 ${user.mobile}` : '—'
+  const displayEmail = user?.email || '—'
 
   return (
     <div className="gst-cert-container">
       {/* ── Top Bar Header ── */}
       <div className="gst-cert-top-bar">
         <h2 className="gst-cert-top-title">GST Certificate (REG-06)</h2>
-        <div className="gst-cert-taxedge-pill">TaxEdge</div>
       </div>
 
       {/* ── Heading Banner with Right Certificate Graphic ── */}
