@@ -7,7 +7,7 @@ import { SERVICE_LABELS, STATUS_LABELS, STATUS_TONES } from '@shared/constants'
 import { formatDate } from '@shared/utils'
 import { useAuthStore } from '@store/index'
 
-import { StaffPageHeader, StatTile } from '../../../components'
+import { StaffPageHeader, StatTile } from '@modules/staff/components'
 import { PipelineBar } from '../../components/PipelineBar/PipelineBar'
 import { RevenueByService } from '../../components/RevenueByService/RevenueByService'
 import { useStaffDashboard } from '../../hooks/useStaffDashboard'

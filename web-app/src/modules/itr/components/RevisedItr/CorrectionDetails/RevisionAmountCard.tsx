@@ -1,5 +1,5 @@
 import React from 'react'
-import { calculateIncomeChange } from '../../../validation/revisedItrValidation'
+import { calculateIncomeChange } from '@modules/itr/validation/revisedItrValidation'
 import './RevisionAmountCard.css'
 
 interface RevisionAmountCardProps {

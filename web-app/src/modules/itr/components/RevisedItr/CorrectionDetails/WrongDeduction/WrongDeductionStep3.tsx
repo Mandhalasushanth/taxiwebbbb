@@ -2,7 +2,7 @@ import React from 'react'
 import type {
   DeductionCorrectionState,
   IncomeCorrectionOriginals,
-} from '../../../../types/revisedItr.types'
+} from '@modules/itr/types/revisedItr.types'
 import { RevisionAmountCard } from '../RevisionAmountCard'
 import '../Step3CorrectionBase.css'
 

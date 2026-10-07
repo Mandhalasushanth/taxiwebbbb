@@ -1,5 +1,5 @@
-import { STAGE_LABELS } from '../../../constants/staff.constants'
-import type { PipelineStage } from '../../../types/staff.types'
+import { STAGE_LABELS } from '@modules/staff/constants/staff.constants'
+import type { PipelineStage } from '@modules/staff/types/staff.types'
 import './PipelineBar.css'
 
 export interface PipelineBarProps {

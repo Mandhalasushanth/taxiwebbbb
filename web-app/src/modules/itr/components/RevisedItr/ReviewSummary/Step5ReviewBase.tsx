@@ -4,8 +4,8 @@ import type {
   OriginalReturnDetails,
   DocumentTypeId,
   UploadedDocument,
-} from '../../../types/revisedItr.types'
-import { calculateTaxLiability } from '../../../validation/revisedItrValidation'
+} from '@modules/itr/types/revisedItr.types'
+import { calculateTaxLiability } from '@modules/itr/validation/revisedItrValidation'
 import './Step5ReviewBase.css'
 
 export interface Step5ReviewBaseProps {

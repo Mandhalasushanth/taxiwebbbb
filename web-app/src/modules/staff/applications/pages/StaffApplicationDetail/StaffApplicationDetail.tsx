@@ -14,9 +14,9 @@ import {
 import { formatCurrency, formatDate, formatDateTime, formatFileSize } from '@shared/utils'
 import { useAuthStore } from '@store/index'
 
-import { NEXT_STATUSES, STAGE_LABELS } from '../../../constants/staff.constants'
-import { StaffPageHeader } from '../../../components'
-import { useAssignableAgents } from '../../../staff-management/hooks/useAssignableAgents'
+import { NEXT_STATUSES, STAGE_LABELS } from '@modules/staff/constants/staff.constants'
+import { StaffPageHeader } from '@modules/staff/components'
+import { useAssignableAgents } from '@modules/staff/staff-management/hooks/useAssignableAgents'
 import { ApplicationTimeline } from '../../components/ApplicationTimeline/ApplicationTimeline'
 import { AssignmentPanel } from '../../components/AssignmentPanel/AssignmentPanel'
 import { useStaffApplication } from '../../hooks/useStaffApplication'

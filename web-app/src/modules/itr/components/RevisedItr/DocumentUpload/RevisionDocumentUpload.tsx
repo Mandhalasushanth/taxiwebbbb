@@ -1,7 +1,7 @@
 import React from 'react'
 import { DocumentCard } from '@shared/components'
 import { viewUploadedDocument } from '@shared/upload'
-import type { DocumentTypeId, RevisionReasonKey, UploadedDocument } from '../../../types/revisedItr.types'
+import type { DocumentTypeId, RevisionReasonKey, UploadedDocument } from '@modules/itr/types/revisedItr.types'
 import { CreditCard as PanCardIcon, Fingerprint as FingerprintIcon, FileText as IconFileText, Landmark as BankIcon, Briefcase as IconBriefcase } from 'lucide-react'
 import './RevisionDocumentUpload.css'
 

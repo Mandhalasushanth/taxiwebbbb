@@ -1,5 +1,5 @@
 import React from 'react'
-import type { DocumentTypeId, UploadedDocument } from '../../../../types/revisedItr.types'
+import type { DocumentTypeId, UploadedDocument } from '@modules/itr/types/revisedItr.types'
 import { Step4DocumentUpload, type DocumentSlotItem } from '../../DocumentUpload'
 
 interface OtherCorrectionStep4Props {

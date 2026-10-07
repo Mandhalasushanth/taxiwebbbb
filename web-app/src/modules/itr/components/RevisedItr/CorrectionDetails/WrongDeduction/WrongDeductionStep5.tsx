@@ -4,7 +4,7 @@ import type {
   DeductionCorrectionState,
   DocumentTypeId,
   UploadedDocument,
-} from '../../../../types/revisedItr.types'
+} from '@modules/itr/types/revisedItr.types'
 import { Step5ReviewBase } from '../../ReviewSummary'
 
 interface WrongDeductionStep5Props {

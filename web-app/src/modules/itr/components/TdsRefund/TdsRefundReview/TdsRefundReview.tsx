@@ -1,6 +1,6 @@
 import React from 'react'
 import { StepActionBar } from '@shared/components'
-import { TDS_DOCUMENTS, TdsIcons, type TdsTaxpayerProfile } from '../../../utils/tdsRefund.constants'
+import { TDS_DOCUMENTS, TdsIcons, type TdsTaxpayerProfile } from '@modules/itr/utils/tdsRefund.constants'
 import type { TdsBankDetails, TdsIncomeTaxData } from '../TdsRefundCustomerIncome'
 import type { UploadedFileMeta } from '../TdsRefundDocuments'
 import { TdsRefundProgressTracker } from '../TdsRefundOverview'

@@ -11,7 +11,7 @@ import {
 import {
   ADDITIONAL_DOCUMENTS,
   TdsIcons,
-} from '../../../utils/tdsRefund.constants'
+} from '@modules/itr/utils/tdsRefund.constants'
 import './TdsRefundOverview.css'
 
 export interface TdsRefundProgressTrackerProps {

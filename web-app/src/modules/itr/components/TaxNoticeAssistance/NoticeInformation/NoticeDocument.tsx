@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { StepActionBar, UploadDocument } from '@shared/components'
 import { UPLOAD_HINT, formatUploadSize, viewUploadedDocument } from '@shared/upload'
-import type { NoticeFormData } from '../../../types/taxNoticeAssistance.types'
+import type { NoticeFormData } from '@modules/itr/types/taxNoticeAssistance.types'
 import './NoticeDocument.css'
 
 export interface NoticeDocumentProps {

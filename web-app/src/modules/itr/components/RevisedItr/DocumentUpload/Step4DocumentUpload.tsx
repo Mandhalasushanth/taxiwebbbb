@@ -1,5 +1,5 @@
 import React from 'react'
-import type { DocumentTypeId, UploadedDocument } from '../../../types/revisedItr.types'
+import type { DocumentTypeId, UploadedDocument } from '@modules/itr/types/revisedItr.types'
 import { DocumentCard } from '@shared/components'
 import { viewUploadedDocument } from '@shared/upload'
 import './Step4DocumentUpload.css'

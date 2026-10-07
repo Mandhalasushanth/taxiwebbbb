@@ -1,7 +1,7 @@
 import { SERVICE_LABELS } from '@shared/constants'
 import { formatCurrency } from '@shared/utils'
 
-import type { RevenueByService as RevenueByServiceRow } from '../../../types/staff.types'
+import type { RevenueByService as RevenueByServiceRow } from '@modules/staff/types/staff.types'
 import './RevenueByService.css'
 
 export interface RevenueByServiceProps {

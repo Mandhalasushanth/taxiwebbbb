@@ -1,8 +1,8 @@
 import { Input } from '@shared/components'
 
-import { APPLICATION_FILTER_LABELS } from '../../../constants/staff.constants'
-import { APPLICATION_FILTERS } from '../../../types/staff.types'
-import type { ApplicationFilter } from '../../../types/staff.types'
+import { APPLICATION_FILTER_LABELS } from '@modules/staff/constants/staff.constants'
+import { APPLICATION_FILTERS } from '@modules/staff/types/staff.types'
+import type { ApplicationFilter } from '@modules/staff/types/staff.types'
 import './ApplicationFilters.css'
 
 export interface ApplicationFiltersProps {

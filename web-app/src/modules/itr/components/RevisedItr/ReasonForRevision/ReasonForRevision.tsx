@@ -1,6 +1,6 @@
 import React from 'react'
-import type { RevisionReasonKey } from '../../../types/revisedItr.types'
-import { REVISION_REASONS } from '../../../services/revisedItrService'
+import type { RevisionReasonKey } from '@modules/itr/types/revisedItr.types'
+import { REVISION_REASONS } from '@modules/itr/services/revisedItrService'
 import { Wallet as IconWallet, FileText as IconFileText, Landmark as BankIcon, Pencil as EditIcon } from 'lucide-react'
 import './ReasonForRevision.css'
 

@@ -4,7 +4,7 @@ import {
   type NoticeFormData,
   ASSESSMENT_YEAR_OPTIONS,
   NOTICE_TYPE_DETAILS,
-} from '../../../types/taxNoticeAssistance.types'
+} from '@modules/itr/types/taxNoticeAssistance.types'
 import './NoticeInformation.css'
 
 export interface NoticeInformationProps {

@@ -12,6 +12,7 @@ import type {
   BusinessApplication,
 } from '../../types/business.types'
 import './Business.css'
+import './Business.part2.css'
 
 export const BusinessPage: React.FC = () => {
   const navigate = useNavigate()

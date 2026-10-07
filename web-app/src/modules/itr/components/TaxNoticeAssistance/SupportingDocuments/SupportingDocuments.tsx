@@ -5,7 +5,7 @@ import { viewUploadedDocument } from '@shared/upload'
 import {
   type NoticeFormData,
   SUPPORTING_DOCUMENT_LIST,
-} from '../../../types/taxNoticeAssistance.types'
+} from '@modules/itr/types/taxNoticeAssistance.types'
 import { SupportingDocRow } from './SupportingDocRow'
 import './SupportingDocuments.css'
 

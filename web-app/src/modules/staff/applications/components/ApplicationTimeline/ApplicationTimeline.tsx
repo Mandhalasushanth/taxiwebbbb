@@ -1,7 +1,7 @@
 import { STATUS_LABELS } from '@shared/constants'
 import { formatDateTime } from '@shared/utils'
 
-import type { ApplicationEvent } from '../../../types/staff.types'
+import type { ApplicationEvent } from '@modules/staff/types/staff.types'
 import './ApplicationTimeline.css'
 
 export interface ApplicationTimelineProps {

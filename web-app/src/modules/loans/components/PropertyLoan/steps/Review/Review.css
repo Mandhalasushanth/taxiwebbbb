@@ -207,3 +207,12 @@
   font-size: 0.8125rem;
   font-weight: 600;
 }
+
+.property-review-doc-pill__icon {
+  flex-shrink: 0;
+}
+
+.property-review-docs-empty {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}

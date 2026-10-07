@@ -1,0 +1,245 @@
+/* Applications styles (continued): imported right after Applications.css so rule order is unchanged */
+
+.app-search-input:focus {
+  border-color: #ff6b00;
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.12);
+}
+
+.app-search-clear-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+/* Application Cards List */
+.app-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.app-item-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 1.35rem 1.75rem;
+  cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.app-item-card:hover {
+  transform: translateY(-2px) translateZ(0);
+  border-color: #cbd5e1;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.app-item-card__left,
+.app-item-card__right {
+  pointer-events: none;
+}
+
+.app-item-card__left {
+  display: flex;
+  align-items: center;
+  gap: 1.35rem;
+}
+
+.app-item-card__icon-box {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: #eff6ff;
+  border: 1.5px solid #dbeafe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1d4ed8;
+  flex-shrink: 0;
+}
+
+.app-item-icon-svg {
+  width: 26px;
+  height: 26px;
+}
+
+.app-item-card__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.app-item-card__top-line {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.app-item-card__ref {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #093374;
+  letter-spacing: 0.02em;
+}
+
+.app-item-card__status-pill {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #7c3aed;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  padding: 0.25rem 0.8rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+.app-item-card__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.app-item-card__meta-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.app-item-card__cal-emoji {
+  margin-right: 0.2rem;
+}
+
+.app-item-card__separator {
+  color: #cbd5e1;
+}
+
+.app-item-card__tag-pill {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #0284c7;
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+  padding: 1px 7px;
+  border-radius: 4px;
+}
+
+.app-item-card__right {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #ff6b00;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.app-item-card__track-text {
+  transition: transform 0.18s ease;
+  will-change: transform;
+}
+
+.app-item-card:hover .app-item-card__track-text {
+  transform: translateX(-3px);
+}
+
+.app-item-card__chevron-wrap {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-chevron-svg {
+  width: 18px;
+  height: 18px;
+  stroke: #ff6b00;
+  transition: transform 0.18s ease;
+  will-change: transform;
+}
+
+.app-item-card:hover .app-chevron-svg {
+  transform: translateX(3px);
+}
+
+/* Empty State */
+.app-empty-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3.5rem 1.5rem;
+  background: #ffffff;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 18px;
+  text-align: center;
+}
+
+.app-empty-card__icon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+}
+
+.app-empty-card__title {
+  margin: 0 0 0.35rem 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.app-empty-card__desc {
+  margin: 0 0 1.25rem 0;
+  font-size: 0.92rem;
+  color: #64748b;
+}
+
+.app-empty-card__reset-btn {
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.app-empty-card__reset-btn:hover {
+  background: #e2e8f0;
+}
+
+/* Responsive Collapse for Tablets & Mobile */
+@media (max-width: 900px) {
+  .app-cat-tabs {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .app-overview-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .app-list-section__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .app-list-search-wrap {
+    width: 100%;
+  }
+}

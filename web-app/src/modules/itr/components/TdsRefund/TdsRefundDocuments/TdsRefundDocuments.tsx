@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { AlertCircle } from 'lucide-react'
 import { StepActionBar, UploadDocument } from '@shared/components'
 import { viewUploadedDocument } from '@shared/upload'
-import { TDS_DOCUMENTS, DocIcons, TdsIcons, type TdsDocumentConfig } from '../../../utils/tdsRefund.constants'
+import { TDS_DOCUMENTS, DocIcons, TdsIcons, type TdsDocumentConfig } from '@modules/itr/utils/tdsRefund.constants'
 import { TdsRefundProgressTracker } from '../TdsRefundOverview'
 import './TdsRefundDocuments.css'
 import { UPLOAD_HINT, formatUploadSize } from '@shared/upload'
 
-import type { UploadedFileMeta } from '../../../types/tdsRefund.types'
+import type { UploadedFileMeta } from '@modules/itr/types/tdsRefund.types'
 export type { UploadedFileMeta }
 
 const VERIFICATION_CHECKLIST = [

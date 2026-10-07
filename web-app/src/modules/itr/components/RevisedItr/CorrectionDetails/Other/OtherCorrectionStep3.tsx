@@ -4,7 +4,7 @@ import type {
   DeductionCorrectionState,
   BankCorrectionState,
   IncomeCorrectionOriginals,
-} from '../../../../types/revisedItr.types'
+} from '@modules/itr/types/revisedItr.types'
 import { RevisionAmountCard } from '../RevisionAmountCard'
 import '../Step3CorrectionBase.css'
 

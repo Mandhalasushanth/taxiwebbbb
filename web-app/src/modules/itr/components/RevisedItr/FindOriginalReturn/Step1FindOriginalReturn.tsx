@@ -1,5 +1,5 @@
 import React from 'react'
-import { AY_OPTIONS, type OriginalReturnDetails } from '../../../types/revisedItr.types'
+import { AY_OPTIONS, type OriginalReturnDetails } from '@modules/itr/types/revisedItr.types'
 import './Step1FindOriginalReturn.css'
 
 interface AssessmentYearDropdownProps {

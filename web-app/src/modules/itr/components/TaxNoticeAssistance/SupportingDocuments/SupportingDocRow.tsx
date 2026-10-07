@@ -1,5 +1,5 @@
 import React from 'react'
-import type { SupportingDocumentItem } from '../../../types/taxNoticeAssistance.types'
+import type { SupportingDocumentItem } from '@modules/itr/types/taxNoticeAssistance.types'
 import { UploadDocument } from '@shared/components'
 
 export const getDocColor = (id: string) => {

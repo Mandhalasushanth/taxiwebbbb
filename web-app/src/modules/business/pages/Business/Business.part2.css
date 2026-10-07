@@ -1,0 +1,261 @@
+/* Business styles (continued): imported right after Business.css so rule order is unchanged */
+
+.biz-service-card__features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.biz-service-card__feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.84rem;
+  color: #334155;
+}
+
+.biz-service-card__feature-icon {
+  color: #10b981;
+  font-weight: 700;
+}
+
+.biz-service-card__docs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.biz-service-card__doc-chip {
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.biz-service-card__footer {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.biz-service-card__fee-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.biz-service-card__price {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.biz-service-card__turnaround {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.biz-service-card__btn-apply {
+  background: #0c4a6e;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.65rem 1.2rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.biz-service-card__btn-apply:hover {
+  background: #075985;
+  transform: translateY(-1px);
+}
+
+/* 5. Compliance Calendar Section */
+.biz-calendar-section {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+}
+
+.biz-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.biz-section-header__title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.biz-section-header__subtitle {
+  font-size: 0.88rem;
+  color: #64748b;
+  margin-top: 0.2rem;
+}
+
+.biz-compliance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.biz-compliance-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.25rem;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: all 0.2s ease;
+}
+
+.biz-compliance-card:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.biz-compliance-card__due {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #dc2626;
+  background: #fef2f2;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  width: fit-content;
+}
+
+.biz-compliance-card__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.biz-compliance-card__freq {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.biz-compliance-card__penalty {
+  font-size: 0.78rem;
+  color: #b91c1c;
+  font-weight: 500;
+  margin-top: auto;
+}
+
+/* 6. Applications Tracker Table */
+.biz-tracker-section {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+}
+
+.biz-table-container {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.biz-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.biz-table th {
+  padding: 0.9rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  border-bottom: 2px solid #e2e8f0;
+  letter-spacing: 0.05em;
+}
+
+.biz-table td {
+  padding: 1rem;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+}
+
+.biz-table tr:hover td {
+  background: #f8fafc;
+}
+
+.biz-table__empty-cell {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: #64748b;
+  font-size: 0.925rem;
+}
+
+
+.biz-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.biz-status-badge--active {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.biz-status-badge--in_progress {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.biz-status-badge--pending_docs {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.biz-status-badge--completed {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .biz-hero {
+    padding: 1.75rem;
+  }
+  .biz-hero__title {
+    font-size: 1.75rem;
+  }
+  .biz-hero__search-row {
+    flex-direction: column;
+  }
+  .biz-services-grid {
+    grid-template-columns: 1fr;
+  }
+}

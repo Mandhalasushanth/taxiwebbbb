@@ -1,6 +1,6 @@
 import { Card } from '@shared/components'
 
-import { StaffPageHeader } from '../../../components'
+import { StaffPageHeader } from '@modules/staff/components'
 import './StaffServices.css'
 
 const planned = [

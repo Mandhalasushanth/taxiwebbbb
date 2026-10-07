@@ -4,8 +4,8 @@ import { ROLE_LABELS } from '@core/auth'
 import { Button } from '@shared/components'
 import { formatDateTime } from '@shared/utils'
 
-import type { AssignmentRecord, StaffMember } from '../../../types/staff.types'
-import type { AssignedStaff } from '../../../types/staff.types'
+import type { AssignmentRecord, StaffMember } from '@modules/staff/types/staff.types'
+import type { AssignedStaff } from '@modules/staff/types/staff.types'
 import './AssignmentPanel.css'
 
 export interface AssignmentPanelProps {
