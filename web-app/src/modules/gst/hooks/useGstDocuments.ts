@@ -3,6 +3,7 @@ import type { DocumentItem, DocumentCategory, DocPreviewState } from '@modules/g
 import { INITIAL_DOCUMENTS, getGstDocUploadRule } from '@modules/gst/utils/gstDocuments.constants'
 import { getDocumentsStepError } from '@modules/gst/utils/gstRegistrationGuard'
 import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
+import { errorTracker } from '@core/errors'
 
 export const useGstDocuments = (
   initialDocs?: DocumentItem[],
@@ -141,7 +142,7 @@ export const useGstDocuments = (
         }
         return
       } catch (e) {
-        console.warn('Could not open document in new window:', e)
+        errorTracker.captureException(e, { tags: { area: 'gst-documents-preview' } })
       }
     }
     try {

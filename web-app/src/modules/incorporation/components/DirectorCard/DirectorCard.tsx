@@ -40,7 +40,7 @@ const DirectorFormField: React.FC<FormFieldProps> = ({
 export interface DirectorCardProps {
   director: DirectorDetails
   index: number
-  onChange: (id: number, field: keyof DirectorDetails, value: any) => void
+  onChange: (id: number, field: keyof DirectorDetails, value: DirectorDetails[keyof DirectorDetails]) => void
   onSave?: (id: number) => void
   onCancel?: (id: number) => void
   errors?: Record<string, string>
@@ -58,21 +58,21 @@ export const DirectorCard: React.FC<DirectorCardProps> = ({
   const [isCollapsed, setIsCollapsed] = useState(Boolean(director.fullName.trim()) && !hasErrors)
   const displayedCollapsed = !hasErrors && isCollapsed
 
-  const handleFieldChange = (field: keyof DirectorDetails, val: any) => {
+  const handleFieldChange = (field: keyof DirectorDetails, val: string | boolean) => {
     if (field === 'pan') {
-      onChange(director.id, field, filterPan(val))
+      onChange(director.id, field, filterPan(String(val)))
       return
     }
     if (field === 'din') {
-      onChange(director.id, field, filterDigits(val, 8))
+      onChange(director.id, field, filterDigits(String(val), 8))
       return
     }
     if (field === 'mobile') {
-      onChange(director.id, field, filterMobile(val))
+      onChange(director.id, field, filterMobile(String(val)))
       return
     }
     if (field === 'pincode') {
-      onChange(director.id, field, filterDigits(val, 6))
+      onChange(director.id, field, filterDigits(String(val), 6))
       return
     }
     onChange(director.id, field, val)

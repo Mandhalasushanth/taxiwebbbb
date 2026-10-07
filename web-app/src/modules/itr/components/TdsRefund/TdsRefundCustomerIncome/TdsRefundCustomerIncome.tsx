@@ -27,6 +27,7 @@ import type {
 } from "../../../types/tdsRefund.types";
 import { TdsRefundProgressTracker } from "../TdsRefundOverview";
 import "./TdsRefundCustomerIncome.css";
+import { errorTracker } from '@core/errors'
 
 export type { TdsBankDetails, TdsIncomeTaxData };
 
@@ -396,7 +397,7 @@ const getResolvedProfile = (
     const base = initial || DEFAULT_TDS_TAXPAYER;
     return syncProfileWithAuthUser(base, user).profile;
   } catch (err) {
-    console.error("Failed to resolve profile from user data:", err);
+    errorTracker.captureException(err, { tags: { area: 'tds-profile-resolve' } });
     return initial || DEFAULT_TDS_TAXPAYER;
   }
 };
@@ -450,7 +451,7 @@ export const TdsRefundCustomerIncome: React.FC<
       }, 0);
       return () => clearTimeout(timer);
     } catch (err) {
-      console.error("Failed to sync personal details:", err);
+      errorTracker.captureException(err, { tags: { area: 'tds-personal-sync' } });
     }
   }, [authUser, onProfileChange]);
 
@@ -472,7 +473,7 @@ export const TdsRefundCustomerIncome: React.FC<
         return () => clearTimeout(timer);
       }
     } catch (err) {
-      console.error("Failed to auto-fill account holder:", err);
+      errorTracker.captureException(err, { tags: { area: 'tds-account-holder' } });
     }
   }, [
     profile.fullName,

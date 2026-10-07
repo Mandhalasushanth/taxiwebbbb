@@ -16,14 +16,14 @@ export const customerSupportApi = {
   },
 
   getExecutives(): Promise<SupportExecutive[]> {
-    return apiClient.get('/support/executives').then((res: any) => res.data)
+    return apiClient.get<{ data: SupportExecutive[] }>('/support/executives').then((res) => res.data)
   },
 
   getConversation(applicationId: string): Promise<SupportConversation> {
-    return apiClient.get(`/support/conversations/${applicationId}`).then((res: any) => res.data)
+    return apiClient.get<{ data: SupportConversation }>(`/support/conversations/${applicationId}`).then((res) => res.data)
   },
 
   sendMessage(payload: SendMessagePayload): Promise<SupportMessage> {
-    return apiClient.post('/support/messages', payload).then((res: any) => res.data)
+    return apiClient.post<{ data: SupportMessage }>('/support/messages', payload).then((res) => res.data)
   },
 }

@@ -26,7 +26,7 @@ export const PromoterDetails: React.FC = () => {
   const [error, setError] = useState<string>('')
   const [directorErrors, setDirectorErrors] = useState<Record<number, Record<string, string>>>({})
 
-  const handleDirectorChange = (id: number, field: keyof DirectorDetails, value: any) => {
+  const handleDirectorChange = (id: number, field: keyof DirectorDetails, value: DirectorDetails[keyof DirectorDetails]) => {
     setError('')
     setDirectorErrors((prev) => ({
       ...prev,

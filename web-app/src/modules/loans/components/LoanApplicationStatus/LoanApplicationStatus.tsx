@@ -7,6 +7,7 @@ import { safeNavigateTo } from '../../utils/loanMarketplace.utils'
 import type { LoanApplicationBase } from '../../types/loanApplication.types'
 import { HelpCircle, CheckCircle2, List, Home, Download } from 'lucide-react'
 import './LoanApplicationStatus.css'
+import { errorTracker } from '@core/errors'
 
 /**
  * Business Loan - Application Status Page Component
@@ -87,7 +88,7 @@ export const LoanApplicationStatus: React.FC = () => {
         ],
       })
     } catch (err) {
-      console.error('[LoanApplicationStatus] Error resolving application:', err)
+      errorTracker.captureException(err, { tags: { area: 'loan-status-resolve' } })
       return {
         id: 'TXE-LN-235646',
         refNumber: 'TXE-LN-235646',
@@ -124,7 +125,7 @@ export const LoanApplicationStatus: React.FC = () => {
       setIsCopied(true)
       setTimeout(() => setIsCopied(false), 2000)
     } catch (err) {
-      console.error('[LoanApplicationStatus] Copy error:', err)
+      errorTracker.captureException(err, { tags: { area: 'loan-status-copy' } })
     }
   }, [refNumber])
 
@@ -175,7 +176,7 @@ Thank you for applying with TaxEdge Fin Solutions.
       setToastMessage('Application receipt downloaded successfully.')
       setTimeout(() => setToastMessage(null), 3000)
     } catch (err) {
-      console.error('[LoanApplicationStatus] Download error:', err)
+      errorTracker.captureException(err, { tags: { area: 'loan-status-download' } })
       setToastMessage('Download error. Please try again.')
       setTimeout(() => setToastMessage(null), 3000)
     }

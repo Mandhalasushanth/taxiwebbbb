@@ -27,6 +27,7 @@ import {
   Wallet,
 } from 'lucide-react'
 import type { TdsProfile, TdsBankDetails, TdsIncomeTaxData } from '../types/tdsRefund.types'
+import { errorTracker } from '@core/errors'
 
 const createCustomSvgIcon =
   (src: string, defaultSize = 20): React.FC<{ size?: number; width?: number; height?: number; color?: string; className?: string }> =>
@@ -335,19 +336,14 @@ export const syncProfileWithAuthUser = (
       address: formattedAddress || undefined,
     }
 
-    let hasChanges = false
-    const next = { ...current }
+    // Fill only the fields the taxpayer has not entered yet
+    const fills = (Object.entries(sourceMap) as [keyof TdsTaxpayerProfile, string | undefined][])
+      .filter(([key, val]) => !current[key] && val)
+    const next: TdsTaxpayerProfile = { ...current, ...Object.fromEntries(fills) }
 
-    for (const [key, val] of Object.entries(sourceMap) as [keyof TdsTaxpayerProfile, string | undefined][]) {
-      if (!next[key] && val) {
-        next[key] = val as any
-        hasChanges = true
-      }
-    }
-
-    return { profile: next, hasChanges }
+    return { profile: next, hasChanges: fills.length > 0 }
   } catch (error) {
-    console.error('Failed to sync profile with user data:', error)
+    errorTracker.captureException(error, { tags: { area: 'tds-profile-sync' } })
     return { profile: current, hasChanges: false }
   }
 }

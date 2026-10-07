@@ -86,8 +86,8 @@ export const ReviewApplication: React.FC = () => {
         'bank-acc': 'BANK ACCOUNT',
       }
       const checkedKeys = formData.linkedRegistrations
-        .filter((r: any) => r.checked)
-        .map((r: any) => regMap[r.id] || r.id.toUpperCase())
+        .filter((r) => r.checked)
+        .map((r) => regMap[r.id] || r.id.toUpperCase())
       if (checkedKeys.length > 0) return checkedKeys.join(', ')
     }
     return 'None selected'
@@ -138,7 +138,7 @@ export const ReviewApplication: React.FC = () => {
           {isOpc ? (
             <ReviewRow label={`1. ${primaryDirectorName}`} value="100% Shareholding" />
           ) : (
-            directors.map((dir: any, idx: number) => (
+            directors.map((dir, idx) => (
               <ReviewRow
                 key={dir.id || idx}
                 label={`${idx + 1}. ${dir.fullName || `Director #${idx + 1}`}`}
