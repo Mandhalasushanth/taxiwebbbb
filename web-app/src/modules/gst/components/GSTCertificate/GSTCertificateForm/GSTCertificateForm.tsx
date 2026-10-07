@@ -1,6 +1,4 @@
 import type { ChangeEvent, FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { routePaths } from '@core/config'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { GST_CERTIFICATE_REQUEST_TYPES } from '@modules/gst/data/gstCertificateData'
 import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
@@ -33,7 +31,6 @@ export const GSTCertificateForm = ({
   onSubmit,
   onSaveDraft,
 }: GSTCertificateFormProps) => {
-  const navigate = useNavigate()
   const { gstin, requestType: selectedRequestType } = values
 
   const displayPhone = user?.mobile ? `+91 ${user.mobile}` : '+91 9494949949'
@@ -43,16 +40,6 @@ export const GSTCertificateForm = ({
     <div className="gst-cert-container">
       {/* ── Top Bar Header ── */}
       <div className="gst-cert-top-bar">
-        <button
-          type="button"
-          className="gst-cert-back-btn"
-          onClick={() => navigate(routePaths.gst.root)}
-          aria-label="Back to GST"
-        >
-          <svg viewBox="0 0 24 24" className="gst-cert-back-svg" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-        </button>
         <h2 className="gst-cert-top-title">GST Certificate (REG-06)</h2>
         <div className="gst-cert-taxedge-pill">TaxEdge</div>
       </div>

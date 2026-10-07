@@ -21,7 +21,6 @@ interface GSTCertificateSubmittedProps {
 export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = ({
   applicationId = 'CRT-192842',
   gstin = '29AAAAA0000A1Z4',
-  onBackToForm,
 }) => {
   const navigate = useNavigate()
   const pushToast = useAppStore((state) => state.pushToast)
@@ -81,16 +80,6 @@ export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = (
     <div className="gst-cert-ready-container">
       {/* ── Top Bar Header ── */}
       <div className="gst-cert-ready-top-bar">
-        <button
-          type="button"
-          className="gst-cert-back-btn"
-          onClick={onBackToForm}
-          aria-label="Back to certificate form"
-        >
-          <svg viewBox="0 0 24 24" className="gst-cert-back-svg" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-        </button>
         <h2 className="gst-cert-top-title">GST Certificate (REG-06)</h2>
         <div className="gst-cert-taxedge-pill">TaxEdge</div>
       </div>
