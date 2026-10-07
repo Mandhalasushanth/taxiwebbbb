@@ -2,8 +2,8 @@ import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { userStorage } from '@core/storage/userStorage'
-import { useDraftBlocker } from '@shared/hooks'
-import { useAppStore } from '@store/index'
+import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '@shared/saveDraft'
+import { useReviewEdit } from '@shared/edit'
 import { revisedItrService } from '../services/revisedItrService'
 import type {
   OriginalReturnDetails, RevisionReasonKey, IncomeCorrectionState, DeductionCorrectionState,
@@ -25,6 +25,9 @@ export interface RevisedItrDraftData {
   bankCorrections?: BankCorrectionState
   uploadedDocuments?: Partial<Record<DocumentTypeId, UploadedDocument>>
 }
+
+const SERVICE_ID = 'revised-itr'
+const TOTAL_STAGES = 5
 
 const STAGE_LABELS: Record<number, string> = {
   1: 'Original Return', 2: 'Reason for Revision', 3: 'Correction Details', 4: 'Supporting Documents', 5: 'Review Revision',
@@ -69,14 +72,7 @@ const downloadRevisedReceipt = (params: { applicationId: string; ackNumber: stri
 
 export const useRevisedItr = () => {
   const navigate = useNavigate()
-  const pushToast = useAppStore((state) => state.pushToast)
-  const [existingDraft] = useState(() => {
-    try {
-      return userStorage.getDraft('revised-itr') as { currentStep?: number; formData?: RevisedItrDraftData } | null
-    } catch {
-      return null
-    }
-  })
+  const [existingDraft] = useState(() => readServiceDraft<RevisedItrDraftData>(SERVICE_ID, DRAFT_NAMESPACES.itr))
 
   const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(() =>
     existingDraft?.currentStep && existingDraft.currentStep >= 1 && existingDraft.currentStep <= 5 ? (existingDraft.currentStep as 1 | 2 | 3 | 4 | 5) : 1
@@ -110,25 +106,6 @@ export const useRevisedItr = () => {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
-
-  const saveCurrentDraft = useCallback(() => {
-    try {
-      if (isSubmitted) return
-      const timeStr = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
-      userStorage.saveDraft({
-        serviceId: 'revised-itr', serviceTitle: 'Revised ITR Filing', currentStep: step, totalSteps: 5,
-        stepLabel: STAGE_LABELS[step] || 'Revision Details',
-        formData: {
-          ackNumber, selectedAy, isReturnFound, returnDetails: returnDetails || undefined,
-          selectedReason: selectedReason || undefined, otherReasonText, incomeCorrections,
-          deductionCorrections, bankCorrections, uploadedDocuments,
-        } as unknown as Record<string, unknown>,
-        savedAt: timeStr, savedTimestamp: Date.now(), resumeRoute: routePaths.itr.revisedItr,
-      })
-    } catch {
-      // Fallback
-    }
-  }, [isSubmitted, step, ackNumber, selectedAy, isReturnFound, returnDetails, selectedReason, otherReasonText, incomeCorrections, deductionCorrections, bankCorrections, uploadedDocuments])
 
   const isDirty = useMemo(() => {
     return Boolean(
@@ -164,24 +141,39 @@ export const useRevisedItr = () => {
     uploadedDocuments,
   ])
 
-  useEffect(() => {
-    if (!isSubmitted && isDirty) saveCurrentDraft()
-  }, [step, isSubmitted, isDirty, saveCurrentDraft])
-
-  const { isModalOpen, openModal, handleSaveAndExit, handleDiscardAndExit, handleKeepEditing } = useDraftBlocker({
-    shouldBlock: !isSubmitted && isDirty,
-    onSaveDraft: () => { saveCurrentDraft(); pushToast('Revised ITR draft saved', 'success') },
-    onDiscardDraft: () => {
-      userStorage.deleteDraft('revised-itr')
-      pushToast('Draft discarded', 'info')
+  // Same draft behaviour as loans and GST: auto-save, save / discard dialog, browser Back prompt
+  const serviceDraft = useServiceDraft<RevisedItrDraftData>({
+    serviceId: SERVICE_ID,
+    serviceTitle: 'Revised ITR Filing',
+    totalSteps: TOTAL_STAGES,
+    currentStep: step,
+    stepLabel: STAGE_LABELS[step] || 'Revision Details',
+    resumeRoute: routePaths.itr.revisedItr,
+    exitRoute: routePaths.itr.root,
+    formData: {
+      ackNumber, selectedAy, isReturnFound, returnDetails: returnDetails || undefined,
+      selectedReason: selectedReason || undefined, otherReasonText, incomeCorrections,
+      deductionCorrections, bankCorrections, uploadedDocuments,
+    },
+    hasEnteredData: isDirty,
+    isComplete: isSubmitted,
+    storageNamespace: DRAFT_NAMESPACES.itr,
+    onDiscard: () => {
       setStep(1)
       setAckNumber('')
       setSelectedAy('')
       setIsReturnFound(false)
       setReturnDetails(null)
     },
-    defaultExitRoute: routePaths.itr.root,
   })
+  const {
+    isDraftModalOpen: isModalOpen,
+    openDraftModal: openModal,
+    handleSaveAndExit,
+    handleDiscardAndExit,
+    handleKeepEditing,
+    clearDraft,
+  } = serviceDraft
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!isNumericKeyAllowed(e.key, e.ctrlKey || e.metaKey)) e.preventDefault()
@@ -241,19 +233,27 @@ export const useRevisedItr = () => {
     })
   }, [])
 
+  // "Edit" from the review (stage 5): the stage shows "Update & Review" and Continue / Back return to the review
+  const goToReview = useCallback(() => {
+    setStep(TOTAL_STAGES); setShowPayment(false); window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
+  const reviewEdit = useReviewEdit(goToReview)
+  const isEditMode = reviewEdit.isEditMode && step < TOTAL_STAGES
+
   const handleBack = useCallback(() => {
     if (isSubmitted) { navigate(routePaths.itr.root); return }
     if (showPayment) { setShowPayment(false); return }
+    if (isEditMode) { reviewEdit.finishEdit(); return }
     if (step > 1) { setStep((prev) => (prev - 1) as 1 | 2 | 3 | 4 | 5); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
     if (isDirty) { openModal(); return }
     navigate(routePaths.itr.root)
-  }, [step, isDirty, showPayment, isSubmitted, openModal, navigate])
+  }, [step, isDirty, showPayment, isSubmitted, isEditMode, reviewEdit, openModal, navigate])
 
   const handlePaymentSuccess = useCallback((result?: { paymentId?: string }) => {
     try {
       setShowPayment(false); setIsSubmitted(true)
       const finalAppId = result?.paymentId ? 'ITR-2026-' + result.paymentId.replace(/[^0-9]/g, '').slice(-5).padStart(5, '50983') : 'ITR-2026-50983'
-      setApplicationId(finalAppId); userStorage.deleteDraft('revised-itr')
+      setApplicationId(finalAppId); clearDraft()
       userStorage.saveUserApplication({
         id: `app-rev-itr-${Date.now()}`, code: finalAppId, title: 'Revised ITR Filing',
         meta: `${returnDetails?.personalInfo?.fullName || 'Taxpayer'} · ${selectedAy || 'AY 2025-26'}`,
@@ -263,7 +263,7 @@ export const useRevisedItr = () => {
     } catch {
       // Fallback
     }
-  }, [returnDetails, selectedAy])
+  }, [returnDetails, selectedAy, clearDraft])
 
   const handleDownloadReceipt = useCallback(() => {
     downloadRevisedReceipt({ applicationId, ackNumber, selectedAy, docCount: Object.keys(uploadedDocuments).length })
@@ -291,6 +291,7 @@ export const useRevisedItr = () => {
         }
         return
       }
+      if (isEditMode) { reviewEdit.finishEdit(); return }
       if (step < 5) {
         setStep((prev) => (prev + 1) as 1 | 2 | 3 | 4 | 5); window.scrollTo({ top: 0, behavior: 'smooth' }); return
       }
@@ -298,7 +299,12 @@ export const useRevisedItr = () => {
     } catch {
       setIsLoading(false)
     }
-  }, [step, ackNumber, selectedAy, selectedReason, otherReasonText, incomeCorrections, deductionCorrections, bankCorrections, uploadedDocuments, isReturnFound])
+  }, [step, ackNumber, selectedAy, selectedReason, otherReasonText, incomeCorrections, deductionCorrections, bankCorrections, uploadedDocuments, isReturnFound, isEditMode, reviewEdit])
+
+  /** "Edit" on the review summary: opens that stage in edit mode */
+  const editStep = useCallback((targetStep: 1 | 2 | 3 | 4 | 5) => {
+    reviewEdit.startEdit(() => goToStep(targetStep))
+  }, [reviewEdit, goToStep])
 
   return {
     step, showPayment, setShowPayment, isSubmitted, setIsSubmitted, applicationId, ackNumber, selectedAy,
@@ -307,7 +313,7 @@ export const useRevisedItr = () => {
     setIsLoading, errors, setErrors, dropdownRef, handleKeyDown, handleAckChange, handleSelectAy,
     handleToggleDropdown, handleCloseDropdown, handleSelectReason, handleOtherReasonChange, handleIncomeChange,
     handleDeductionChange, handleBankChange, handleFileUpload, handleFileRemove, handleBack, handleContinue,
-    handlePaymentSuccess, handleDownloadReceipt, goToStep, isModalOpen, openModal, handleSaveAndExit,
+    handlePaymentSuccess, handleDownloadReceipt, goToStep, editStep, isEditMode, isModalOpen, openModal, handleSaveAndExit,
     handleDiscardAndExit, handleKeepEditing, isDirty,
   }
 }

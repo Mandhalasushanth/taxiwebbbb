@@ -46,7 +46,7 @@ export const GSTSuccessView: React.FC<GSTSuccessViewProps> = ({
     }
   }, [])
 
-  // Persist into user applications so tracker and applications desk can track it
+  // Persist into user applications so application tracker can display it
   useEffect(() => {
     try {
       const existing = userStorage.getUserApplications()

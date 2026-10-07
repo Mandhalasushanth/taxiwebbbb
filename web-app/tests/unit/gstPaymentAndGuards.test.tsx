@@ -3,6 +3,7 @@ process.env.VITE_API_BASE_URL = 'http://localhost:3000'
 process.env.VITE_ENABLE_MOCKS = 'true'
 
 import '@testing-library/jest-dom/vitest'
+import { pickFiles, uploadTestFile } from './helpers/uploadTestFiles'
 import { afterEach, beforeAll, beforeEach, describe, it, expect, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { RouterProvider, createMemoryRouter } from 'react-router-dom'
@@ -61,7 +62,7 @@ describe('BUG-GST-011: labelled Delete action', () => {
     expect(onRemove).toHaveBeenCalledWith('pan')
   })
 
-  it('clicking Replace opens file input picker directly and replaces file on change', () => {
+  it('clicking Replace opens file input picker directly and replaces file on change', async () => {
     const onReplace = vi.fn()
     const onUpload = vi.fn()
     const { container } = render(
@@ -85,14 +86,14 @@ describe('BUG-GST-011: labelled Delete action', () => {
     expect(onReplace).toHaveBeenCalledWith('pan')
     expect(clickSpy).toHaveBeenCalled()
 
-    const newFile = new File(['dummy'], 'new_pan.pdf', { type: 'application/pdf' })
-    fireEvent.change(fileInput, { target: { files: [newFile] } })
+    const newFile = uploadTestFile('new_pan.pdf')
+    await pickFiles(fileInput, [newFile])
 
     expect(onUpload).toHaveBeenCalledWith('pan', newFile)
   })
 
   it('clicking View Document opens the document in a new window', () => {
-    const dummyFile = new File(['dummy content'], 'aadhaar.pdf', { type: 'application/pdf' })
+    const dummyFile = uploadTestFile('aadhaar.pdf')
     const windowOpenSpy = vi.spyOn(window, 'open').mockReturnValue({} as Window)
 
     render(

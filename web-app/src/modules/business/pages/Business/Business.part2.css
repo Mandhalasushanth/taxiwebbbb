@@ -1,0 +1,261 @@
+/* Business styles (continued): imported right after Business.css so rule order is unchanged */
+
+.biz-service-card__features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.biz-service-card__feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.84rem;
+  color: var(--grey-700);
+}
+
+.biz-service-card__feature-icon {
+  color: var(--palette-emerald-500);
+  font-weight: 700;
+}
+
+.biz-service-card__docs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.biz-service-card__doc-chip {
+  background: var(--subtle-border);
+  color: var(--palette-slate-600);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.biz-service-card__footer {
+  border-top: 1px solid var(--subtle-border);
+  padding-top: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.biz-service-card__fee-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.biz-service-card__price {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--palette-slate-900);
+}
+
+.biz-service-card__turnaround {
+  font-size: 0.78rem;
+  color: var(--secondary-text);
+}
+
+.biz-service-card__btn-apply {
+  background: var(--palette-sky-900-0c4a6e);
+  color: var(--surface);
+  border: none;
+  border-radius: 10px;
+  padding: 0.65rem 1.2rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.biz-service-card__btn-apply:hover {
+  background: var(--palette-sky-800-075985);
+  transform: translateY(-1px);
+}
+
+/* 5. Compliance Calendar Section */
+.biz-calendar-section {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+}
+
+.biz-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.biz-section-header__title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--palette-slate-900);
+  margin: 0;
+}
+
+.biz-section-header__subtitle {
+  font-size: 0.88rem;
+  color: var(--secondary-text);
+  margin-top: 0.2rem;
+}
+
+.biz-compliance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.biz-compliance-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  background: var(--palette-slate-50);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: all 0.2s ease;
+}
+
+.biz-compliance-card:hover {
+  background: var(--surface);
+  border-color: var(--grey-300);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.biz-compliance-card__due {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--error);
+  background: var(--palette-red-50);
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  width: fit-content;
+}
+
+.biz-compliance-card__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--palette-slate-900);
+  margin: 0;
+}
+
+.biz-compliance-card__freq {
+  font-size: 0.8rem;
+  color: var(--secondary-text);
+}
+
+.biz-compliance-card__penalty {
+  font-size: 0.78rem;
+  color: var(--palette-red-700);
+  font-weight: 500;
+  margin-top: auto;
+}
+
+/* 6. Applications Tracker Table */
+.biz-tracker-section {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+}
+
+.biz-table-container {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.biz-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.biz-table th {
+  padding: 0.9rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--secondary-text);
+  border-bottom: 2px solid var(--border);
+  letter-spacing: 0.05em;
+}
+
+.biz-table td {
+  padding: 1rem;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--subtle-border);
+  color: var(--palette-slate-800);
+}
+
+.biz-table tr:hover td {
+  background: var(--palette-slate-50);
+}
+
+.biz-table__empty-cell {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--secondary-text);
+  font-size: 0.925rem;
+}
+
+
+.biz-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.biz-status-badge--active {
+  background: var(--palette-emerald-50);
+  color: var(--feature-success);
+}
+
+.biz-status-badge--in_progress {
+  background: var(--palette-blue-50);
+  color: var(--palette-blue-600);
+}
+
+.biz-status-badge--pending_docs {
+  background: var(--palette-amber-50);
+  color: var(--palette-amber-600);
+}
+
+.biz-status-badge--completed {
+  background: var(--palette-green-50);
+  color: var(--success);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .biz-hero {
+    padding: 1.75rem;
+  }
+  .biz-hero__title {
+    font-size: 1.75rem;
+  }
+  .biz-hero__search-row {
+    flex-direction: column;
+  }
+  .biz-services-grid {
+    grid-template-columns: 1fr;
+  }
+}

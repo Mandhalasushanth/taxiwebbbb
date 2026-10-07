@@ -1,9 +1,11 @@
 .gst-reg-page {
+  /* One width for every registration screen (header, stepper, steps 1-4, status) */
+  --gst-reg-max-width: var(--service-page-max-width);
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 100%;
-  margin: 0;
+  max-width: var(--gst-reg-max-width);
+  margin: 0 auto;
   padding: 0.5rem 2rem 3.5rem 2rem;
   box-sizing: border-box;
 }
@@ -26,7 +28,7 @@
   margin: 0;
   font-size: 1.65rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
@@ -34,7 +36,7 @@
 .gst-reg-subtitle {
   margin: 0;
   font-size: 0.88rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.4;
 }
 
@@ -100,12 +102,12 @@
 .gst-reg-page select,
 .gst-reg-page textarea {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .gst-reg-page input::placeholder,
 .gst-reg-page textarea::placeholder {
-  color: #94a3b8 !important;
+  color: var(--muted-text) !important;
   font-weight: 400 !important;
   opacity: 1;
 }
@@ -113,17 +115,17 @@
 .gst-reg-page select.gst-select--placeholder,
 .gst-reg-page select:has(option[value=""]:checked),
 .gst-reg-page select[data-empty="true"] {
-  color: #94a3b8 !important;
+  color: var(--muted-text) !important;
   font-weight: 400 !important;
 }
 
 .gst-reg-page select option {
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-weight: 600;
 }
 
 .gst-reg-page select option[value=""] {
-  color: #94a3b8;
+  color: var(--muted-text);
   font-weight: 400;
 }
 

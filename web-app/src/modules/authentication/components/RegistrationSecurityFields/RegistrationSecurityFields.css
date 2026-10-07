@@ -18,12 +18,12 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  color: #64748b;
+  color: var(--secondary-text);
   transition: color 0.15s ease;
 }
 
 .reg-field__eye-btn:hover {
-  color: #172033;
+  color: var(--primary-text);
 }
 
 /* Row 8: Terms Checkbox */
@@ -52,8 +52,8 @@
   width: clamp(18px, 1.1vw, 22px);
   height: clamp(18px, 1.1vw, 22px);
   border-radius: 4px;
-  border: 1.5px solid #cbd5e1;
-  background: #ffffff;
+  border: 1.5px solid var(--grey-300);
+  background: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,8 +62,8 @@
 }
 
 .reg-security-fields__checkbox-input:checked + .reg-security-fields__custom-checkbox {
-  background: #f97316;
-  border-color: #f97316;
+  background: var(--primary-orange);
+  border-color: var(--primary-orange);
 }
 
 .reg-security-fields__checkbox-input:focus + .reg-security-fields__custom-checkbox {
@@ -73,7 +73,7 @@
 .reg-security-fields__custom-checkbox svg {
   width: 12px;
   height: 12px;
-  stroke: #ffffff;
+  stroke: var(--surface);
   stroke-width: 3;
   display: none;
 }
@@ -83,12 +83,12 @@
 }
 
 .reg-security-fields__terms--error .reg-security-fields__custom-checkbox {
-  border-color: #dc2626;
+  border-color: var(--error);
   box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.12);
 }
 
 .reg-security-fields__checkbox-input:focus-visible + .reg-security-fields__custom-checkbox {
-  outline: 2px solid #f97316;
+  outline: 2px solid var(--primary-orange);
   outline-offset: 2px;
 }
 
@@ -98,12 +98,12 @@
 
 .reg-security-fields__terms-text {
   font-size: clamp(0.8125rem, 0.85vw, 0.9375rem);
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.4;
 }
 
 .reg-security-fields__terms-link {
-  color: #f97316;
+  color: var(--primary-orange);
   font-weight: 500;
   text-decoration: none;
   transition: opacity 0.15s ease;
@@ -133,28 +133,28 @@
 .reg-security-fields__btn:disabled,
 .reg-security-fields__btn--disabled,
 .reg-security-fields__btn--inactive {
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  color: #94a3b8;
+  background: var(--subtle-border);
+  border: 1px solid var(--border);
+  color: var(--muted-text);
   cursor: pointer;
   box-shadow: none;
 }
 
 .reg-security-fields__btn--inactive:hover {
-  background: #e2e8f0;
-  color: #64748b;
+  background: var(--border);
+  color: var(--secondary-text);
 }
 
 /* Enabled State: TaxEdge Orange */
 .reg-security-fields__btn--active {
-  background: #f97316;
-  color: #ffffff;
+  background: var(--primary-orange);
+  color: var(--surface);
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(249, 115, 22, 0.25);
 }
 
 .reg-security-fields__btn--active:hover:not(:disabled) {
-  background: #ea580c;
+  background: var(--palette-orange-600);
   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
   transform: translateY(-1px);
 }

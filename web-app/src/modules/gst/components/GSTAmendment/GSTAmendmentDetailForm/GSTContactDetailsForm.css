@@ -3,8 +3,8 @@
 }
 
 .gst-amend-contact-readonly-card {
-  background-color: #eff6ff;
-  border: 1px solid #dbeafe;
+  background-color: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-100);
   border-radius: 12px;
   padding: 1.25rem 1.5rem;
 }
@@ -12,7 +12,7 @@
 .gst-amend-contact-readonly-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--palette-slate-800);
   margin: 0 0 1rem 0;
 }
 
@@ -32,11 +32,11 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #ffffff;
+  background-color: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #3b82f6;
+  color: var(--palette-blue-500);
   flex-shrink: 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
@@ -53,44 +53,44 @@
 
 .gst-amend-contact-readonly-label {
   font-size: 0.8125rem;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 500;
 }
 
 .gst-amend-contact-readonly-val {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 /* Input wrappers for New details */
 .gst-amend-contact-input-wrapper {
   display: flex;
   align-items: center;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--palette-gray-300);
   border-radius: 8px;
-  background-color: #ffffff;
+  background-color: var(--surface);
   overflow: hidden;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .gst-amend-contact-input-wrapper:focus-within {
-  border-color: #2563eb;
+  border-color: var(--palette-blue-600);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .gst-amend-contact-prefix {
   padding: 0.65rem 1rem;
-  background-color: #f8fafc;
-  border-right: 1px solid #e2e8f0;
+  background-color: var(--palette-slate-50);
+  border-right: 1px solid var(--border);
   font-weight: 700;
-  color: #1e293b;
+  color: var(--palette-slate-800);
   font-size: 0.9375rem;
 }
 
 .gst-amend-contact-email-icon {
   padding: 0.65rem 0.875rem;
-  color: #64748b;
+  color: var(--secondary-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -107,7 +107,7 @@
   outline: none;
   padding: 0.65rem 1rem;
   font-size: 0.9375rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   background: transparent;
 }
 
@@ -116,11 +116,11 @@
 }
 
 .gst-amend-contact-input::placeholder {
-  color: #94a3b8;
+  color: var(--muted-text);
 }
 
 .gst-amend-contact-input.has-error {
-  background-color: #fef2f2;
+  background-color: var(--palette-red-50);
 }
 
 /* Proof Grid (2 Column) */
@@ -138,8 +138,8 @@
 }
 
 .gst-amend-contact-accepted-card {
-  background-color: #fff8f1;
-  border: 1px solid #fed7aa;
+  background-color: var(--palette-orange-50-fff8f1);
+  border: 1px solid var(--orange-200);
   border-radius: 12px;
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -154,7 +154,7 @@
 }
 
 .gst-amend-contact-accepted-icon {
-  color: #ea580c;
+  color: var(--palette-orange-600);
   display: flex;
   align-items: center;
 }
@@ -167,7 +167,7 @@
 .gst-amend-contact-accepted-title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--palette-slate-800);
   margin: 0;
 }
 
@@ -187,7 +187,7 @@
 }
 
 .gst-amend-contact-check-icon {
-  color: #ea580c;
+  color: var(--palette-orange-600);
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -201,7 +201,7 @@
 
 .gst-amend-contact-item-text {
   font-size: 0.875rem;
-  color: #334155;
+  color: var(--grey-700);
   line-height: 1.45;
   font-weight: 500;
 }

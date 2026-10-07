@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { EmptyState, Loader } from '@shared/components'
 import { useAuthStore } from '@store/index'
 import { userStorage, type ApplicationDraft } from '@core/storage/userStorage'
+import { deleteServiceDraft } from '@shared/saveDraft'
 import {
   DashboardHero,
   QuickServices,
@@ -21,7 +22,8 @@ export const CustomerDashboard = () => {
   })
 
   const handleDiscardDraft = (serviceId: string) => {
-    userStorage.deleteDraft(serviceId)
+    // Also clears the auto-saved copy, so reopening the service starts empty
+    deleteServiceDraft(serviceId)
     setDrafts((prev) => prev.filter((d) => d.serviceId !== serviceId))
   }
 

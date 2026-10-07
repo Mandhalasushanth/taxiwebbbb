@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
+import './ConfirmAccountNumberInput.css'
 
 export interface ConfirmAccountNumberInputProps {
   id?: string
@@ -15,7 +16,6 @@ export interface ConfirmAccountNumberInputProps {
   disabled?: boolean
   required?: boolean
   autoComplete?: string
-  style?: React.CSSProperties
 }
 
 export const ConfirmAccountNumberInput: React.FC<ConfirmAccountNumberInputProps> = ({
@@ -32,7 +32,6 @@ export const ConfirmAccountNumberInput: React.FC<ConfirmAccountNumberInputProps>
   disabled = false,
   required = true,
   autoComplete = 'off',
-  style,
 }) => {
   const [showPassword, setShowPassword] = useState(false)
 
@@ -44,8 +43,8 @@ export const ConfirmAccountNumberInput: React.FC<ConfirmAccountNumberInputProps>
   const isInvalid = Boolean(hasError || error)
 
   return (
-    <div className="confirm-acc-input-container" style={{ position: 'relative', width: '100%', ...style }}>
-      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+    <div className="confirm-acc-input-container">
+      <div className="confirm-acc-input-row">
         <input
           id={id}
           name={name}
@@ -60,29 +59,14 @@ export const ConfirmAccountNumberInput: React.FC<ConfirmAccountNumberInputProps>
           disabled={disabled}
           required={required}
           autoComplete={autoComplete}
-          className={`${className} ${isInvalid ? 'input--invalid has-error input-error' : ''}`}
-          style={{ width: '100%', paddingRight: '2.5rem' }}
+          className={`confirm-acc-input ${className} ${isInvalid ? 'input--invalid has-error input-error' : ''}`}
           aria-invalid={isInvalid}
         />
         <button
           type="button"
           tabIndex={-1}
           onClick={() => setShowPassword((prev) => !prev)}
-          style={{
-            position: 'absolute',
-            right: '0.625rem',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '0.25rem',
-            color: '#64748b',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 2,
-          }}
+          className="confirm-acc-toggle"
           aria-label={showPassword ? 'Hide confirm account number' : 'Show confirm account number'}
         >
           {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -92,14 +76,6 @@ export const ConfirmAccountNumberInput: React.FC<ConfirmAccountNumberInputProps>
         <span
           className="confirm-acc-error"
           role="alert"
-          style={{
-            color: '#ef4444',
-            fontSize: '0.75rem',
-            fontWeight: 500,
-            marginTop: '0.25rem',
-            display: 'block',
-            lineHeight: 1.25,
-          }}
         >
           {error}
         </span>

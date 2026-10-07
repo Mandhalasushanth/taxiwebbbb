@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useReviewEdit } from '@shared/edit'
 import { useLoanApplication } from './useLoanApplication'
 import type { UseLoanApplicationOptions } from './useLoanApplication'
 import { loanApplicationService } from '@modules/loans/services/loanApplicationService'
@@ -68,6 +69,13 @@ export function useLoanStepFlow<T extends object>(config: UseLoanStepFlowConfig<
     setFieldErrors({})
   }, [])
 
+  // "Edit" from the review (last step): the step shows "Update & Review" and returns to the review
+  const goToReview = useCallback(() => {
+    clearErrors()
+    goToStep(totalSteps)
+  }, [clearErrors, goToStep, totalSteps])
+  const reviewEdit = useReviewEdit(goToReview)
+
   const handleFieldChange = useCallback(
     (fields: Partial<T>) => {
       updateFormData(fields)
@@ -119,13 +127,17 @@ export function useLoanStepFlow<T extends object>(config: UseLoanStepFlowConfig<
     if (!validateCurrentStep()) return
     if (isLastStep) {
       await submit()
+    } else if (reviewEdit.isEditMode) {
+      reviewEdit.finishEdit()
     } else {
       nextStep()
     }
-  }, [validateCurrentStep, isLastStep, submit, nextStep])
+  }, [validateCurrentStep, isLastStep, submit, reviewEdit, nextStep])
 
   const handleBack = useCallback(() => {
-    if (currentStep > 1) {
+    if (reviewEdit.isEditMode && !isLastStep) {
+      reviewEdit.finishEdit()
+    } else if (currentStep > 1) {
       clearErrors()
       prevStep()
     } else if (firstStepBack === 'draft') {
@@ -133,11 +145,13 @@ export function useLoanStepFlow<T extends object>(config: UseLoanStepFlowConfig<
     } else {
       safeNavigateTo(navigate, exitRoute)
     }
-  }, [currentStep, clearErrors, prevStep, firstStepBack, loan, navigate, exitRoute])
+  }, [reviewEdit, isLastStep, currentStep, clearErrors, prevStep, firstStepBack, loan, navigate, exitRoute])
 
   /** Stepper clicks: going back is always allowed, going forward only one step after validation */
   const handleStepClick = useCallback(
     (targetStep: number) => {
+      // Picking a step on the stepper is ordinary navigation, not an edit from the review
+      reviewEdit.cancelEdit()
       if (targetStep < currentStep) {
         clearErrors()
         goToStep(targetStep)
@@ -145,16 +159,16 @@ export function useLoanStepFlow<T extends object>(config: UseLoanStepFlowConfig<
         goToStep(targetStep)
       }
     },
-    [currentStep, clearErrors, goToStep, validateCurrentStep]
+    [reviewEdit, currentStep, clearErrors, goToStep, validateCurrentStep]
   )
 
-  /** Jump to a step from the review page (e.g. "Edit" links) */
+  /** "Edit" on the review page: opens the step in edit mode ("Update & Review" returns here) */
   const navigateToStep = useCallback(
     (targetStep: number) => {
       clearErrors()
-      goToStep(targetStep)
+      reviewEdit.startEdit(() => goToStep(targetStep))
     },
-    [clearErrors, goToStep]
+    [clearErrors, reviewEdit, goToStep]
   )
 
   const referenceNumber = submittedApp?.referenceNumber || submittedApp?.refNumber || submittedApp?.id || ''
@@ -180,6 +194,8 @@ export function useLoanStepFlow<T extends object>(config: UseLoanStepFlowConfig<
     handleBack,
     handleStepClick,
     navigateToStep,
+    /** True on a step opened with "Edit" from the review */
+    isEditMode: reviewEdit.isEditMode && !isLastStep,
     submittedApp,
     referenceNumber,
     handleSuccessDone,

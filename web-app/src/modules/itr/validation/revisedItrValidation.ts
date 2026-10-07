@@ -1,3 +1,4 @@
+import { formatUploadSize } from '@shared/upload'
 import type {
   RevisionReasonKey,
   IncomeCorrectionState,
@@ -30,11 +31,8 @@ export const sanitizeAckNumberInput = (val: string): string => val.replace(/\D/g
 
 export const sanitizeNumericAmount = (val: string): string => val.replace(/\D/g, '')
 
-export const formatFileSize = (bytes: number): string => {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-}
+/** The shared upload size format, e.g. "820 KB" or "2.4 MB" */
+export const formatFileSize = formatUploadSize
 
 const ALLOWED_CONTROL_KEYS = [
   'Backspace',

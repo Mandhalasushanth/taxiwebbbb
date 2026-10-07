@@ -1,0 +1,266 @@
+/* ===== Field rows ===== */
+.gst-form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.35rem;
+  align-items: start;
+  width: 100%;
+}
+
+/* Two columns on desktop, stacked on mobile */
+.gst-form-row--split {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Short paired fields (City/District, PAN/DOB…) stay side by side on mobile too */
+.gst-form-row--pair {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ===== Field ===== */
+.gst-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+}
+
+.gst-field__label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.gst-field__required {
+  margin-left: 2px;
+  color: inherit;
+}
+
+.gst-field__input {
+  width: 100%;
+  height: 56px;
+  padding: 0 1.15rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: 16px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.gst-field__input::placeholder {
+  color: var(--color-text-subtle);
+  font-weight: 400;
+  opacity: 1;
+}
+
+.gst-field__input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+.gst-field__input--error {
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+.gst-field__error {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--color-danger);
+}
+
+/* ===== Select ===== */
+.gst-field__select-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.gst-field__select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 3rem;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.gst-field__select--empty {
+  color: var(--color-text-subtle);
+  font-weight: 400;
+}
+
+.gst-field__select option {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.gst-field__chevron {
+  position: absolute;
+  top: 50%;
+  right: 1.1rem;
+  width: 22px;
+  height: 22px;
+  color: var(--color-text);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* ===== Date ===== */
+.gst-date {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  height: 56px;
+  padding: 0 1.1rem 0 0.6rem;
+  background: var(--surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.gst-date:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+.gst-date--error {
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+.gst-date__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--color-info-soft);
+  color: var(--color-info);
+}
+
+.gst-date__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.gst-date__text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.gst-date__text--empty {
+  color: var(--color-text-subtle);
+  font-weight: 500;
+}
+
+.gst-date__chevron {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  color: var(--color-info);
+}
+
+/* Native date input sits invisibly over the whole field so any tap opens the picker */
+.gst-date__native {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  opacity: 0;
+  cursor: pointer;
+  color-scheme: light;
+}
+
+.gst-date__native::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .gst-form-row--split {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .gst-form-row {
+    gap: 1.1rem;
+  }
+
+  .gst-form-row--pair {
+    gap: 0.85rem;
+  }
+
+  .gst-field__label {
+    font-size: 0.88rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .gst-field__input,
+  .gst-date {
+    height: 52px;
+    border-radius: 14px;
+  }
+
+  .gst-field__input {
+    padding: 0 0.95rem;
+    font-size: 0.95rem;
+  }
+
+  .gst-field__select {
+    padding-right: 2.6rem;
+  }
+
+  .gst-field__chevron {
+    right: 0.85rem;
+  }
+
+  .gst-date {
+    gap: 0.6rem;
+    padding: 0 0.75rem 0 0.5rem;
+  }
+
+  .gst-date__icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+
+  .gst-date__text {
+    font-size: 0.92rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .gst-form-row--pair {
+    grid-template-columns: 1fr;
+  }
+}

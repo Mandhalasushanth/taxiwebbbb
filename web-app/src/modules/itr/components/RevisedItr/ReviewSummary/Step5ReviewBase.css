@@ -16,14 +16,14 @@
     .step5-main-heading {
       font-size: 1.45rem;
       font-weight: 800;
-      color: #0f172a;
+      color: var(--palette-slate-900);
       margin: 0;
       letter-spacing: -0.01em;
     }
 
     .step5-sub-heading {
       font-size: 0.95rem;
-      color: #64748b;
+      color: var(--secondary-text);
       margin: 0;
     }
   }
@@ -47,8 +47,8 @@
   }
 
   .step5-review-card {
-    background: #ffffff;
-    border: 1.5px solid #e2e8f0;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
     border-radius: 16px;
     padding: 1.25rem 1.5rem;
     display: flex;
@@ -64,14 +64,14 @@
       .card-title {
         font-size: 1.05rem;
         font-weight: 800;
-        color: #0f172a;
+        color: var(--palette-slate-900);
         margin: 0;
       }
 
       .edit-pill-btn {
-        background: #fff7ed;
-        color: #ea580c;
-        border: 1px solid #ffedd5;
+        background: var(--palette-orange-50);
+        color: var(--palette-orange-600);
+        border: 1px solid var(--orange-100);
         padding: 0.25rem 0.85rem;
         border-radius: 9999px;
         font-size: 0.8rem;
@@ -80,8 +80,8 @@
         transition: all 0.2s ease;
 
         &:hover {
-          background: #ffedd5;
-          color: #c2410c;
+          background: var(--orange-100);
+          color: var(--palette-orange-700);
         }
       }
     }
@@ -98,12 +98,12 @@
         font-size: 0.92rem;
 
         .row-key {
-          color: #64748b;
+          color: var(--secondary-text);
           font-weight: 500;
         }
 
         .row-val {
-          color: #0f172a;
+          color: var(--palette-slate-900);
           font-weight: 700;
           text-align: right;
 
@@ -117,7 +117,7 @@
           }
 
           &.row-val-status {
-            color: #ea580c;
+            color: var(--palette-orange-600);
           }
         }
       }
@@ -125,8 +125,8 @@
   }
 
   .step5-tax-summary-card {
-    background: #ffffff;
-    border: 1.5px solid #e2e8f0;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
     border-radius: 16px;
     padding: 1.25rem 1.5rem;
     display: flex;
@@ -136,7 +136,7 @@
     .card-title {
       font-size: 1.05rem;
       font-weight: 800;
-      color: #0f172a;
+      color: var(--palette-slate-900);
       margin: 0;
     }
 
@@ -150,7 +150,7 @@
         flex-direction: column;
         gap: 0.35rem;
         padding-bottom: 0.75rem;
-        border-bottom: 1px dashed #e2e8f0;
+        border-bottom: 1px dashed var(--border);
 
         &:last-child {
           border-bottom: none;
@@ -160,7 +160,7 @@
         .tax-item-label {
           font-size: 0.95rem;
           font-weight: 700;
-          color: #0f172a;
+          color: var(--palette-slate-900);
         }
 
         .tax-item-row {
@@ -169,11 +169,11 @@
           font-size: 0.88rem;
 
           .tax-sub-label {
-            color: #64748b;
+            color: var(--secondary-text);
           }
 
           .tax-sub-val {
-            color: #0f172a;
+            color: var(--palette-slate-900);
             font-weight: 600;
 
             &.tax-change-val {
@@ -186,17 +186,17 @@
   }
 
   .step5-refund-highlight-card {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    background: linear-gradient(135deg, var(--feature-success) 0%, var(--palette-emerald-700) 100%);
     border-radius: 18px;
     padding: 1.5rem 2rem;
-    color: #ffffff;
+    color: var(--surface);
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
     box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
 
     &.tax-payable {
-      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      background: linear-gradient(135deg, var(--error) 0%, var(--palette-red-700) 100%);
       box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25);
     }
 
@@ -228,8 +228,8 @@
           width: fit-content;
 
           .refund-symbol-circle {
-            background: #ffffff;
-            color: #059669;
+            background: var(--surface);
+            color: var(--feature-success);
             width: 16px;
             height: 16px;
             border-radius: 50%;
@@ -289,12 +289,12 @@
   }
 
   .diff-orange {
-    color: #ea580c;
+    color: var(--palette-orange-600);
     font-weight: 700;
   }
 
   .diff-red {
-    color: #ef4444;
+    color: var(--palette-red-500);
     font-weight: 700;
   }
 }

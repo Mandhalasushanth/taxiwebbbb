@@ -1,7 +1,7 @@
 .cs-exec-card {
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   padding: 1.25rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
@@ -16,15 +16,15 @@
 .cs-exec-card__title {
   font-size: 1rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
 }
 
 .cs-exec-card__count {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #059669;
-  background-color: #ecfdf5;
+  color: var(--feature-success);
+  background-color: var(--palette-emerald-50);
   padding: 0.2rem 0.55rem;
   border-radius: 9999px;
 }
@@ -42,7 +42,7 @@
   padding: 0.75rem 0.9rem;
   border-radius: 12px;
   border: 1px solid transparent;
-  background-color: #f8fafc;
+  background-color: var(--palette-slate-50);
   cursor: pointer;
   text-align: left;
   transition: all 0.2s ease;
@@ -50,13 +50,13 @@
 }
 
 .cs-exec-item:hover {
-  background-color: #f1f5f9;
-  border-color: #cbd5e1;
+  background-color: var(--subtle-border);
+  border-color: var(--grey-300);
 }
 
 .cs-exec-item--active {
-  background-color: #eff6ff;
-  border-color: #93c5fd;
+  background-color: var(--palette-blue-50);
+  border-color: var(--palette-blue-300);
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
 }
 
@@ -64,8 +64,8 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background-color: #032b69;
-  color: #ffffff;
+  background-color: var(--palette-blue-800-032b69);
+  color: var(--surface);
   font-size: 0.85rem;
   font-weight: 700;
   display: flex;
@@ -86,7 +86,7 @@
 .cs-exec-item__name {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -94,7 +94,7 @@
 
 .cs-exec-item__dept {
   font-size: 0.76rem;
-  color: #032b69;
+  color: var(--palette-blue-800-032b69);
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
@@ -103,7 +103,7 @@
 
 .cs-exec-item__role {
   font-size: 0.72rem;
-  color: #64748b;
+  color: var(--secondary-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -121,11 +121,11 @@
 }
 
 .cs-exec-item__badge--online {
-  background-color: #ecfdf5;
-  color: #059669;
+  background-color: var(--palette-emerald-50);
+  color: var(--feature-success);
 }
 
 .cs-exec-item__badge--away {
-  background-color: #fffbeb;
-  color: #d97706;
+  background-color: var(--palette-amber-50);
+  color: var(--palette-amber-600);
 }

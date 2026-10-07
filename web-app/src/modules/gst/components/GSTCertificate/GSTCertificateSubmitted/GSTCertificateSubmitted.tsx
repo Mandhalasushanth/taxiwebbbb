@@ -1,4 +1,6 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { routePaths } from '@core/config'
 import { useAppStore } from '@store/index'
 import './GSTCertificateSubmitted.css'
 
@@ -10,258 +12,189 @@ interface GSTCertificateSubmittedProps {
   onAllForms?: () => void
 }
 
+/**
+ * Screen 2: GST Certificate Ready (REG-06)
+ * Replicates the mobile screen 2 reference with the 3 navigation actions
+ * (Go to Dashboard, My Applications, Chat with CA) using TaxEdge color codes.
+ */
 export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = ({
-  gstin,
+  applicationId = '',
+  gstin = '',
 }) => {
+  const navigate = useNavigate()
   const pushToast = useAppStore((state) => state.pushToast)
 
-  const handleDownload = () => {
-    pushToast(`Downloading certificate GST-Certificate-${gstin}.pdf`, 'success')
-  }
+  const handleShareOrDownload = () => {
+    // Generate simulated download
+    const filename = gstin ? `GST-Certificate-${gstin}.pdf` : 'GST-Certificate.pdf'
+    const link = document.createElement('a')
+    link.href = '#download-cert'
+    link.download = filename
+    pushToast(`Certificate ${filename} saved successfully!`, 'success')
 
-  const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: 'GST Registration Certificate',
-        text: `GST Certificate for ${gstin}`,
+        title: 'GST Registration Certificate (REG-06)',
+        text: gstin ? `GST Certificate for ${gstin}` : 'GST Certificate',
         url: window.location.href,
       }).catch(() => {})
-    } else {
-      pushToast('Certificate link copied to clipboard!', 'success')
     }
   }
 
-  return (
-    <div className="gcs-root">
-      {/* ── Top Hero Banner ── */}
-      <div className="gcs-hero-banner">
-        <div className="gcs-hero-left">
-          <div className="gcs-success-badge">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-            <span>Success</span>
-          </div>
-          <h1 className="gcs-hero-title">
-            Certificate <span className="gcs-hero-title-highlight">Ready!</span>
-          </h1>
-          <p className="gcs-hero-subtitle1">
-            Your GST Registration Certificate (Form REG-06) for{' '}
-            <strong className="gcs-gstin-bold">{gstin}</strong> is ready.
-          </p>
-          <p className="gcs-hero-subtitle2">
-            You can now download, share or save your certificate for your records.
-          </p>
-        </div>
+  const handleGoToDashboard = () => {
+    navigate(routePaths.dashboard)
+  }
 
-        {/* Hero Right Graphic */}
-        <div className="gcs-hero-right">
-          <div className="gcs-doc-illustration">
-            <div className="gcs-doc-paper">
-              <span className="gcs-doc-heading">GST</span>
-              <span className="gcs-doc-subheading">REG-06</span>
-              <div className="gcs-doc-line" />
-              <div className="gcs-doc-line gcs-doc-line--short" />
-              <div className="gcs-doc-line" />
-              <div className="gcs-doc-check-badge">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              </div>
+  const handleMyApplications = () => {
+    navigate(routePaths.applications)
+  }
+
+  const handleChatWithCa = () => {
+    navigate(routePaths.support)
+  }
+
+  return (
+    <div className="gst-cert-ready-container">
+      {/* ── Top Bar Header ── */}
+      <div className="gst-cert-ready-top-bar">
+        <h2 className="gst-cert-top-title">GST Certificate (REG-06)</h2>
+      </div>
+
+      {/* ── Hero Certificate Illustration ── */}
+      <div className="gst-cert-ready-hero" aria-hidden="true">
+        <div className="gst-cert-ready-slot-wrap">
+          {/* Paper emerging from slot */}
+          <div className="gst-cert-ready-paper">
+            <span className="gst-cert-ready-paper-text">GST</span>
+            <div className="gst-cert-ready-paper-lines">
+              <span className="gst-cert-ready-paper-line" />
+              <span className="gst-cert-ready-paper-line gst-cert-ready-paper-line--short" />
             </div>
           </div>
-          <div className="gcs-cursive-tagline">
-            <span className="gcs-cursive-text">Compliant Today</span>
-            <span className="gcs-cursive-text">Growing Tomorrow</span>
-            <svg className="gcs-cursive-swash" viewBox="0 0 120 12" fill="none">
-              <path d="M2 8 C 30 2, 80 10, 118 4" stroke="#f97316" strokeWidth="2.5" strokeLinecap="round" />
+          {/* Base Slot Platform */}
+          <div className="gst-cert-ready-slot">
+            <div className="gst-cert-ready-slot-inner" />
+          </div>
+          {/* Circular Badge Checkmark in center */}
+          <div className="gst-cert-ready-check-badge">
+            <svg viewBox="0 0 24 24" className="gst-cert-ready-check-svg" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
         </div>
       </div>
 
-      {/* ── Two Column Layout ── */}
-      <div className="gcs-layout">
-        {/* ── LEFT: Certificate Details Card ── */}
-        <div className="gcs-details-card">
-          <div className="gcs-card-header">
-            <div className="gcs-card-header-icon">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#2563eb" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      {/* ── Title & Subtitle ── */}
+      <div className="gst-cert-ready-text-block">
+        <h1 className="gst-cert-ready-title">Certificate Ready!</h1>
+        <p className="gst-cert-ready-subtitle">
+          Your official <strong>Form GST REG-06</strong> certificate has been generated successfully.
+        </p>
+      </div>
+
+      {/* ── Summary Details Card ── */}
+      <div className="gst-cert-ready-card">
+        {/* Row 1: GSTIN */}
+        <div className="gst-cert-ready-row">
+          <div className="gst-cert-ready-row-left">
+            <div className="gst-cert-ready-icon-box">
+              <svg viewBox="0 0 24 24" className="gst-cert-ready-row-icon" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 5v14" /><path d="M8 5v14" /><path d="M12 5v14" /><path d="M17 5v14" /><path d="M21 5v14" />
+              </svg>
+            </div>
+            <span className="gst-cert-ready-label">GSTIN</span>
+          </div>
+          <span className="gst-cert-ready-value">{gstin || '—'}</span>
+        </div>
+
+        <div className="gst-cert-ready-divider" />
+
+        {/* Row 2: Form */}
+        <div className="gst-cert-ready-row">
+          <div className="gst-cert-ready-row-left">
+            <div className="gst-cert-ready-icon-box">
+              <svg viewBox="0 0 24 24" className="gst-cert-ready-row-icon" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                 <polyline points="14 2 14 8 20 8" />
               </svg>
             </div>
-            <h2 className="gcs-card-title">Certificate Details</h2>
+            <span className="gst-cert-ready-label">Form</span>
           </div>
-
-          <div className="gcs-detail-rows">
-            <div className="gcs-detail-row">
-              <div className="gcs-detail-row-left">
-                <div className="gcs-row-icon">
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#2563eb" strokeWidth="2">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                  </svg>
-                </div>
-                <span className="gcs-detail-label">Document</span>
-              </div>
-              <span className="gcs-detail-value gcs-detail-value--bold">
-                GST Registration Certificate (Form REG-06)
-              </span>
-            </div>
-
-            <div className="gcs-detail-row">
-              <div className="gcs-detail-row-left">
-                <div className="gcs-row-icon">
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#2563eb" strokeWidth="2">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  </svg>
-                </div>
-                <span className="gcs-detail-label">Format</span>
-              </div>
-              <span className="gcs-detail-value gcs-detail-value--bold">PDF</span>
-            </div>
-
-            <div className="gcs-detail-row">
-              <div className="gcs-detail-row-left">
-                <div className="gcs-row-icon">
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#2563eb" strokeWidth="2">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    <polyline points="9 12 11 14 15 10" />
-                  </svg>
-                </div>
-                <span className="gcs-detail-label">Status</span>
-              </div>
-              <span className="gcs-status-ready-badge">
-                <span className="gcs-status-dot">●</span> Ready
-              </span>
-            </div>
-
-            <div className="gcs-detail-row">
-              <div className="gcs-detail-row-left">
-                <div className="gcs-row-icon">
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#2563eb" strokeWidth="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" />
-                    <line x1="8" y1="2" x2="8" y2="6" />
-                    <line x1="3" y1="10" x2="21" y2="10" />
-                  </svg>
-                </div>
-                <span className="gcs-detail-label">Generated On</span>
-              </div>
-              <span className="gcs-detail-value">17 Sept 2026, 03:18 PM</span>
-            </div>
-
-            <div className="gcs-detail-row gcs-detail-row--last">
-              <div className="gcs-detail-row-left">
-                <div className="gcs-row-icon">
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#2563eb" strokeWidth="2">
-                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-                    <line x1="7" y1="7" x2="7.01" y2="7" />
-                  </svg>
-                </div>
-                <span className="gcs-detail-label">File Name</span>
-              </div>
-              <span className="gcs-detail-value gcs-filename-val">
-                GST-Certificate-{gstin}.pdf
-              </span>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="gcs-actions-grid">
-            <button type="button" className="gcs-btn-download" onClick={handleDownload}>
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              <span>Download Certificate</span>
-            </button>
-
-            <button type="button" className="gcs-btn-share" onClick={handleShare}>
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="18" cy="5" r="3" />
-                <circle cx="6" cy="12" r="3" />
-                <circle cx="18" cy="19" r="3" />
-                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-              </svg>
-              <span>Share Certificate</span>
-            </button>
-          </div>
+          <span className="gst-cert-ready-value">Form GST REG-06</span>
         </div>
 
-        {/* ── RIGHT: Sidebar ── */}
-        <aside className="gcs-sidebar">
-          {/* Card 1: What's Next? */}
-          <div className="gcs-whats-next-card">
-            <div className="gcs-wn-header">
-              <div className="gcs-wn-icon">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 18h6" />
-                  <path d="M10 22h4" />
-                  <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="gcs-wn-title">What's Next?</h3>
-                <p className="gcs-wn-subtitle">Make the most of your certificate</p>
-              </div>
-            </div>
+        <div className="gst-cert-ready-divider" />
 
-            <div className="gcs-wn-list">
-              <div className="gcs-wn-item">
-                <div className="gcs-wn-item-icon">
-                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#2563eb" strokeWidth="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                </div>
-                <span>Use it for compliance filings</span>
-              </div>
-
-              <div className="gcs-wn-item">
-                <div className="gcs-wn-item-icon">
-                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#2563eb" strokeWidth="2">
-                    <circle cx="18" cy="5" r="3" />
-                    <circle cx="6" cy="12" r="3" />
-                    <circle cx="18" cy="19" r="3" />
-                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                  </svg>
-                </div>
-                <span>Share with authorized personnel</span>
-              </div>
-
-              <div className="gcs-wn-item">
-                <div className="gcs-wn-item-icon">
-                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#2563eb" strokeWidth="2">
-                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
-                  </svg>
-                </div>
-                <span>Save for future reference</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2: Security Banner */}
-          <div className="gcs-security-card">
-            <div className="gcs-security-icon">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2563eb" strokeWidth="2.2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                <polyline points="9 12 11 14 15 10" />
+        {/* Row 3: Status */}
+        <div className="gst-cert-ready-row">
+          <div className="gst-cert-ready-row-left">
+            <div className="gst-cert-ready-icon-box gst-cert-ready-icon-box--green">
+              <svg viewBox="0 0 24 24" className="gst-cert-ready-row-icon" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
               </svg>
             </div>
-            <div>
-              <h4 className="gcs-security-title">Your data is safe with us</h4>
-              <p className="gcs-security-text">
-                We ensure the highest security standards to keep your information protected.
-              </p>
-            </div>
+            <span className="gst-cert-ready-label">Status</span>
           </div>
-        </aside>
+          <span className="gst-cert-ready-status-pill">Generated &amp; Saved</span>
+        </div>
+      </div>
+
+      {/* ── Primary Action: Share / Save Certificate ── */}
+      <button
+        type="button"
+        className="gst-cert-btn-outline-blue"
+        onClick={handleShareOrDownload}
+      >
+        <svg viewBox="0 0 24 24" className="gst-cert-btn-share-icon" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+          <polyline points="16 6 12 2 8 6" />
+          <line x1="12" y1="2" x2="12" y2="15" />
+        </svg>
+        <span>Share / Save Certificate</span>
+      </button>
+
+      {/* ── Replacement Bottom Actions (Dashboard, My Applications, Chat with CA) ── */}
+      <div className="gst-cert-ready-bottom-actions">
+        {/* 1. Go to Dashboard */}
+        <button
+          type="button"
+          className="gst-cert-btn-nav gst-cert-btn-nav--dashboard"
+          onClick={handleGoToDashboard}
+        >
+          <svg viewBox="0 0 24 24" className="gst-cert-nav-icon" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+          <span>Go to Dashboard</span>
+        </button>
+
+        {/* 2. My Applications */}
+        <button
+          type="button"
+          className="gst-cert-btn-nav gst-cert-btn-nav--applications"
+          onClick={handleMyApplications}
+        >
+          <svg viewBox="0 0 24 24" className="gst-cert-nav-icon" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+          </svg>
+          <span>My Applications</span>
+        </button>
+
+        {/* 3. Chat with CA */}
+        <button
+          type="button"
+          className="gst-cert-btn-nav gst-cert-btn-nav--chat"
+          onClick={handleChatWithCa}
+        >
+          <svg viewBox="0 0 24 24" className="gst-cert-nav-icon" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+          <span>Chat with CA</span>
+        </button>
       </div>
     </div>
   )

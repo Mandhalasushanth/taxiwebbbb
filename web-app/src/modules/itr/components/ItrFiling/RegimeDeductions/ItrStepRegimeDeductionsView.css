@@ -24,13 +24,13 @@
   margin: 0;
   font-size: 1.15rem;
   font-weight: 800;
-  color: #083b75;
+  color: var(--primary-navy);
 }
 
 .itr-badge-ay {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1e40af;
+  background: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-200);
+  color: var(--palette-blue-800-1e40af);
   font-size: 0.78rem;
   font-weight: 700;
   padding: 0.25rem 0.75rem;
@@ -39,7 +39,7 @@
 
 .itr-compare-desc {
   font-size: 0.88rem;
-  color: #475569;
+  color: var(--palette-slate-600);
   margin: 0;
   line-height: 1.45;
 }
@@ -49,7 +49,7 @@
   width: 100%;
   overflow-x: auto;
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 }
 
 .itr-compare-table {
@@ -60,11 +60,11 @@
 }
 
 .itr-compare-table th {
-  background: #f8fafc;
+  background: var(--palette-slate-50);
   padding: 0.85rem 1rem;
   font-weight: 700;
-  color: #475569;
-  border-bottom: 1px solid #e2e8f0;
+  color: var(--palette-slate-600);
+  border-bottom: 1px solid var(--border);
   font-size: 0.78rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -72,16 +72,16 @@
 
 .itr-compare-table td {
   padding: 0.85rem 1rem;
-  border-bottom: 1px solid #f1f5f9;
-  color: #1e293b;
+  border-bottom: 1px solid var(--subtle-border);
+  color: var(--palette-slate-800);
   font-weight: 600;
 }
 
 .itr-compare-table tr:last-child td {
   border-bottom: none;
-  background: #fffaf5;
+  background: var(--palette-orange-50-fffaf5);
   font-weight: 800;
-  color: #083b75;
+  color: var(--primary-navy);
 }
 
 .itr-table-col-right {
@@ -89,7 +89,7 @@
 }
 
 .itr-text-not-applicable {
-  color: #0d9488;
+  color: var(--palette-teal-600);
   font-weight: 700;
 }
 
@@ -101,10 +101,10 @@
 }
 
 .itr-regime-card {
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--grey-300);
   border-radius: 14px;
   padding: 1.25rem;
-  background: #ffffff;
+  background: var(--surface);
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -113,8 +113,8 @@
 }
 
 .itr-regime-card--selected {
-  border-color: #f97316;
-  background: #fffaf5;
+  border-color: var(--primary-orange);
+  background: var(--palette-orange-50-fffaf5);
   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.08);
 }
 
@@ -135,7 +135,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 2px solid #94a3b8;
+  border: 2px solid var(--muted-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -144,20 +144,20 @@
 }
 
 .itr-regime-card--selected .itr-radio-outer {
-  border-color: #f97316;
+  border-color: var(--primary-orange);
 }
 
 .itr-radio-inner {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #f97316;
+  background: var(--primary-orange);
 }
 
 .itr-regime-name {
   font-size: 1rem;
   font-weight: 800;
-  color: #083b75;
+  color: var(--primary-navy);
 }
 
 .itr-regime-tag {
@@ -165,8 +165,8 @@
   font-weight: 700;
   padding: 0.2rem 0.65rem;
   border-radius: 6px;
-  background: #eff6ff;
-  color: #1e40af;
+  background: var(--palette-blue-50);
+  color: var(--palette-blue-800-1e40af);
 }
 
 .itr-regime-bullets {
@@ -176,14 +176,14 @@
   flex-direction: column;
   gap: 0.35rem;
   font-size: 0.85rem;
-  color: #475569;
+  color: var(--palette-slate-600);
   line-height: 1.45;
 }
 
 /* Deductions under new regime note */
 .itr-regime-info-box {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
+  background: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-200);
   border-radius: 12px;
   padding: 1rem 1.25rem;
   display: flex;
@@ -192,7 +192,7 @@
 }
 
 .itr-regime-info-icon {
-  color: #1e40af;
+  color: var(--palette-blue-800-1e40af);
   font-size: 1.15rem;
   line-height: 1;
   flex-shrink: 0;
@@ -201,7 +201,7 @@
 
 .itr-regime-info-text {
   font-size: 0.85rem;
-  color: #1e3a8a;
+  color: var(--palette-blue-900-1e3a8a);
   line-height: 1.5;
   margin: 0;
 }

@@ -1,9 +1,8 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { localStore } from '@core/storage/localStorage'
-import { userStorage } from '@core/storage/userStorage'
-import { useDraftBlocker } from '@shared/hooks'
-import { useAppStore, useAuthStore } from '@store/index'
+import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '@shared/saveDraft'
+import { useAuthStore } from '@store/index'
 import { loanApplicationService, loanStorageKey } from '@modules/loans/services/loanApplicationService'
 
 export interface UseLoanApplicationOptions {
@@ -12,6 +11,17 @@ export interface UseLoanApplicationOptions {
   stepLabels?: string[]
   resumeRoute?: string
 }
+
+const LOANS_ROUTE = '/loans'
+const DEFAULT_TOTAL_STEPS = 4
+
+/** Resume routes for loans that do not pass one (kept for drafts listed before resumeRoute existed) */
+const DEFAULT_RESUME_ROUTES: Record<string, string> = {
+  vehicle_loan: '/loans/vehicle-loan',
+  working_capital_loan: '/loans/working-capital-loan',
+  machinery_loan: '/loans/machinery-loan',
+}
+const FALLBACK_RESUME_ROUTE = '/loans/home-loan'
 
 export function hasUserEnteredData<T extends object>(formData: T, initialValues: T): boolean {
   if (!formData || !initialValues) return false
@@ -73,206 +83,122 @@ function withoutUnsavedFiles<T extends object>(data: T): T {
   return { ...data, uploadedDocs: kept }
 }
 
+/** Storage keys used before loans moved to the shared draft (read once, then cleared) */
+const legacyStepKeys = (loanType: string): string[] => [
+  loanStorageKey(`step_${loanType}`),
+  `taxedge_loan_step_${loanType}`,
+]
+
+const readLegacyStep = (loanType: string): number | null =>
+  legacyStepKeys(loanType).reduce<number | null>(
+    (found, key) => found ?? localStore.get<number>(key),
+    null,
+  )
+
+const clearLegacyDraft = (loanType: string): void => {
+  loanApplicationService.clearDraft(loanType)
+  legacyStepKeys(loanType).forEach((key) => localStore.remove(key))
+}
+
 export function useLoanApplication<T extends object>(
   loanType: string,
   initialValues: T,
   options?: UseLoanApplicationOptions
 ) {
-  const pushToast = useAppStore((state) => state.pushToast)
   const user = useAuthStore((state) => state.user)
   const navigate = useNavigate()
-  const stepStorageKey = loanStorageKey(`step_${loanType}`)
 
   // Redirect to marketplace to complete registration if profile is incomplete
   useEffect(() => {
     if (user && user.isProfileComplete === false) {
-      navigate('/loans', {
+      navigate(LOANS_ROUTE, {
         replace: true,
         state: { openProfileModal: true, returnTo: window.location.pathname },
       })
     }
   }, [user, navigate])
 
-  const [formData, setFormData] = useState<T>(() => {
-    // 1. Check userStorage central draft first
-    const centralDraft = userStorage.getDraft(loanType)
-    if (centralDraft && centralDraft.formData) {
-      return withoutUnsavedFiles({ ...initialValues, ...(centralDraft.formData as T) })
-    }
+  // Resume: the shared draft first, then a draft saved by the earlier loan storage
+  const [savedDraft] = useState(() => readServiceDraft<T>(loanType, DRAFT_NAMESPACES.loan))
 
-    // 2. Fallback to loan application service storage
-    const saved = loanApplicationService.getDraft<T>(loanType)
-    return saved ? withoutUnsavedFiles({ ...initialValues, ...saved }) : initialValues
+  const [formData, setFormData] = useState<T>(() => {
+    const restored = savedDraft?.formData ?? loanApplicationService.getDraft<T>(loanType)
+    return restored ? withoutUnsavedFiles({ ...initialValues, ...restored }) : initialValues
   })
 
-  const [currentStep, setCurrentStepState] = useState<number>(() => {
-    const savedStep = localStore.get<number>(stepStorageKey) ?? localStore.get<number>(`taxedge_loan_step_${loanType}`)
-    if (typeof savedStep === 'number' && savedStep > 1) {
-      return savedStep
-    }
-    const centralDraft = userStorage.getDraft(loanType)
-    if (centralDraft && typeof centralDraft.currentStep === 'number' && centralDraft.currentStep > 1) {
-      return centralDraft.currentStep
-    }
-    return 1
+  const [currentStep, setCurrentStep] = useState<number>(() => {
+    const step = savedDraft?.currentStep ?? readLegacyStep(loanType)
+    return typeof step === 'number' && step > 1 ? step : 1
   })
 
   const [isDirty, setIsDirty] = useState<boolean>(false)
-  const [isManualDraftModalOpen, setIsManualDraftModalOpen] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false)
 
-  const setCurrentStep = useCallback(
-    (step: number | ((prev: number) => number)) => {
-      setCurrentStepState((prev) => {
-        const next = typeof step === 'function' ? step(prev) : step
-        if (next > 1) {
-          localStore.set(stepStorageKey, next)
-        }
-        return next
-      })
-    },
-    [stepStorageKey]
-  )
+  const updateFormData = useCallback((fields: Partial<T>) => {
+    setIsDirty(true)
+    setFormData((prev) => ({ ...prev, ...fields }))
+  }, [])
 
-  const updateFormData = useCallback(
-    (fields: Partial<T>) => {
-      setIsDirty(true)
-      setFormData((prev) => {
-        const updated = { ...prev, ...fields }
-        loanApplicationService.saveDraft(loanType, updated)
-        return updated
-      })
-    },
-    [loanType]
-  )
-
-  const goToStep = useCallback(
-    (stepNumber: number) => {
-      setCurrentStep(stepNumber)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    },
-    [setCurrentStep]
-  )
+  const goToStep = useCallback((stepNumber: number) => {
+    setCurrentStep(stepNumber)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
 
   const nextStep = useCallback(() => {
     setCurrentStep((prev) => prev + 1)
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [setCurrentStep])
+  }, [])
 
   const prevStep = useCallback(() => {
     setCurrentStep((prev) => Math.max(1, prev - 1))
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [setCurrentStep])
+  }, [])
 
-  // Automatically sync step position to storage only when user is beyond step 1 and not submitted
-  useEffect(() => {
-    if (!isSubmitted && currentStep > 1) {
-      localStore.set(stepStorageKey, currentStep)
-    }
-  }, [stepStorageKey, currentStep, isSubmitted])
+  const totalSteps = options?.totalSteps || DEFAULT_TOTAL_STEPS
+  // Ask to save only once the user has entered data or moved past step 1
+  const hasEnteredData = isDirty || currentStep > 1 || hasUserEnteredData(formData, initialValues)
 
-  const saveDraft = useCallback(() => {
-    // 1. Save local service draft
-    loanApplicationService.saveDraft(loanType, formData)
+  // Same draft behaviour as GST, ITR and Incorporation (shared useServiceDraft)
+  const draft = useServiceDraft<T>({
+    serviceId: loanType,
+    serviceTitle: options?.serviceTitle || 'Loan Application',
+    totalSteps,
+    currentStep,
+    stepLabel: options?.stepLabels?.[currentStep - 1] || `Step ${currentStep} of ${totalSteps}`,
+    resumeRoute: options?.resumeRoute || DEFAULT_RESUME_ROUTES[loanType] || FALLBACK_RESUME_ROUTE,
+    exitRoute: LOANS_ROUTE,
+    formData,
+    hasEnteredData,
+    isComplete: isSubmitted || isSubmitting,
+    // The status page after submitting belongs to the flow
+    isFlowRoute: (pathname) => pathname.includes('/loans/status'),
+    storageNamespace: DRAFT_NAMESPACES.loan,
+    onDiscard: () => {
+      clearLegacyDraft(loanType)
+      setFormData(initialValues)
+      setIsDirty(false)
+      setCurrentStep(1)
+    },
+  })
 
-    // 2. Save central dashboard draft into userStorage
-    const now = new Date()
-    const timeStr = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
-
-    const totalSteps = options?.totalSteps || 4
-    const stepLabel = options?.stepLabels?.[currentStep - 1] || `Step ${currentStep} of ${totalSteps}`
-    const serviceTitle = options?.serviceTitle || 'Loan Application'
-    const resumeRoute =
-      options?.resumeRoute ||
-      (loanType === 'vehicle_loan'
-        ? '/loans/vehicle-loan'
-        : loanType === 'working_capital_loan'
-        ? '/loans/working-capital-loan'
-        : loanType === 'machinery_loan'
-        ? '/loans/machinery-loan'
-        : '/loans/home-loan')
-
-    userStorage.saveDraft({
-      serviceId: loanType,
-      serviceTitle,
-      currentStep,
-      totalSteps,
-      stepLabel,
-      formData: formData as Record<string, unknown>,
-      savedAt: timeStr,
-      savedTimestamp: Date.now(),
-      resumeRoute,
-    })
-
-    localStore.set(stepStorageKey, currentStep)
-    setIsManualDraftModalOpen(false)
-    setIsDirty(false)
-    pushToast(`${serviceTitle} draft saved successfully`, 'success')
-  }, [loanType, formData, currentStep, options, pushToast, stepStorageKey])
-
-  const discardDraft = useCallback(() => {
-    loanApplicationService.clearDraft(loanType)
-    userStorage.deleteDraft(loanType)
-    localStore.remove(stepStorageKey)
-    localStore.remove(`taxedge_loan_step_${loanType}`)
-    setFormData(initialValues)
-    setIsDirty(false)
-    setCurrentStepState(1)
-    setIsManualDraftModalOpen(false)
-    pushToast('Draft discarded', 'info')
-  }, [loanType, initialValues, pushToast, stepStorageKey])
-
+  const { clearDraft } = draft
   const markSubmitted = useCallback(() => {
     setIsSubmitted(true)
     setIsDirty(false)
-    loanApplicationService.clearDraft(loanType)
-    userStorage.deleteDraft(loanType)
-    localStore.remove(stepStorageKey)
-    localStore.remove(`taxedge_loan_step_${loanType}`)
-    setCurrentStepState(1)
-  }, [loanType, stepStorageKey])
+    clearDraft()
+    clearLegacyDraft(loanType)
+    setCurrentStep(1)
+  }, [clearDraft, loanType])
 
-  // Block route navigation only if unsubmitted, not in submitting state,
-  // and the user has actively entered data or moved past step 1.
-  const hasEnteredData = isDirty || currentStep > 1 || hasUserEnteredData(formData, initialValues)
-  const shouldBlock = !isSubmitted && !isSubmitting && hasEnteredData
-
-  // Set once the user picks "Save & Exit" or "Discard & Exit", so the exit navigation itself isn't blocked again
-  const isExitingRef = useRef(false)
-
-  const draftBlocker = useDraftBlocker({
-    shouldBlock,
-    onSaveDraft: () => {
-      saveDraft()
+  const { openDraftModal } = draft
+  /** Opens the save / discard / keep-editing dialog (closing goes through its buttons) */
+  const setIsDraftModalOpen = useCallback(
+    (open: boolean) => {
+      if (open) openDraftModal()
     },
-    onDiscardDraft: () => {
-      discardDraft()
-    },
-    defaultExitRoute: '/loans',
-    isNavigationAllowed: (nextLocation) =>
-      isExitingRef.current || isSubmitted || nextLocation.pathname.includes('/loans/status'),
-  })
-
-  const isDraftModalOpen = isManualDraftModalOpen || draftBlocker.isModalOpen
-
-  // The blocker calls onSaveDraft / onDiscardDraft itself, so they must not be called here as well
-  const handleSaveAndExit = useCallback(() => {
-    isExitingRef.current = true
-    setIsManualDraftModalOpen(false)
-    draftBlocker.handleSaveAndExit()
-  }, [draftBlocker])
-
-  const handleDiscardAndExit = useCallback(() => {
-    isExitingRef.current = true
-    setIsManualDraftModalOpen(false)
-    draftBlocker.handleDiscardAndExit()
-  }, [draftBlocker])
-
-  const handleKeepEditing = useCallback(() => {
-    setIsManualDraftModalOpen(false)
-    draftBlocker.handleKeepEditing()
-  }, [draftBlocker])
+    [openDraftModal],
+  )
 
   return {
     formData,
@@ -283,21 +209,19 @@ export function useLoanApplication<T extends object>(
     goToStep,
     nextStep,
     prevStep,
-    isDraftModalOpen,
-    setIsDraftModalOpen: setIsManualDraftModalOpen,
+    isDraftModalOpen: draft.isDraftModalOpen,
+    setIsDraftModalOpen,
     isSubmitting,
     setIsSubmitting,
     isSubmitted,
     setIsSubmitted,
     markSubmitted,
-    saveDraft,
-    discardDraft,
-    handleSaveAndExit,
-    handleDiscardAndExit,
-    handleKeepEditing,
+    saveDraft: draft.saveDraft,
+    discardDraft: draft.handleDiscardAndExit,
+    handleSaveAndExit: draft.handleSaveAndExit,
+    handleDiscardAndExit: draft.handleDiscardAndExit,
+    handleKeepEditing: draft.handleKeepEditing,
   }
 }
 
 export default useLoanApplication
-
-

@@ -22,7 +22,7 @@
   min-width: 0;
   padding: 0;
   margin: 0;
-  background: #030a17;
+  background: var(--palette-blue-900-030a17);
   overflow-y: auto;
   box-sizing: border-box;
 }
@@ -37,7 +37,7 @@
   width: 100%;
   min-width: 0;
   padding: clamp(1.5rem, 3.5vw, 4rem);
-  background: #ffffff;
+  background: var(--surface);
   overflow-y: auto;
   box-sizing: border-box;
   box-shadow: -15px 0 45px rgba(0, 0, 0, 0.35);

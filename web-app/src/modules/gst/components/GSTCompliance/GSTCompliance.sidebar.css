@@ -15,8 +15,8 @@
 
 /* Helpful Information Card */
 .helpful-info-card {
-  background-color: #fffef0;
-  border: 1px solid #fef08a;
+  background-color: var(--palette-yellow-50);
+  border: 1px solid var(--palette-yellow-200);
 }
 
 .side-card-header {
@@ -33,13 +33,13 @@
 .side-card-title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: var(--palette-indigo-950);
   margin: 0;
 }
 
 .helpful-subtitle {
   font-size: 0.85rem;
-  color: #475569;
+  color: var(--palette-slate-600);
   margin: 0 0 0.85rem 0;
 }
 
@@ -57,7 +57,7 @@
   align-items: center;
   gap: 0.6rem;
   font-size: 0.875rem;
-  color: #334155;
+  color: var(--grey-700);
 }
 
 .check-badge {
@@ -67,8 +67,8 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background-color: #22c55e;
-  color: #ffffff;
+  background-color: var(--palette-green-500);
+  color: var(--surface);
   font-size: 0.7rem;
   font-weight: 800;
   flex-shrink: 0;
@@ -76,17 +76,17 @@
 
 .helpful-footer {
   font-size: 0.825rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.4;
   margin: 0;
-  border-top: 1px solid #fef08a;
+  border-top: 1px solid var(--palette-yellow-200);
   padding-top: 0.75rem;
 }
 
 /* Need Help Card */
 .need-help-card {
-  background-color: #f0f9ff;
-  border: 1px solid #bae6fd;
+  background-color: var(--palette-sky-50-f0f9ff);
+  border: 1px solid var(--palette-sky-200);
 }
 
 .headset-icon {
@@ -95,7 +95,7 @@
 
 .help-subtitle {
   font-size: 0.85rem;
-  color: #475569;
+  color: var(--palette-slate-600);
   margin: 0 0 1rem 0;
   line-height: 1.45;
 }
@@ -104,8 +104,8 @@
   width: 100%;
   height: 42px;
   background-color: transparent;
-  border: 1.5px solid #0284c7;
-  color: #0284c7;
+  border: 1.5px solid var(--palette-sky-600);
+  color: var(--palette-sky-600);
   font-size: 0.875rem;
   font-weight: 600;
   border-radius: 8px;
@@ -114,7 +114,7 @@
 }
 
 .btn-contact-support:hover {
-  background-color: #e0f2fe;
+  background-color: var(--palette-sky-100-e0f2fe);
 }
 
 /* Shared DocumentSection and DocumentCard layout in Reconciliation */
@@ -130,7 +130,7 @@
 .recon-shared-doc-section .taxedge-doc-section__title-flat {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.01em;
   text-transform: none;
 }
@@ -150,8 +150,8 @@
 }
 
 .doc-card--has-error {
-  border-color: #fca5a5 !important;
-  background-color: #fff5f5 !important;
+  border-color: var(--palette-red-300) !important;
+  background-color: var(--palette-red-50-fff5f5) !important;
 }
 
 /* Responsive adjustments */
@@ -176,11 +176,11 @@
 }
 
 /* Submit row: Save Draft beside the full-width submit button */
-.submit-btn-wrapper.gst-actions-group {
+.submit-btn-wrapper.form-actions-group {
   flex-wrap: nowrap;
 }
 
-.submit-btn-wrapper.gst-actions-group .gst-btn-submit-primary {
+.submit-btn-wrapper.form-actions-group .gst-btn-submit-primary {
   flex: 1;
   width: auto;
 }

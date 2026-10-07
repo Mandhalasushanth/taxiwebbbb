@@ -5,7 +5,7 @@
   flex-shrink: 0;
   width: 18px;
   height: 18px;
-  color: #f97316;
+  color: var(--primary-orange);
 }
 
 .reg-icon svg {
@@ -15,19 +15,19 @@
 }
 
 .reg-icon--muted {
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .reg-icon--navy {
-  color: #083b75;
+  color: var(--primary-navy);
 }
 
 .reg-icon--blue {
-  color: #2563eb;
+  color: var(--palette-blue-600);
 }
 
 .reg-icon--green {
-  color: #16a34a;
+  color: var(--success);
 }
 
 .reg-icon--spin {

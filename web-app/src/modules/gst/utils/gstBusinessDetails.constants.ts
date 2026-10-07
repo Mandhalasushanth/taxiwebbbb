@@ -102,3 +102,11 @@ export const GST_STATE_CODES: Record<string, string> = {
 
 /** State name for a GSTIN, from its first two digits */
 export const stateFromGstin = (gstin: string): string => GST_STATE_CODES[gstin.slice(0, 2)] || ''
+
+export const BANK_ACCOUNT_TYPE_OPTIONS = [
+  'Current',
+  'Savings',
+  'Cash Credit',
+  'Overdraft',
+  'Others',
+] as const

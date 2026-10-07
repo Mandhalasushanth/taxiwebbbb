@@ -13,6 +13,7 @@ import {
   getAadhaarError,
   getPanHolderCode,
   isKnownPanHolderType,
+  isValidVerhoeff,
 } from './identityValidation'
 
 export {
@@ -365,6 +366,9 @@ export const validateAadhaar = (aadhaar: string, label = 'Aadhaar number'): stri
   const formatError = getAadhaarError(digits, label)
   if (formatError) {
     return formatError
+  }
+  if (!isValidVerhoeff(digits)) {
+    return 'Invalid Aadhaar check digit'
   }
   if (/^(\d)\1{11}$/.test(digits)) {
     return 'Enter a valid 12-digit Aadhaar number'

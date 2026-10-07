@@ -91,24 +91,24 @@
 }
 
 .tds-stepper-dot--active {
-  background: #f97316;
-  color: #ffffff;
-  border: 2.5px solid #f97316;
+  background: var(--primary-orange);
+  color: var(--surface);
+  border: 2.5px solid var(--primary-orange);
   box-shadow: 0 4px 14px rgba(249, 115, 22, 0.42);
   transform: scale(1.06);
 }
 
 .tds-stepper-dot--completed {
-  background: #083b75;
-  color: #ffffff;
-  border: 2.5px solid #083b75;
+  background: var(--primary-navy);
+  color: var(--surface);
+  border: 2.5px solid var(--primary-navy);
   box-shadow: 0 4px 14px rgba(8, 59, 117, 0.35);
 }
 
 .tds-stepper-dot--inactive {
-  background: #ffffff;
-  color: #94a3b8;
-  border: 2px solid #cbd5e1;
+  background: var(--surface);
+  color: var(--muted-text);
+  border: 2px solid var(--grey-300);
   box-shadow: none;
 }
 
@@ -116,26 +116,26 @@
   flex: 1;
   min-width: 28px;
   height: 2.5px;
-  background-color: #cbd5e1;
+  background-color: var(--grey-300);
   margin: 0 0.5rem 1.45rem 0.5rem;
   transition: background-color 0.3s ease;
   z-index: 1;
 }
 
 .tds-stepper-line--completed {
-  background-color: #083b75;
+  background-color: var(--primary-navy);
 }
 
 .tds-stepper-label {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--secondary-text);
   white-space: nowrap;
   text-align: center;
 }
 
 .tds-stepper-label--active {
-  color: #f97316;
+  color: var(--primary-orange);
   font-weight: 700;
 }
 
@@ -145,7 +145,7 @@
   max-width: 100%;
   padding: 1.25rem 2rem 4rem 2rem;
   box-sizing: border-box;
-  background: #f8fafc;
+  background: var(--palette-slate-50);
   min-height: 100vh;
 }
 
@@ -165,24 +165,24 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .tds-card-icon-box--user {
-  background: #eff6ff;
-  color: #1d4ed8;
-  border: 1.5px solid #bfdbfe;
+  background: var(--palette-blue-50);
+  color: var(--palette-blue-700);
+  border: 1.5px solid var(--palette-blue-200);
 }
 .tds-card-icon-box--bank {
-  background: #ecfdf5;
-  color: #059669;
-  border: 1.5px solid #a7f3d0;
+  background: var(--palette-emerald-50);
+  color: var(--feature-success);
+  border: 1.5px solid var(--palette-emerald-200);
 }
 .tds-card-icon-box--calc {
-  background: #fff7ed;
-  color: #ea580c;
-  border: 1.5px solid #fed7aa;
+  background: var(--palette-orange-50);
+  color: var(--palette-orange-600);
+  border: 1.5px solid var(--orange-200);
 }
 .tds-card-icon-box--shield {
-  background: #f5f3ff;
-  color: #7c3aed;
-  border: 1.5px solid #ddd6fe;
+  background: var(--palette-violet-50);
+  color: var(--palette-violet-600);
+  border: 1.5px solid var(--palette-violet-200);
 }
 
 @media (max-width: 1200px) {

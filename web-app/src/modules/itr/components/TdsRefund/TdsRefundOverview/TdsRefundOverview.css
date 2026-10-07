@@ -13,14 +13,14 @@
    1. FULL-WIDTH HERO SECTION
    ========================================================= */
 .tds-hero-banner {
-  background: linear-gradient(135deg, #021e42 0%, #052954 48%, #083c75 100%);
+  background: linear-gradient(135deg, var(--palette-sky-900-021e42) 0%, var(--palette-sky-800-052954) 48%, var(--palette-sky-800-083c75) 100%);
   border-radius: 18px;
   padding: 2.25rem 2.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  color: #ffffff;
+  color: var(--surface);
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
@@ -38,8 +38,8 @@
 
 .tds-hero-tag {
   display: inline-block;
-  background: #ea580c;
-  color: #ffffff;
+  background: var(--palette-orange-600);
+  color: var(--surface);
   padding: 0.25rem 0.65rem;
   border-radius: 6px;
   font-size: 0.75rem;
@@ -54,21 +54,21 @@
   font-weight: 800;
   margin: 0 0 0.75rem;
   line-height: 1.2;
-  color: #ffffff;
+  color: var(--surface);
   letter-spacing: -0.02em;
 }
 
 .tds-hero-desc {
   font-size: 0.95rem;
   line-height: 1.55;
-  color: #cbd5e1;
+  color: var(--grey-300);
   margin: 0 0 1.5rem;
   max-width: 540px;
 }
 
 .tds-hero-start-btn {
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--primary-orange) 0%, var(--palette-orange-600) 100%);
+  color: var(--surface);
   font-size: 0.95rem;
   font-weight: 700;
   padding: 0.75rem 1.6rem;
@@ -130,8 +130,8 @@
    2. SHARED CARD SECTIONS (How it works & Documents Required)
    ========================================================= */
 .tds-card-section {
-  background: #ffffff;
-  border: 1px solid #eef2f6;
+  background: var(--surface);
+  border: 1px solid var(--palette-sky-100-eef2f6);
   border-radius: 16px;
   padding: 1.5rem 1.75rem;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
@@ -144,7 +144,7 @@
 .tds-card-section-title {
   font-size: 1.15rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
   letter-spacing: -0.01em;
 }
@@ -166,7 +166,7 @@
   left: 9%;
   right: 9%;
   height: 0;
-  border-top: 1.5px dashed #fed7aa;
+  border-top: 1.5px dashed var(--orange-200);
   z-index: 1;
   pointer-events: none;
 }
@@ -192,8 +192,8 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #ea580c;
-  color: #ffffff;
+  background: var(--palette-orange-600);
+  color: var(--surface);
   font-size: 0.72rem;
   font-weight: 700;
   display: flex;
@@ -207,12 +207,12 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  border: 1.5px solid #fed7aa;
-  background: #ffffff;
+  border: 1.5px solid var(--orange-200);
+  background: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ea580c;
+  color: var(--palette-orange-600);
   margin-bottom: 0.65rem;
   transition: transform 0.2s ease, border-color 0.2s ease;
   box-shadow: 0 2px 6px rgba(234, 88, 12, 0.06);
@@ -220,13 +220,13 @@
 
 .tds-how-step-node:hover .tds-how-icon-circle {
   transform: scale(1.06);
-  border-color: #f97316;
+  border-color: var(--primary-orange);
 }
 
 .tds-how-node-label {
   font-size: 0.825rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   line-height: 1.35;
   white-space: pre-line;
 }
@@ -247,20 +247,20 @@
   gap: 1rem;
   padding: 0.85rem 1.25rem;
   min-height: 56px;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid var(--border);
   border-radius: 12px;
-  background: #ffffff;
+  background: var(--surface);
   box-sizing: border-box;
   transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .tds-doc-card:hover {
-  border-color: #cbd5e1;
+  border-color: var(--grey-300);
   box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
 }
 
 .tds-doc-card-icon {
-  color: #0f172a;
+  color: var(--palette-slate-900);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -270,7 +270,7 @@
 .tds-doc-card-label {
   font-size: 0.875rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   line-height: 1.35;
   white-space: pre-line;
 }
@@ -282,21 +282,21 @@
 }
 
 .tds-doc-card--more:hover {
-  border-color: #f97316;
-  background: #fffaf5;
+  border-color: var(--primary-orange);
+  background: var(--palette-orange-50-fffaf5);
 }
 
 .tds-doc-card--more:hover .tds-doc-card-icon,
 .tds-doc-card--more:hover .tds-doc-card-label {
-  color: #ea580c;
+  color: var(--palette-orange-600);
 }
 
 /* =========================================================
    5. COMPACT INFORMATION BANNER
    ========================================================= */
 .tds-info-banner {
-  background: #fffbeb;
-  border: 1px solid #fed7aa;
+  background: var(--palette-amber-50);
+  border: 1px solid var(--orange-200);
   border-radius: 10px;
   padding: 0.75rem 1rem;
   display: flex;
@@ -306,7 +306,7 @@
 }
 
 .tds-info-banner-icon {
-  color: #ea580c;
+  color: var(--palette-orange-600);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -316,7 +316,7 @@
 .tds-info-banner-text {
   font-size: 0.85rem;
   font-weight: 500;
-  color: #9a3412;
+  color: var(--orange-800);
   margin: 0;
   line-height: 1.45;
 }
@@ -336,13 +336,13 @@
 }
 
 .tds-modal-card {
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 16px;
   padding: 1.5rem;
   max-width: 480px;
   width: 100%;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid var(--border);
 }
 
 .tds-modal-header {
@@ -355,12 +355,12 @@
 .tds-modal-title {
   font-size: 1.15rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
 }
 
 .tds-modal-close-btn {
-  background: #f1f5f9;
+  background: var(--subtle-border);
   border: none;
   border-radius: 8px;
   width: 32px;
@@ -368,14 +368,14 @@
   display: grid;
   place-items: center;
   cursor: pointer;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 700;
   transition: all 0.15s ease;
 }
 
 .tds-modal-close-btn:hover {
-  background: #e2e8f0;
-  color: #0f172a;
+  background: var(--border);
+  color: var(--palette-slate-900);
 }
 
 .tds-modal-list {
@@ -386,20 +386,20 @@
 
 .tds-modal-item {
   padding: 0.75rem 1rem;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--palette-slate-50);
+  border: 1px solid var(--border);
   border-radius: 10px;
 }
 
 .tds-modal-item-name {
   font-weight: 700;
   font-size: 0.9rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .tds-modal-item-desc {
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin-top: 0.2rem;
 }
 
@@ -446,7 +446,7 @@
     width: 0;
     height: auto;
     border-top: none;
-    border-left: 1.5px dashed #fed7aa;
+    border-left: 1.5px dashed var(--orange-200);
     right: auto;
   }
 

@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { StepActionBar, UploadDocument } from '@shared/components'
-import { viewItrDocument } from '../../../shared'
-import type { NoticeFormData } from '../../../types/taxNoticeAssistance.types'
+import { UPLOAD_HINT, formatUploadSize, viewUploadedDocument } from '@shared/upload'
+import type { NoticeFormData } from '@modules/itr/types/taxNoticeAssistance.types'
 import './NoticeDocument.css'
 
 export interface NoticeDocumentProps {
@@ -21,28 +21,16 @@ export const NoticeDocument: React.FC<NoticeDocumentProps> = ({
   onSaveDraftAndExit,
   isSubmitting = false,
 }) => {
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  // Shown when Continue is pressed without the notice
   const [uploadError, setUploadError] = useState<string | null>(null)
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    if (file.size > 10 * 1024 * 1024) {
-      setUploadError('File size exceeds 10MB limit.')
-      return
-    }
-
+  /** A file that passed the application-wide upload rule (type, size, content) */
+  const handleFileChange = (file: File) => {
     setUploadError(null)
-    const formattedSize =
-      file.size > 1024 * 1024
-        ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
-        : `${Math.round(file.size / 1024)} KB`
-
     onChange({
       documentFile: file,
       documentFileName: file.name,
-      documentFileSize: formattedSize,
+      documentFileSize: formatUploadSize(file.size),
     })
   }
 
@@ -52,9 +40,6 @@ export const NoticeDocument: React.FC<NoticeDocumentProps> = ({
       documentFileName: '',
       documentFileSize: '',
     })
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
   }
 
   const hasDocument = Boolean(formData.documentFileName || formData.documentFile)
@@ -100,26 +85,21 @@ export const NoticeDocument: React.FC<NoticeDocumentProps> = ({
           <UploadDocument
             id="notice-doc"
             title="Notice Document"
-            subtitle="PDF, JPG or PNG • Up to 10 MB"
+            subtitle={UPLOAD_HINT}
             isRequired={true}
             isUploaded={Boolean(formData.documentFileName || formData.documentFile)}
             fileName={formData.documentFileName || undefined}
             fileSize={formData.documentFileSize || undefined}
             file={formData.documentFile || undefined}
-            accept=".pdf,.jpg,.jpeg,.png"
             onView={(doc) => {
-              viewItrDocument({
+              viewUploadedDocument({
                 id: doc.id,
                 title: doc.title,
                 fileName: doc.fileName || formData.documentFileName,
                 file: doc.file || formData.documentFile || undefined,
               })
             }}
-            onUpload={(_, file) => {
-              handleFileChange({
-                target: { files: [file] },
-              } as unknown as React.ChangeEvent<HTMLInputElement>)
-            }}
+            onUpload={(_, file) => handleFileChange(file)}
             onRemove={handleRemoveFile}
             className={uploadError ? 'loan-doc-item--error' : ''}
           />

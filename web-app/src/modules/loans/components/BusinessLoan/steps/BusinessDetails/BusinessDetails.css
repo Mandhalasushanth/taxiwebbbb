@@ -20,14 +20,14 @@
 .business-details-title {
   font-size: 1.25rem;
   font-weight: 800;
-  color: #041d3e;
+  color: var(--palette-sky-900-041d3e);
   margin: 0;
   letter-spacing: -0.01em;
 }
 
 .business-details-subtitle {
   font-size: 0.9rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
   line-height: 1.4;
 }
@@ -53,8 +53,8 @@
 
 /* 3. Input Field Cards */
 .business-field-card {
-  background: #ffffff;
-  border: 1.5px solid #edf2f7;
+  background: var(--surface);
+  border: 1.5px solid var(--palette-sky-100);
   border-radius: 16px;
   padding: 1.35rem 1.5rem;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
@@ -83,8 +83,8 @@
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: #fff7ed;
-  color: #ea580c;
+  background: var(--palette-orange-50);
+  color: var(--palette-orange-600);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -94,7 +94,7 @@
 .business-field-title {
   font-size: 0.98rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
   display: flex;
   align-items: center;
@@ -104,7 +104,7 @@
 /* 4. Subtext / Hint below input */
 .input-field-subtext {
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.4;
 }
 
@@ -136,7 +136,7 @@
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: #fff7ed;
+  background: var(--palette-orange-50);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -154,7 +154,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #94a3b8;
+  color: var(--muted-text);
   font-size: 0.85rem;
   cursor: help;
   user-select: none;
@@ -163,8 +163,8 @@
 .udyam-toggle-pills {
   display: inline-flex;
   align-items: center;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
+  background: var(--subtle-border);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 3px;
   gap: 2px;
@@ -178,19 +178,19 @@
   border-radius: 6px;
   border: none;
   background: transparent;
-  color: #64748b;
+  color: var(--secondary-text);
   cursor: pointer;
   transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
 }
 
 .udyam-pill-btn:hover:not(.udyam-pill-btn--active) {
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .udyam-pill-btn--active {
-  background: #ff7a00;
-  color: #ffffff;
+  background: var(--feature-orange);
+  color: var(--surface);
   box-shadow: 0 1px 4px rgba(255, 122, 0, 0.35);
 }
 
@@ -210,12 +210,12 @@
 .custom-dropdown-trigger {
   width: 100%;
   height: 48px;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   padding: 0 1rem;
   font-size: 0.925rem;
-  color: #0f172a;
-  background: #ffffff;
+  color: var(--palette-slate-900);
+  background: var(--surface);
   outline: none;
   box-sizing: border-box;
   font-family: inherit;
@@ -229,38 +229,38 @@
 
 .custom-dropdown-trigger:focus,
 .custom-dropdown-trigger--open {
-  border-color: #ff7a00;
+  border-color: var(--feature-orange);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.12);
 }
 
 .custom-dropdown-trigger--error {
-  border-color: #ef4444 !important;
+  border-color: var(--palette-red-500) !important;
 }
 
 .custom-dropdown-value {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .custom-dropdown-placeholder {
-  color: #94a3b8;
+  color: var(--muted-text);
   font-weight: 400;
 }
 
 .custom-dropdown-chevron {
   display: flex;
   align-items: center;
-  color: #64748b;
+  color: var(--secondary-text);
   transition: transform 0.2s ease;
   flex-shrink: 0;
 }
 
 .custom-dropdown-chevron--open {
   transform: rotate(180deg);
-  color: #ff7a00;
+  color: var(--feature-orange);
 }
 
 .custom-dropdown-menu {
@@ -268,8 +268,8 @@
   top: calc(100% + 5px);
   left: 0;
   right: 0;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 12px;
   box-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.05);
   z-index: 60;
@@ -299,7 +299,7 @@
   padding: 0.75rem 1rem;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #1e293b;
+  color: var(--palette-slate-800);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -309,13 +309,13 @@
 }
 
 .custom-dropdown-option:hover {
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--palette-slate-50);
+  color: var(--palette-slate-900);
 }
 
 .custom-dropdown-option--selected {
-  background: #fff7ed;
-  color: #ea580c;
+  background: var(--palette-orange-50);
+  color: var(--palette-orange-600);
   font-weight: 700;
 }
 
@@ -343,7 +343,7 @@
 .signatory-sublabel {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #475569;
+  color: var(--palette-slate-600);
 }
 
 /* Responsive adjustments */

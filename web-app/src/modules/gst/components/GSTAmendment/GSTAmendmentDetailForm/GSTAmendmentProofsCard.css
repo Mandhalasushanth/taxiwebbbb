@@ -6,8 +6,8 @@
 }
 
 .gst-amend-proofs-card {
-  background-color: #fffbf5;
-  border: 1px solid #fed7aa;
+  background-color: var(--palette-orange-50-fffbf5);
+  border: 1px solid var(--orange-200);
   border-radius: 14px;
   padding: 1.25rem 1.5rem;
 }
@@ -23,8 +23,8 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background-color: #f97316;
-  color: #ffffff;
+  background-color: var(--primary-orange);
+  color: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -39,7 +39,7 @@
 .gst-amend-proofs-card__title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
 }
 
@@ -58,7 +58,7 @@
 .gst-amend-proof-item__icon {
   width: 20px;
   height: 20px;
-  color: #f97316;
+  color: var(--primary-orange);
   flex-shrink: 0;
   margin-top: 0.125rem;
 }
@@ -71,14 +71,14 @@
 .gst-amend-proof-item__text {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #334155;
+  color: var(--grey-700);
   line-height: 1.4;
 }
 
 /* Important Info Bullet Card */
 .gst-amend-info-bullet-card {
-  background-color: #f0f7ff;
-  border: 1px solid #dbeafe;
+  background-color: var(--palette-sky-50-f0f7ff);
+  border: 1px solid var(--palette-blue-100);
   border-radius: 14px;
   padding: 1.25rem 1.5rem;
 }
@@ -94,8 +94,8 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background-color: #2563eb;
-  color: #ffffff;
+  background-color: var(--palette-blue-600);
+  color: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,7 +110,7 @@
 .gst-amend-info-bullet-card__title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #1e40af;
+  color: var(--palette-blue-800-1e40af);
   margin: 0;
 }
 
@@ -124,14 +124,14 @@
 
 .gst-amend-info-bullet-item {
   font-size: 0.8125rem;
-  color: #475569;
+  color: var(--palette-slate-600);
   line-height: 1.45;
 }
 
 /* Proofs Orange Note Banner */
 .gst-amend-proofs-note-banner {
-  background-color: #fff7ed;
-  border: 1px solid #ffedd5;
+  background-color: var(--palette-orange-50);
+  border: 1px solid var(--orange-100);
   border-radius: 10px;
   padding: 0.75rem 1rem;
   margin-top: 1.25rem;
@@ -143,7 +143,7 @@
 .gst-amend-proofs-note-icon {
   width: 20px;
   height: 20px;
-  color: #ea580c;
+  color: var(--palette-orange-600);
   flex-shrink: 0;
 }
 
@@ -155,5 +155,5 @@
 .gst-amend-proofs-note-text {
   font-size: 0.78rem;
   font-weight: 700;
-  color: #9a3412;
+  color: var(--orange-800);
 }

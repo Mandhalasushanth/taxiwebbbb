@@ -1,6 +1,6 @@
 .gst-verified-card {
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background-color: var(--palette-green-50);
+  border: 1px solid var(--palette-green-200);
   border-radius: 16px;
   padding: 18px 22px;
   margin-top: 14px;
@@ -30,8 +30,8 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--palette-green-100);
+  color: var(--palette-green-700);
   border-radius: 9999px;
   padding: 4px 12px;
   font-size: 12px;
@@ -42,14 +42,14 @@
 .gst-verified-card__badge-icon {
   width: 16px;
   height: 16px;
-  color: #16a34a;
+  color: var(--success);
   flex-shrink: 0;
 }
 
 .gst-verified-card__state {
   font-size: 14px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .gst-verified-card__content {
@@ -62,14 +62,14 @@
 .gst-verified-card__trade-name {
   font-size: 17px;
   font-weight: 700;
-  color: #064e3b;
+  color: var(--palette-emerald-900);
   margin: 0;
   letter-spacing: -0.01em;
 }
 
 .gst-verified-card__legal-name {
   font-size: 13.5px;
-  color: #475569;
+  color: var(--palette-slate-600);
   margin: 0;
 }
 
@@ -81,8 +81,8 @@
 
 .gst-verified-card__scheme-badge {
   display: inline-block;
-  background-color: #e0f2fe;
-  color: #0369a1;
+  background-color: var(--palette-sky-100-e0f2fe);
+  color: var(--palette-sky-700);
   border-radius: 6px;
   padding: 4px 12px;
   font-size: 12.5px;

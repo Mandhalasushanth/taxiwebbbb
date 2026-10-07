@@ -1,32 +1,45 @@
-import { type ChangeEvent } from 'react'
+import { Wallet } from 'lucide-react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
+import { BANK_ACCOUNT_TYPE_OPTIONS } from '@modules/gst/utils/gstBusinessDetails.constants'
+import { ALL_BANKS } from '@modules/gst/types/gstPayment.types'
+import { GSTFormSection } from '@modules/gst/shared/GSTFormSection'
+import { GSTFieldShell, GSTSelectField, GSTTextField, fieldInputClass } from '@modules/gst/shared/GSTFormFields'
 import type { GstBusinessFormData } from '../GSTStepBusiness/GSTStepBusiness'
 import { lookupSampleBankByIfsc, fetchBankDetailsByIfsc } from '@shared/services'
 import { ConfirmAccountNumberInput } from '@shared/components'
 
+type BankField =
+  | 'accountHolderName'
+  | 'accountNumber'
+  | 'confirmAccountNumber'
+  | 'ifscCode'
+  | 'bankName'
+  | 'branch'
+  | 'accountType'
+
 export interface GSTBankDetailsProps {
-  data: Pick<
-    GstBusinessFormData,
-    | 'accountHolderName'
-    | 'accountNumber'
-    | 'confirmAccountNumber'
-    | 'ifscCode'
-    | 'bankName'
-    | 'branch'
-    | 'accountType'
-  >
+  data: Pick<GstBusinessFormData, BankField>
   onChange: <K extends keyof GstBusinessFormData>(field: K, value: GstBusinessFormData[K]) => void
   errors?: Record<string, string>
   onClearError?: (field: string) => void
 }
 
-const ACCOUNT_TYPE_OPTIONS = [
-  'Current',
-  'Savings',
-  'Cash Credit',
-  'Overdraft',
-  'Others',
+const BANK_FIELDS: readonly BankField[] = [
+  'accountHolderName',
+  'accountNumber',
+  'confirmAccountNumber',
+  'ifscCode',
+  'bankName',
+  'branch',
+  'accountType',
 ]
+
+const IFSC_LENGTH = 11
+const IFSC_LOOKUP_MIN_LENGTH = 4
+
+/** Bank list for the dropdown, keeping an IFSC-fetched bank that is not in the list */
+const bankOptions = (current: string): readonly string[] =>
+  current && !ALL_BANKS.includes(current) ? [...ALL_BANKS, current] : ALL_BANKS
 
 export const GSTBankDetails = ({
   data,
@@ -34,212 +47,118 @@ export const GSTBankDetails = ({
   errors = {},
   onClearError,
 }: GSTBankDetailsProps) => {
-  const handleAccountHolderNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange('accountHolderName', gstInput.letters(e.target.value))
-    onClearError?.('accountHolderName')
+  const update = <K extends BankField>(field: K, value: GstBusinessFormData[K]) => {
+    onChange(field, value)
+    onClearError?.(field)
   }
 
-  const handleAccountNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange('accountNumber', gstInput.accountNumber(e.target.value))
-    onClearError?.('accountNumber')
+  const applyBankMatch = (match: { bankName: string; branch: string } | null | undefined) => {
+    if (!match) return
+    update('bankName', match.bankName)
+    update('branch', match.branch)
   }
 
-  const handleIfscChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const cleaned = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11)
-    onChange('ifscCode', cleaned)
-    onClearError?.('ifscCode')
-
-    if (cleaned.length >= 4) {
-      const match = lookupSampleBankByIfsc(cleaned)
-      if (match) {
-        onChange('bankName', match.bankName)
-        onChange('branch', match.branch)
-        onClearError?.('bankName')
-        onClearError?.('branch')
-      }
-    }
+  const handleIfscChange = (value: string) => {
+    const cleaned = value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, IFSC_LENGTH)
+    update('ifscCode', cleaned)
+    if (cleaned.length >= IFSC_LOOKUP_MIN_LENGTH) applyBankMatch(lookupSampleBankByIfsc(cleaned))
   }
 
   const handleIfscBlur = async () => {
     const cleaned = data.ifscCode?.trim().toUpperCase()
-    if (cleaned && cleaned.length >= 4) {
-      const match = await fetchBankDetailsByIfsc(cleaned)
-      if (match) {
-        onChange('bankName', match.bankName)
-        onChange('branch', match.branch)
-        onClearError?.('bankName')
-        onClearError?.('branch')
-      }
+    if (!cleaned || cleaned.length < IFSC_LOOKUP_MIN_LENGTH) return
+    try {
+      applyBankMatch(await fetchBankDetailsByIfsc(cleaned))
+    } catch {
+      // Lookup is a convenience; the user can still pick the bank and type the branch
     }
   }
 
-  const handleBankNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange('bankName', gstInput.letters(e.target.value))
-    onClearError?.('bankName')
-  }
-
-  const handleBranchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange('branch', gstInput.letters(e.target.value))
-    onClearError?.('branch')
-  }
-
-  const handleAccountTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    onChange('accountType', e.target.value)
-    onClearError?.('accountType')
-  }
-
   return (
-    <div className="gst-form-card">
-      <div className="gst-form-card__header">
-        <div className="gst-form-card__icon-badge gst-form-card__icon-badge--orange">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="2" y="5" width="20" height="14" rx="2" />
-            <line x1="2" y1="10" x2="22" y2="10" />
-          </svg>
-        </div>
-        <h2 className="gst-form-card__title">Bank Details</h2>
-      </div>
+    <GSTFormSection
+      id="gst-bank-details"
+      icon={<Wallet />}
+      title="Bank Details"
+      subtitle="Account for refunds & credits"
+      fields={BANK_FIELDS}
+      errors={errors}
+      collapsible
+    >
+      <GSTTextField
+        id="accountHolderName"
+        label="Account Holder Name"
+        placeholder="As per bank records"
+        value={data.accountHolderName}
+        error={errors.accountHolderName}
+        onValueChange={(v) => update('accountHolderName', gstInput.letters(v))}
+      />
 
-      <div className="gst-form-card__body">
-        {/* Row 1: Account Holder Name (Single Row) */}
-        <div className="gst-form-group">
-          <label htmlFor="accountHolderName" className="gst-form-label">
-            Account Holder Name <span className="gst-required-star">*</span>
-          </label>
-          <input
-            id="accountHolderName"
-            type="text"
-            className={`gst-form-input ${errors.accountHolderName ? 'gst-input--error' : ''}`}
-            placeholder="Enter account holder name"
-            value={data.accountHolderName}
-            onChange={handleAccountHolderNameChange}
+      <div className="gst-form-row gst-form-row--split">
+        <GSTTextField
+          id="accountNumber"
+          label="Bank Account Number"
+          placeholder="Enter account number"
+          inputMode="numeric"
+          value={data.accountNumber}
+          error={errors.accountNumber}
+          onValueChange={(v) => update('accountNumber', gstInput.accountNumber(v))}
+        />
+        <GSTFieldShell id="confirmAccountNumber" label="Confirm Account Number">
+          <ConfirmAccountNumberInput
+            id="confirmAccountNumber"
+            name="confirmAccountNumber"
+            className={fieldInputClass(errors.confirmAccountNumber)}
+            placeholder="Re-enter account number"
+            value={data.confirmAccountNumber}
+            onChange={(v) => update('confirmAccountNumber', v)}
+            hasError={Boolean(errors.confirmAccountNumber)}
+            error={errors.confirmAccountNumber}
           />
-          {errors.accountHolderName && <span className="gst-field-error">{errors.accountHolderName}</span>}
-        </div>
-
-        {/* Row 2: Bank Account Number & Confirm Account Number */}
-        <div className="gst-form-grid gst-form-grid--2col">
-          <div className="gst-form-group">
-            <label htmlFor="accountNumber" className="gst-form-label">
-              Bank Account Number <span className="gst-required-star">*</span>
-            </label>
-            <input
-              id="accountNumber"
-              type="text"
-              inputMode="numeric"
-              className={`gst-form-input ${errors.accountNumber ? 'gst-input--error' : ''}`}
-              placeholder="Enter bank account number"
-              value={data.accountNumber}
-              onChange={handleAccountNumberChange}
-            />
-            {errors.accountNumber && <span className="gst-field-error">{errors.accountNumber}</span>}
-          </div>
-
-          <div className="gst-form-group">
-            <label htmlFor="confirmAccountNumber" className="gst-form-label">
-              Confirm Account Number <span className="gst-required-star">*</span>
-            </label>
-            <ConfirmAccountNumberInput
-              id="confirmAccountNumber"
-              name="confirmAccountNumber"
-              className={`gst-form-input ${errors.confirmAccountNumber ? 'gst-input--error' : ''}`}
-              placeholder="Confirm bank account number"
-              value={data.confirmAccountNumber}
-              onChange={(val) => {
-                onChange('confirmAccountNumber', val)
-                onClearError?.('confirmAccountNumber')
-              }}
-              hasError={Boolean(errors.confirmAccountNumber)}
-              error={errors.confirmAccountNumber}
-            />
-          </div>
-        </div>
-
-        {/* Row 3: Account Type & IFSC Code */}
-        <div className="gst-form-grid gst-form-grid--2col">
-          <div className="gst-form-group">
-            <label htmlFor="accountType" className="gst-form-label">
-              Account Type <span className="gst-required-star">*</span>
-            </label>
-            <div className="gst-select-wrapper">
-              <select
-                id="accountType"
-                className={`gst-form-select ${!data.accountType ? 'gst-select--placeholder' : ''} ${errors.accountType ? 'gst-input--error' : ''}`}
-                data-empty={!data.accountType}
-                value={data.accountType}
-                onChange={handleAccountTypeChange}
-              >
-                <option value="">Select account type</option>
-                {ACCOUNT_TYPE_OPTIONS.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-              <span className="gst-select-arrow" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </span>
-            </div>
-            {errors.accountType && <span className="gst-field-error">{errors.accountType}</span>}
-          </div>
-
-          <div className="gst-form-group">
-            <label htmlFor="ifscCode" className="gst-form-label">
-              IFSC Code <span className="gst-required-star">*</span>
-            </label>
-            <input
-              id="ifscCode"
-              type="text"
-              maxLength={11}
-              className={`gst-form-input ${errors.ifscCode ? 'gst-input--error' : ''}`}
-              placeholder="Enter IFSC code"
-              value={data.ifscCode}
-              onChange={handleIfscChange}
-              onBlur={handleIfscBlur}
-            />
-            {errors.ifscCode && <span className="gst-field-error">{errors.ifscCode}</span>}
-          </div>
-        </div>
-
-        {/* Row 4: Bank Name & Branch */}
-        <div className="gst-form-grid gst-form-grid--2col">
-          <div className="gst-form-group">
-            <label htmlFor="bankName" className="gst-form-label">
-              Bank Name <span className="gst-required-star">*</span>
-            </label>
-            <input
-              id="bankName"
-              type="text"
-              className={`gst-form-input ${errors.bankName ? 'gst-input--error' : ''}`}
-              placeholder="Auto-fetched"
-              value={data.bankName}
-              onChange={handleBankNameChange}
-            />
-            {errors.bankName && <span className="gst-field-error">{errors.bankName}</span>}
-          </div>
-
-          <div className="gst-form-group">
-            <label htmlFor="branch" className="gst-form-label">
-              Branch <span className="gst-required-star">*</span>
-            </label>
-            <input
-              id="branch"
-              name="branch"
-              type="text"
-              className={`gst-form-input ${errors.branch ? 'gst-input--error' : ''}`}
-              placeholder="Enter branch name (auto-filled from IFSC)"
-              value={data.branch}
-              onChange={handleBranchChange}
-              aria-required="true"
-              aria-invalid={Boolean(errors.branch)}
-            />
-            {errors.branch && <span className="gst-field-error">{errors.branch}</span>}
-          </div>
-        </div>
+        </GSTFieldShell>
       </div>
-    </div>
+
+      <GSTTextField
+        id="ifscCode"
+        label="IFSC Code"
+        placeholder="e.g. HDFC0001234"
+        maxLength={IFSC_LENGTH}
+        autoCapitalize="characters"
+        value={data.ifscCode}
+        error={errors.ifscCode}
+        onValueChange={handleIfscChange}
+        onBlur={handleIfscBlur}
+      />
+
+      <div className="gst-form-row gst-form-row--pair">
+        <GSTSelectField
+          id="bankName"
+          label="Bank Name"
+          placeholder="Select"
+          options={bankOptions(data.bankName)}
+          value={data.bankName}
+          error={errors.bankName}
+          onValueChange={(v) => update('bankName', v)}
+        />
+        <GSTTextField
+          id="branch"
+          label="Branch"
+          placeholder="Branch Name"
+          value={data.branch}
+          error={errors.branch}
+          onValueChange={(v) => update('branch', gstInput.letters(v))}
+        />
+      </div>
+
+      <GSTSelectField
+        id="accountType"
+        label="Account Type"
+        placeholder="Select account type"
+        options={BANK_ACCOUNT_TYPE_OPTIONS}
+        value={data.accountType}
+        error={errors.accountType}
+        onValueChange={(v) => update('accountType', v)}
+      />
+    </GSTFormSection>
   )
 }
 

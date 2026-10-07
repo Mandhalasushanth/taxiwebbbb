@@ -1,5 +1,5 @@
 import React from 'react'
-import type { SupportingDocumentItem } from '../../../types/taxNoticeAssistance.types'
+import type { SupportingDocumentItem } from '@modules/itr/types/taxNoticeAssistance.types'
 import { UploadDocument } from '@shared/components'
 
 export const getDocColor = (id: string) => {
@@ -116,7 +116,6 @@ export const SupportingDocRow: React.FC<SupportingDocRowProps> = ({
       fileName={uploadInfo?.fileName}
       fileSize={uploadInfo?.fileSize}
       file={uploadInfo?.file}
-      accept=".pdf,.jpg,.jpeg,.png,.docx,.xlsx"
       ariaLabel="Upload File"
       onUpload={(_, file) => onFileUpload(file)}
       onView={onView}

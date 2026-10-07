@@ -19,8 +19,8 @@
 }
 
 .taxedge-doc-section--card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 16px;
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -49,7 +49,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #ea580c;
+  color: var(--palette-orange-600);
   flex-shrink: 0;
 }
 
@@ -57,7 +57,7 @@
   margin: 0;
   font-size: 0.8125rem;
   font-weight: 700;
-  color: #475569;
+  color: var(--palette-slate-600);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -73,7 +73,7 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 800;
-  color: #083b75;
+  color: var(--primary-navy);
   letter-spacing: -0.01em;
 }
 
@@ -94,22 +94,22 @@
 }
 
 .taxedge-doc-badge--mandatory {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: var(--palette-red-100-fee2e2);
+  color: var(--palette-red-700);
 }
 
 .taxedge-doc-badge--recommended {
-  background: #eff6ff;
-  color: #1e40af;
+  background: var(--palette-blue-50);
+  color: var(--palette-blue-800-1e40af);
 }
 
 .taxedge-doc-badge--optional {
-  background: #f0fdf4;
-  color: #166534;
-  border: 1px solid #bbf7d0;
+  background: var(--palette-green-50);
+  color: var(--palette-green-800);
+  border: 1px solid var(--palette-green-200);
 }
 
 .taxedge-doc-badge--default {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--subtle-border);
+  color: var(--palette-slate-600);
 }

@@ -15,7 +15,7 @@
 .loan-submit-modal-card {
   width: 100%;
   max-width: 440px;
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 16px;
   padding: 1.75rem 1.75rem 1.5rem 1.75rem;
   box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.05);
@@ -29,14 +29,14 @@
   margin: 0 0 0.85rem 0;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.01em;
 }
 
 .loan-submit-modal-body {
   margin: 0 0 1.5rem 0;
   font-size: 0.95rem;
-  color: #334155;
+  color: var(--grey-700);
   line-height: 1.55;
 }
 
@@ -48,9 +48,9 @@
 }
 
 .loan-submit-modal-btn {
-  background: #f0f7ff;
-  border: 1px solid #e0f2fe;
-  color: #0284c7;
+  background: var(--palette-sky-50-f0f7ff);
+  border: 1px solid var(--palette-sky-100-e0f2fe);
+  color: var(--palette-sky-600);
   font-size: 0.9375rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -65,26 +65,26 @@
 }
 
 .loan-submit-modal-btn:hover {
-  background-color: #e0f2fe;
-  color: #0369a1;
-  border-color: #bae6fd;
+  background-color: var(--palette-sky-100-e0f2fe);
+  color: var(--palette-sky-700);
+  border-color: var(--palette-sky-200);
 }
 
 .loan-submit-modal-btn:active {
-  background-color: #bae6fd;
+  background-color: var(--palette-sky-200);
 }
 
 .loan-submit-modal-btn--done {
-  background: linear-gradient(135deg, #ff7a00 0%, #ff5500 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--feature-orange) 0%, var(--palette-orange-500-ff5500) 100%);
+  color: var(--surface);
   padding: 0.55rem 1.25rem;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(255, 122, 0, 0.25);
 }
 
 .loan-submit-modal-btn--done:hover {
-  background: linear-gradient(135deg, #ea6c00 0%, #e64a00 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--palette-orange-500-ea6c00) 0%, var(--palette-orange-500-e64a00) 100%);
+  color: var(--surface);
 }
 
 @keyframes modalFadeIn {

@@ -1,10 +1,10 @@
 .gst-review-page {
   width: 100%;
-  max-width: 860px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   padding: 16px 20px 64px;
   font-family: inherit;
-  color: #1e293b;
+  color: var(--palette-slate-800);
   box-sizing: border-box;
 }
 
@@ -31,14 +31,14 @@
 .gst-review-title {
   font-size: 26px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 6px;
   letter-spacing: -0.02em;
 }
 
 .gst-review-subtitle {
   font-size: 14px;
-  color: #ea580c;
+  color: var(--palette-orange-600);
   font-weight: 600;
   margin: 0;
   line-height: 1.5;

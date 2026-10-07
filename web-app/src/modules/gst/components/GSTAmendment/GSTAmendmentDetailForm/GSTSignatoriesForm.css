@@ -33,7 +33,7 @@
   right: 0.75rem;
   background: transparent;
   border: none;
-  color: #64748b;
+  color: var(--secondary-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,7 +43,7 @@
 }
 
 .gst-sig-calendar-btn:hover {
-  color: #2563eb;
+  color: var(--palette-blue-600);
 }
 
 .gst-sig-calendar-btn svg {
@@ -53,16 +53,16 @@
 
 /* Sidebar Cards */
 .gst-sig-accepted-proofs-card {
-  background-color: #fff7ed;
-  border: 1px solid #fed7aa;
+  background-color: var(--palette-orange-50);
+  border: 1px solid var(--orange-200);
   border-radius: 12px;
   padding: 1.25rem;
   margin-bottom: 1.25rem;
 }
 
 .gst-sig-info-card {
-  background-color: #eff6ff;
-  border: 1px solid #dbeafe;
+  background-color: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-100);
   border-radius: 12px;
   padding: 1.25rem;
   margin-bottom: 1.25rem;
@@ -79,8 +79,8 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: #ea580c;
-  color: #ffffff;
+  background-color: var(--palette-orange-600);
+  color: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,8 +96,8 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: #2563eb;
-  color: #ffffff;
+  background-color: var(--palette-blue-600);
+  color: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,11 +116,11 @@
 }
 
 .gst-sig-card-title.orange-title {
-  color: #9a3412;
+  color: var(--orange-800);
 }
 
 .gst-sig-card-title.blue-title {
-  color: #1e40af;
+  color: var(--palette-blue-800-1e40af);
 }
 
 .gst-sig-proofs-list,
@@ -135,19 +135,19 @@
 }
 
 .gst-sig-proofs-list {
-  color: #9a3412;
+  color: var(--orange-800);
 }
 
 .gst-sig-info-list {
-  color: #1e40af;
+  color: var(--palette-blue-800-1e40af);
 }
 
 .gst-sig-proofs-list li::marker {
-  color: #ea580c;
+  color: var(--palette-orange-600);
 }
 
 .gst-sig-info-list li::marker {
-  color: #2563eb;
+  color: var(--palette-blue-600);
 }
 
 @media (max-width: 768px) {

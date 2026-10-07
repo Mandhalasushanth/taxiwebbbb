@@ -1,12 +1,12 @@
 /* GST Amendment Review Screen - Desktop-Optimized & Fully Responsive */
 .gst-amend-review-container {
   width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   padding: 1.5rem 2rem 4rem 2rem;
   box-sizing: border-box;
   font-family: inherit;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 /* Header */
@@ -21,8 +21,8 @@
   width: 52px;
   height: 52px;
   border-radius: 14px;
-  background-color: #eff6ff;
-  border: 1px solid #dbeafe;
+  background-color: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-100);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,28 +32,28 @@
 .gst-amend-review-icon-circle svg {
   width: 26px;
   height: 26px;
-  color: #2563eb;
+  color: var(--palette-blue-600);
 }
 
 .gst-amend-review-title {
   font-size: 2rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 0.25rem 0;
   letter-spacing: -0.02em;
 }
 
 .gst-amend-review-subtitle {
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
   line-height: 1.5;
 }
 
 /* Card 1: Meta Information Card */
 .gst-amend-review-meta-box {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 0.75rem 2rem;
   margin-bottom: 1.5rem;
@@ -70,27 +70,27 @@
 
 .gst-amend-review-meta-label {
   font-size: 0.9375rem;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 500;
 }
 
 .gst-amend-review-meta-val {
   font-size: 1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   text-align: right;
   word-break: break-word;
 }
 
 .gst-amend-review-meta-divider {
   height: 1px;
-  background-color: #f1f5f9;
+  background-color: var(--subtle-border);
 }
 
 /* Card 2: Requested Changes Card */
 .gst-amend-requested-card {
-  background-color: #ffffff;
-  border: 1.5px solid #fed7aa;
+  background-color: var(--surface);
+  border: 1.5px solid var(--orange-200);
   border-radius: 14px;
   padding: 1.25rem 2rem;
   margin-bottom: 1.5rem;
@@ -103,13 +103,13 @@
   justify-content: space-between;
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid #ffedd5;
+  border-bottom: 1px solid var(--orange-100);
 }
 
 .gst-amend-requested-title {
   font-size: 0.875rem;
   font-weight: 800;
-  color: #ea580c;
+  color: var(--palette-orange-600);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   display: flex;
@@ -118,9 +118,9 @@
 }
 
 .gst-amend-requested-edit-btn {
-  background-color: #ffffff;
-  border: 1.5px solid #fdba74;
-  color: #ea580c;
+  background-color: var(--surface);
+  border: 1.5px solid var(--orange-300);
+  color: var(--palette-orange-600);
   font-size: 0.85rem;
   font-weight: 700;
   padding: 0.35rem 1.125rem;
@@ -133,8 +133,8 @@
 }
 
 .gst-amend-requested-edit-btn:hover {
-  background-color: #fff7ed;
-  border-color: #ea580c;
+  background-color: var(--palette-orange-50);
+  border-color: var(--palette-orange-600);
   transform: translateY(-1px);
 }
 
@@ -148,27 +148,27 @@
 
 .gst-amend-requested-label {
   font-size: 0.9375rem;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 500;
 }
 
 .gst-amend-requested-val {
   font-size: 1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   text-align: right;
   word-break: break-word;
 }
 
 .gst-amend-requested-divider {
   height: 1px;
-  background-color: #f8fafc;
+  background-color: var(--palette-slate-50);
 }
 
 /* Card 3: Attached Proof Card */
 .gst-amend-proof-card {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1.25rem 2rem;
   margin-bottom: 1.5rem;
@@ -178,7 +178,7 @@
 .gst-amend-proof-card-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 0.875rem 0;
 }
 
@@ -187,8 +187,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem 1.25rem;
-  background-color: #f8fafc;
-  border: 1px solid #f1f5f9;
+  background-color: var(--palette-slate-50);
+  border: 1px solid var(--subtle-border);
   border-radius: 10px;
   gap: 1rem;
 }
@@ -196,7 +196,7 @@
 .gst-amend-proof-name {
   font-size: 0.9375rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -205,14 +205,14 @@
 .gst-amend-proof-size {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #64748b;
+  color: var(--secondary-text);
   flex-shrink: 0;
 }
 
 /* Card 4: Declaration Checkbox Box */
 .gst-amend-declaration-box {
-  background-color: #eff6ff;
-  border: 1.5px solid #dbeafe;
+  background-color: var(--palette-blue-50);
+  border: 1.5px solid var(--palette-blue-100);
   border-radius: 14px;
   padding: 1.25rem 1.75rem;
   display: flex;
@@ -224,12 +224,12 @@
 }
 
 .gst-amend-declaration-box:hover {
-  background-color: #e0f2fe;
+  background-color: var(--palette-sky-100-e0f2fe);
 }
 
 .gst-amend-declaration-box.has-error {
-  border-color: #fca5a5;
-  background-color: #fef2f2;
+  border-color: var(--palette-red-300);
+  background-color: var(--palette-red-50);
 }
 
 .gst-amend-declaration-check-wrap {
@@ -240,7 +240,7 @@
 .gst-amend-declaration-checkbox {
   width: 20px;
   height: 20px;
-  accent-color: #ea580c;
+  accent-color: var(--palette-orange-600);
   cursor: pointer;
   border-radius: 6px;
 }
@@ -248,7 +248,7 @@
 .gst-amend-declaration-text {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #1e40af;
+  color: var(--palette-blue-800-1e40af);
   line-height: 1.55;
   cursor: pointer;
   margin: 0;
@@ -257,7 +257,7 @@
 .gst-amend-declaration-error-msg {
   display: block;
   font-size: 0.85rem;
-  color: #dc2626;
+  color: var(--error);
   font-weight: 600;
   margin-top: -1.25rem;
   margin-bottom: 1.5rem;
@@ -273,7 +273,7 @@
   gap: 1rem;
   margin-top: 1.75rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border);
   box-sizing: border-box;
 }
 
@@ -290,12 +290,12 @@
   justify-content: center;
   gap: 0.625rem;
   padding: 0.8125rem 2.25rem;
-  background: #ea580c;
+  background: var(--palette-orange-600);
   border: none;
   border-radius: 10px;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--surface);
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 14px rgba(234, 88, 12, 0.25);
@@ -303,7 +303,7 @@
 }
 
 .gst-amend-submit-main-btn:hover {
-  background: #c2410c;
+  background: var(--palette-orange-700);
   box-shadow: 0 6px 18px rgba(234, 88, 12, 0.35);
   transform: translateY(-1px);
 }
@@ -325,20 +325,20 @@
   align-items: center;
   gap: 0.375rem;
   padding: 0.75rem 1.5rem;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
+  background-color: var(--surface);
+  border: 1px solid var(--grey-300);
   border-radius: 10px;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #334155;
+  color: var(--grey-700);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .gst-amend-review-back-pill:hover {
-  background-color: #f8fafc;
-  border-color: #94a3b8;
-  color: #0f172a;
+  background-color: var(--palette-slate-50);
+  border-color: var(--muted-text);
+  color: var(--palette-slate-900);
 }
 
 .gst-amend-review-back-pill svg {

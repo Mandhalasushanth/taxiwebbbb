@@ -37,9 +37,9 @@
 .top-brand-icon { width: 48px; height: 48px; border-radius: 12px; object-fit: contain; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
 .top-brand-text { display: flex; flex-direction: column; }
 .top-brand-name { font-size: 1.5rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
-.brand-white { color: #ffffff; }
-.brand-orange { color: #ff6a00; }
-.top-brand-sub { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.18em; color: #94a3b8; text-transform: uppercase; margin-top: 1px; }
+.brand-white { color: var(--surface); }
+.brand-orange { color: var(--palette-orange-500); }
+.top-brand-sub { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.18em; color: var(--muted-text); text-transform: uppercase; margin-top: 1px; }
 
 .login-top-tagline {
   position: absolute;
@@ -51,8 +51,8 @@
   align-items: flex-end;
   gap: 5px;
 }
-.tagline-text { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em; color: #cbd5e1; text-transform: uppercase; }
-.tagline-bar { width: 40px; height: 2.5px; background: #ff6a00; border-radius: 2px; }
+.tagline-text { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em; color: var(--grey-300); text-transform: uppercase; }
+.tagline-bar { width: 40px; height: 2.5px; background: var(--palette-orange-500); border-radius: 2px; }
 
 /* ── Hero Section ────────────────────────────────────────── */
 .login-hero {
@@ -88,14 +88,14 @@
   font-weight: 800;
   line-height: 1.16;
   letter-spacing: -0.03em;
-  color: #ffffff;
+  color: var(--surface);
 }
 
 .hero-title-main {
   display: block;
   white-space: nowrap;
   font-size: 1.05em;
-  background: linear-gradient(180deg, #ffffff 40%, #e2e8f0 100%);
+  background: linear-gradient(180deg, var(--surface) 40%, var(--border) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -106,7 +106,7 @@
   display: block;
   white-space: nowrap;
   font-size: 1.02em;
-  background: linear-gradient(100deg, #ffa33b 0%, #ff6b00 45%, #ff4200 100%);
+  background: linear-gradient(100deg, var(--palette-orange-400-ffa33b) 0%, var(--palette-orange-500-ff6b00) 45%, var(--palette-orange-500-ff4200) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -118,12 +118,12 @@
   margin: 0;
   font-family: 'Plus Jakarta Sans', var(--font-sans);
   font-size: clamp(0.85rem, 1.05vw, 1rem);
-  color: #94a3b8;
+  color: var(--muted-text);
   line-height: 1.65;
   letter-spacing: -0.01em;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
-.subtitle-highlight { color: #f8fafc; font-weight: 600; }
+.subtitle-highlight { color: var(--palette-slate-50); font-weight: 600; }
 
 /* ── Feature Badges ──────────────────────────────────────── */
 .hero-badges {
@@ -161,13 +161,13 @@
 }
 .badge-icon-img { width: 18px; height: 18px; object-fit: contain; }
 .badge-text { display: flex; flex-direction: column; gap: 1px; }
-.badge-title { font-size: 0.8rem; font-weight: 700; color: #ffffff; }
-.badge-desc { font-size: 0.68rem; color: #94a3b8; white-space: nowrap; }
+.badge-title { font-size: 0.8rem; font-weight: 700; color: var(--surface); }
+.badge-desc { font-size: 0.68rem; color: var(--muted-text); white-space: nowrap; }
 
 /* ── Bottom Tagline ──────────────────────────────────────── */
 .hero-bottom-tag { display: flex; flex-direction: column; gap: 5px; }
-.bottom-tag-bar { width: 34px; height: 3px; background: #ff6a00; border-radius: 2px; }
-.bottom-tag-text { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.22em; color: #94a3b8; text-transform: uppercase; }
+.bottom-tag-bar { width: 34px; height: 3px; background: var(--palette-orange-500); border-radius: 2px; }
+.bottom-tag-text { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.22em; color: var(--muted-text); text-transform: uppercase; }
 
 /* ── Middle Illustration ─────────────────────────────────── */
 .login-illustration-wrap {

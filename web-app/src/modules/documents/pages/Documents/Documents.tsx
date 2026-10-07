@@ -3,6 +3,7 @@ import { Badge, Card, EmptyState, Loader } from '@shared/components'
 import { STATUS_LABELS, STATUS_TONES } from '@shared/constants'
 import { formatDate } from '@shared/utils'
 import { useAppStore } from '@store/index'
+import { FileInput } from '@shared/upload'
 
 import { useDocuments } from '../../hooks/useDocuments'
 import type { DocumentsItem } from '../../types/documents.types'
@@ -14,9 +15,8 @@ export const Documents = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const pushToast = useAppStore((state) => state.pushToast)
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  /** An allowed file (PDF, Excel, JPG or PNG up to 15 MB) */
+  const handleFileUpload = (file: File) => {
 
     const newDoc: DocumentsItem = {
       id: `doc-${Date.now()}`,
@@ -29,19 +29,16 @@ export const Documents = () => {
 
     setCustomDocs((prev) => [newDoc, ...prev])
     pushToast(`"${file.name}" uploaded successfully!`, 'success')
-    e.target.value = ''
   }
 
   const allDocuments = [...customDocs, ...(data ?? [])]
 
   return (
     <div className="documents-page">
-      <input
-        type="file"
+      <FileInput
         ref={fileInputRef}
         className="documents-file-input"
-        accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.zip"
-        onChange={handleFileUpload}
+        onFileSelected={handleFileUpload}
         aria-hidden="true"
         tabIndex={-1}
       />

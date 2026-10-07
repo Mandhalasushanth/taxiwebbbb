@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { DocumentCard, StepActionBar } from '@shared/components'
 import { filterDigits, filterMobile, isValidMobile, isValidPincode, isValidEmail } from '../../utils/validation'
@@ -16,8 +15,7 @@ interface OfficeDocItem {
 }
 
 export const RegisteredOffice: React.FC = () => {
-  const navigate = useNavigate()
-  const { formData, updateFormData } = useIncorporationFlow()
+  const { formData, updateFormData, draft, reviewEdit, goToStep } = useIncorporationFlow()
 
   const addressData = formData.registeredOffice?.addressData || {
     addressLine1: '',
@@ -121,7 +119,7 @@ export const RegisteredOffice: React.FC = () => {
       return
     }
     setErrors({})
-    navigate(routePaths.incorporation.promoterDetails)
+    goToStep(routePaths.incorporation.promoterDetails)
   }
 
   const renderInput = (
@@ -236,9 +234,10 @@ export const RegisteredOffice: React.FC = () => {
 
       {/* Footer Navigation */}
       <StepActionBar
-        onBack={() => navigate(routePaths.incorporation.companyDetails)}
+        onBack={() => goToStep(routePaths.incorporation.companyDetails)}
         onNext={handleContinue}
-        onSaveDraft={() => navigate(routePaths.dashboard)}
+        isEditMode={reviewEdit.isEditMode}
+        onSaveDraft={draft.openDraftModal}
         nextLabel="Continue"
       />
     </div>

@@ -4,7 +4,7 @@
   min-height: 100vh;
   height: 100vh;
   width: 100%;
-  background: #F7F9FC;
+  background: var(--background);
   overflow: hidden;
   position: relative;
 }
@@ -16,7 +16,7 @@
   flex-direction: column;
   align-items: center;
   padding: 2.75rem 3.5rem;
-  background: #F7F9FC;
+  background: var(--background);
   box-sizing: border-box;
 }
 
@@ -31,8 +31,8 @@
 
 .customer-type-page__top-nav { display: flex; align-items: center; }
 .customer-type-page__header { display: flex; flex-direction: column; gap: 0.35rem; }
-.customer-type-page__title { font-family: var(--font-sans); font-size: clamp(1.65rem, 2.2vw, 2.15rem); font-weight: 800; color: #172033; letter-spacing: -0.025em; margin: 0; }
-.customer-type-page__subtitle { font-size: 0.95rem; color: #64748B; margin: 0; }
+.customer-type-page__title { font-family: var(--font-sans); font-size: clamp(1.65rem, 2.2vw, 2.15rem); font-weight: 800; color: var(--primary-text); letter-spacing: -0.025em; margin: 0; }
+.customer-type-page__subtitle { font-size: 0.95rem; color: var(--secondary-text); margin: 0; }
 .customer-type-page__list-section { width: 100%; }
 .customer-type-page__footer { width: 100%; margin-top: 0.75rem; padding-top: 0.75rem; }
 

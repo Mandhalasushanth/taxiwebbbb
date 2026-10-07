@@ -19,8 +19,8 @@
 }
 
 .select-type-stepbar__badge {
-  background: #0b2546;
-  color: #ffffff;
+  background: var(--palette-sky-800-0b2546);
+  color: var(--surface);
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.25rem 0.65rem;
@@ -32,7 +32,7 @@
 .select-type-stepbar__line {
   flex: 1;
   height: 4px;
-  background: #e2e8f0;
+  background: var(--border);
   border-radius: 9999px;
   position: relative;
   overflow: hidden;
@@ -41,7 +41,7 @@
 .select-type-stepbar__line-fill {
   width: 50%;
   height: 100%;
-  background: #f25a22;
+  background: var(--palette-orange-500-f25a22);
   border-radius: 9999px;
 }
 
@@ -56,14 +56,14 @@
   margin: 0;
   font-size: 1.75rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.02em;
 }
 
 .select-type-header__subtitle {
   margin: 0;
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.5;
 }
 
@@ -75,8 +75,8 @@
 }
 
 .select-type-card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 16px;
   padding: 1.5rem;
   display: flex;
@@ -89,15 +89,15 @@
 }
 
 .select-type-card:hover {
-  border-color: #94a3b8;
+  border-color: var(--muted-text);
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
 }
 
 .select-type-card--selected {
-  border-color: #0b2546;
-  background: #f8fbff;
-  box-shadow: 0 0 0 1px #0b2546, 0 6px 18px rgba(11, 37, 70, 0.08);
+  border-color: var(--palette-sky-800-0b2546);
+  background: var(--palette-sky-50-f8fbff);
+  box-shadow: 0 0 0 1px var(--palette-sky-800-0b2546), 0 6px 18px rgba(11, 37, 70, 0.08);
 }
 
 .select-type-card__top {
@@ -117,24 +117,24 @@
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: #f1f5f9;
+  background: var(--subtle-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #0b2546;
+  color: var(--palette-sky-800-0b2546);
   flex-shrink: 0;
 }
 
 .select-type-card--selected .select-type-card__icon-box {
-  background: #e0edff;
-  color: #0b2546;
+  background: var(--palette-sky-100-e0edff);
+  color: var(--palette-sky-800-0b2546);
 }
 
 .select-type-card__title {
   margin: 0;
   font-size: 1.08rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 /* Radio Indicator */
@@ -142,7 +142,7 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 2px solid #cbd5e1;
+  border: 2px solid var(--grey-300);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -151,23 +151,23 @@
 }
 
 .select-type-card--selected .select-type-card__radio {
-  border-color: #0b2546;
-  background: #0b2546;
-  color: #ffffff;
+  border-color: var(--palette-sky-800-0b2546);
+  background: var(--palette-sky-800-0b2546);
+  color: var(--surface);
 }
 
 .select-type-card__desc {
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.55;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .select-type-card__badge {
   align-self: flex-start;
-  background: #f0f4ff;
-  color: #1e3a8a;
-  border: 1px solid #dbeafe;
+  background: var(--palette-blue-50-f0f4ff);
+  color: var(--palette-blue-900-1e3a8a);
+  border: 1px solid var(--palette-blue-100);
   padding: 0.25rem 0.65rem;
   border-radius: 8px;
   font-size: 0.78rem;
@@ -175,11 +175,11 @@
 }
 
 .select-type-error-alert {
-  color: #dc2626;
-  background: #fef2f2;
+  color: var(--error);
+  background: var(--palette-red-50);
   padding: 0.75rem 1rem;
   border-radius: 8px;
-  border: 1px solid #fecaca;
+  border: 1px solid var(--palette-red-200);
   font-size: 0.88rem;
   font-weight: 600;
 }
@@ -191,14 +191,14 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 1rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border);
   gap: 1rem;
 }
 
 .select-type-btn-cancel {
-  background: #f1f5f9;
-  color: #334155;
-  border: 1px solid #e2e8f0;
+  background: var(--subtle-border);
+  color: var(--grey-700);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 0.75rem 1.65rem;
   font-size: 0.95rem;
@@ -208,13 +208,13 @@
 }
 
 .select-type-btn-cancel:hover {
-  background: #e2e8f0;
-  color: #0f172a;
+  background: var(--border);
+  color: var(--palette-slate-900);
 }
 
 .select-type-btn-continue {
-  background: #f25a22;
-  color: #ffffff;
+  background: var(--palette-orange-500-f25a22);
+  color: var(--surface);
   border: none;
   border-radius: 10px;
   padding: 0.8rem 2rem;
@@ -226,7 +226,7 @@
 }
 
 .select-type-btn-continue:hover {
-  background: #e04b15;
+  background: var(--palette-orange-500-e04b15);
   transform: translateY(-1px);
 }
 

@@ -1,8 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { routePaths } from "@core/config";
-import { useAppStore } from "@store/index";
 import { userStorage } from "@core/storage/userStorage";
-import { useDraftBlocker } from "@shared/hooks";
+import { useServiceDraft, readServiceDraft, hasFormChanged, DRAFT_NAMESPACES } from "@shared/saveDraft"
 import { calculateItrTax } from "./itrTaxCalculator";
 import {
   DEFAULT_PREVIOUS_ITR,
@@ -52,15 +51,13 @@ const resolveSubmittedSourceLabel = (
   }
 };
 
+const SERVICE_ID = "itr-filing";
+const TOTAL_STEPS = 5;
+
 export function useItrFilingState() {
-  const pushToast = useAppStore((state) => state.pushToast);
-  const [existingDraft] = useState(() => {
-    try {
-      return userStorage.getDraft("itr-filing");
-    } catch {
-      return undefined;
-    }
-  });
+  const [existingDraft] = useState(() =>
+    readServiceDraft<Record<string, unknown>>(SERVICE_ID, DRAFT_NAMESPACES.itr),
+  );
 
   const [isStarted, setIsStarted] = useState<boolean>(() =>
     Boolean(existingDraft),
@@ -157,51 +154,8 @@ export function useItrFilingState() {
   const selectedBank =
     bankAccounts.find((b) => b.id === selectedBankId) || bankAccounts[0];
 
-  const saveCurrentDraft = useCallback(() => {
-    try {
-      if (isSubmitted) return;
-      const timeStr = new Date().toLocaleTimeString([], {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      });
-      userStorage.saveDraft({
-        serviceId: "itr-filing",
-        serviceTitle: "ITR Filing",
-        currentStep,
-        totalSteps: 5,
-        stepLabel: ITR_STEP_LABELS[currentStep - 1] || "Personal & Filing Info",
-        formData: {
-          isStarted,
-          currentStep,
-          selectedCategoryId,
-          assessmentYear,
-          residentialStatus,
-          filingType,
-          bankAccounts,
-          selectedBankId,
-          previousItr,
-          selectedSources,
-          salaryDetails,
-          housePropertyDetails,
-          businessDetails,
-          capitalGainsDetails,
-          otherSourcesDetails,
-          selectedRegime,
-          deductions,
-          uploadedDocs,
-        },
-        savedAt: timeStr,
-        savedTimestamp: Date.now(),
-        resumeRoute: routePaths.itr.itrFiling,
-      });
-    } catch {
-      // Fallback
-    }
-  }, [
-    isSubmitted,
-    currentStep,
-    isStarted,
+  // Everything the draft stores (also used to tell whether the user has changed anything)
+  const draftFields = {
     selectedCategoryId,
     assessmentYear,
     residentialStatus,
@@ -218,56 +172,42 @@ export function useItrFilingState() {
     selectedRegime,
     deductions,
     uploadedDocs,
-  ]);
+  };
+  const [initialFields] = useState(() => draftFields);
 
   const isDirty = Boolean(
     isStarted &&
       !isSubmitted &&
       (currentStep > 1 ||
-        Boolean(selectedCategoryId) ||
-        Boolean(assessmentYear) ||
-        Boolean(residentialStatus) ||
-        Boolean(filingType) ||
-        bankAccounts.length > 0 ||
-        Boolean(previousItr?.hasPreviousReturn) ||
-        selectedSources.length > 0 ||
-        salaryDetails.grossSalary > 0 ||
-        housePropertyDetails.rentalIncome > 0 ||
-        businessDetails.grossTurnover > 0 ||
-        capitalGainsDetails.shortTermGains > 0 ||
-        capitalGainsDetails.longTermGains > 0 ||
-        otherSourcesDetails.interestIncome > 0 ||
-        deductions.section80C > 0 ||
-        Object.keys(uploadedDocs).length > 0 ||
-        Boolean(existingDraft))
+        Boolean(existingDraft) ||
+        hasFormChanged(draftFields, initialFields)),
   );
 
-  useEffect(() => {
-    if (isDirty) {
-      saveCurrentDraft();
-    }
-  }, [currentStep, isDirty, saveCurrentDraft]);
-
-  const {
-    isModalOpen,
-    openModal,
-    handleSaveAndExit,
-    handleDiscardAndExit,
-    handleKeepEditing,
-  } = useDraftBlocker({
-    shouldBlock: isDirty,
-    onSaveDraft: () => {
-      saveCurrentDraft();
-      pushToast("Application saved as draft", "success");
-    },
-    onDiscardDraft: () => {
-      userStorage.deleteDraft("itr-filing");
-      pushToast("Draft discarded", "info");
+  // Same draft behaviour as loans and GST: auto-save, save / discard dialog, browser Back prompt
+  const serviceDraft = useServiceDraft<Record<string, unknown>>({
+    serviceId: SERVICE_ID,
+    serviceTitle: "ITR Filing",
+    totalSteps: TOTAL_STEPS,
+    currentStep,
+    stepLabel: ITR_STEP_LABELS[currentStep - 1] || "Personal & Filing Info",
+    resumeRoute: routePaths.itr.itrFiling,
+    exitRoute: routePaths.itr.root,
+    formData: { isStarted, currentStep, ...draftFields },
+    hasEnteredData: isDirty,
+    isComplete: isSubmitted,
+    storageNamespace: DRAFT_NAMESPACES.itr,
+    onDiscard: () => {
       setIsStarted(false);
       setCurrentStep(1);
     },
-    defaultExitRoute: routePaths.itr.root,
   });
+  const {
+    isDraftModalOpen: isModalOpen,
+    openDraftModal: openModal,
+    handleSaveAndExit,
+    handleDiscardAndExit,
+    handleKeepEditing,
+  } = serviceDraft;
 
   const handleUploadDoc = (docId: string, docInfo: UploadedDocInfo) => {
     try {
@@ -324,7 +264,7 @@ export function useItrFilingState() {
             to: `/applications/track/${generatedRef}`,
           });
 
-          userStorage.deleteDraft("itr-filing");
+          serviceDraft.clearDraft();
           setSubmittedRef(generatedRef);
           setIsSubmitting(false);
           setIsSubmitted(true);

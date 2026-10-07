@@ -11,14 +11,14 @@
 .gst-services-section__title {
   font-size: 1.35rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 0.35rem 0;
   letter-spacing: -0.01em;
 }
 
 .gst-services-section__subtitle {
   font-size: 0.88rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
 }
 
@@ -41,8 +41,8 @@
 }
 
 .gst-service-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1.25rem;
   display: flex;
@@ -54,7 +54,7 @@
 
 .gst-service-card:hover {
   transform: translateY(-3px);
-  border-color: #cbd5e1;
+  border-color: var(--grey-300);
   box-shadow: 0 10px 25px rgba(8, 59, 117, 0.08);
 }
 
@@ -91,43 +91,43 @@
 }
 
 .gst-icon-registration {
-  background-color: #f0f5fa;
-  color: #0284c7;
+  background-color: var(--palette-sky-50-f0f5fa);
+  color: var(--palette-sky-600);
 }
 
 .gst-icon-filing {
-  background-color: #f0f5fa;
-  color: #0284c7;
+  background-color: var(--palette-sky-50-f0f5fa);
+  color: var(--palette-sky-600);
 }
 
 .gst-icon-compliance {
-  background-color: #eef7f8;
-  color: #0d9488;
+  background-color: var(--palette-cyan-50);
+  color: var(--palette-teal-600);
 }
 
 .gst-icon-amendment {
-  background-color: #fff3eb;
-  color: #ea580c;
+  background-color: var(--palette-orange-50-fff3eb);
+  color: var(--palette-orange-600);
 }
 
 .gst-icon-cancellation {
-  background-color: #fdf0f0;
-  color: #dc2626;
+  background-color: var(--palette-red-50-fdf0f0);
+  color: var(--error);
 }
 
 .gst-icon-certificate {
-  background-color: #fef9ee;
-  color: #d97706;
+  background-color: var(--palette-amber-50-fef9ee);
+  color: var(--palette-amber-600);
 }
 
 .icon-blue {
-  background-color: #e0f2fe;
-  color: #0284c7;
+  background-color: var(--palette-sky-100-e0f2fe);
+  color: var(--palette-sky-600);
 }
 
 .icon-orange {
-  background-color: #fff3e0;
-  color: #f97316;
+  background-color: var(--palette-orange-100-fff3e0);
+  color: var(--primary-orange);
 }
 
 .gst-service-card__icon svg {
@@ -138,9 +138,9 @@
 .gst-service-card__badge {
   font-size: 0.72rem;
   font-weight: 700;
-  color: #f97316;
-  background-color: #fff7ed;
-  border: 1px solid #fed7aa;
+  color: var(--primary-orange);
+  background-color: var(--palette-orange-50);
+  border: 1px solid var(--orange-200);
   padding: 2px 8px;
   border-radius: 9999px;
   text-transform: uppercase;
@@ -150,13 +150,13 @@
 .gst-service-card__title {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 0.5rem 0;
 }
 
 .gst-service-card__description {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0 0 1.5rem 0;
   line-height: 1.55;
   flex-grow: 1;
@@ -167,7 +167,7 @@
   align-items: center;
   justify-content: flex-end;
   padding-top: 1rem;
-  border-top: 1px dashed #e2e8f0;
+  border-top: 1px dashed var(--border);
 }
 
 .gst-service-card__action {
@@ -176,7 +176,7 @@
   gap: 4px;
   background: none;
   border: none;
-  color: #083B75;
+  color: var(--primary-navy);
   font-weight: 700;
   font-size: 0.875rem;
   cursor: pointer;
@@ -187,7 +187,7 @@
 }
 
 .gst-service-card:hover .gst-service-card__action {
-  color: #f97316;
+  color: var(--primary-orange);
   transform: translateX(2px);
 }
 

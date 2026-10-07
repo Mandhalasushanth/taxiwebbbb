@@ -4,22 +4,22 @@
   flex-direction: column;
   gap: 20px;
   width: 100%;
-  max-width: 820px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
 }
 
 /* Declaration Box */
 .gst-review-declaration-box {
-  background: #fff7ed;
-  border: 1px solid #ffedd5;
+  background: var(--palette-orange-50);
+  border: 1px solid var(--orange-100);
   border-radius: 12px;
   padding: 16px 20px;
   transition: all 0.2s ease;
 }
 
 .gst-review-declaration-box--error {
-  border-color: #f87171;
-  background: #fef2f2;
+  border-color: var(--palette-red-400);
+  background: var(--palette-red-50);
 }
 
 .gst-review-declaration-label {
@@ -33,7 +33,7 @@
   width: 18px;
   height: 18px;
   margin-top: 3px;
-  accent-color: #ea580c;
+  accent-color: var(--palette-orange-600);
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -41,7 +41,7 @@
 .gst-review-declaration-text {
   font-size: 0.88rem;
   line-height: 1.5;
-  color: #9a3412;
+  color: var(--orange-800);
 }
 
 .gst-review-declaration-error {
@@ -49,7 +49,7 @@
   margin-left: 30px;
   font-size: 0.82rem;
   font-weight: 600;
-  color: #dc2626;
+  color: var(--error);
 }
 
 /* Footer Action Buttons */
@@ -67,9 +67,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background-color: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  color: #0f172a;
+  background-color: var(--surface);
+  border: 1.5px solid var(--grey-300);
+  color: var(--palette-slate-900);
   border-radius: 9999px;
   padding: 0.65rem 1.65rem;
   font-size: 0.92rem;
@@ -79,9 +79,9 @@
 }
 
 .gst-review-btn-back:hover {
-  background-color: #f8fafc;
-  border-color: #94a3b8;
-  color: #0f172a;
+  background-color: var(--palette-slate-50);
+  border-color: var(--muted-text);
+  color: var(--palette-slate-900);
   transform: translateY(-1px);
 }
 
@@ -89,9 +89,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #ea580c;
-  border: 1.5px solid #ea580c;
-  color: #ffffff;
+  background: var(--palette-orange-600);
+  border: 1.5px solid var(--palette-orange-600);
+  color: var(--surface);
   border-radius: 24px;
   padding: 10px 32px;
   font-size: 0.95rem;
@@ -102,8 +102,8 @@
 }
 
 .gst-review-btn-proceed:hover {
-  background: #c2410c;
-  border-color: #c2410c;
+  background: var(--palette-orange-700);
+  border-color: var(--palette-orange-700);
   box-shadow: 0 6px 16px rgba(234, 88, 12, 0.35);
   transform: translateY(-1px);
 }

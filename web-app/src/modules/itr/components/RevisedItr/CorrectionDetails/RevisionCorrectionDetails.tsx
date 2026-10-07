@@ -5,8 +5,8 @@ import type {
   DeductionCorrectionState,
   BankCorrectionState,
   IncomeCorrectionOriginals,
-} from '../../../types/revisedItr.types'
-import { calculateIncomeChange } from '../../../validation/revisedItrValidation'
+} from '@modules/itr/types/revisedItr.types'
+import { calculateIncomeChange } from '@modules/itr/validation/revisedItrValidation'
 import './RevisionCorrectionDetails.css'
 
 export interface RevisionAmountCardProps {

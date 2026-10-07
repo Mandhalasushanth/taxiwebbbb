@@ -11,7 +11,7 @@
   justify-content: space-between;
   gap: 12px;
   padding-bottom: 4px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--subtle-border);
 }
 
 .reg-address-section__title-group {
@@ -23,14 +23,14 @@
 .reg-address-section__title {
   font-size: clamp(0.9375rem, 1vw, 1.0625rem);
   font-weight: 700;
-  color: #083b75;
+  color: var(--primary-navy);
   margin: 0;
   letter-spacing: -0.01em;
 }
 
 .reg-address-section__subtitle {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
 }
 
@@ -39,12 +39,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
+  background-color: var(--palette-red-50);
+  border: 1px solid var(--palette-red-200);
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 0.8125rem;
-  color: #b91c1c;
+  color: var(--palette-red-700);
 }
 
 .reg-address-section__location-error-close {
@@ -52,7 +52,7 @@
   border: none;
   font-size: 1.1rem;
   line-height: 1;
-  color: #991b1b;
+  color: var(--palette-red-800);
   cursor: pointer;
   padding: 0 4px;
 }
@@ -81,12 +81,12 @@
 .reg-pincode-counter {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--muted-text);
   font-variant-numeric: tabular-nums;
 }
 
 .reg-pincode-counter--complete {
-  color: #16a34a;
+  color: var(--success);
 }
 
 .reg-pincode-badge {

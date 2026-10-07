@@ -8,8 +8,8 @@
   display: flex;
   align-items: flex-start;
   gap: 0.875rem;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 16px;
   padding: 1.25rem 1.5rem;
   margin-top: 0.5rem;
@@ -18,12 +18,12 @@
 }
 
 .home-loan-review__declaration:hover {
-  border-color: #cbd5e1;
+  border-color: var(--grey-300);
 }
 
 .home-loan-review__declaration--error {
-  border-color: #ef4444;
-  background-color: #fffaf0;
+  border-color: var(--palette-red-500);
+  background-color: var(--palette-orange-50-fffaf0);
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
 }
 
@@ -31,7 +31,7 @@
   width: 1.25rem;
   height: 1.25rem;
   margin-top: 0.125rem;
-  accent-color: #f97316;
+  accent-color: var(--primary-orange);
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -39,7 +39,7 @@
 .home-loan-review__label {
   font-size: 0.875rem;
   line-height: 1.55;
-  color: #334155;
+  color: var(--grey-700);
   cursor: pointer;
   user-select: none;
 }
@@ -50,7 +50,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  color: #dc2626;
+  color: var(--error);
   font-size: 0.825rem;
   font-weight: 500;
 }

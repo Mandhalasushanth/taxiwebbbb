@@ -150,7 +150,7 @@ export function validateStep3Banking(data: BusinessLoanFormData): LoanStepValida
 }
 
 /**
- * Validates an uploaded document file for type and the 5 MB limit
+ * Validates an uploaded document against the application-wide upload rule (PDF, Excel, JPG or PNG up to 15 MB)
  */
 export function validateDocumentFile(file: File): { isValid: boolean; error?: string } {
   const error = loanDocumentService.validateFile(file)

@@ -1,6 +1,6 @@
 .gst-compliance-page {
   padding: 2rem 2.5rem;
-  background-color: #f8fafc;
+  background-color: var(--palette-slate-50);
   min-height: calc(100vh - 64px);
   box-sizing: border-box;
   font-family: inherit;
@@ -8,7 +8,7 @@
 
 .gst-compliance-wrapper {
   width: 100%;
-  max-width: 100%;
+  max-width: var(--service-page-max-width);
   margin: 0 auto;
 }
 
@@ -20,14 +20,14 @@
 .gst-title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: var(--palette-indigo-950);
   margin: 0 0 0.25rem 0;
   letter-spacing: -0.02em;
 }
 
 .gst-subtitle {
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
 }
 
@@ -58,11 +58,11 @@
   display: flex;
   align-items: flex-start;
   gap: 0.85rem;
-  background-color: #eff6ff;
-  border: 1px solid #bfdbfe;
+  background-color: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-200);
   border-radius: 12px;
   padding: 1.1rem 1.25rem;
-  color: #1e40af;
+  color: var(--palette-blue-800-1e40af);
   font-size: 0.9rem;
   line-height: 1.45;
 }
@@ -76,14 +76,14 @@
 }
 
 .info-banner-text {
-  color: #1e3a8a;
+  color: var(--palette-blue-900-1e3a8a);
   font-weight: 450;
 }
 
 /* Form Card */
 .gst-form-card {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1.75rem 2rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
@@ -100,7 +100,7 @@
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  background-color: #eff6ff;
+  background-color: var(--palette-blue-50);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,13 +110,13 @@
 .card-title {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 0.25rem 0;
 }
 
 .card-subtitle {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
 }
 
@@ -136,11 +136,11 @@
 .form-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .req-asterisk {
-  color: #ef4444;
+  color: var(--palette-red-500);
 }
 
 .form-input,
@@ -148,11 +148,11 @@
   width: 100%;
   height: 48px;
   padding: 0 1rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--grey-300);
   border-radius: 10px;
   font-size: 0.925rem;
-  color: #0f172a;
-  background-color: #ffffff;
+  color: var(--palette-slate-900);
+  background-color: var(--surface);
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   box-sizing: border-box;
@@ -161,11 +161,11 @@
 .form-textarea {
   width: 100%;
   padding: 0.85rem 1rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--grey-300);
   border-radius: 10px;
   font-size: 0.925rem;
-  color: #0f172a;
-  background-color: #ffffff;
+  color: var(--palette-slate-900);
+  background-color: var(--surface);
   outline: none;
   font-family: inherit;
   resize: vertical;
@@ -176,25 +176,25 @@
 .form-input::placeholder,
 .form-select option[value=""],
 .form-textarea::placeholder {
-  color: #94a3b8;
+  color: var(--muted-text);
 }
 
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
-  border-color: #3b82f6;
+  border-color: var(--palette-blue-500);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
 .form-input.has-error,
 .form-select.has-error {
-  border-color: #ef4444;
-  background-color: #fef2f2;
+  border-color: var(--palette-red-500);
+  background-color: var(--palette-red-50);
 }
 
 .form-error {
   font-size: 0.8rem;
-  color: #dc2626;
+  color: var(--error);
   font-weight: 500;
 }
 
@@ -208,13 +208,13 @@
 .recon-section-title {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0.5rem 0 0.25rem 0;
 }
 
 .recon-doc-card {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -224,8 +224,8 @@
 }
 
 .recon-doc-card.has-error {
-  border-color: #fca5a5;
-  background-color: #fff5f5;
+  border-color: var(--palette-red-300);
+  background-color: var(--palette-red-50-fff5f5);
 }
 
 .recon-doc-header {
@@ -243,12 +243,12 @@
 .recon-doc-name {
   font-size: 1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .badge-required {
-  background-color: #fee2e2;
-  color: #dc2626;
+  background-color: var(--palette-red-100-fee2e2);
+  color: var(--error);
   font-size: 0.725rem;
   font-weight: 800;
   padding: 3px 8px;
@@ -274,9 +274,9 @@
 .btn-upload-file-orange {
   height: 44px;
   padding: 0 1.75rem;
-  background: linear-gradient(135deg, #ff5722 0%, #f4511e 100%);
+  background: linear-gradient(135deg, var(--active-tab-orange) 0%, var(--palette-red-500-f4511e) 100%);
   border: none;
-  color: #ffffff;
+  color: var(--surface);
   font-size: 0.95rem;
   font-weight: 600;
   border-radius: 24px;
@@ -291,7 +291,7 @@
 }
 
 .btn-upload-file-orange:hover {
-  background: linear-gradient(135deg, #f4511e 0%, #e64a19 100%);
+  background: linear-gradient(135deg, var(--palette-red-500-f4511e) 0%, var(--palette-red-500-e64a19) 100%);
   box-shadow: 0 6px 18px rgba(255, 87, 34, 0.48);
   transform: translateY(-1px);
 }
@@ -303,8 +303,8 @@
 
 /* Uploaded File Card & Actions (After Upload) */
 .uploaded-file-card {
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background-color: var(--palette-green-50);
+  border: 1px solid var(--palette-green-200);
   border-radius: 12px;
   padding: 0.85rem 1.15rem;
   display: flex;
@@ -326,8 +326,8 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background-color: #22c55e;
-  color: #ffffff;
+  background-color: var(--palette-green-500);
+  color: var(--surface);
   font-size: 0.75rem;
   font-weight: 800;
   display: flex;
@@ -350,7 +350,7 @@
 .uploaded-filename {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -358,7 +358,7 @@
 
 .uploaded-filesize {
   font-size: 0.775rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .uploaded-file-actions {
@@ -383,36 +383,36 @@
 }
 
 .btn-view {
-  background-color: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1d4ed8;
+  background-color: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-200);
+  color: var(--palette-blue-700);
 }
 
 .btn-view:hover {
-  background-color: #dbeafe;
-  border-color: #93c5fd;
+  background-color: var(--palette-blue-100);
+  border-color: var(--palette-blue-300);
 }
 
 .btn-replace {
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
-  color: #334155;
+  background-color: var(--surface);
+  border: 1px solid var(--grey-300);
+  color: var(--grey-700);
 }
 
 .btn-replace:hover {
-  background-color: #f8fafc;
-  border-color: #94a3b8;
+  background-color: var(--palette-slate-50);
+  border-color: var(--muted-text);
 }
 
 .btn-delete {
-  background-color: #fef2f2;
-  border: 1px solid #fca5a5;
-  color: #dc2626;
+  background-color: var(--palette-red-50);
+  border: 1px solid var(--palette-red-300);
+  color: var(--error);
 }
 
 .btn-delete:hover {
-  background-color: #fee2e2;
-  border-color: #f87171;
+  background-color: var(--palette-red-100-fee2e2);
+  border-color: var(--palette-red-400);
 }
 
 
@@ -424,8 +424,8 @@
 .gst-btn-submit-primary {
   width: 100%;
   height: 52px;
-  background-color: #ff6600;
-  color: #ffffff;
+  background-color: var(--palette-orange-500-ff6600);
+  color: var(--surface);
   font-size: 1.05rem;
   font-weight: 700;
   border: none;
@@ -439,11 +439,11 @@
 }
 
 .gst-btn-submit-primary:hover:not(:disabled) {
-  background-color: #ea580c;
+  background-color: var(--palette-orange-600);
 }
 
 .gst-btn-submit-primary:disabled {
-  background-color: #fdba74;
+  background-color: var(--orange-300);
   cursor: not-allowed;
   box-shadow: none;
 }

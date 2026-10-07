@@ -2,7 +2,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin: 0;
+  max-width: var(--service-page-max-width);
+  margin: 0 auto;
   padding: 0.25rem 0 3.5rem 0;
   box-sizing: border-box;
 }

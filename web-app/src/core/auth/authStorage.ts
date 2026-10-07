@@ -4,6 +4,15 @@ import { userRepository } from '../storage/userRepository'
 
 import type { AuthTokens, AuthUser, RegisteredUserRecord } from './authTypes'
 
+/** A registered-user entry as stored (older entries used `profile` instead of `user`) */
+interface StoredRegisteredUser {
+  mobile?: string
+  passcode?: string
+  isRegistered?: boolean
+  user?: RegisteredUserRecord['user']
+  profile?: RegisteredUserRecord['user']
+}
+
 const SCHEMA_VERSION = 'v16_clean_fresh_user_state'
 try {
   if (localStore.get<string>('taxedge.auth_schema') !== SCHEMA_VERSION) {
@@ -86,19 +95,20 @@ export const authStorage = {
   },
 
   getRegisteredUsers(): Record<string, RegisteredUserRecord> {
-    const raw = localStore.get<Record<string, any>>(STORAGE_KEYS.registeredUsers) || {}
-    const result: Record<string, RegisteredUserRecord> = {}
-    for (const [key, val] of Object.entries(raw)) {
-      if (!val) continue
-      const user = val.user || val.profile || { mobile: key }
-      result[key] = {
-        mobile: val.mobile || key,
-        passcode: val.passcode || '',
-        isRegistered: Boolean(val.isRegistered),
-        user,
-      }
-    }
-    return result
+    const raw = localStore.get<Record<string, StoredRegisteredUser | null>>(STORAGE_KEYS.registeredUsers) || {}
+    return Object.fromEntries(
+      Object.entries(raw)
+        .filter((entry): entry is [string, StoredRegisteredUser] => Boolean(entry[1]))
+        .map(([key, val]) => [
+          key,
+          {
+            mobile: val.mobile || key,
+            passcode: val.passcode || '',
+            isRegistered: Boolean(val.isRegistered),
+            user: val.user || val.profile || { mobile: key },
+          } as RegisteredUserRecord,
+        ])
+    )
   },
 
   getRegisteredUser(mobile: string): RegisteredUserRecord | null {

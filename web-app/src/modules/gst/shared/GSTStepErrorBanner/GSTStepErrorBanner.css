@@ -4,10 +4,10 @@
   gap: 0.65rem;
   margin: 1rem 0;
   padding: 0.85rem 1.25rem;
-  border: 1px solid #fecaca;
+  border: 1px solid var(--palette-red-200);
   border-radius: 10px;
-  background: #fef2f2;
-  color: #dc2626;
+  background: var(--palette-red-50);
+  color: var(--error);
   font-size: 0.875rem;
   font-weight: 500;
 }

@@ -58,9 +58,9 @@ describe('revisedItrValidation', () => {
   })
 
   describe('formatFileSize', () => {
-    it('formats bytes, KB, and MB', () => {
-      expect(formatFileSize(500)).toBe('500 B')
-      expect(formatFileSize(2048)).toBe('2.0 KB')
+    it('uses the shared upload size format (whole KB, one-decimal MB)', () => {
+      expect(formatFileSize(500)).toBe('1 KB')
+      expect(formatFileSize(2048)).toBe('2 KB')
       expect(formatFileSize(1572864)).toBe('1.5 MB')
     })
   })

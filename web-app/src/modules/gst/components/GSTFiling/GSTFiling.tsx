@@ -1,6 +1,6 @@
 import { routePaths } from '@core/config'
 import { GST_FEES, withPlatformGst } from '@modules/gst/constants/gstBusiness.constants'
-import { DraftConfirmModal } from '@shared/components'
+import { ServiceDraftModal } from '@shared/saveDraft'
 import { GSTFilingPeriod } from './GSTFilingPeriod/GSTFilingPeriod'
 import { GSTFilingDocuments } from './GSTFilingDocuments/GSTFilingDocuments'
 import { GSTFilingReview } from './GSTFilingReview/GSTFilingReview'
@@ -11,6 +11,7 @@ import { useGSTFilingFlow } from '@modules/gst/hooks/useGSTFilingFlow'
 import './GSTFiling.css'
 
 export const GSTFiling = () => {
+  const flow = useGSTFilingFlow()
   const {
     navigate,
     currentStep,
@@ -21,14 +22,11 @@ export const GSTFiling = () => {
     paymentResult,
     uploadedFiles,
     notApplicableDocs,
-    isModalOpen,
     openModal,
-    handleSaveAndExit,
-    handleDiscardAndExit,
-    handleKeepEditing,
     handleStepClick,
     handleStep1Continue,
     handleStep1Back,
+    handleStep2Back,
     handleStep2Next,
     handleStep3Approve,
     handleStep4Success,
@@ -37,7 +35,7 @@ export const GSTFiling = () => {
     handleToggleNotApplicable,
     isEditMode,
     startEditingFromReview,
-  } = useGSTFilingFlow()
+  } = flow
 
   return (
     <div className="gst-filing-page">
@@ -69,7 +67,7 @@ export const GSTFiling = () => {
           onToggleNotApplicable={handleToggleNotApplicable}
           onStepClick={handleStepClick}
           onSaveDraft={openModal}
-          onBack={() => goToStep(1)}
+          onBack={handleStep2Back}
           onNext={handleStep2Next}
         />
       )}
@@ -127,13 +125,7 @@ export const GSTFiling = () => {
         />
       )}
 
-      <DraftConfirmModal
-        isOpen={isModalOpen}
-        serviceTitle="GST Filing"
-        onSaveAndExit={handleSaveAndExit}
-        onDiscardAndExit={handleDiscardAndExit}
-        onKeepEditing={handleKeepEditing}
-      />
+      <ServiceDraftModal draft={flow} serviceTitle="GST Filing" />
     </div>
   )
 }

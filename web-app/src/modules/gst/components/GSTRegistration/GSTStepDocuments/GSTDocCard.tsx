@@ -1,6 +1,5 @@
 import { useState, type FC, type ReactNode } from 'react'
 import type { DocumentItem } from '@modules/gst/types/gstDocuments.types'
-import { acceptAttributeFor } from '@shared/utils'
 import {
   ADDRESS_PROOF_OPTIONS,
   getGstDocUploadHint,
@@ -24,6 +23,8 @@ interface GSTDocCardProps {
   onTriggerCamera?: (id: string) => void
   onTriggerUpload: (id: string) => void
   onDirectUpload?: (id: string, file: File) => void
+  /** A picked file broke the slot's upload rule */
+  onUploadError?: (id: string, message: string) => void
   onStartReplace: (id: string) => void
   onCancelReplace: () => void
   onDelete: (id: string) => void
@@ -57,6 +58,7 @@ export const GSTDocCard: FC<GSTDocCardProps> = ({
   isReplacing: _isReplacing,
   onTriggerUpload,
   onDirectUpload,
+  onUploadError,
   onStartReplace,
   onDelete,
   onView,
@@ -104,9 +106,10 @@ export const GSTDocCard: FC<GSTDocCardProps> = ({
       isUploaded={doc.isUploaded}
       fileName={doc.fileName}
       file={doc.file || gstUploadedFiles.get(doc.id)}
-      accept={acceptAttributeFor(getGstDocUploadRule(doc.id))}
+      rule={getGstDocUploadRule(doc.id)}
       onUploadClick={handleUploadClick}
       onUpload={handleUploadFile}
+      onUploadError={onUploadError}
       onReplace={handleReplace}
       onRemove={() => onDelete(doc.id)}
       onView={() => onView(doc)}

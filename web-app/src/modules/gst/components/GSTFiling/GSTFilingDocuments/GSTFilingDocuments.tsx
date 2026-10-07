@@ -1,3 +1,4 @@
+import { viewUploadedDocument } from '@shared/upload'
 import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import React, { useState } from 'react'
@@ -249,13 +250,9 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
                   fileSize={fileInfo?.sizeText}
                   onUpload={handleFileUpload}
                   onRemove={handleFileRemove}
-                  onView={() => {
-                    if (fileInfo?.fileUrl) {
-                      window.open(fileInfo.fileUrl, '_blank')
-                    } else {
-                      alert(`Viewing ${fileInfo?.name || item.title}`)
-                    }
-                  }}
+                  onView={(doc) =>
+                    viewUploadedDocument({ id: doc.id, title: item.title, fileName: fileInfo?.name, file: doc.file, fileUrl: fileInfo?.fileUrl })
+                  }
                 />
               )
             })}
@@ -283,7 +280,7 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
         onBack={onBack}
         onNext={handleNext}
         onSaveDraft={onSaveDraft}
-        nextLabel={isEditMode ? 'Update & Review' : 'Continue'}
+        isEditMode={isEditMode}
       />
     </div>
   )

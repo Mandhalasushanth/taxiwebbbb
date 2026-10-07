@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import type { AuthUser } from '@core/auth'
+import { FileInput, PHOTO_UPLOAD_RULE } from '@shared/upload'
 import './ProfileHeader.css'
 
 export interface ProfileHeaderProps {
@@ -40,12 +41,9 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     setAvatarUrl(null)
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const url = URL.createObjectURL(file)
-      setAvatarUrl(url)
-    }
+  /** A JPG or PNG photo up to 15 MB */
+  const handleFileChange = (file: File) => {
+    setAvatarUrl(URL.createObjectURL(file))
   }
 
 
@@ -89,11 +87,10 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 </button>
               </div>
             )}
-            <input 
-              type="file" 
-              accept="image/*" 
-              ref={fileInputRef} 
-              onChange={handleFileChange}
+            <FileInput
+              rule={PHOTO_UPLOAD_RULE}
+              ref={fileInputRef}
+              onFileSelected={handleFileChange}
               className="profile-hero__file-input-hidden"
             />
           </div>

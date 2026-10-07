@@ -68,7 +68,6 @@ export const BusinessDocumentItem: React.FC<BusinessDocumentItemProps> = ({
       isRequired={isRequired && !isOptional}
       badge={optionalBadge}
       icon={cardIcon}
-      accept=".pdf,.jpg,.jpeg,.png"
       isUploaded={isUploaded}
       fileName={uploadedDoc?.name}
       fileSize={uploadedDoc?.size}

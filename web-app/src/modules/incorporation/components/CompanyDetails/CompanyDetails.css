@@ -19,8 +19,8 @@
 }
 
 .company-details-stepbar__badge {
-  background: #0b2546;
-  color: #ffffff;
+  background: var(--palette-sky-800-0b2546);
+  color: var(--surface);
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.25rem 0.65rem;
@@ -32,7 +32,7 @@
 .company-details-stepbar__line {
   flex: 1;
   height: 4px;
-  background: #e2e8f0;
+  background: var(--border);
   border-radius: 9999px;
   position: relative;
   overflow: hidden;
@@ -41,7 +41,7 @@
 .company-details-stepbar__line-fill {
   width: 18.18%;
   height: 100%;
-  background: #f25a22;
+  background: var(--palette-orange-500-f25a22);
   border-radius: 9999px;
 }
 
@@ -62,14 +62,14 @@
   margin: 0;
   font-size: 1.35rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.01em;
 }
 
 .company-details-section__subtitle {
   margin: 0;
   font-size: 0.88rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.45;
 }
 
@@ -83,11 +83,11 @@
 .company-details-label {
   font-size: 0.88rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .company-details-required {
-  color: #ef4444;
+  color: var(--palette-red-500);
 }
 
 /* Chips / Pill Selector */
@@ -98,9 +98,9 @@
 }
 
 .company-details-chip {
-  background: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  color: #334155;
+  background: var(--surface);
+  border: 1.5px solid var(--grey-300);
+  color: var(--grey-700);
   padding: 0.55rem 1.15rem;
   border-radius: 8px;
   font-size: 0.88rem;
@@ -110,33 +110,33 @@
 }
 
 .company-details-chip--active {
-  background: #0b2546;
-  border-color: #0b2546;
-  color: #ffffff;
+  background: var(--palette-sky-800-0b2546);
+  border-color: var(--palette-sky-800-0b2546);
+  color: var(--surface);
 }
 
 /* Inputs */
 .company-details-input {
   width: 100%;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--grey-300);
   border-radius: 10px;
   padding: 0.75rem 1rem;
   font-size: 0.95rem;
-  color: #0f172a;
-  background: #ffffff;
+  color: var(--palette-slate-900);
+  background: var(--surface);
   box-sizing: border-box;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .company-details-input:focus {
   outline: none;
-  border-color: #f25a22;
+  border-color: var(--palette-orange-500-f25a22);
   box-shadow: 0 0 0 3px rgba(242, 90, 34, 0.15);
 }
 
 .company-input--error {
-  border-color: #ef4444 !important;
-  background-color: #fffafb;
+  border-color: var(--palette-red-500) !important;
+  background-color: var(--palette-rose-50);
 }
 
 .company-input--error:focus {
@@ -144,13 +144,13 @@
 }
 
 .company-chips--error .company-details-chip {
-  border-color: #fca5a5;
-  background-color: #fffafb;
+  border-color: var(--palette-red-300);
+  background-color: var(--palette-rose-50);
 }
 
 .company-field-error {
   font-size: 0.76rem;
-  color: #dc2626;
+  color: var(--error);
   font-weight: 500;
   margin-top: 0.35rem;
   line-height: 1.25;
@@ -160,21 +160,21 @@
 .company-details-helper {
   margin: 0;
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.4;
 }
 
 /* Callout Boxes */
 .company-details-info-box {
-  background: #f0f7ff;
-  border: 1px solid #d0e3ff;
+  background: var(--palette-sky-50-f0f7ff);
+  border: 1px solid var(--palette-blue-100-d0e3ff);
   border-radius: 12px;
   padding: 0.85rem 1.15rem;
   display: flex;
   align-items: center;
   gap: 0.65rem;
   font-size: 0.85rem;
-  color: #1e3a8a;
+  color: var(--palette-blue-900-1e3a8a);
   line-height: 1.45;
 }
 
@@ -183,8 +183,8 @@
 }
 
 .company-details-success-box {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background: var(--palette-green-50);
+  border: 1px solid var(--palette-green-200);
   border-radius: 12px;
   padding: 1rem 1.15rem;
   display: flex;
@@ -202,22 +202,22 @@
   margin: 0 0 0.2rem 0;
   font-size: 0.9rem;
   font-weight: 700;
-  color: #166534;
+  color: var(--palette-green-800);
 }
 
 .company-details-success-box__desc {
   margin: 0;
   font-size: 0.82rem;
-  color: #15803d;
+  color: var(--palette-green-700);
   line-height: 1.4;
 }
 
 /* Suffix Badge */
 .company-details-suffix-badge {
   align-self: flex-start;
-  background: #e0edff;
-  color: #0b2546;
-  border: 1px solid #bfdbfe;
+  background: var(--palette-sky-100-e0edff);
+  color: var(--palette-sky-800-0b2546);
+  border: 1px solid var(--palette-blue-200);
   padding: 0.4rem 0.85rem;
   border-radius: 8px;
   font-size: 0.85rem;
@@ -230,14 +230,14 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 1rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border);
   gap: 1rem;
 }
 
 .company-details-btn-back {
-  background: #f1f5f9;
-  color: #334155;
-  border: 1px solid #e2e8f0;
+  background: var(--subtle-border);
+  color: var(--grey-700);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 0.75rem 1.75rem;
   font-size: 0.95rem;
@@ -247,13 +247,13 @@
 }
 
 .company-details-btn-back:hover {
-  background: #e2e8f0;
-  color: #0f172a;
+  background: var(--border);
+  color: var(--palette-slate-900);
 }
 
 .company-details-btn-continue {
-  background: #f25a22;
-  color: #ffffff;
+  background: var(--palette-orange-500-f25a22);
+  color: var(--surface);
   border: none;
   border-radius: 10px;
   padding: 0.8rem 2.25rem;
@@ -265,7 +265,7 @@
 }
 
 .company-details-btn-continue:hover {
-  background: #e04b15;
+  background: var(--palette-orange-500-e04b15);
   transform: translateY(-1px);
 }
 

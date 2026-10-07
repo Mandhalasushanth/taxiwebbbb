@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config/routePaths'
-import { TdsIcons } from '../../../utils/tdsRefund.constants'
+import { TdsIcons } from '@modules/itr/utils/tdsRefund.constants'
 import { TdsRefundProgressTracker } from '../TdsRefundOverview'
 import './TdsRefundStatus.css'
 
@@ -51,7 +51,6 @@ export const TdsRefundStatus: React.FC<TdsRefundStatusProps> = ({
   applicationId = 'TDS-2026-59303',
   appliedDate,
   assessmentYear = '2025-26',
-  onBack,
   onBackToDashboard,
   onContactSupport,
 }) => {

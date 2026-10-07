@@ -60,7 +60,6 @@ export const GSTComplianceNoticeFields: React.FC<GSTComplianceNoticeFieldsProps>
           label="Upload Notice Document"
           file={noticeFile}
           hasError={!!errors.noticeFile}
-          accept=".pdf,.jpg,.jpeg,.png"
           onFileSelect={(f) => {
             setNoticeFile(f)
             clearErr('noticeFile')

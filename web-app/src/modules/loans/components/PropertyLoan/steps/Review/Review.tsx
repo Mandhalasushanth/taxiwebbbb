@@ -262,7 +262,7 @@ export const Review: React.FC<PropertyLoanReviewProps> = ({
             const label = DOCUMENT_TITLES[key] || (uploadedDocs[key] as { name?: string })?.name || key
             return (
               <span key={key} className="property-review-doc-pill">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2" width="14" height="14" aria-hidden="true" style={{ flexShrink: 0 }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2" width="14" height="14" aria-hidden="true" className="property-review-doc-pill__icon">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                   <polyline points="14 2 14 8 20 8" />
                 </svg>
@@ -271,7 +271,7 @@ export const Review: React.FC<PropertyLoanReviewProps> = ({
             )
           })
         ) : (
-          <span className="property-review-docs-empty" style={{ fontSize: '0.875rem', color: '#64748b' }}>
+          <span className="property-review-docs-empty">
             No documents uploaded yet.
           </span>
         )}

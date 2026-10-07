@@ -70,6 +70,8 @@ export const ItrReviewTaxSummaryCard: React.FC<ItrReviewTaxSummaryCardProps> = (
 
 export interface ItrReviewSubmissionViewProps {
   onBack: () => void
+  /** "Edit" on a review section: opens that step in edit mode */
+  onEditStep?: (step: number) => void
   onSubmit: () => void
   onSaveDraft?: () => void
   assessmentYear: AssessmentYearOption
@@ -99,7 +101,7 @@ const resolveApplicableFormLabel = (selectedSources: string[], reportingMethod?:
 }
 
 export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = ({
-  onBack, onSubmit, onSaveDraft, assessmentYear, residentialStatus, filingType, selectedBank,
+  onBack, onEditStep, onSubmit, onSaveDraft, assessmentYear, residentialStatus, filingType, selectedBank,
   salaryDetails, housePropertyDetails, businessDetails, capitalGainsDetails, otherSourcesDetails,
   selectedSources = [], selectedRegime, deductions, uploadedDocs, isSubmitting = false,
 }) => {
@@ -149,7 +151,7 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
           otherSourcesDetails={otherSourcesDetails}
           selectedSources={selectedSources}
           tdsCredits={taxResult.tdsCredits}
-          onEdit={onBack}
+          onEdit={onEditStep ?? (() => onBack())}
         />
         <ItrReviewTaxSummaryCard selectedRegime={selectedRegime} grossTotalIncome={taxResult.grossTotalIncome} stdDeduction={taxResult.stdDeduction} totalChapterVIDeductions={taxResult.totalChapterVIDeductions} netTaxableIncome={taxResult.netTaxableIncome} grossTax={taxResult.grossTax} cess={taxResult.cess} totalTaxLiability={taxResult.totalTaxLiability} tdsCredits={taxResult.tdsCredits} netTaxPayable={taxResult.netTaxPayable} refundDue={taxResult.refundDue} />
       </div>

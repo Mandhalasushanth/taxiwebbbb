@@ -8,8 +8,8 @@
   grid-template-columns: 1fr 360px;
   gap: 2rem;
   width: 100%;
-  max-width: 1140px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   align-items: start;
   box-sizing: border-box;
 }
@@ -35,21 +35,21 @@
 
 /* Trust & Security Banner */
 .gst-payment-trust-banner {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background: var(--palette-green-50);
+  border: 1px solid var(--palette-green-200);
   border-radius: 14px;
   padding: 14px 18px;
   display: flex;
   align-items: center;
   gap: 14px;
-  color: #166534;
+  color: var(--palette-green-800);
   box-sizing: border-box;
 }
 
 .gst-payment-trust-icon {
   width: 28px;
   height: 28px;
-  color: #15803d;
+  color: var(--palette-green-700);
   flex-shrink: 0;
 }
 
@@ -62,12 +62,12 @@
 .gst-payment-trust-text strong {
   font-size: 0.88rem;
   font-weight: 700;
-  color: #14532d;
+  color: var(--palette-green-900);
 }
 
 .gst-payment-trust-text span {
   font-size: 0.78rem;
-  color: #166534;
+  color: var(--palette-green-800);
   line-height: 1.35;
 }
 
@@ -86,9 +86,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background-color: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  color: #0f172a;
+  background-color: var(--surface);
+  border: 1.5px solid var(--grey-300);
+  color: var(--palette-slate-900);
   border-radius: 9999px;
   padding: 0.65rem 1.65rem;
   font-size: 0.92rem;
@@ -98,9 +98,9 @@
 }
 
 .gst-payment-btn-back:hover:not(:disabled) {
-  background-color: #f8fafc;
-  border-color: #94a3b8;
-  color: #0f172a;
+  background-color: var(--palette-slate-50);
+  border-color: var(--muted-text);
+  color: var(--palette-slate-900);
   transform: translateY(-1px);
 }
 
@@ -108,9 +108,9 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-  border: 1.5px solid #ea580c;
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--primary-orange) 0%, var(--palette-orange-600) 100%);
+  border: 1.5px solid var(--palette-orange-600);
+  color: var(--surface);
   border-radius: 9999px;
   padding: 12px 36px;
   font-size: 0.98rem;
@@ -121,8 +121,8 @@
 }
 
 .gst-payment-btn-pay:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
-  border-color: #c2410c;
+  background: linear-gradient(135deg, var(--palette-orange-600) 0%, var(--palette-orange-700) 100%);
+  border-color: var(--palette-orange-700);
   box-shadow: 0 6px 18px rgba(234, 88, 12, 0.42);
   transform: translateY(-1px);
 }
@@ -143,7 +143,7 @@
 .gst-payment-gateway-note {
   margin: 0.85rem 0 0 0;
   font-size: 0.78rem;
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--secondary-text));
   text-align: center;
   line-height: 1.4;
 }
@@ -152,8 +152,8 @@
 
 /* Trust & Guarantee Card in Sidebar */
 .gst-payment-guarantee-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 16px 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
@@ -167,9 +167,9 @@
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.06em;
-  color: #0369a1;
-  background: #f0f9ff;
-  border: 1px solid #bae6fd;
+  color: var(--palette-sky-700);
+  background: var(--palette-sky-50-f0f9ff);
+  border: 1px solid var(--palette-sky-200);
   padding: 4px 10px;
   border-radius: 9999px;
   display: inline-block;
@@ -191,12 +191,12 @@
   gap: 10px;
   font-size: 0.82rem;
   font-weight: 500;
-  color: #334155;
+  color: var(--grey-700);
   line-height: 1.35;
 }
 
 .gst-payment-guarantee-check {
-  color: #10b981;
+  color: var(--palette-emerald-500);
   font-weight: 800;
   font-size: 0.88rem;
   flex-shrink: 0;

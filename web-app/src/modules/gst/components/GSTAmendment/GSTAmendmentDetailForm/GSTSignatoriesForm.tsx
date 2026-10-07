@@ -1,11 +1,11 @@
-import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
-import { GSTUpdateAndReviewButton } from '@modules/gst/shared/edit/GSTUpdateAndReviewButton'
-import { GST_FILE_MESSAGES, gstFileSizeError } from '@modules/gst/utils/gstFile'
+import { SaveDraftButton } from '@shared/saveDraft'
+import { UpdateAndReviewButton } from '@shared/edit'
+import { GST_FILE_MESSAGES } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
-import React, { useState, useEffect, useRef, type ChangeEvent, type FormEvent } from 'react'
+import React, { useState, useEffect, useRef, type FormEvent } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
-import GSTAmendmentProofUpload from './GSTAmendmentProofUpload'
+import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
 import './GSTSignatoriesForm.css'
 
 interface GSTSignatoriesFormProps {
@@ -91,18 +91,11 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
 
   const dateRef = useRef<HTMLInputElement>(null)
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      const sizeError = gstFileSizeError(file)
-      if (sizeError) {
-        setErrors((prev) => ({ ...prev, file: sizeError }))
-        return
-      }
-      setSelectedFile(file)
-      setRemovedInitialFile(false)
-      setErrors((prev) => ({ ...prev, file: '' }))
-    }
+  // Type, size and content are already checked by the shared upload rule
+  const handleFileChange = (file: File) => {
+    setSelectedFile(file)
+    setRemovedInitialFile(false)
+    setErrors((prev) => ({ ...prev, file: '' }))
   }
 
   const handleCalendarClick = () => {
@@ -298,14 +291,13 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
             </div>
 
             {/* Card 3: Supporting proof */}
-            <GSTAmendmentProofUpload
+            <GSTProofUpload
               selectedFile={selectedFile}
               existingFileName={!selectedFile ? effectiveFileName : undefined}
               existingFileSize={initialFileSize}
               error={errors.file}
-              onFileChange={handleFileChange}
-              onRemoveFile={(e) => {
-                e.stopPropagation()
+              onFileSelect={handleFileChange}
+              onRemoveFile={() => {
                 setSelectedFile(null)
                 setRemovedInitialFile(true)
               }}
@@ -319,9 +311,9 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
                 </svg>
                 Back
               </button>
-              <div className="gst-actions-group">
+              <div className="form-actions-group">
                 {onSaveDraft && (
-                  <GSTSaveDraftButton
+                  <SaveDraftButton
                     onClick={() => {
                       const formattedNewValue = `${name.trim()} (${designation.trim()}) · PAN: ${pan.toUpperCase().trim()}`
                       onSaveDraft({
@@ -342,10 +334,9 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
                   />
                 )}
                 {isEditMode ? (
-                  <GSTUpdateAndReviewButton
+                  <UpdateAndReviewButton
                     type="submit"
                     isSubmitting={isSubmitting}
-                    label="Update & Review"
                   />
                 ) : (
                   <button type="submit" disabled={isSubmitting} className="gst-amend-submit-orange-btn">

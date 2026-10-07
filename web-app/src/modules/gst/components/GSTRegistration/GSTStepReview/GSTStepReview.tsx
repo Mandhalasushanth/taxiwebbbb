@@ -15,6 +15,7 @@ import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
 import type { DocPreviewState } from '@modules/gst/types/gstDocuments.types'
 import { StepActionBar } from '@shared/components'
 import './GSTStepReview.css'
+import { errorTracker } from '@core/errors'
 
 export const GSTStepReview: FC<GSTStepReviewProps> = ({
   businessData,
@@ -67,7 +68,7 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
         }
         return
       } catch (e) {
-        console.warn('Could not open document in new window:', e)
+        errorTracker.captureException(e, { tags: { area: 'gst-review-preview' } })
       }
     }
     try {
@@ -203,7 +204,7 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
       />
 
       {/* 4. Uploaded Documents Section */}
-      <GSTReviewDocsList documents={documents} onViewDoc={handleViewDoc} />
+      <GSTReviewDocsList documents={documents} onViewDoc={handleViewDoc} onEdit={() => onEdit('documents')} />
 
       {/* 5. Declaration Checkbox Card */}
       <GSTReviewDeclaration

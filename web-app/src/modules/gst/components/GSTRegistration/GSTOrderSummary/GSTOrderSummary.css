@@ -5,8 +5,8 @@
 }
 
 .gst-order-card {
-  background-color: var(--color-surface, #ffffff);
-  border: 1px solid var(--color-border, #e2e8f0);
+  background-color: var(--color-surface, var(--surface));
+  border: 1px solid var(--color-border, var(--border));
   border-radius: var(--radius-lg, 16px);
   padding: 1.25rem 1.5rem;
   box-shadow: var(--shadow-sm);
@@ -16,7 +16,7 @@
   margin: 0 0 1rem 0;
   font-size: 1.05rem;
   font-weight: var(--font-weight-bold, 700);
-  color: var(--color-text, #172033);
+  color: var(--color-text, var(--primary-text));
 }
 
 .gst-order-card__table {
@@ -33,28 +33,28 @@
 }
 
 .gst-order-card__label {
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--secondary-text));
 }
 
 .gst-order-card__value {
   font-weight: var(--font-weight-semibold, 600);
-  color: var(--color-text, #172033);
+  color: var(--color-text, var(--primary-text));
 }
 
 .gst-order-card__value--verified {
-  color: var(--taxedge-success-feature, #059669);
+  color: var(--taxedge-success-feature, var(--feature-success));
 }
 
 .gst-order-card__value--progress {
-  color: var(--taxedge-orange, #f97316);
+  color: var(--taxedge-orange, var(--primary-orange));
 }
 
 .gst-order-card__value--rejected {
-  color: var(--taxedge-error, #dc2626);
+  color: var(--taxedge-error, var(--error));
 }
 
 .gst-order-card__divider {
-  border-top: 1px dashed var(--color-border, #e2e8f0);
+  border-top: 1px dashed var(--color-border, var(--border));
   margin: 0.25rem 0;
 }
 
@@ -65,13 +65,13 @@
 
 .gst-order-card__total-label {
   font-weight: var(--font-weight-bold, 700);
-  color: var(--color-text, #172033);
+  color: var(--color-text, var(--primary-text));
 }
 
 .gst-order-card__total-amount {
   font-size: 1.35rem;
   font-weight: var(--font-weight-bold, 700);
-  color: var(--taxedge-navy, #083b75);
+  color: var(--taxedge-navy, var(--primary-navy));
 }
 
 .gst-order-card__delivery {
@@ -80,27 +80,27 @@
   gap: var(--space-2);
   margin-top: 1.25rem;
   padding-top: 0.85rem;
-  border-top: 1px solid var(--grey-100, #f1f5f9);
+  border-top: 1px solid var(--grey-100, var(--subtle-border));
   font-size: 0.84rem;
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--secondary-text));
 }
 
 .gst-order-card__clock-icon {
   width: 15px;
   height: 15px;
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--secondary-text));
 }
 
 /* Callout cards */
 .gst-order-callout {
-  background-color: var(--taxedge-light-blue, #eaf1fe);
+  background-color: var(--taxedge-light-blue, var(--light-blue));
   border: 1px solid rgba(11, 94, 215, 0.18);
   border-radius: var(--radius-lg, 16px);
   padding: 1.15rem 1.25rem;
 }
 
 .gst-order-callout--security {
-  background-color: #ecfdf5;
+  background-color: var(--palette-emerald-50);
   border-color: rgba(5, 150, 105, 0.2);
 }
 
@@ -114,18 +114,18 @@
 .gst-order-callout__shield-icon {
   width: 15px;
   height: 15px;
-  color: var(--taxedge-success-feature, #059669);
+  color: var(--taxedge-success-feature, var(--feature-success));
 }
 
 .gst-order-callout__title {
   margin: 0 0 0.35rem 0;
   font-size: 0.9rem;
   font-weight: var(--font-weight-bold, 700);
-  color: var(--taxedge-navy, #083b75);
+  color: var(--taxedge-navy, var(--primary-navy));
 }
 
 .gst-order-callout--security .gst-order-callout__title {
-  color: #065f46;
+  color: var(--palette-emerald-800);
   margin-bottom: 0;
 }
 
@@ -133,9 +133,9 @@
   margin: 0;
   font-size: 0.825rem;
   line-height: 1.45;
-  color: var(--color-text, #172033);
+  color: var(--color-text, var(--primary-text));
 }
 
 .gst-order-callout--security .gst-order-callout__body {
-  color: #047857;
+  color: var(--palette-emerald-700);
 }

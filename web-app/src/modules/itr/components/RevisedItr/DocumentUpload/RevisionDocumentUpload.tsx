@@ -1,7 +1,7 @@
 import React from 'react'
 import { DocumentCard } from '@shared/components'
-import { viewItrDocument } from '../../../shared'
-import type { DocumentTypeId, RevisionReasonKey, UploadedDocument } from '../../../types/revisedItr.types'
+import { viewUploadedDocument } from '@shared/upload'
+import type { DocumentTypeId, RevisionReasonKey, UploadedDocument } from '@modules/itr/types/revisedItr.types'
 import { CreditCard as PanCardIcon, Fingerprint as FingerprintIcon, FileText as IconFileText, Landmark as BankIcon, Briefcase as IconBriefcase } from 'lucide-react'
 import './RevisionDocumentUpload.css'
 
@@ -111,7 +111,7 @@ export const RevisionDocumentUpload: React.FC<RevisionDocumentUploadProps> = ({
               fileName={doc?.fileName || doc?.file?.name}
               file={doc?.file}
               onView={(d) => {
-                viewItrDocument({
+                viewUploadedDocument({
                   id: d.id,
                   title: d.title,
                   fileName: d.fileName || doc?.fileName || doc?.file?.name,

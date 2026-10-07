@@ -1,5 +1,6 @@
 import React from 'react'
-import { StepActionBar, PaymentCheckout, DraftConfirmModal } from '@shared/components'
+import { StepActionBar, PaymentCheckout } from '@shared/components'
+import { ServiceDraftModal } from '@shared/saveDraft'
 import { useRevisedItr } from '../../hooks/useRevisedItr'
 import { FindOriginalReturn } from './FindOriginalReturn'
 import { ReasonForRevision } from './ReasonForRevision'
@@ -10,6 +11,7 @@ import { RevisionApplicationReceived } from './ApplicationReceived'
 import './RevisedItr.css'
 
 export const RevisedItr: React.FC = () => {
+  const flow = useRevisedItr()
   const {
     step,
     showPayment,
@@ -44,13 +46,10 @@ export const RevisedItr: React.FC = () => {
     handleContinue,
     handlePaymentSuccess,
     handleDownloadReceipt,
-    goToStep,
-    isModalOpen,
+    editStep,
+    isEditMode,
     openModal,
-    handleSaveAndExit,
-    handleDiscardAndExit,
-    handleKeepEditing,
-  } = useRevisedItr()
+  } = flow
 
   const originalAmounts = {
     salaryOriginal: returnDetails?.salaryOriginal ?? 812400,
@@ -124,7 +123,7 @@ export const RevisedItr: React.FC = () => {
         bankCorrections={bankCorrections}
         otherReasonText={otherReasonText}
         uploadedDocuments={uploadedDocuments}
-        onEditStep={goToStep}
+        onEditStep={editStep}
       />
     ),
   }
@@ -165,6 +164,7 @@ export const RevisedItr: React.FC = () => {
             onSaveDraft={openModal}
             backLabel="Back"
             nextLabel="Continue"
+            isEditMode={isEditMode}
             isSubmitting={isLoading}
           />
         </>
@@ -177,13 +177,7 @@ export const RevisedItr: React.FC = () => {
   return (
     <div className="revised-itr-page">
       <div className="revised-itr-content-area">{renderActiveContent()}</div>
-      <DraftConfirmModal
-        isOpen={isModalOpen}
-        serviceTitle="Revised ITR Filing"
-        onSaveAndExit={handleSaveAndExit}
-        onDiscardAndExit={handleDiscardAndExit}
-        onKeepEditing={handleKeepEditing}
-      />
+      <ServiceDraftModal draft={flow} serviceTitle="Revised ITR Filing" />
     </div>
   )
 }

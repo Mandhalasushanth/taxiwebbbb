@@ -3,23 +3,23 @@
    ========================================================================== */
 
 :root {
-  --gst-doc-orange: #f97316;
-  --gst-doc-orange-hover: #ea580c;
-  --gst-doc-peach-bg: #fff7ed;
-  --gst-doc-peach-border: #fed7aa;
+  --gst-doc-orange: var(--primary-orange);
+  --gst-doc-orange-hover: var(--palette-orange-600);
+  --gst-doc-peach-bg: var(--palette-orange-50);
+  --gst-doc-peach-border: var(--orange-200);
   --gst-doc-orange-glow: rgba(249, 115, 22, 0.35);
-  --gst-doc-border: #e2e8f0;
-  --gst-doc-border-hover: #cbd5e1;
-  --gst-doc-text-main: #0f172a;
-  --gst-doc-text-muted: #64748b;
-  --gst-doc-card-bg: #ffffff;
+  --gst-doc-border: var(--border);
+  --gst-doc-border-hover: var(--grey-300);
+  --gst-doc-text-main: var(--palette-slate-900);
+  --gst-doc-text-muted: var(--secondary-text);
+  --gst-doc-card-bg: var(--surface);
   --gst-doc-radius: 12px;
 }
 
 .gst-docs-page {
   width: 100%;
-  max-width: 960px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   box-sizing: border-box;
   font-family: inherit;
 }
@@ -37,7 +37,7 @@
   margin: 0 0 0.85rem 0;
   font-size: 0.78rem;
   font-weight: 800;
-  color: #475569;
+  color: var(--palette-slate-600);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -54,8 +54,8 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background-color: #eff6ff;
-  border: 1px solid #dbeafe;
+  background-color: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-100);
   border-radius: 8px;
   padding: 0.75rem 1.25rem;
   margin-bottom: 1.5rem;
@@ -71,7 +71,7 @@
 .gst-docs-security-text {
   margin: 0;
   font-size: 0.8125rem;
-  color: #1e40af;
+  color: var(--palette-blue-800-1e40af);
   font-weight: 500;
   line-height: 1.4;
 }
@@ -90,9 +90,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background-color: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  color: #0f172a;
+  background-color: var(--surface);
+  border: 1.5px solid var(--grey-300);
+  color: var(--palette-slate-900);
   font-size: 0.92rem;
   font-weight: 700;
   padding: 0.65rem 1.65rem;
@@ -102,17 +102,17 @@
 }
 
 .gst-docs-btn-back:hover {
-  background-color: #f8fafc;
-  border-color: #94a3b8;
-  color: #0f172a;
+  background-color: var(--palette-slate-50);
+  border-color: var(--muted-text);
+  color: var(--palette-slate-900);
   transform: translateY(-1px);
 }
 
 .gst-docs-action-bar .gst-docs-btn-continue,
 .gst-docs-btn-continue {
-  background-color: #f97316;
-  border: 1.5px solid #f97316;
-  color: #ffffff;
+  background-color: var(--primary-orange);
+  border: 1.5px solid var(--primary-orange);
+  color: var(--surface);
   font-size: 0.875rem;
   font-weight: 600;
   padding: 0.65rem 1.85rem;
@@ -127,8 +127,8 @@
 
 .gst-docs-action-bar .gst-docs-btn-continue:hover,
 .gst-docs-btn-continue:hover {
-  background-color: #ea580c;
-  border-color: #ea580c;
+  background-color: var(--palette-orange-600);
+  border-color: var(--palette-orange-600);
   box-shadow: 0 4px 16px rgba(249, 115, 22, 0.45);
 }
 
@@ -141,12 +141,12 @@
 .gst-doc-modal__title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--gst-doc-text-main, #0f172a);
+  color: var(--gst-doc-text-main, var(--palette-slate-900));
 }
 
 .gst-doc-modal__filename {
   font-size: 0.775rem;
-  color: var(--gst-doc-text-muted, #64748b);
+  color: var(--gst-doc-text-muted, var(--secondary-text));
   font-weight: 400;
   margin-top: 0.15rem;
 }
@@ -164,18 +164,18 @@
   margin: 0;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #334155;
+  color: var(--grey-700);
 }
 
 .gst-doc-modal__preview-sub {
   font-size: 0.775rem;
-  color: #94a3b8;
+  color: var(--muted-text);
 }
 
 .gst-doc-modal__btn-secondary {
-  background-color: #f1f5f9;
+  background-color: var(--subtle-border);
   border: none;
-  color: #334155;
+  color: var(--grey-700);
   font-size: 0.8125rem;
   font-weight: 600;
   padding: 0.45rem 1rem;
@@ -184,7 +184,7 @@
 }
 
 .gst-doc-modal__btn-secondary:hover {
-  background-color: #e2e8f0;
+  background-color: var(--border);
 }
 
 
@@ -196,8 +196,8 @@
   width: 100%;
   min-height: 320px;
   max-height: 70vh;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--palette-slate-50);
+  border: 1px solid var(--border);
   border-radius: 12px;
   overflow: auto;
 }

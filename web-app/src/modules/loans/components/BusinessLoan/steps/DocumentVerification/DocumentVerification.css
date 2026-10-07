@@ -32,8 +32,8 @@
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: #fff7ed;
-  color: #ea580c;
+  background: var(--palette-orange-50);
+  color: var(--palette-orange-600);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,14 +49,14 @@
 .doc-verification-title {
   font-size: 1.25rem;
   font-weight: 800;
-  color: #041d3e;
+  color: var(--palette-sky-900-041d3e);
   margin: 0;
   letter-spacing: -0.01em;
 }
 
 .doc-verification-subtitle {
   font-size: 0.88rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0.2rem 0 0 0;
   line-height: 1.4;
 }
@@ -66,8 +66,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
+  background: var(--palette-orange-50);
+  border: 1px solid var(--orange-200);
   border-radius: 12px;
   padding: 0.65rem 1.15rem;
   flex-shrink: 0;
@@ -86,14 +86,14 @@
 .doc-verification-info-line1 {
   font-size: 0.8125rem;
   font-weight: 700;
-  color: #9a3412;
+  color: var(--orange-800);
   line-height: 1.25;
 }
 
 .doc-verification-info-line2 {
   font-size: 0.75rem;
   font-weight: 500;
-  color: #b45309;
+  color: var(--palette-amber-700);
   line-height: 1.2;
 }
 
@@ -102,9 +102,9 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #b91c1c;
+  background: var(--palette-red-50);
+  border: 1px solid var(--palette-red-200);
+  color: var(--palette-red-700);
   padding: 0.75rem 1rem;
   border-radius: 10px;
   font-size: 0.875rem;
@@ -133,8 +133,8 @@
 /* Styling override for DocumentCard inside Business Loan: Full Width & Fluid Content */
 .business-loan-doc-card.supporting-doc-item {
   width: 100%;
-  background: #ffffff;
-  border: 1.5px solid #edf2f7;
+  background: var(--surface);
+  border: 1.5px solid var(--palette-sky-100);
   border-radius: 16px;
   padding: clamp(0.95rem, 1.5vw, 1.25rem) clamp(1rem, 2vw, 1.5rem);
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
@@ -143,7 +143,7 @@
 }
 
 .business-loan-doc-card.supporting-doc-item:hover {
-  border-color: #cbd5e1;
+  border-color: var(--grey-300);
   box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
 }
 
@@ -175,28 +175,28 @@
 
 /* External CSS Theme Colors for Icon Tiles */
 .business-loan-doc-card--blue .supporting-doc-item__icon-box {
-  background-color: #eff6ff;
-  color: #2563eb;
+  background-color: var(--palette-blue-50);
+  color: var(--palette-blue-600);
 }
 
 .business-loan-doc-card--purple .supporting-doc-item__icon-box {
-  background-color: #f5f3ff;
-  color: #9333ea;
+  background-color: var(--palette-violet-50);
+  color: var(--palette-purple-600);
 }
 
 .business-loan-doc-card--green .supporting-doc-item__icon-box {
-  background-color: #ecfdf5;
-  color: #16a34a;
+  background-color: var(--palette-emerald-50);
+  color: var(--success);
 }
 
 .business-loan-doc-card--pink .supporting-doc-item__icon-box {
-  background-color: #fdf2f8;
-  color: #db2777;
+  background-color: var(--palette-pink-50);
+  color: var(--palette-pink-600);
 }
 
 .business-loan-doc-card--orange .supporting-doc-item__icon-box {
-  background-color: #fff7ed;
-  color: #ea580c;
+  background-color: var(--palette-orange-50);
+  color: var(--palette-orange-600);
 }
 
 .business-loan-doc-card .supporting-doc-item__meta {
@@ -209,13 +209,13 @@
 .business-loan-doc-card .supporting-doc-item__title {
   font-size: clamp(0.9rem, 1.15vw, 1.025rem);
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   line-height: 1.35;
 }
 
 .business-loan-doc-card .supporting-doc-item__subtitle {
   font-size: clamp(0.78rem, 0.9vw, 0.85rem);
-  color: #64748b;
+  color: var(--secondary-text);
   margin-top: 1px;
   white-space: normal;
   line-height: 1.4;
@@ -225,14 +225,14 @@
 
 .business-loan-doc-card .supporting-doc-item__filename {
   font-size: clamp(0.75rem, 0.85vw, 0.82rem);
-  color: #475569;
+  color: var(--palette-slate-600);
 }
 
 /* Lavender Cloud Upload Button (shared loan style): Fluid sizing */
 .business-loan-doc-card .supporting-doc-item__upload-btn {
-  background: #eef0fc;
-  color: #2b2a86;
-  border: 1.5px solid #c9ccf1;
+  background: var(--palette-blue-50-eef0fc);
+  color: var(--palette-indigo-700);
+  border: 1.5px solid var(--palette-indigo-100-c9ccf1);
   border-radius: 9999px;
   padding: clamp(0.42rem, 0.8vw, 0.52rem) clamp(1rem, 1.6vw, 1.35rem);
   font-size: clamp(0.8rem, 0.92vw, 0.875rem);
@@ -248,16 +248,16 @@
 }
 
 .business-loan-doc-card .supporting-doc-item__upload-btn:hover {
-  background: #e3e6fa;
-  border-color: #a9aee8;
-  color: #1f1e6e;
+  background: var(--palette-blue-100-e3e6fa);
+  border-color: var(--palette-indigo-200-a9aee8);
+  color: var(--palette-indigo-700-1f1e6e);
   box-shadow: 0 4px 12px rgba(43, 42, 134, 0.12);
   transform: translateY(-1px);
 }
 
 .business-loan-doc-card .supporting-doc-item__upload-btn:active {
   transform: translateY(0);
-  background: #d8dcf7;
+  background: var(--palette-blue-100-d8dcf7);
 }
 
 /* Optional Badge for Udyam Registration Certificate */
@@ -268,22 +268,22 @@
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 6px;
-  background-color: #e0f2fe;
-  color: #0284c7;
-  border: 1px solid #bae6fd;
+  background-color: var(--palette-sky-100-e0f2fe);
+  color: var(--palette-sky-600);
+  border: 1px solid var(--palette-sky-200);
 }
 
 /* Error card state */
 .business-loan-doc-card.business-doc-card--error {
-  border-color: #ef4444 !important;
-  background-color: #fffbfb !important;
-  box-shadow: 0 0 0 1px #ef4444, 0 2px 8px rgba(239, 68, 68, 0.08) !important;
+  border-color: var(--palette-red-500) !important;
+  background-color: var(--palette-red-50-fffbfb) !important;
+  box-shadow: 0 0 0 1px var(--palette-red-500), 0 2px 8px rgba(239, 68, 68, 0.08) !important;
 }
 
 .business-doc-card-error-text {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #ef4444;
+  color: var(--palette-red-500);
   margin-top: 4px;
 }
 

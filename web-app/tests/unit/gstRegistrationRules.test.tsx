@@ -8,18 +8,12 @@ import { RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { authStorage } from '../../src/core/auth'
 import { localStore } from '../../src/core/storage/localStorage'
 import { userStorage } from '../../src/core/storage/userStorage'
-import {
-  getStatesForPincode,
-  validateCommencementDate,
-  validatePincodeMatchesState,
-  validateUploadFile,
-  DOCUMENT_UPLOAD_RULE,
-  PHOTO_UPLOAD_RULE,
-} from '../../src/shared/utils'
+import { getStatesForPincode, validateCommencementDate, validatePincodeMatchesState } from '../../src/shared/utils'
+import { validateUploadFile, DOCUMENT_UPLOAD_RULE, PHOTO_UPLOAD_RULE } from '../../src/shared/upload'
 import { validateGstBusinessForm } from '../../src/modules/gst/validation/gstStepBusiness.validator'
 import { validateBusinessPan, getCompositionConflicts } from '../../src/modules/gst/validation/gstBusinessRules'
 import { gstInput } from '../../src/modules/gst/utils/gstInputFormatters'
-import { useGstDraft, readGstDraft } from '../../src/modules/gst/hooks/useGstDraft'
+import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '../../src/shared/saveDraft'
 import { useGstRegistrationState } from '../../src/modules/gst/hooks/useGstRegistrationState'
 import type { GstBusinessFormData } from '../../src/modules/gst/types/gstBusiness.types'
 import { INITIAL_DOCUMENTS } from '../../src/modules/gst/utils/gstDocuments.constants'
@@ -151,12 +145,21 @@ const fileFrom = (name: string, type: string, bytes: number[], size?: number) =>
 const PDF_BYTES = [0x25, 0x50, 0x44, 0x46, 0x2d, 0x31]
 const PNG_BYTES = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a]
 const EXE_BYTES = [0x4d, 0x5a, 0x90, 0x00]
+const XLSX_BYTES = [0x50, 0x4b, 0x03, 0x04, 0x14, 0x00]
+const XLS_BYTES = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1]
 
 describe('BUG-GST-009: upload type and size limits', () => {
-  it('rejects executables, renamed executables and files over 10 MB', async () => {
-    expect(await validateUploadFile(fileFrom('setup.exe', 'application/x-msdownload', EXE_BYTES), DOCUMENT_UPLOAD_RULE)).toMatch(/Only PDF, JPG or PNG/)
+  it('rejects executables, renamed executables and files over 15 MB', async () => {
+    expect(await validateUploadFile(fileFrom('setup.exe', 'application/x-msdownload', EXE_BYTES), DOCUMENT_UPLOAD_RULE)).toMatch(/Only PDF, Excel, JPG or PNG/)
     expect(await validateUploadFile(fileFrom('invoice.pdf', 'application/pdf', EXE_BYTES), DOCUMENT_UPLOAD_RULE)).toMatch(/not a valid/)
-    expect(await validateUploadFile(fileFrom('big.pdf', 'application/pdf', PDF_BYTES, 15 * 1024 * 1024), DOCUMENT_UPLOAD_RULE)).toMatch(/too large/)
+    expect(await validateUploadFile(fileFrom('big.pdf', 'application/pdf', PDF_BYTES, 16 * 1024 * 1024), DOCUMENT_UPLOAD_RULE)).toMatch(/too large/)
+    expect(await validateUploadFile(fileFrom('scan.pdf', 'application/pdf', PDF_BYTES, 12 * 1024 * 1024), DOCUMENT_UPLOAD_RULE)).toBeNull()
+  })
+  it('accepts genuine Excel workbooks (.xlsx and .xls) and rejects other spreadsheets', async () => {
+    expect(await validateUploadFile(fileFrom('gstr2b.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', XLSX_BYTES), DOCUMENT_UPLOAD_RULE)).toBeNull()
+    expect(await validateUploadFile(fileFrom('register.xls', 'application/vnd.ms-excel', XLS_BYTES), DOCUMENT_UPLOAD_RULE)).toBeNull()
+    expect(await validateUploadFile(fileFrom('fake.xlsx', '', PDF_BYTES), DOCUMENT_UPLOAD_RULE)).toMatch(/not a valid/)
+    expect(await validateUploadFile(fileFrom('data.csv', 'text/csv', PDF_BYTES), DOCUMENT_UPLOAD_RULE)).toMatch(/Only PDF, Excel, JPG or PNG/)
   })
   it('accepts genuine PDFs and images; the photo slot accepts images only', async () => {
     expect(await validateUploadFile(fileFrom('pan.pdf', 'application/pdf', PDF_BYTES), DOCUMENT_UPLOAD_RULE)).toBeNull()
@@ -174,7 +177,8 @@ describe('BUG-GST-008: Discard & Exit purges the draft', () => {
   })
 
   const DraftHarness = () => {
-    const draft = useGstDraft({
+    const draft = useServiceDraft({
+    storageNamespace: DRAFT_NAMESPACES.gst,
       serviceId: 'gst-registration',
       serviceTitle: 'GST Registration',
       totalSteps: 4,
@@ -203,12 +207,12 @@ describe('BUG-GST-008: Discard & Exit purges the draft', () => {
     )
     render(<RouterProvider router={router} />)
     fireEvent.click(screen.getByText('save'))
-    expect(readGstDraft('gst-registration')).not.toBeNull()
+    expect(readServiceDraft('gst-registration', DRAFT_NAMESPACES.gst)).not.toBeNull()
 
     fireEvent.click(screen.getByText('open'))
     fireEvent.click(screen.getByText('discard'))
 
-    expect(readGstDraft('gst-registration')).toBeNull()
+    expect(readServiceDraft('gst-registration', DRAFT_NAMESPACES.gst)).toBeNull()
     expect(userStorage.getDraft('gst-registration')).toBeNull()
     expect(localStore.get(`taxedge_gst_draft_${SIGNED_IN_USER.id}_gst-registration`)).toBeNull()
   })
@@ -221,7 +225,7 @@ const seedRegistrationDraft = (currentStep = 1, documents = INITIAL_DOCUMENTS) =
     currentStep,
   })
 
-describe('BUG-GST-007: browser Back returns to the previous wizard step', () => {
+describe('Browser Back on a GST step opens the save-draft dialog (same as the loans flows)', () => {
   beforeEach(() => {
     localStore.clear()
     authStorage.setUser(SIGNED_IN_USER)
@@ -233,41 +237,106 @@ describe('BUG-GST-007: browser Back returns to the previous wizard step', () => 
     return (
       <>
         <span data-testid="step">{state.currentStep}</span>
+        <span data-testid="draft-modal">{state.isDraftModalOpen ? 'open' : 'closed'}</span>
         <button onClick={state.handleStep1Next}>next1</button>
         <button onClick={state.handleStep2Back}>back2</button>
       </>
     )
   }
 
-  it('Back from Documents shows Business again, Forward returns to Documents', async () => {
-    const router = createMemoryRouter([{ path: '/gst/registration', element: <WizardHarness /> }], {
-      initialEntries: ['/gst/registration'],
-    })
+  const renderWizard = () => {
+    const router = createMemoryRouter(
+      [
+        { path: '/gst', element: <span>GST HOME</span> },
+        { path: '/gst/registration', element: <WizardHarness /> },
+      ],
+      { initialEntries: ['/gst', '/gst/registration'], initialIndex: 1 },
+    )
     render(<RouterProvider router={router} />)
-    expect(screen.getByTestId('step')).toHaveTextContent('1')
+    return router
+  }
 
+  it('step changes replace the history entry instead of adding one', () => {
+    const router = renderWizard()
     fireEvent.click(screen.getByText('next1'))
     expect(screen.getByTestId('step')).toHaveTextContent('2')
     expect(router.state.location.search).toBe('?step=documents')
-
-    await act(() => router.navigate(-1))
-    expect(screen.getByTestId('step')).toHaveTextContent('1')
-    expect(router.state.location.pathname).toBe('/gst/registration')
-
-    await act(() => router.navigate(1))
-    expect(screen.getByTestId('step')).toHaveTextContent('2')
+    expect(router.state.historyAction).toBe('REPLACE')
   })
 
-  it('in-page Back pops the history entry instead of adding one', async () => {
-    const router = createMemoryRouter([{ path: '/gst/registration', element: <WizardHarness /> }], {
-      initialEntries: ['/gst/registration'],
-    })
-    render(<RouterProvider router={router} />)
+  it('browser Back from a later step stays on the step and asks to save the draft', async () => {
+    const router = renderWizard()
+    fireEvent.click(screen.getByText('next1'))
+    await act(() => router.navigate(-1))
+    expect(router.state.location.pathname).toBe('/gst/registration')
+    expect(screen.getByTestId('step')).toHaveTextContent('2')
+    expect(screen.getByTestId('draft-modal')).toHaveTextContent('open')
+  })
+
+  it('in-page Back still moves to the previous step without the dialog', async () => {
+    renderWizard()
     fireEvent.click(screen.getByText('next1'))
     await act(async () => {
       fireEvent.click(screen.getByText('back2'))
     })
     expect(screen.getByTestId('step')).toHaveTextContent('1')
-    expect(router.state.historyAction).toBe('POP')
+    expect(screen.getByTestId('draft-modal')).toHaveTextContent('closed')
+  })
+})
+
+describe('Edit from Review opens the chosen section and returns with "Update & Review"', () => {
+  beforeEach(() => {
+    localStore.clear()
+    authStorage.setUser(SIGNED_IN_USER)
+    seedRegistrationDraft()
+  })
+
+  const EditHarness = () => {
+    const state = useGstRegistrationState()
+    return (
+      <>
+        <span data-testid="step">{state.currentStep}</span>
+        <span data-testid="edit">{state.isEditMode ? 'editing' : 'normal'}</span>
+        <span data-testid="section">{state.editSection ?? ''}</span>
+        <button onClick={() => state.goToStep(3)}>review</button>
+        <button onClick={() => state.startEditingFromReview(1, 'bank')}>editBank</button>
+        <button onClick={() => state.startEditingFromReview(2, 'documents')}>editDocs</button>
+        <button onClick={state.handleCancel}>back1</button>
+        <button onClick={state.handleStep2Back}>back2</button>
+        <button onClick={state.handleStep1Next}>next1</button>
+      </>
+    )
+  }
+
+  const renderEdit = () =>
+    render(
+      <RouterProvider
+        router={createMemoryRouter([{ path: '/gst/registration', element: <EditHarness /> }], {
+          initialEntries: ['/gst/registration'],
+        })}
+      />,
+    )
+
+  it('Edit on Bank Details opens step 1 at the bank section in edit mode', () => {
+    renderEdit()
+    fireEvent.click(screen.getByText('editBank'))
+    expect(screen.getByTestId('step')).toHaveTextContent('1')
+    expect(screen.getByTestId('edit')).toHaveTextContent('editing')
+    expect(screen.getByTestId('section')).toHaveTextContent('bank')
+  })
+
+  it('Back while editing returns to Review instead of leaving', () => {
+    renderEdit()
+    fireEvent.click(screen.getByText('editBank'))
+    fireEvent.click(screen.getByText('back1'))
+    expect(screen.getByTestId('edit')).toHaveTextContent('normal')
+    expect(screen.getByTestId('section')).toHaveTextContent('')
+  })
+
+  it('"Update & Review" on step 1 goes back to Review and leaves edit mode', () => {
+    renderEdit()
+    fireEvent.click(screen.getByText('editBank'))
+    fireEvent.click(screen.getByText('next1'))
+    expect(screen.getByTestId('edit')).toHaveTextContent('normal')
   })
 })

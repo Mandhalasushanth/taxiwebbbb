@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
+import { pickFiles, uploadTestFile } from './helpers/uploadTestFiles'
 import { describe, it, expect, vi, afterEach } from 'vitest'
 
 vi.mock('@core/config/environment', () => ({
@@ -71,8 +72,7 @@ describe('BusinessLoan Step 4 (Document Verification)', () => {
     expect(
       screen.getByText('Upload the required documents based on your business profile and loan purpose.')
     ).toBeInTheDocument()
-    expect(screen.getByText('Accepted formats: PDF, JPG, PNG')).toBeInTheDocument()
-    expect(screen.getByText('Max file size: 5 MB per file')).toBeInTheDocument()
+    expect(screen.getByText('Accepted files: PDF, Excel, JPG or PNG · max 15 MB')).toBeInTheDocument()
 
     // 14 Document cards
     // 1. PAN Card
@@ -133,35 +133,38 @@ describe('BusinessLoan Step 4 (Document Verification)', () => {
     expect(screen.getByText('Certificate of Incorporation / Business license')).toBeInTheDocument()
   })
 
-  it('validates file size (5MB limit) and accepted formats', () => {
-    // Valid PDF file under 5MB
-    const validPdf = new File(['valid content'], 'pan_card.pdf', { type: 'application/pdf' })
+  it('validates files against the application-wide rule (PDF, Excel, JPG, PNG · max 15 MB)', () => {
+    // Valid PDF file under 15 MB
+    const validPdf = uploadTestFile('pan_card.pdf')
     const resValid = validateDocumentFile(validPdf)
     expect(resValid.isValid).toBe(true)
 
     // Valid JPG file
-    const validJpg = new File(['image'], 'aadhaar.jpg', { type: 'image/jpeg' })
+    const validJpg = uploadTestFile('aadhaar.jpg')
     expect(validateDocumentFile(validJpg).isValid).toBe(true)
 
     // Valid PNG file
-    const validPng = new File(['image'], 'cert.png', { type: 'image/png' })
+    const validPng = uploadTestFile('cert.png')
     expect(validateDocumentFile(validPng).isValid).toBe(true)
 
     // Invalid format (.exe)
     const invalidFile = new File(['code'], 'virus.exe', { type: 'application/x-msdownload' })
     const resInvalid = validateDocumentFile(invalidFile)
     expect(resInvalid.isValid).toBe(false)
-    expect(resInvalid.error).toContain('Only PDF, JPG, and PNG files are accepted')
+    expect(resInvalid.error).toContain('Only PDF, Excel, JPG or PNG files are allowed')
 
-    // File over 5 MB
-    const largeFile = new File([''], 'large.pdf', { type: 'application/pdf' })
-    Object.defineProperty(largeFile, 'size', { value: 6 * 1024 * 1024 })
+    // Valid Excel workbook
+    expect(validateDocumentFile(uploadTestFile('bank_statement.xlsx')).isValid).toBe(true)
+
+    // File over 15 MB
+    const largeFile = uploadTestFile('large.pdf')
+    Object.defineProperty(largeFile, 'size', { value: 16 * 1024 * 1024 })
     const resLarge = validateDocumentFile(largeFile)
     expect(resLarge.isValid).toBe(false)
-    expect(resLarge.error).toContain('5 MB limit')
+    expect(resLarge.error).toContain('Maximum size is 15.0 MB')
   })
 
-  it('handles uploading, viewing, and removing a document correctly', () => {
+  it('handles uploading, viewing, and removing a document correctly', async () => {
     const handleChange = vi.fn()
 
     const { rerender } = render(
@@ -177,8 +180,8 @@ describe('BusinessLoan Step 4 (Document Verification)', () => {
     const fileInput = panCardNode.querySelector('input[type="file"]') as HTMLInputElement
     expect(fileInput).toBeInTheDocument()
 
-    const testFile = new File(['sample'], 'company_pan.pdf', { type: 'application/pdf' })
-    fireEvent.change(fileInput, { target: { files: [testFile] } })
+    const testFile = uploadTestFile('company_pan.pdf')
+    await pickFiles(fileInput, [testFile])
 
     expect(handleChange).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -270,7 +273,7 @@ describe('BusinessLoan Step 4 (Document Verification)', () => {
     expect(Object.keys(fullValidation.errors).length).toBe(0)
   })
 
-  it('allows advancing from Step 1 to Step 2 to Step 3 to Step 4 and navigating back with preserved data', () => {
+  it('allows advancing from Step 1 to Step 2 to Step 3 to Step 4 and navigating back with preserved data', async () => {
     localStorage.clear()
 
     render(
@@ -352,8 +355,8 @@ describe('BusinessLoan Step 4 (Document Verification)', () => {
     // Upload a document in Step 4
     const panNode = screen.getByTestId('doc-card-panCard')
     const panInput = panNode.querySelector('input[type="file"]') as HTMLInputElement
-    const panFile = new File(['pan_content'], 'company_pan.pdf', { type: 'application/pdf' })
-    fireEvent.change(panInput, { target: { files: [panFile] } })
+    const panFile = uploadTestFile('company_pan.pdf')
+    await pickFiles(panInput, [panFile])
 
     // Verify uploaded badge appears for PAN
     expect(panNode).toHaveTextContent('Uploaded')

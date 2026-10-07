@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { pickFiles, uploadTestFile } from './helpers/uploadTestFiles'
 import { cleanup } from '@testing-library/react'
 
 vi.mock('@core/config/environment', () => ({
@@ -16,6 +17,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { TaxNoticeAssistance } from '../../src/modules/itr/components/TaxNoticeAssistance/TaxNoticeAssistance'
 import { userStorage } from '../../src/core/storage/userStorage'
+import { localStore } from '../../src/core/storage/localStorage'
 
 afterEach(() => {
   cleanup()
@@ -24,6 +26,8 @@ afterEach(() => {
 describe('TaxNoticeAssistance Component', () => {
   beforeEach(() => {
     localStorage.clear()
+    // Drafts are auto-saved through localStore (cached in memory); start every test without one
+    localStore.clear()
     window.scrollTo = () => {}
   })
 
@@ -137,8 +141,8 @@ describe('TaxNoticeAssistance Component', () => {
     // Step 2: Notice Document -> Upload Notice file -> Step 3: Notice Summary
     expect(screen.getByLabelText(/Step 2: Upload Notice/i)).toBeDefined()
     const noticeFileInput = document.querySelector('input[type="file"]')
-    const noticeFile = new File(['dummy-notice'], 'Notice_143_1_a.pdf', { type: 'application/pdf' })
-    fireEvent.change(noticeFileInput!, { target: { files: [noticeFile] } })
+    const noticeFile = uploadTestFile('Notice_143_1_a.pdf')
+    await pickFiles(noticeFileInput!, [noticeFile])
 
     const continueToReviewBtn = screen.getByRole('button', { name: /continue to staff review/i })
     expect(continueToReviewBtn.getAttribute('disabled')).toBeNull()
@@ -155,10 +159,12 @@ describe('TaxNoticeAssistance Component', () => {
 
     // Upload required documents
     const step4Inputs = document.querySelectorAll('input[type="file"]')
-    const sampleDoc = new File(['test'], 'doc.pdf', { type: 'application/pdf' })
-    step4Inputs.forEach((input) => {
-      fireEvent.change(input, { target: { files: [sampleDoc] } })
-    })
+    const sampleDoc = uploadTestFile('doc.pdf')
+    // One pick at a time, each waiting for the upload rule's check
+    await Array.from(step4Inputs).reduce<Promise<void>>(
+      (previous, input) => previous.then(() => pickFiles(input as HTMLElement, [sampleDoc])),
+      Promise.resolve(),
+    )
 
     const submitDocsBtn = screen.getByRole('button', { name: /submit documents & review response/i })
     expect(submitDocsBtn.getAttribute('disabled')).toBeNull()
@@ -186,7 +192,7 @@ describe('TaxNoticeAssistance Component', () => {
     expect(apps[0].code).toMatch(/^NOT-/)
   })
 
-  it('handles uploading, viewing, and deleting supporting documents with Image 3 actions bar', () => {
+  it('handles uploading, viewing, and deleting supporting documents with Image 3 actions bar', async () => {
     render(
       <MemoryRouter>
         <TaxNoticeAssistance />
@@ -206,8 +212,8 @@ describe('TaxNoticeAssistance Component', () => {
 
     // Step 2 -> Upload notice file -> Step 3
     const noticeInput = document.querySelector('input[type="file"]')
-    const noticeSample = new File(['dummy'], 'Notice.pdf', { type: 'application/pdf' })
-    fireEvent.change(noticeInput!, { target: { files: [noticeSample] } })
+    const noticeSample = uploadTestFile('Notice.pdf')
+    await pickFiles(noticeInput!, [noticeSample])
     fireEvent.click(screen.getByRole('button', { name: /continue to staff review/i }))
 
     // Step 3 -> Step 4
@@ -220,14 +226,12 @@ describe('TaxNoticeAssistance Component', () => {
 
     // Simulate file input change on the first file input
     const fileInputs = document.querySelectorAll('input[type="file"]')
-    const sampleFile = new File(['dummy-content'], 'GST_Compliance_10_Fields_Professional.docx', {
-      type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    })
-    fireEvent.change(fileInputs[0], { target: { files: [sampleFile] } })
+    const sampleFile = uploadTestFile('GST_Compliance_10_Fields_Professional.xlsx')
+    await pickFiles(fileInputs[0], [sampleFile])
 
     // Card should now show Uploaded badge and filename
     expect(screen.getByText('Uploaded')).toBeDefined()
-    expect(screen.getByText(/GST_Compliance_10_Fields_Professional\.docx/i)).toBeDefined()
+    expect(screen.getByText(/GST_Compliance_10_Fields_Professional.xlsx/i)).toBeDefined()
 
     // Card should show View Document, Replace, and Delete trash button
     expect(screen.getByText('View Document')).toBeDefined()
@@ -239,7 +243,7 @@ describe('TaxNoticeAssistance Component', () => {
     fireEvent.click(deleteBtn)
 
     // File should be removed and "Upload File" button restored
-    expect(screen.queryByText(/GST_Compliance_10_Fields_Professional\.docx/i)).toBeNull()
+    expect(screen.queryByText(/GST_Compliance_10_Fields_Professional.xlsx/i)).toBeNull()
   })
 
   it('supports selecting AY 2027-28 and custom Other assessment year', () => {

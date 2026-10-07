@@ -1,11 +1,11 @@
 /* Named colour tones for GST icon tiles (replaces inline background/colour styles) */
-.gst-tone--sky { background-color: #e0f2fe; color: #0284c7; }
-.gst-tone--purple { background-color: #f3e8ff; color: #9333ea; }
-.gst-tone--indigo { background-color: #e0e7ff; color: #2563eb; }
-.gst-tone--amber { background-color: #fef3c7; color: #d97706; }
-.gst-tone--green { background-color: #d1fae5; color: #059669; }
-.gst-tone--orange { background-color: #ffedd5; color: #ea580c; }
-.gst-tone--mint { background-color: #dcfce7; color: #16a34a; }
+.gst-tone--sky { background-color: var(--palette-sky-100-e0f2fe); color: var(--palette-sky-600); }
+.gst-tone--purple { background-color: var(--palette-purple-100); color: var(--palette-purple-600); }
+.gst-tone--indigo { background-color: var(--palette-indigo-100); color: var(--palette-blue-600); }
+.gst-tone--amber { background-color: var(--warning-light); color: var(--palette-amber-600); }
+.gst-tone--green { background-color: var(--palette-emerald-100); color: var(--feature-success); }
+.gst-tone--orange { background-color: var(--orange-100); color: var(--palette-orange-600); }
+.gst-tone--mint { background-color: var(--palette-green-100); color: var(--success); }
 
 /* Visually hidden native file inputs (opened via a label/button) */
 .gst-hidden-input { display: none; }
@@ -21,5 +21,5 @@
   display: block;
 }
 .gst-progress::-webkit-progress-bar { background: transparent; }
-.gst-progress::-webkit-progress-value { background: var(--gst-progress-color, #ea580c); border-radius: inherit; transition: width 0.3s ease; }
-.gst-progress::-moz-progress-bar { background: var(--gst-progress-color, #ea580c); border-radius: inherit; }
+.gst-progress::-webkit-progress-value { background: var(--gst-progress-color, var(--palette-orange-600)); border-radius: inherit; transition: width 0.3s ease; }
+.gst-progress::-moz-progress-bar { background: var(--gst-progress-color, var(--palette-orange-600)); border-radius: inherit; }

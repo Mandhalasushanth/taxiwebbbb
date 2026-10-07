@@ -1,7 +1,7 @@
 /* Director Card Component Styles */
 .director-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
@@ -9,11 +9,11 @@
 }
 .director-card__header {
   padding: 1.25rem 1.75rem;
-  background: #ffffff;
+  background: var(--surface);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--subtle-border);
 }
 .director-card__header-left {
   display: flex;
@@ -25,8 +25,8 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: #0b2546;
-  color: #ffffff;
+  background: var(--palette-sky-800-0b2546);
+  color: var(--surface);
   font-size: 0.85rem;
   font-weight: 700;
   display: flex;
@@ -37,18 +37,18 @@
 
 .director-card__meta { display: flex; flex-direction: column; gap: 0.15rem; }
 .director-card__title-row { display: flex; align-items: center; gap: 0.5rem; }
-.director-card__title { margin: 0; font-size: 1.05rem; font-weight: 700; color: #0f172a; }
-.director-card__name { margin: 0; font-size: 0.82rem; color: #64748b; font-weight: 500; }
+.director-card__title { margin: 0; font-size: 1.05rem; font-weight: 700; color: var(--palette-slate-900); }
+.director-card__name { margin: 0; font-size: 0.82rem; color: var(--secondary-text); font-weight: 500; }
 
 .director-card__btn-collapse,
 .director-card__btn-edit {
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
+  background: var(--surface);
+  border: 1px solid var(--grey-300);
   border-radius: 8px;
   padding: 0.45rem 1rem;
   font-size: 0.84rem;
   font-weight: 600;
-  color: #334155;
+  color: var(--grey-700);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -57,9 +57,9 @@
 }
 .director-card__btn-collapse:hover,
 .director-card__btn-edit:hover {
-  background: #f1f5f9;
-  border-color: #94a3b8;
-  color: #0b2546;
+  background: var(--subtle-border);
+  border-color: var(--muted-text);
+  color: var(--palette-sky-800-0b2546);
 }
 
 /* Collapsed Summary View */
@@ -68,7 +68,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #ffffff;
+  background: var(--surface);
   gap: 2rem;
 }
 
@@ -85,19 +85,19 @@
 
 .director-card__summary-item {
   font-size: 0.9rem;
-  color: #334155;
+  color: var(--grey-700);
   line-height: 1.4;
 }
 
 .director-card__summary-label {
   font-weight: 600;
-  color: #64748b;
+  color: var(--secondary-text);
   margin-right: 0.35rem;
 }
 
 .director-card__summary-val {
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 /* Expanded Card Body */
@@ -118,7 +118,7 @@
   margin: 0;
   font-size: 0.98rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .director-grid-2 {
@@ -142,7 +142,7 @@
 .director-label {
   font-size: 0.86rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .director-label--section {
@@ -152,31 +152,31 @@
 
 
 .director-required {
-  color: #ef4444;
+  color: var(--palette-red-500);
   margin-left: 2px;
 }
 
 .director-input {
   width: 100%;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--grey-300);
   border-radius: 10px;
   padding: 0.75rem 1rem;
   font-size: 0.92rem;
-  color: #0f172a;
-  background: #ffffff;
+  color: var(--palette-slate-900);
+  background: var(--surface);
   box-sizing: border-box;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .director-input:focus {
   outline: none;
-  border-color: #f25a22;
+  border-color: var(--palette-orange-500-f25a22);
   box-shadow: 0 0 0 3px rgba(242, 90, 34, 0.15);
 }
 
 .director-input--error {
-  border-color: #ef4444 !important;
-  background-color: #fffafb;
+  border-color: var(--palette-red-500) !important;
+  background-color: var(--palette-rose-50);
 }
 
 .director-input--error:focus {
@@ -185,7 +185,7 @@
 
 .director-field-error {
   font-size: 0.76rem;
-  color: #dc2626;
+  color: var(--error);
   font-weight: 500;
   margin-top: 0.35rem;
   line-height: 1.25;
@@ -202,9 +202,9 @@ select.director-input {
 }
 
 .director-chip {
-  background: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  color: #334155;
+  background: var(--surface);
+  border: 1.5px solid var(--grey-300);
+  color: var(--grey-700);
   padding: 0.55rem 1.75rem;
   border-radius: 10px;
   font-size: 0.88rem;
@@ -214,13 +214,13 @@ select.director-input {
 }
 
 .director-chip:hover {
-  background: #f8fafc;
+  background: var(--palette-slate-50);
 }
 
 .director-chip--active {
-  background: #0b2546;
-  border-color: #0b2546;
-  color: #ffffff;
+  background: var(--palette-sky-800-0b2546);
+  border-color: var(--palette-sky-800-0b2546);
+  color: var(--surface);
 }
 
 .director-checkbox-label {
@@ -229,7 +229,7 @@ select.director-input {
   gap: 0.65rem;
   font-size: 0.88rem;
   font-weight: 600;
-  color: #334155;
+  color: var(--grey-700);
   cursor: pointer;
   margin-top: 0.25rem;
 }
@@ -237,13 +237,13 @@ select.director-input {
 .director-checkbox {
   width: 18px;
   height: 18px;
-  accent-color: #0b2546;
+  accent-color: var(--palette-sky-800-0b2546);
   cursor: pointer;
 }
 
 .director-share-box {
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
+  background: var(--subtle-border);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 0.75rem 1rem;
   display: flex;
@@ -251,7 +251,7 @@ select.director-input {
   gap: 0.65rem;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .director-card__actions {
@@ -259,13 +259,13 @@ select.director-input {
   justify-content: flex-end;
   gap: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--subtle-border);
 }
 
 .director-btn-cancel {
-  background: #ffffff;
-  color: #64748b;
-  border: 1px solid #cbd5e1;
+  background: var(--surface);
+  color: var(--secondary-text);
+  border: 1px solid var(--grey-300);
   border-radius: 10px;
   padding: 0.65rem 1.5rem;
   font-size: 0.9rem;
@@ -273,11 +273,11 @@ select.director-input {
   cursor: pointer;
   transition: all 0.15s ease;
 }
-.director-btn-cancel:hover { background: #f8fafc; }
+.director-btn-cancel:hover { background: var(--palette-slate-50); }
 
 .director-btn-save {
-  background: #0b2546;
-  color: #ffffff;
+  background: var(--palette-sky-800-0b2546);
+  color: var(--surface);
   border: none;
   border-radius: 10px;
   padding: 0.65rem 1.85rem;
@@ -289,7 +289,7 @@ select.director-input {
   gap: 0.5rem;
   transition: all 0.15s ease;
 }
-.director-btn-save:hover { background: #143560; }
+.director-btn-save:hover { background: var(--palette-sky-800-143560); }
 
 @media (max-width: 768px) {
   .director-grid-2, .director-grid-4 { grid-template-columns: 1fr; }

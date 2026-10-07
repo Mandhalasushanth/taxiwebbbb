@@ -1,6 +1,4 @@
 export { AuthLayout } from './AuthLayout'
 export { DashboardLayout } from './DashboardLayout'
-export { StaffLayout, StaffHeader, StaffSidebar, staffNavSections } from './StaffLayout'
-export type { StaffNavItem, StaffNavSection } from './StaffLayout'
 export { navSections } from './navigation'
 export type { NavItem, NavSection } from './navigation'

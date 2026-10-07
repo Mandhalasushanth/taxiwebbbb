@@ -20,9 +20,9 @@
 .home-loan-itr-btn {
   padding: 0.8rem 1rem;
   border-radius: 10px;
-  border: 1.5px solid #cbd5e1;
-  background-color: #ffffff;
-  color: #334155;
+  border: 1.5px solid var(--grey-300);
+  background-color: var(--surface);
+  color: var(--grey-700);
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
@@ -31,15 +31,15 @@
 }
 
 .home-loan-itr-btn:hover {
-  border-color: #ff7a00;
-  color: #ff7a00;
-  background-color: #fff7ed;
+  border-color: var(--feature-orange);
+  color: var(--feature-orange);
+  background-color: var(--palette-orange-50);
 }
 
 .home-loan-itr-btn--active {
-  border-color: #ff7a00;
-  background-color: #fff7ed;
-  color: #ff7a00;
+  border-color: var(--feature-orange);
+  background-color: var(--palette-orange-50);
+  color: var(--feature-orange);
   box-shadow: 0 2px 8px rgba(255, 122, 0, 0.15);
 }
 
@@ -48,11 +48,11 @@
   width: 100%;
   height: 48px;
   padding: 0 1rem;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--grey-300);
   border-radius: 10px;
   font-size: 0.95rem;
-  color: #0f172a;
-  background-color: #ffffff;
+  color: var(--palette-slate-900);
+  background-color: var(--surface);
   outline: none;
   font-family: inherit;
   transition: all 0.18s ease;
@@ -61,19 +61,19 @@
 
 .home-loan-select:focus,
 .home-loan-input:focus {
-  border-color: #ff7a00;
+  border-color: var(--feature-orange);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.12);
 }
 
 .home-loan-select--error,
 .home-loan-input--error {
-  border-color: #ef4444 !important;
-  background-color: #fff5f5 !important;
+  border-color: var(--palette-red-500) !important;
+  background-color: var(--palette-red-50-fff5f5) !important;
 }
 
 .home-loan-select--error:focus,
 .home-loan-input--error:focus {
-  border-color: #dc2626 !important;
+  border-color: var(--error) !important;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
 }
 
@@ -82,7 +82,7 @@
   align-items: center;
   gap: 4px;
   font-size: 0.78125rem;
-  color: #dc2626;
+  color: var(--error);
   font-weight: 500;
   margin-top: 0.25rem;
   line-height: 1.3;

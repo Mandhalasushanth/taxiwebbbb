@@ -1,5 +1,5 @@
 import { routePaths } from '@core/config'
-import { DraftConfirmModal } from '@shared/components'
+import { ServiceDraftModal } from '@shared/saveDraft'
 import {
   GSTAmendmentSelection,
   GSTAmendmentDetailForm,
@@ -22,6 +22,7 @@ import { buildReviewData } from './gstAmendmentReviewHelpers'
 import './GSTAmendment.css'
 
 export const GSTAmendment = () => {
+  const flow = useGSTAmendmentFlow()
   const {
     navigate,
     gstin,
@@ -31,16 +32,11 @@ export const GSTAmendment = () => {
     formData,
     setFormData,
     isReviewing,
-    setIsReviewing,
     isEditMode,
-    setIsEditMode,
+    returnToReview,
     isSubmitting,
     submittedRecord,
-    isModalOpen,
     openDraftModal,
-    handleSaveAndExit,
-    handleDiscardAndExit,
-    handleKeepEditing,
     handleDetailFormSubmit,
     handleEdit,
     handleReviewBack,
@@ -48,7 +44,7 @@ export const GSTAmendment = () => {
     handleFormSaveDraft,
     handleFinalSubmit,
     handleBackToDashboard,
-  } = useGSTAmendmentFlow()
+  } = flow
 
   if (submittedRecord) {
     const sectionTitle = selectedOption
@@ -97,13 +93,7 @@ export const GSTAmendment = () => {
           onSubmit={handleFinalSubmit}
           onSaveDraft={openDraftModal}
         />
-        <DraftConfirmModal
-          isOpen={isModalOpen}
-          serviceTitle="GST Amendment"
-          onSaveAndExit={handleSaveAndExit}
-          onDiscardAndExit={handleDiscardAndExit}
-          onKeepEditing={handleKeepEditing}
-        />
+        <ServiceDraftModal draft={flow} serviceTitle="GST Amendment" />
       </div>
     )
   }
@@ -116,8 +106,7 @@ export const GSTAmendment = () => {
 
     const handleFormBack = () => {
       if (isEditMode) {
-        setIsReviewing(true)
-        setIsEditMode(false)
+        returnToReview()
       } else {
         setSelectedOption(null)
         setFormData(null)
@@ -202,13 +191,7 @@ export const GSTAmendment = () => {
             onChange={handleFormChange}
           />
         )}
-        <DraftConfirmModal
-          isOpen={isModalOpen}
-          serviceTitle="GST Amendment"
-          onSaveAndExit={handleSaveAndExit}
-          onDiscardAndExit={handleDiscardAndExit}
-          onKeepEditing={handleKeepEditing}
-        />
+        <ServiceDraftModal draft={flow} serviceTitle="GST Amendment" />
       </div>
     )
   }
@@ -222,14 +205,9 @@ export const GSTAmendment = () => {
           setSelectedOption(option)
           window.scrollTo({ top: 0, behavior: 'smooth' })
         }}
+        onSaveDraft={openDraftModal}
       />
-      <DraftConfirmModal
-        isOpen={isModalOpen}
-        serviceTitle="GST Amendment"
-        onSaveAndExit={handleSaveAndExit}
-        onDiscardAndExit={handleDiscardAndExit}
-        onKeepEditing={handleKeepEditing}
-      />
+      <ServiceDraftModal draft={flow} serviceTitle="GST Amendment" />
     </div>
   )
 }

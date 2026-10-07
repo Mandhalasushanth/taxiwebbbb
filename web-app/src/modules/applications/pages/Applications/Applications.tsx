@@ -11,6 +11,7 @@ import { ApplicationCategoryTabs } from '../../components/ApplicationCategoryTab
 import { ApplicationOverviewCards } from '../../components/ApplicationOverviewCards'
 import { ApplicationCard } from '../../components/ApplicationCard'
 import './Applications.css'
+import './Applications.part2.css'
 
 export const Applications: React.FC = () => {
   const { data, isLoading } = useApplications()

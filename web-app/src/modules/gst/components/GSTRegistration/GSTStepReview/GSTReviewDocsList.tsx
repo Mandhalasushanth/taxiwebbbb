@@ -4,15 +4,18 @@ import {
   DocChecklistIcon,
   CheckCircleIcon,
   ViewEyeIcon,
+  EditPencilIcon,
 } from '@modules/gst/shared/GSTDocIcons/GSTDocIcons'
 import './GSTReviewDocsList.css'
 
 interface GSTReviewDocsListProps {
   documents: DocumentItem[]
   onViewDoc: (title: string, fileName: string) => void
+  /** Opens the Documents step to change uploads */
+  onEdit?: () => void
 }
 
-export const GSTReviewDocsList: FC<GSTReviewDocsListProps> = ({ documents, onViewDoc }) => {
+export const GSTReviewDocsList: FC<GSTReviewDocsListProps> = ({ documents, onViewDoc, onEdit }) => {
   const uploadedCount = documents.filter((d) => d.isUploaded || d.fileName).length
   const totalCount = documents.length
 
@@ -26,8 +29,21 @@ export const GSTReviewDocsList: FC<GSTReviewDocsListProps> = ({ documents, onVie
           <h3 className="gst-review-card__title">Uploaded Documents</h3>
         </div>
 
-        <div className="gst-review-doc-badge">
-          {uploadedCount}/{totalCount} Uploaded
+        <div className="gst-review-docs-header-actions">
+          <div className="gst-review-doc-badge">
+            {uploadedCount}/{totalCount} Uploaded
+          </div>
+          {onEdit && (
+            <button
+              type="button"
+              className="gst-review-card__edit-btn"
+              onClick={onEdit}
+              aria-label="Edit Uploaded Documents"
+            >
+              <EditPencilIcon width={14} height={14} className="gst-review-card__edit-icon" />
+              <span>Edit</span>
+            </button>
+          )}
         </div>
       </div>
 

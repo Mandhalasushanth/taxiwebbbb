@@ -26,7 +26,7 @@
 
 .taxedge-logo__brand-tax { color: var(--grey-900); }
 .taxedge-logo__brand-edge { color: var(--color-primary); margin-left: 1px; }
-.taxedge-logo--dark .taxedge-logo__brand-tax { color: #ffffff; }
+.taxedge-logo--dark .taxedge-logo__brand-tax { color: var(--surface); }
 .taxedge-logo--dark .taxedge-logo__brand-edge { color: var(--color-primary); }
 .taxedge-logo__subtitle { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey-500); margin-top: 2px; }
 .taxedge-logo--dark .taxedge-logo__subtitle { color: rgba(255, 255, 255, 0.65); }

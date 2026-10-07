@@ -1,10 +1,10 @@
 .gst-docs-page {
   width: 100%;
-  max-width: 1180px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   padding: 16px 20px 64px;
   font-family: inherit;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 /* Stepper and Top Bar */
@@ -27,8 +27,8 @@
   align-items: flex-start;
   text-align: left;
   flex-shrink: 0;
-  background-color: #f0f7ff;
-  border: 1px solid #dbeafe;
+  background-color: var(--palette-sky-50-f0f7ff);
+  border: 1px solid var(--palette-blue-100);
   border-radius: 14px;
   padding: 10px 18px;
   min-width: 170px;
@@ -37,7 +37,7 @@
 
 .gst-docs-top-meta__label {
   font-size: 12px;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 500;
   margin-bottom: 2px;
 }
@@ -45,14 +45,14 @@
 .gst-docs-top-meta__return-type {
   font-size: 15px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.01em;
   margin-bottom: 2px;
 }
 
 .gst-docs-top-meta__period {
   font-size: 13px;
-  color: #1d4ed8;
+  color: var(--palette-blue-700);
   font-weight: 600;
 }
 
@@ -64,14 +64,14 @@
 .gst-docs-title {
   font-size: 28px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 8px;
   letter-spacing: -0.02em;
 }
 
 .gst-docs-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
   line-height: 1.5;
 }
@@ -84,7 +84,7 @@
 .gst-docs-category-title {
   font-size: 12px;
   font-weight: 700;
-  color: #475569;
+  color: var(--palette-slate-600);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   margin: 0 0 14px 2px;
@@ -100,8 +100,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background-color: var(--palette-green-50);
+  border: 1px solid var(--palette-green-200);
   border-radius: 10px;
   padding: 14px 18px;
   margin: 32px 0;
@@ -110,7 +110,7 @@
 .gst-docs-security-note__icon {
   width: 20px;
   height: 20px;
-  color: #16a34a;
+  color: var(--success);
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -124,7 +124,7 @@
 
 .gst-docs-security-note__text {
   font-size: 13.5px;
-  color: #166534;
+  color: var(--palette-green-800);
   margin: 0;
   line-height: 1.45;
   font-weight: 450;
@@ -144,9 +144,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background-color: #ffffff;
-  color: #0f172a;
-  border: 1.5px solid #cbd5e1;
+  background-color: var(--surface);
+  color: var(--palette-slate-900);
+  border: 1.5px solid var(--grey-300);
   border-radius: 9999px;
   padding: 0.65rem 1.65rem;
   font-size: 0.92rem;
@@ -156,9 +156,9 @@
 }
 
 .gst-docs-btn-back:hover {
-  background-color: #f8fafc;
-  border-color: #94a3b8;
-  color: #0f172a;
+  background-color: var(--palette-slate-50);
+  border-color: var(--muted-text);
+  color: var(--palette-slate-900);
   transform: translateY(-1px);
 }
 
@@ -166,8 +166,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #f97316;
-  color: #ffffff;
+  background-color: var(--primary-orange);
+  color: var(--surface);
   border: none;
   border-radius: 8px;
   padding: 12px 28px;
@@ -179,7 +179,7 @@
 }
 
 .gst-docs-btn-continue:hover {
-  background-color: #ea580c;
+  background-color: var(--palette-orange-600);
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(249, 115, 22, 0.45);
 }

@@ -6,10 +6,10 @@
 }
 
 .pf-custom-input--readonly {
-  background-color: #f1f5f9 !important;
-  color: #1e293b !important;
+  background-color: var(--subtle-border) !important;
+  color: var(--palette-slate-800) !important;
   cursor: default;
-  border-color: #cbd5e1 !important;
+  border-color: var(--grey-300) !important;
 }
 
 .pf-input-with-suffix {
@@ -26,7 +26,7 @@
 .pf-input-suffix {
   position: absolute;
   right: 1rem;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 600;
   font-size: 0.95rem;
   pointer-events: none;

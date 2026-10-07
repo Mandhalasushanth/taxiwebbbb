@@ -1,6 +1,6 @@
 .cs-quick-prompts {
   padding: 0.75rem 1.25rem;
-  background-color: #ffffff;
+  background-color: var(--surface);
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -16,17 +16,17 @@
 .cs-quick-prompts__chip {
   white-space: nowrap;
   background-color: transparent;
-  border: 1.5px solid #8b5cf6;
+  border: 1.5px solid var(--palette-violet-500);
   border-radius: 9999px;
   padding: 0.4rem 1rem;
   font-size: 0.85rem;
   font-weight: 500;
-  color: #8b5cf6;
+  color: var(--palette-violet-500);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .cs-quick-prompts__chip:hover {
-  background-color: #f3e8ff;
+  background-color: var(--palette-purple-100);
   transform: translateY(-1px);
 }

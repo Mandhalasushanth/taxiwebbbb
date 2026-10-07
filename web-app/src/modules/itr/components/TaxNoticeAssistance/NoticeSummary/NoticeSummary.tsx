@@ -1,6 +1,6 @@
 import React from 'react'
 import { StepActionBar } from '@shared/components'
-import type { NoticeFormData } from '../../../types/taxNoticeAssistance.types'
+import type { NoticeFormData } from '@modules/itr/types/taxNoticeAssistance.types'
 import './NoticeSummary.css'
 
 export interface NoticeSummaryProps {

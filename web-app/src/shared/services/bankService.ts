@@ -152,7 +152,7 @@ export async function fetchBankDetailsByIfsc(rawIfsc: string): Promise<BankDetai
 
   // Future API Hook (e.g. backend /api/banks/ifsc/:code or configured API gateway)
   try {
-    const envApiUrl = typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_BASE_URL
+    const envApiUrl = import.meta.env.VITE_API_BASE_URL
     if (envApiUrl && envApiUrl !== 'mock' && !envApiUrl.includes('localhost:5173')) {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 2500)

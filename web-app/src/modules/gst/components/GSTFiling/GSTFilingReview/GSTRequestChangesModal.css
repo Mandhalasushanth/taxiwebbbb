@@ -12,7 +12,7 @@
 }
 
 .gst-request-modal-card {
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 12px;
   width: 100%;
   max-width: 440px;
@@ -25,7 +25,7 @@
   margin: 0 0 1rem 0;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--palette-gray-900);
   letter-spacing: -0.01em;
 }
 
@@ -33,7 +33,7 @@
   margin: 0 0 1.5rem 0;
   font-size: 0.95rem;
   line-height: 1.55;
-  color: #374151;
+  color: var(--palette-gray-700);
 }
 
 .gst-request-modal-actions {
@@ -45,7 +45,7 @@
 .gst-request-modal-btn-ok {
   background: transparent;
   border: none;
-  color: #0284c7;
+  color: var(--palette-sky-600);
   font-size: 0.95rem;
   font-weight: 700;
   padding: 0.5rem 1rem;
@@ -56,12 +56,12 @@
 }
 
 .gst-request-modal-btn-ok:hover {
-  background-color: #f0f9ff;
-  color: #0369a1;
+  background-color: var(--palette-sky-50-f0f9ff);
+  color: var(--palette-sky-700);
 }
 
 .gst-request-modal-btn-ok:active {
-  background-color: #e0f2fe;
+  background-color: var(--palette-sky-100-e0f2fe);
 }
 
 @keyframes gstModalFadeIn {

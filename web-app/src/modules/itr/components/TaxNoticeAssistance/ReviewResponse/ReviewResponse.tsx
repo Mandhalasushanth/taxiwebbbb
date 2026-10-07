@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import type { NoticeFormData } from '../../../types/taxNoticeAssistance.types'
+import type { NoticeFormData } from '@modules/itr/types/taxNoticeAssistance.types'
 import './ReviewResponse.css'
 
 export interface ReviewResponseProps {

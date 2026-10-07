@@ -1,11 +1,11 @@
 /* GST Amendment Submitted Screen - Matching Image 2 Design */
 .gst-amend-submitted-container {
   width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   padding: 1.5rem 2rem 4rem 2rem;
   font-family: inherit;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   box-sizing: border-box;
 }
 
@@ -20,7 +20,7 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background-color: #dcfce7;
+  background-color: var(--palette-green-100);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,7 +31,7 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background-color: #16a34a;
+  background-color: var(--success);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -41,8 +41,8 @@
 .gst-amend-check-svg {
   width: 28px;
   height: 28px;
-  color: #ffffff;
-  stroke: #ffffff;
+  color: var(--surface);
+  stroke: var(--surface);
   stroke-width: 3.5;
   fill: none;
   stroke-linecap: round;
@@ -52,21 +52,21 @@
 .gst-amend-submitted-title {
   font-size: 2rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 0.5rem 0;
   letter-spacing: -0.02em;
 }
 
 .gst-amend-submitted-subtitle {
   font-size: 1rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
 }
 
 /* Details Card Matching Image 2 */
 .gst-amend-submitted-card {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 20px;
   padding: 0.75rem 2.25rem;
   margin-bottom: 2rem;
@@ -84,25 +84,25 @@
 .gst-amend-submitted-label {
   font-size: 0.95rem;
   font-weight: 500;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .gst-amend-submitted-value {
   font-size: 1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   text-align: right;
   word-break: break-word;
 }
 
 .gst-amend-submitted-value--arn {
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-weight: 800;
 }
 
 .gst-amend-submitted-divider {
   height: 1px;
-  background-color: #f1f5f9;
+  background-color: var(--subtle-border);
 }
 
 /* Action Buttons Row - Only Two Buttons */
@@ -118,12 +118,12 @@
   align-items: center;
   justify-content: center;
   padding: 0.9375rem 1.5rem;
-  background-color: #f97316;
+  background-color: var(--primary-orange);
   border: none;
   border-radius: 12px;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--surface);
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
@@ -131,7 +131,7 @@
 }
 
 .gst-amend-submitted-btn-orange:hover {
-  background-color: #ea580c;
+  background-color: var(--palette-orange-600);
   box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35);
   transform: translateY(-1px);
 }
@@ -141,21 +141,21 @@
   align-items: center;
   justify-content: center;
   padding: 0.9375rem 1.5rem;
-  background-color: #ffffff;
-  border: 1.5px solid #1e3a8a;
+  background-color: var(--surface);
+  border: 1.5px solid var(--palette-blue-900-1e3a8a);
   border-radius: 12px;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #1e3a8a;
+  color: var(--palette-blue-900-1e3a8a);
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
 }
 
 .gst-amend-submitted-btn-navy:hover {
-  background-color: #eff6ff;
-  border-color: #1d4ed8;
-  color: #1d4ed8;
+  background-color: var(--palette-blue-50);
+  border-color: var(--palette-blue-700);
+  color: var(--palette-blue-700);
 }
 
 @media (max-width: 640px) {

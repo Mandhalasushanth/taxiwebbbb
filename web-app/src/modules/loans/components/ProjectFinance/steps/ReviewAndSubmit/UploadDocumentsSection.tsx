@@ -4,6 +4,7 @@ import { UploadDocument } from '@shared/components'
 import type { UploadedLoanDocument } from '@modules/loans/documents/loanDocument.types'
 import type { ProjectFinanceData } from '@modules/loans/types/projectFinance.types'
 import { PROJECT_FINANCE_DOC_LIST, type UploadDocItem } from '@modules/loans/constants/projectFinanceDocuments.constants'
+import { viewUploadedDocument } from '@shared/upload'
 
 export interface UploadDocumentsSectionProps {
   data: ProjectFinanceData
@@ -114,13 +115,8 @@ export const UploadDocumentsSection: React.FC<UploadDocumentsSectionProps> = ({
   const handleViewDoc = (docId: string, title: string) => {
     const rawDoc = data.uploadedDocs?.[docId]
     const fileObj = rawDoc instanceof File ? rawDoc : rawDoc?.file
-    if (fileObj) {
-      const url = URL.createObjectURL(fileObj)
-      window.open(url, '_blank')
-    } else {
-      const name = (rawDoc && 'name' in rawDoc) ? rawDoc.name : title
-      alert(`Viewing: ${name}`)
-    }
+    const name = rawDoc && 'name' in rawDoc ? rawDoc.name : undefined
+    viewUploadedDocument({ id: docId, title, fileName: name, file: fileObj })
   }
 
   const filteredDocs = PROJECT_FINANCE_DOC_LIST.filter((doc) => {
@@ -199,7 +195,6 @@ export const UploadDocumentsSection: React.FC<UploadDocumentsSectionProps> = ({
                   isUploaded={isUploaded}
                   fileName={fileName}
                   fileSize={fileSize}
-                  accept=".pdf,.jpg,.jpeg,.png"
                   onUpload={(id, file) => handleFileUpload(id, file)}
                   onRemove={(id) => handleRemoveDoc(id)}
                   onView={() => handleViewDoc(doc.id, doc.title)}

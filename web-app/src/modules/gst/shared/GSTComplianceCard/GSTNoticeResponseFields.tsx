@@ -3,6 +3,7 @@ import React, { useRef } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { DocumentCard } from '@shared/components'
 import './GSTComplianceUploadFields.css'
+import { UPLOAD_HINT } from '@shared/upload'
 
 export interface NoticeResponseValues {
   noticeNumber: string
@@ -153,13 +154,12 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
         <DocumentCard
           id="notice-copy"
           title="Upload Notice Copy"
-          subtitle="Upload official GST notice copy from the tax department (PDF, PNG, JPG)"
+          subtitle={`Upload official GST notice copy from the tax department (${UPLOAD_HINT})`}
           isRequired={true}
           isUploaded={Boolean(noticeFile)}
           fileName={noticeFile?.name}
           fileSize={noticeFile ? formatGstFileSize(noticeFile.size) : undefined}
           file={noticeFile || undefined}
-          accept=".pdf,.png,.jpg,.jpeg"
           onUpload={(_, file) => onNoticeFileChange(file)}
           onRemove={() => onNoticeFileChange(null)}
           onView={() => handleView()}

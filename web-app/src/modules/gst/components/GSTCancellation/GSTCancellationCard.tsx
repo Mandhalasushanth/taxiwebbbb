@@ -1,11 +1,12 @@
-import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
+import { SaveDraftButton } from '@shared/saveDraft'
 import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
 import { GST_STEP_ERROR } from '@modules/gst/validation/gstFieldRules'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
-import { DraftConfirmModal } from '@shared/components'
-import { GSTAmendmentProofUpload as GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
+import { ServiceDraftModal } from '@shared/saveDraft'
+import { useReviewEdit, UPDATE_AND_REVIEW_LABEL } from '@shared/edit'
+import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
 import { GSTCancellationSubmitted } from './GSTCancellationSubmitted'
 import { GSTCancellationFields } from './GSTCancellationFields'
 import { GSTCancellationReview } from './GSTCancellationReview'
@@ -26,6 +27,7 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
 }) => {
   const navigate = useNavigate()
 
+  const flow = useGSTCancellationForm({ onSubmit })
   const {
     gstin,
     setGstin,
@@ -54,14 +56,12 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
     isSubmitted,
     setIsSubmitted,
     referenceNumber,
-    isModalOpen,
     openDraftModal,
-    handleSaveAndExit,
-    handleDiscardAndExit,
-    handleKeepEditing,
-  } = useGSTCancellationForm({ onSubmit })
+  } = flow
 
-  const [isEditMode, setIsEditMode] = React.useState(false)
+  // "Edit" from the review: shared behaviour (Update & Review / Back return to the review)
+  const reviewEdit = useReviewEdit(() => setIsReviewing(true))
+  const { isEditMode } = reviewEdit
 
   if (isSubmitted) {
     return (
@@ -91,23 +91,16 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
           }}
           isSubmitting={isSubmitting}
           onBack={() => {
-            setIsEditMode(false)
+            reviewEdit.cancelEdit()
             setIsReviewing(false)
           }}
           onEdit={() => {
-            setIsEditMode(true)
-            setIsReviewing(false)
+            reviewEdit.startEdit(() => setIsReviewing(false))
           }}
           onSubmit={handleFinalSubmit}
           onSaveDraft={openDraftModal}
         />
-        <DraftConfirmModal
-          isOpen={isModalOpen}
-          serviceTitle="GST Cancellation"
-          onSaveAndExit={handleSaveAndExit}
-          onDiscardAndExit={handleDiscardAndExit}
-          onKeepEditing={handleKeepEditing}
-        />
+        <ServiceDraftModal draft={flow} serviceTitle="GST Cancellation" />
       </>
     )
   }
@@ -151,9 +144,8 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
             <GSTProofUpload
               selectedFile={selectedFile}
               error={errors.file}
-              onFileChange={handleFileChange}
-              onRemoveFile={(e: React.MouseEvent) => {
-                e.stopPropagation()
+              onFileSelect={handleFileChange}
+              onRemoveFile={() => {
                 setSelectedFile(null)
               }}
             />
@@ -197,7 +189,7 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
         <div className="gst-canc-actions-row">
           <button
             type="button"
-            onClick={onAllForms ?? (() => navigate(routePaths.gst.root))}
+            onClick={isEditMode ? reviewEdit.finishEdit : onAllForms ?? (() => navigate(routePaths.gst.root))}
             className="gst-canc-back-pill-btn"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -206,8 +198,8 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
             Back
           </button>
 
-          <div className="gst-actions-group">
-            <GSTSaveDraftButton onClick={openDraftModal} />
+          <div className="form-actions-group">
+            <SaveDraftButton onClick={openDraftModal} />
             <button
               type="submit"
               disabled={isSubmitting}
@@ -216,7 +208,7 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
               {isSubmitting
                 ? 'Submitting...'
                 : isEditMode
-                ? 'Update & Review'
+                ? UPDATE_AND_REVIEW_LABEL
                 : 'Review Cancellation'}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12" />
@@ -226,13 +218,7 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
           </div>
         </div>
       </form>
-      <DraftConfirmModal
-        isOpen={isModalOpen}
-        serviceTitle="GST Cancellation"
-        onSaveAndExit={handleSaveAndExit}
-        onDiscardAndExit={handleDiscardAndExit}
-        onKeepEditing={handleKeepEditing}
-      />
+      <ServiceDraftModal draft={flow} serviceTitle="GST Cancellation" />
     </div>
   )
 }

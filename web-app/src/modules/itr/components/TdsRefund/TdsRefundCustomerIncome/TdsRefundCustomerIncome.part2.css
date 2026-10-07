@@ -1,0 +1,265 @@
+/* TdsRefundCustomerIncome styles (continued): imported right after TdsRefundCustomerIncome.css so rule order is unchanged */
+
+.tds-personal-val--mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.05em;
+}
+.tds-personal-address {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: 0.15rem;
+}
+
+/* Personal info grid - 3 columns for edit mode */
+.tds-personal-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; width: 100%; box-sizing: border-box; }
+.tds-data-row { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.tds-data-row--full,
+.tds-form-group--full { grid-column: 1 / -1; width: 100%; }
+.tds-data-label { font-size: 0.82rem; font-weight: 600; color: var(--secondary-text); }
+.tds-data-value { font-size: 0.95rem; font-weight: 700; color: var(--primary-navy); word-break: break-word; }
+.tds-data-value--mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: 0.05em; }
+.tds-input-inline {
+  height: 36px;
+  border: 1.5px solid var(--primary-orange);
+  border-radius: 8px;
+  padding: 0 0.65rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Bank Account & General Form */
+.tds-bank-form,
+.tds-income-form { display: flex; flex-direction: column; gap: 1.15rem; width: 100%; box-sizing: border-box; }
+.tds-form-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; width: 100%; box-sizing: border-box; }
+.tds-form-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; width: 100%; box-sizing: border-box; }
+.tds-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.tds-label { font-size: 0.84rem; font-weight: 700; color: var(--palette-slate-800); }
+.tds-required { color: var(--palette-red-500); }
+.tds-input {
+  width: 100%;
+  max-width: 100%;
+  height: 44px;
+  border: 1.5px solid var(--grey-300);
+  border-radius: 10px;
+  padding: 0 0.85rem;
+  font-size: 0.92rem;
+  color: var(--primary-navy);
+  outline: none;
+  background: var(--surface);
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+.tds-input::placeholder {
+  color: var(--muted-text);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+}
+.tds-input:focus { border-color: var(--primary-orange); box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15); }
+.tds-input--upper { text-transform: uppercase; font-weight: 700; letter-spacing: 0.04em; }
+.tds-input--upper::placeholder {
+  text-transform: none !important;
+  font-weight: 400 !important;
+  letter-spacing: normal !important;
+  color: var(--muted-text) !important;
+}
+
+.tds-input-password-wrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+.tds-input-password-wrap .tds-input {
+  width: 100%;
+  padding-right: 2.75rem;
+}
+.tds-password-toggle-btn {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  color: var(--secondary-text);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+.tds-password-toggle-btn:hover {
+  color: var(--primary-navy);
+}
+.tds-field-hint { font-size: 0.76rem; color: var(--palette-green-700); font-weight: 600; margin-top: 0.2rem; }
+.tds-field-hint--warning { color: var(--palette-orange-600); }
+.tds-bank-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--palette-emerald-50);
+  border: 1px solid var(--palette-emerald-200);
+  color: var(--palette-emerald-800);
+  border-radius: 8px;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+.tds-bank-status-icon { color: var(--feature-success); display: flex; align-items: center; }
+.tds-type-pills { display: flex; gap: 0.5rem; height: 44px; }
+.tds-type-pill {
+  flex: 1;
+  border: 1.5px solid var(--grey-300);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--grey-700);
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tds-type-pill--active { border-color: var(--primary-orange); background: var(--primary-orange); color: var(--surface); box-shadow: 0 2px 6px rgba(249, 115, 22, 0.3); }
+
+/* Regime Selector */
+.tds-regime-grid,
+.tds-taxRegime-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+.tds-regime-card,
+.tds-taxRegime-card {
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tds-regime-card--active,
+.tds-taxRegime-card--active { border-color: var(--primary-orange); background: var(--palette-orange-50-fffaf5); box-shadow: 0 2px 8px rgba(249, 115, 22, 0.12); }
+.tds-regime-title,
+.tds-taxRegime-title { font-weight: 800; font-size: 0.92rem; color: var(--primary-navy); margin-bottom: 0.2rem; }
+.tds-regime-card--active .tds-regime-title,
+.tds-taxRegime-card--active .tds-taxRegime-title { color: var(--primary-orange); }
+.tds-regime-sub,
+.tds-taxRegime-sub { font-size: 0.76rem; color: var(--secondary-text); font-weight: 500; }
+
+/* Category Toggle cards with conditional subfields */
+.tds-toggles-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.35rem; }
+.tds-toggle-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.85rem 1.1rem;
+  background: var(--palette-slate-50);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+.tds-toggle-header { display: flex; align-items: center; justify-content: space-between; }
+.tds-toggle-info { display: flex; flex-direction: column; gap: 0.15rem; }
+.tds-toggle-title { font-size: 0.92rem; font-weight: 800; color: var(--primary-navy); }
+.tds-toggle-subtitle { font-size: 0.76rem; color: var(--secondary-text); font-weight: 500; }
+.tds-yes-no-group { display: flex; gap: 0.4rem; }
+.tds-yes-no-btn {
+  padding: 0.4rem 1.25rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--grey-300);
+  background: var(--surface);
+  font-weight: 700;
+  font-size: 0.84rem;
+  color: var(--palette-slate-600);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tds-yes-no-btn:hover {
+  border-color: var(--muted-text);
+  color: var(--palette-slate-900);
+}
+.tds-yes-no-btn--active {
+  background: var(--primary-navy);
+  border-color: var(--primary-navy);
+  color: var(--surface);
+  box-shadow: 0 2px 6px rgba(8, 59, 117, 0.25);
+}
+.tds-yes-no-btn--active.tds-yes-no-btn--yes {
+  background: var(--primary-orange);
+  border-color: var(--primary-orange);
+  color: var(--surface);
+  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.35);
+}
+.tds-toggle-subfields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--grey-300);
+  animation: tdsFadeIn 0.2s ease-out;
+}
+.tds-toggle-subfields.tds-form-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.tds-form-error {
+  background: var(--palette-red-50);
+  border: 1px solid var(--palette-red-200);
+  color: var(--palette-red-700);
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Bottom Action Buttons Row */
+.tds-step1-actions-row { display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; margin-top: 0.5rem; }
+.tds-action-back-btn {
+  background: var(--surface);
+  border: 1.5px solid var(--grey-300);
+  border-radius: 12px;
+  color: var(--grey-700);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.8rem 2.25rem;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  transition: all 0.2s ease;
+}
+.tds-action-back-btn:hover { background: var(--subtle-border); border-color: var(--muted-text); color: var(--palette-slate-900); }
+.tds-action-continue-btn {
+  background: linear-gradient(135deg, var(--primary-orange) 0%, var(--palette-orange-600) 100%);
+  border: none;
+  border-radius: 12px;
+  color: var(--surface);
+  font-size: 0.95rem;
+  font-weight: 800;
+  padding: 0.8rem 2.5rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.4);
+  transition: all 0.2s ease;
+}
+.tds-action-continue-btn:hover { background: var(--palette-orange-600); box-shadow: 0 6px 18px rgba(249, 115, 22, 0.5); transform: translateY(-1px); }
+.tds-action-btn-arrow { font-size: 1.1rem; line-height: 1; transition: transform 0.2s ease; }
+.tds-action-continue-btn:hover .tds-action-btn-arrow { transform: translateX(3px); }
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .tds-personal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tds-data-row--full, .tds-form-group--full { grid-column: 1 / -1; }
+}
+@media (max-width: 768px) {
+  .tds-personal-grid, .tds-form-grid-2, .tds-form-grid-3, .tds-regime-grid,
+  .tds-taxRegime-grid, .tds-toggle-subfields.tds-form-grid-2 { grid-template-columns: 1fr; }
+  .tds-prelim-card { flex-direction: column; text-align: center; }
+  .tds-prelim-tag-row { justify-content: center; }
+}

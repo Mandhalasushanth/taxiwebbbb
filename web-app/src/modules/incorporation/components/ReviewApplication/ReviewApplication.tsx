@@ -31,7 +31,10 @@ const ReviewRow: React.FC<{ label: string; value: string }> = ({ label, value })
 
 export const ReviewApplication: React.FC = () => {
   const navigate = useNavigate()
-  const { formData } = useIncorporationFlow()
+  const { formData, draft, reviewEdit } = useIncorporationFlow()
+
+  /** "Edit" opens that step in edit mode; its "Update & Review" button returns here */
+  const editStep = (route: string) => reviewEdit.startEdit(() => navigate(route))
 
   const companyType = formData.companyType || 'pvt_ltd'
   const entityTypeLabel = getEntityStructureLabel(companyType, { full: true })
@@ -83,8 +86,8 @@ export const ReviewApplication: React.FC = () => {
         'bank-acc': 'BANK ACCOUNT',
       }
       const checkedKeys = formData.linkedRegistrations
-        .filter((r: any) => r.checked)
-        .map((r: any) => regMap[r.id] || r.id.toUpperCase())
+        .filter((r) => r.checked)
+        .map((r) => regMap[r.id] || r.id.toUpperCase())
       if (checkedKeys.length > 0) return checkedKeys.join(', ')
     }
     return 'None selected'
@@ -111,31 +114,31 @@ export const ReviewApplication: React.FC = () => {
 
       {/* Cards List */}
       <div className="review-app-list">
-        <ReviewSection title="Company Type & Classification" onEdit={() => navigate(routePaths.incorporation.selectType)}>
+        <ReviewSection title="Company Type & Classification" onEdit={() => editStep(routePaths.incorporation.selectType)}>
           <ReviewRow label="Entity Type" value={entityTypeLabel} />
           <ReviewRow label="Class / Category" value={classCategory} />
         </ReviewSection>
 
-        <ReviewSection title="Business Activity & NIC" onEdit={() => navigate(routePaths.incorporation.companyDetails)}>
+        <ReviewSection title="Business Activity & NIC" onEdit={() => editStep(routePaths.incorporation.companyDetails)}>
           <ReviewRow label="Primary Activity" value={primaryActivity} />
           <ReviewRow label="NIC Code" value={nicCode} />
         </ReviewSection>
 
-        <ReviewSection title="Proposed Company Names" onEdit={() => navigate(routePaths.incorporation.companyDetails)}>
+        <ReviewSection title="Proposed Company Names" onEdit={() => editStep(routePaths.incorporation.companyDetails)}>
           <ReviewRow label="1st Preference" value={firstPreferredName} />
           <ReviewRow label="2nd Preference" value={secondPreferredName} />
         </ReviewSection>
 
-        <ReviewSection title="Registered Office" onEdit={() => navigate(routePaths.incorporation.registeredOffice)}>
+        <ReviewSection title="Registered Office" onEdit={() => editStep(routePaths.incorporation.registeredOffice)}>
           <ReviewRow label="Address" value={address} />
           <ReviewRow label="State & PIN" value={stateAndPin} />
         </ReviewSection>
 
-        <ReviewSection title="Promoters & Shareholding" onEdit={() => navigate(routePaths.incorporation.capitalDetails)}>
+        <ReviewSection title="Promoters & Shareholding" onEdit={() => editStep(routePaths.incorporation.capitalDetails)}>
           {isOpc ? (
             <ReviewRow label={`1. ${primaryDirectorName}`} value="100% Shareholding" />
           ) : (
-            directors.map((dir: any, idx: number) => (
+            directors.map((dir, idx) => (
               <ReviewRow
                 key={dir.id || idx}
                 label={`${idx + 1}. ${dir.fullName || `Director #${idx + 1}`}`}
@@ -146,7 +149,7 @@ export const ReviewApplication: React.FC = () => {
           <ReviewRow label="Authorised Capital" value={authorisedCap} />
         </ReviewSection>
 
-        <ReviewSection title="Linked Registrations" onEdit={() => navigate(routePaths.incorporation.linkedRegistrations)}>
+        <ReviewSection title="Linked Registrations" onEdit={() => editStep(routePaths.incorporation.linkedRegistrations)}>
           <div className="review-linked-reg-text">{getLinkedRegText()}</div>
         </ReviewSection>
       </div>
@@ -155,7 +158,7 @@ export const ReviewApplication: React.FC = () => {
       <StepActionBar
         onBack={() => navigate(routePaths.incorporation.linkedRegistrations)}
         onNext={() => navigate(routePaths.incorporation.feesPayment)}
-        onSaveDraft={() => navigate(routePaths.dashboard)}
+        onSaveDraft={draft.openDraftModal}
         nextLabel="Continue"
       />
     </div>

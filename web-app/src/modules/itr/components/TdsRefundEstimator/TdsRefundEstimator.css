@@ -18,14 +18,14 @@
 }
 
 .tds-est-hero {
-  background-color: #032b69;
+  background-color: var(--palette-blue-800-032b69);
   background-image: url('/assets/images/dashboard-banner-bg.png');
   background-size: cover;
   background-position: center right;
   background-repeat: no-repeat;
   border-radius: 16px;
   padding: 2rem;
-  color: #ffffff;
+  color: var(--surface);
   box-shadow: 0 6px 20px rgba(3, 43, 105, 0.2);
 }
 
@@ -35,7 +35,7 @@
   gap: 0.5rem;
   background: rgba(234, 88, 12, 0.25);
   border: 1px solid rgba(254, 215, 170, 0.4);
-  color: #ffedd5;
+  color: var(--orange-100);
   padding: 0.35rem 0.85rem;
   border-radius: 9999px;
   font-size: 0.8rem;
@@ -58,9 +58,9 @@
 }
 
 .tds-est-success-card {
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   padding: 3rem 2rem;
   text-align: center;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
@@ -72,12 +72,12 @@
 }
 
 .tds-est-success-title {
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 0.5rem 0;
 }
 
 .tds-est-success-desc {
-  color: #475569;
+  color: var(--palette-slate-600);
   max-width: 500px;
   margin: 0 auto 1.5rem auto;
 }
@@ -95,9 +95,9 @@
 }
 
 .tds-est-card {
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 14px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
   display: flex;
@@ -108,9 +108,9 @@
 .tds-est-card-title {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--subtle-border);
   padding-bottom: 0.75rem;
 }
 
@@ -123,28 +123,28 @@
 .tds-est-input-label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #334155;
+  color: var(--grey-700);
   display: flex;
   justify-content: space-between;
 }
 
 .tds-est-input-field {
   padding: 0.65rem 0.85rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--grey-300);
   border-radius: 8px;
   font-size: 0.9rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .tds-est-input-field:focus {
   outline: none;
-  border-color: #f97316;
+  border-color: var(--primary-orange);
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
 }
 
 .tds-est-result-box {
-  background: linear-gradient(180deg, #fffaf5 0%, #ffffff 100%);
-  border: 2px solid #fed7aa;
+  background: linear-gradient(180deg, var(--palette-orange-50-fffaf5) 0%, var(--surface) 100%);
+  border: 2px solid var(--orange-200);
   border-radius: 14px;
   padding: 1.5rem;
   display: flex;
@@ -157,7 +157,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.65rem 0;
-  border-bottom: 1px dashed #e2e8f0;
+  border-bottom: 1px dashed var(--border);
 }
 
 .tds-est-metric-row:last-child {
@@ -170,18 +170,18 @@
 
 .tds-est-metric-label {
   font-size: 0.85rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .tds-est-metric-label--bold {
   font-size: 0.95rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-weight: 700;
 }
 
 .tds-est-metric-label--green {
   font-size: 0.9rem;
-  color: #059669;
+  color: var(--feature-success);
   font-weight: 700;
 }
 
@@ -191,39 +191,39 @@
 
 .tds-est-metric-value--dark {
   font-size: 1.1rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .tds-est-metric-value--medium {
-  color: #334155;
+  color: var(--grey-700);
 }
 
 .tds-est-metric-value--primary {
   font-size: 1.6rem;
-  color: #ea580c;
+  color: var(--palette-orange-600);
 }
 
 .tds-est-metric-value--blue {
-  color: #1e3a8a;
+  color: var(--palette-blue-900-1e3a8a);
 }
 
 .tds-est-metric-value--green {
   font-size: 1.25rem;
-  color: #059669;
+  color: var(--feature-success);
 }
 
 .tds-est-policy-note {
   font-size: 0.8rem;
-  color: #64748b;
-  background: #f8fafc;
+  color: var(--secondary-text);
+  background: var(--palette-slate-50);
   padding: 0.75rem;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 }
 
 .tds-est-claim-now-btn {
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--primary-orange) 0%, var(--palette-orange-600) 100%);
+  color: var(--surface);
   font-weight: 700;
   padding: 0.85rem;
   border-radius: 10px;

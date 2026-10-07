@@ -13,6 +13,7 @@ import { PaymentCardForm } from './PaymentCardForm'
 import { PaymentNetBankingForm } from './PaymentNetBankingForm'
 import { PaymentSummaryCard } from './PaymentSummaryCard'
 import './PaymentCheckout.css'
+import './PaymentCheckout.part2.css'
 import './PaymentFeedback.css'
 
 export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({

@@ -27,28 +27,28 @@
 
 .receipt-actions-bar__btn--back,
 .receipt-actions-bar__btn--secondary {
-  background-color: var(--color-surface, #ffffff);
-  color: var(--color-text, #172033);
-  border: 1px solid var(--color-border, #e2e8f0);
+  background-color: var(--color-surface, var(--surface));
+  color: var(--color-text, var(--primary-text));
+  border: 1px solid var(--color-border, var(--border));
   box-shadow: var(--shadow-xs);
 }
 
 .receipt-actions-bar__btn--back:hover,
 .receipt-actions-bar__btn--secondary:hover {
-  background-color: var(--grey-50, #f8fafc);
-  border-color: var(--grey-300, #cbd5e1);
+  background-color: var(--grey-50, var(--palette-slate-50));
+  border-color: var(--grey-300, var(--grey-300));
   transform: translateY(-1px);
 }
 
 .receipt-actions-bar__btn--primary {
-  background-color: #f97316;
-  color: #ffffff;
+  background-color: var(--primary-orange);
+  color: var(--surface);
   border: 1px solid transparent;
   box-shadow: 0 2px 6px rgba(249, 115, 22, 0.25);
 }
 
 .receipt-actions-bar__btn--primary:hover {
-  background-color: #ea580c;
+  background-color: var(--palette-orange-600);
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(249, 115, 22, 0.35);
 }

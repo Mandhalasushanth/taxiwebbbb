@@ -1,5 +1,6 @@
 import React from 'react'
 import { FileText, Info } from 'lucide-react'
+import { UPLOAD_HINT } from '@shared/upload'
 
 /**
  * Header banner for Step 4 Document Verification
@@ -27,8 +28,7 @@ export const DocumentVerificationHeader: React.FC = () => {
           aria-hidden="true"
         />
         <div className="doc-verification-info-text">
-          <span className="doc-verification-info-line1">Accepted formats: PDF, JPG, PNG</span>
-          <span className="doc-verification-info-line2">Max file size: 5 MB per file</span>
+          <span className="doc-verification-info-line1">Accepted files: {UPLOAD_HINT}</span>
         </div>
       </div>
     </div>

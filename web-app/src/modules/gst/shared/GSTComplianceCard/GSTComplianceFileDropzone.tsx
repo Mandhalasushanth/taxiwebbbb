@@ -1,4 +1,5 @@
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
+import { UPLOAD_HINT } from '@shared/upload'
 import React from 'react'
 import { UploadDocument } from '@shared/components'
 import '@modules/gst/styles/gstTones.css'
@@ -88,7 +89,6 @@ export const FileDropzone: React.FC<{
   onFileRemove?: () => void
   onFileView?: (f: File) => void
   hasError?: boolean
-  accept?: string
   label: string
 }> = ({
   file,
@@ -96,19 +96,17 @@ export const FileDropzone: React.FC<{
   onFileRemove,
   onFileView,
   hasError,
-  accept = '.pdf,.jpg,.jpeg,.png,.xlsx,.xls,.csv',
   label,
 }) => (
   <UploadDocument
     id="compliance-file"
     title={label || 'Supporting Document'}
-    subtitle="PDF, JPG, PNG or Excel up to 10 MB"
+    subtitle={UPLOAD_HINT}
     isRequired={true}
     isUploaded={Boolean(file)}
     fileName={file?.name}
     fileSize={file ? formatGstFileSize(file.size) : undefined}
     file={file || undefined}
-    accept={accept}
     onUpload={(_, f) => onFileSelect(f)}
     onRemove={() => onFileRemove?.()}
     onView={() => file && onFileView?.(file)}

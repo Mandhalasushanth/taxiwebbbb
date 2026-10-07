@@ -1,18 +1,33 @@
-import React, { type ChangeEvent } from 'react'
+import React from 'react'
+import { MapPin } from 'lucide-react'
 import { HSN_SAC_LENGTHS, validatePincodeMatchesState } from '@shared/utils'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
+import { GSTFormSection } from '@modules/gst/shared/GSTFormSection'
+import { GSTSelectField, GSTTextField } from '@modules/gst/shared/GSTFormFields'
 import type { GstBusinessFormData } from '../GSTStepBusiness/GSTStepBusiness'
-import { INDIAN_STATES_AND_UTS } from '@modules/gst/utils/gstBusinessDetails.constants'
+import {
+  INDIAN_STATES_AND_UTS,
+  PLACE_OF_BUSINESS_OPTIONS,
+} from '@modules/gst/utils/gstBusinessDetails.constants'
+
+type AddressField = 'placeOfBusiness' | 'businessAddress' | 'city' | 'district' | 'state' | 'pinCode' | 'hsnSacCode'
 
 export interface GSTBusinessAddressSectionProps {
-  data: Pick<
-    GstBusinessFormData,
-    'businessAddress' | 'city' | 'district' | 'state' | 'pinCode' | 'hsnSacCode'
-  >
+  data: Pick<GstBusinessFormData, AddressField>
   onChange: <K extends keyof GstBusinessFormData>(field: K, value: GstBusinessFormData[K]) => void
   errors?: Record<string, string>
   onClearError?: (field: string) => void
 }
+
+const ADDRESS_FIELDS: readonly AddressField[] = [
+  'placeOfBusiness',
+  'businessAddress',
+  'city',
+  'district',
+  'state',
+  'pinCode',
+  'hsnSacCode',
+]
 
 export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps> = ({
   data,
@@ -20,161 +35,99 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
   errors = {},
   onClearError,
 }) => {
-  const handleBusinessAddressChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    onChange('businessAddress', gstInput.address(e.target.value))
-    onClearError?.('businessAddress')
-  }
-
-  const handleCityChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange('city', gstInput.letters(e.target.value, 50))
-    onClearError?.('city')
-  }
-
-  const handleDistrictChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange('district', gstInput.letters(e.target.value, 50))
-    onClearError?.('district')
-  }
-
-  const handleStateChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    onChange('state', e.target.value)
-    onClearError?.('state')
+  const update = <K extends AddressField>(field: K, value: GstBusinessFormData[K]) => {
+    onChange(field, value)
+    onClearError?.(field)
     // A PIN / State mismatch error is re-evaluated against the new state
-    onClearError?.('pinCode')
+    if (field === 'state') onClearError?.('pinCode')
   }
 
   // Live PIN ↔ State check so a mismatch is visible before pressing Continue
   const pinStateMismatch = errors.pinCode ? null : validatePincodeMatchesState(data.pinCode, data.state)
   const pinCodeMessage = errors.pinCode || pinStateMismatch
 
-  const handlePinCodeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange('pinCode', gstInput.pinCode(e.target.value))
-    onClearError?.('pinCode')
-  }
-
-  const handleHsnSacChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange('hsnSacCode', gstInput.hsnSac(e.target.value))
-    onClearError?.('hsnSacCode')
-  }
-
   return (
-    <>
-      {/* Row 5: Business Address */}
-      <div className="gst-form-group">
-        <label htmlFor="businessAddress" className="gst-form-label">
-          Business Address <span className="gst-required-star">*</span>
-        </label>
-        <input
+    <GSTFormSection
+      id="gst-principal-place"
+      icon={<MapPin />}
+      title="Principal Place of Business"
+      subtitle="Registered business address & HSN details"
+      fields={ADDRESS_FIELDS}
+      errors={errors}
+    >
+      <div className="gst-form-row gst-form-row--split">
+        <GSTSelectField
+          id="placeOfBusiness"
+          label="Place of Business"
+          placeholder="Select place type"
+          options={PLACE_OF_BUSINESS_OPTIONS}
+          value={data.placeOfBusiness}
+          error={errors.placeOfBusiness}
+          onValueChange={(v) => update('placeOfBusiness', v)}
+        />
+        <GSTTextField
           id="businessAddress"
-          type="text"
-          className={`gst-form-input ${errors.businessAddress ? 'gst-input--error' : ''}`}
+          label="Business Address"
           placeholder="Building, street, locality"
           value={data.businessAddress}
-          onChange={handleBusinessAddressChange}
+          error={errors.businessAddress}
+          onValueChange={(v) => update('businessAddress', gstInput.address(v))}
         />
-        {errors.businessAddress && <span className="gst-field-error">{errors.businessAddress}</span>}
       </div>
 
-      {/* Row 6: City & District */}
-      <div className="gst-form-grid gst-form-grid--2col">
-        <div className="gst-form-group">
-          <label htmlFor="city" className="gst-form-label">
-            City <span className="gst-required-star">*</span>
-          </label>
-          <input
-            id="city"
-            type="text"
-            className={`gst-form-input ${errors.city ? 'gst-input--error' : ''}`}
-            placeholder="City"
-            value={data.city}
-            onChange={handleCityChange}
-          />
-          {errors.city && <span className="gst-field-error">{errors.city}</span>}
-        </div>
-
-        <div className="gst-form-group">
-          <label htmlFor="district" className="gst-form-label">
-            District <span className="gst-required-star">*</span>
-          </label>
-          <input
-            id="district"
-            type="text"
-            className={`gst-form-input ${errors.district ? 'gst-input--error' : ''}`}
-            placeholder="District"
-            value={data.district}
-            onChange={handleDistrictChange}
-          />
-          {errors.district && <span className="gst-field-error">{errors.district}</span>}
-        </div>
+      <div className="gst-form-row gst-form-row--pair">
+        <GSTTextField
+          id="city"
+          label="City"
+          placeholder="City"
+          value={data.city}
+          error={errors.city}
+          onValueChange={(v) => update('city', gstInput.letters(v, 50))}
+        />
+        <GSTTextField
+          id="district"
+          label="District"
+          placeholder="District"
+          value={data.district}
+          error={errors.district}
+          onValueChange={(v) => update('district', gstInput.letters(v, 50))}
+        />
       </div>
 
-      {/* Row 7: State & PIN Code */}
-      <div className="gst-form-grid gst-form-grid--2col">
-        <div className="gst-form-group">
-          <label htmlFor="state" className="gst-form-label">
-            State / UT <span className="gst-required-star">*</span>
-          </label>
-          <div className="gst-select-wrapper">
-            <select
-              id="state"
-              className={`gst-form-select ${!data.state ? 'gst-select--placeholder' : ''} ${errors.state ? 'gst-input--error' : ''}`}
-              data-empty={!data.state}
-              value={data.state}
-              onChange={handleStateChange}
-            >
-              <option value="">Select State / UT</option>
-              {INDIAN_STATES_AND_UTS.map((st) => (
-                <option key={st} value={st}>
-                  {st}
-                </option>
-              ))}
-            </select>
-            <span className="gst-select-arrow" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </span>
-          </div>
-          {errors.state && <span className="gst-field-error">{errors.state}</span>}
-        </div>
-
-        <div className="gst-form-group">
-          <label htmlFor="pinCode" className="gst-form-label">
-            PIN Code <span className="gst-required-star">*</span>
-          </label>
-          <input
-            id="pinCode"
-            type="text"
-            inputMode="numeric"
-            maxLength={6}
-            className={`gst-form-input ${pinCodeMessage ? 'gst-input--error' : ''}`}
-            placeholder="Enter your PIN code"
-            value={data.pinCode}
-            onChange={handlePinCodeChange}
-            aria-invalid={Boolean(pinCodeMessage)}
-          />
-          {pinCodeMessage && <span className="gst-field-error" role="alert">{pinCodeMessage}</span>}
-        </div>
-      </div>
-
-      {/* Row 8: Primary HSN / SAC Code */}
-      <div className="gst-form-group">
-        <label htmlFor="hsnSacCode" className="gst-form-label">
-          Primary HSN / SAC Code <span className="gst-required-star">*</span>
-        </label>
-        <input
-          id="hsnSacCode"
-          name="hsnSacCode"
-          type="text"
+      <div className="gst-form-row gst-form-row--pair">
+        <GSTSelectField
+          id="state"
+          label="State / UT"
+          placeholder="Select"
+          options={INDIAN_STATES_AND_UTS}
+          value={data.state}
+          error={errors.state}
+          onValueChange={(v) => update('state', v)}
+        />
+        <GSTTextField
+          id="pinCode"
+          label="PIN Code"
+          placeholder="560001"
           inputMode="numeric"
-          pattern="[0-9]*"
-          maxLength={Math.max(...HSN_SAC_LENGTHS)}
-          className={`gst-form-input ${errors.hsnSacCode ? 'gst-input--error' : ''}`}
-          placeholder={`Enter ${HSN_SAC_LENGTHS.join(' / ')} digit HSN or SAC code`}
-          value={data.hsnSacCode}
-          onChange={handleHsnSacChange}
+          maxLength={6}
+          value={data.pinCode}
+          error={pinCodeMessage}
+          alertError
+          onValueChange={(v) => update('pinCode', gstInput.pinCode(v))}
         />
-        {errors.hsnSacCode && <span className="gst-field-error">{errors.hsnSacCode}</span>}
       </div>
-    </>
+
+      <GSTTextField
+        id="hsnSacCode"
+        label="Primary HSN / SAC Code"
+        placeholder="e.g. 998311"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        maxLength={Math.max(...HSN_SAC_LENGTHS)}
+        value={data.hsnSacCode}
+        error={errors.hsnSacCode}
+        onValueChange={(v) => update('hsnSacCode', gstInput.hsnSac(v))}
+      />
+    </GSTFormSection>
   )
 }

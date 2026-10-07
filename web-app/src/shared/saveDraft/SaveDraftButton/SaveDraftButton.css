@@ -1,0 +1,63 @@
+.save-draft-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6875rem 1.375rem;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: 0.625rem;
+  background: var(--surface);
+  color: var(--color-text-muted);
+  box-shadow: var(--shadow-xs);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.18s ease-in-out;
+}
+
+.save-draft-btn:hover:not(:disabled) {
+  border-color: var(--color-text-subtle);
+  background: var(--color-bg);
+  color: var(--color-text);
+  transform: translateY(-1px);
+}
+
+.save-draft-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.save-draft-btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.save-draft-btn__icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Right side of a form footer: Save Draft next to the main action */
+.form-actions-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .save-draft-btn {
+    width: 100%;
+  }
+
+  .form-actions-group {
+    width: 100%;
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+}

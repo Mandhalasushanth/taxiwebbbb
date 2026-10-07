@@ -1,5 +1,5 @@
 .reg-card {
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 28px;
   box-shadow: 0 24px 60px rgba(0, 8, 25, 0.42), 0 2px 10px rgba(0, 0, 0, 0.08);
   padding: clamp(1.75rem, 2.5vh, 2.35rem) clamp(1.75rem, 2.5vw, 2.65rem);
@@ -17,7 +17,7 @@
   display: block;
   width: 44px;
   height: 3.5px;
-  background: linear-gradient(90deg, #ff6a00 0%, #ff8c33 100%);
+  background: linear-gradient(90deg, var(--palette-orange-500) 0%, var(--palette-orange-400-ff8c33) 100%);
   border-radius: 999px;
   margin-bottom: 0.85rem;
 }
@@ -32,10 +32,10 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
+  background: var(--subtle-border);
+  border: 1px solid var(--border);
   border-radius: 9999px;
-  color: #475569;
+  color: var(--palette-slate-600);
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
@@ -46,9 +46,9 @@
 }
 
 .reg-card__back-btn:hover {
-  background: #e2e8f0;
-  border-color: #cbd5e1;
-  color: #0f172a;
+  background: var(--border);
+  border-color: var(--grey-300);
+  color: var(--palette-slate-900);
   transform: translateX(-2px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
@@ -67,9 +67,9 @@
   display: inline-flex;
   align-items: center;
   padding: 0.22rem 0.65rem;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1d4ed8;
+  background: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-200);
+  color: var(--palette-blue-700);
   font-size: 0.75rem;
   font-weight: 700;
   border-radius: 999px;
@@ -79,9 +79,9 @@
 }
 
 .reg-card__step-badge--step2 {
-  background: #fff7ed;
-  border-color: #fed7aa;
-  color: #ea580c;
+  background: var(--palette-orange-50);
+  border-color: var(--orange-200);
+  color: var(--palette-orange-600);
   margin-bottom: 0;
 }
 
@@ -93,7 +93,7 @@
   margin: 0 0 4px 0;
   font-size: clamp(1.4rem, 1.65vw, 1.9rem);
   font-weight: 800;
-  color: #0b1f44;
+  color: var(--palette-blue-800);
   letter-spacing: -0.025em;
   line-height: 1.2;
 }
@@ -101,14 +101,14 @@
 .reg-card__subtitle {
   margin: 0;
   font-size: clamp(0.8125rem, 0.85vw, 0.9375rem);
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 400;
 }
 
 .reg-card__error-banner {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #dc2626;
+  background: var(--palette-red-50);
+  border: 1px solid var(--palette-red-200);
+  color: var(--error);
   padding: 0.75rem 1rem;
   border-radius: 10px;
   font-size: 0.85rem;
@@ -143,21 +143,21 @@
 }
 
 .reg-card__submit-btn--active {
-  background: linear-gradient(135deg, #ff6a00 0%, #ea580c 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--palette-orange-500) 0%, var(--palette-orange-600) 100%);
+  color: var(--surface);
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(249, 115, 22, 0.35);
 }
 
 .reg-card__submit-btn--active:hover {
-  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+  background: linear-gradient(135deg, var(--palette-orange-600) 0%, var(--palette-orange-700) 100%);
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(249, 115, 22, 0.45);
 }
 
 .reg-card__submit-btn--disabled {
-  background: #f1f5f9;
-  color: #94a3b8;
+  background: var(--subtle-border);
+  color: var(--muted-text);
   cursor: not-allowed;
 }
 

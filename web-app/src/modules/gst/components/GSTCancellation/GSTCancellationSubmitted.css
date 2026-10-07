@@ -1,6 +1,6 @@
 .gst-canc-success-wrapper {
   width: 100%;
-  max-width: 580px;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -27,7 +27,7 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background-color: #22c55e;
+  background-color: var(--palette-green-500);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,14 +44,14 @@
 .gst-canc-success-title {
   font-size: 1.85rem;
   font-weight: 800;
-  color: #083b75;
+  color: var(--primary-navy);
   margin: 0 0 0.5rem 0;
   letter-spacing: -0.02em;
 }
 
 .gst-canc-success-sub1 {
   font-size: 0.9375rem;
-  color: #475569;
+  color: var(--palette-slate-600);
   margin: 0 0 0.25rem 0;
   font-weight: 500;
   line-height: 1.45;
@@ -59,7 +59,7 @@
 
 .gst-canc-success-sub2 {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
   line-height: 1.4;
 }
@@ -67,8 +67,8 @@
 /* White Details Card */
 .gst-canc-details-card {
   width: 100%;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 1.25rem 1.75rem;
   margin-bottom: 2rem;
@@ -82,7 +82,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.9rem 0;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--subtle-border);
   font-size: 0.9375rem;
 }
 
@@ -92,18 +92,18 @@
 }
 
 .gst-canc-detail-label {
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 500;
 }
 
 .gst-canc-detail-val {
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-weight: 700;
   text-align: right;
 }
 
 .gst-canc-status-val {
-  color: #16a34a;
+  color: var(--success);
   font-weight: 700;
   display: inline-flex;
   align-items: center;
@@ -111,7 +111,7 @@
 }
 
 .gst-canc-dot {
-  color: #16a34a;
+  color: var(--success);
   font-size: 0.65rem;
 }
 
@@ -135,8 +135,8 @@
   justify-content: center;
   gap: 0.625rem;
   padding: 0.875rem 1.75rem;
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--primary-orange) 0%, var(--palette-orange-600) 100%);
+  color: var(--surface);
   border: none;
   border-radius: 9999px;
   font-size: 0.9375rem;
@@ -162,9 +162,9 @@
   justify-content: center;
   gap: 0.625rem;
   padding: 0.875rem 1.75rem;
-  background-color: #ffffff;
-  color: #2563eb;
-  border: 1.5px solid #2563eb;
+  background-color: var(--surface);
+  color: var(--palette-blue-600);
+  border: 1.5px solid var(--palette-blue-600);
   border-radius: 9999px;
   font-size: 0.9375rem;
   font-weight: 700;
@@ -173,7 +173,7 @@
 }
 
 .gst-canc-my-app-btn:hover {
-  background-color: #eff6ff;
+  background-color: var(--palette-blue-50);
   transform: translateY(-1px);
 }
 

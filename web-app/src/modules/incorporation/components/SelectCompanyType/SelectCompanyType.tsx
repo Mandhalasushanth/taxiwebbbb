@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { companyTypeOptions } from '../../data/companyRegistrationData'
 import { StepActionBar } from '@shared/components'
@@ -7,8 +6,7 @@ import { useIncorporationFlow } from '../../hooks'
 import './SelectCompanyType.css'
 
 export const SelectCompanyType: React.FC = () => {
-  const navigate = useNavigate()
-  const { formData, updateFormData } = useIncorporationFlow()
+  const { formData, updateFormData, draft, reviewEdit, goToStep } = useIncorporationFlow()
   const selectedType = formData.companyType
   const [error, setError] = useState<string>('')
 
@@ -17,7 +15,7 @@ export const SelectCompanyType: React.FC = () => {
       setError('Please select a company type before proceeding.')
       return
     }
-    navigate(routePaths.incorporation.companyDetails)
+    goToStep(routePaths.incorporation.companyDetails)
   }
 
   const renderIcon = (icon: string) => {
@@ -132,9 +130,10 @@ export const SelectCompanyType: React.FC = () => {
 
       {/* Footer Navigation */}
       <StepActionBar
-        onBack={() => navigate(routePaths.incorporation.root)}
+        onBack={() => goToStep(routePaths.incorporation.root)}
         onNext={handleContinue}
-        onSaveDraft={() => navigate(routePaths.dashboard)}
+        isEditMode={reviewEdit.isEditMode}
+        onSaveDraft={draft.openDraftModal}
         nextLabel="Continue"
       />
     </div>

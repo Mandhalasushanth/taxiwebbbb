@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { filterDigits, isPositiveNumber } from '../../utils/validation'
 import { StepActionBar } from '@shared/components'
@@ -7,8 +6,9 @@ import { useIncorporationFlow } from '../../hooks'
 import './CapitalDetails.css'
 
 export const CapitalDetails: React.FC = () => {
-  const navigate = useNavigate()
-  const { formData, updateFormData } = useIncorporationFlow()
+  const { formData, updateFormData, draft, reviewEdit, goToStep } = useIncorporationFlow()
+  // Directors holding equity, shown in the shareholding pattern
+  const shareholders = (formData.promoters || []).filter((d) => d.fullName && Number(d.equityShares || 0) > 0)
 
   const companyType = formData.companyType || 'pvt_ltd'
   const isOpc = companyType === 'opc'
@@ -67,7 +67,7 @@ export const CapitalDetails: React.FC = () => {
     }
 
     setErrors({})
-    navigate(routePaths.incorporation.documentsKyc)
+    goToStep(routePaths.incorporation.documentsKyc)
   }
 
   return (
@@ -171,9 +171,8 @@ export const CapitalDetails: React.FC = () => {
         )}
 
         <div className="capital-details-pattern-list">
-          {((formData.promoters as any[]) || [])
-            .filter((d: any) => d.fullName && Number(d.equityShares || 0) > 0)
-            .map((sh: any, idx: number) => (
+          {shareholders
+            .map((sh, idx) => (
               <div key={sh.id || idx} className="capital-details-shareholder-row">
                 <div className="capital-details-shareholder-info">
                   <span className="capital-details-shareholder-name">{sh.fullName}</span>
@@ -184,7 +183,7 @@ export const CapitalDetails: React.FC = () => {
                 <span className="capital-details-shareholder-badge">{sh.shareholdingPercent || '100%'}</span>
               </div>
             ))}
-          {((formData.promoters as any[]) || []).filter((d: any) => d.fullName && Number(d.equityShares || 0) > 0).length === 0 && (
+          {shareholders.length === 0 && (
             <div className="capital-details-empty-notice">
               No director equity shares allocated yet. Shares will be allocated based on subscribed capital.
             </div>
@@ -228,9 +227,10 @@ export const CapitalDetails: React.FC = () => {
 
       {/* Footer Navigation */}
       <StepActionBar
-        onBack={() => navigate(routePaths.incorporation.promoterDetails)}
+        onBack={() => goToStep(routePaths.incorporation.promoterDetails)}
         onNext={handleContinue}
-        onSaveDraft={() => navigate(routePaths.dashboard)}
+        isEditMode={reviewEdit.isEditMode}
+        onSaveDraft={draft.openDraftModal}
         nextLabel="Continue"
       />
     </div>

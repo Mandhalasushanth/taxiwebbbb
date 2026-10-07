@@ -4,8 +4,8 @@
 
 .revision-amount-card {
   width: 100%;
-  background: #ffffff;
-  border: 1.5px solid #cbd5e1;
+  background: var(--surface);
+  border: 1.5px solid var(--grey-300);
   border-radius: 16px;
   padding: 1.25rem 1.5rem;
   box-sizing: border-box;
@@ -15,7 +15,7 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    border-color: #94a3b8;
+    border-color: var(--muted-text);
   }
 
   .correction-card-header {
@@ -25,10 +25,10 @@
     .correction-card-title {
       font-size: 1.05rem;
       font-weight: 800;
-      color: #0f172a;
+      color: var(--palette-slate-900);
 
       .required-star {
-        color: #ef4444;
+        color: var(--palette-red-500);
         margin-left: 0.25rem;
       }
     }
@@ -41,13 +41,13 @@
 
     .original-label {
       font-size: 0.95rem;
-      color: #64748b;
+      color: var(--secondary-text);
       font-weight: 500;
     }
 
     .original-value {
       font-size: 0.975rem;
-      color: #0f172a;
+      color: var(--palette-slate-900);
       font-weight: 700;
     }
   }
@@ -59,7 +59,7 @@
 
     .revised-label {
       font-size: 0.95rem;
-      color: #1e293b;
+      color: var(--palette-slate-800);
       font-weight: 700;
     }
 
@@ -72,7 +72,7 @@
         left: 1.15rem;
         top: 50%;
         transform: translateY(-50%);
-        color: #64748b;
+        color: var(--secondary-text);
         font-weight: 600;
         font-size: 1rem;
         pointer-events: none;
@@ -82,34 +82,34 @@
         width: 100%;
         padding: 0.95rem 1.15rem 0.95rem 2.25rem;
         border-radius: 12px;
-        border: 1.5px solid #cbd5e1;
-        background: #ffffff;
+        border: 1.5px solid var(--grey-300);
+        background: var(--surface);
         font: 600 0.975rem/1.4 inherit;
-        color: #0f172a;
+        color: var(--palette-slate-900);
         outline: none;
         box-sizing: border-box;
         transition: border-color 0.2s, box-shadow 0.2s;
 
         &::placeholder {
-          color: #94a3b8;
+          color: var(--muted-text);
           font-weight: 400;
         }
 
         &:focus {
-          border-color: #ea580c;
+          border-color: var(--palette-orange-600);
           box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
         }
 
         &.input-error {
-          border-color: #ef4444;
-          background-color: #fef2f2;
+          border-color: var(--palette-red-500);
+          background-color: var(--palette-red-50);
         }
       }
     }
 
     .correction-field-error {
       font-size: 0.825rem;
-      color: #ef4444;
+      color: var(--palette-red-500);
       font-weight: 600;
     }
   }
@@ -119,29 +119,29 @@
     justify-content: space-between;
     align-items: center;
     padding-top: 0.4rem;
-    border-top: 1px dashed #e2e8f0;
+    border-top: 1px dashed var(--border);
 
     .change-label {
       font-size: 0.95rem;
-      color: #64748b;
+      color: var(--secondary-text);
       font-weight: 500;
     }
 
     .change-value {
       font-size: 1rem;
       font-weight: 800;
-      color: #0f172a;
+      color: var(--palette-slate-900);
 
       &.positive {
-        color: #16a34a;
+        color: var(--success);
       }
 
       &.negative {
-        color: #dc2626;
+        color: var(--error);
       }
 
       &.neutral {
-        color: #64748b;
+        color: var(--secondary-text);
       }
     }
   }

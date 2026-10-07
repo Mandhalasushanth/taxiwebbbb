@@ -220,7 +220,7 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
             onBack={onCancel}
             onSaveDraft={onSaveDraft}
             nextType="submit"
-            nextLabel={isEditMode ? 'Update & Review' : 'Continue'}
+            isEditMode={isEditMode}
           />
         </form>
       </div>

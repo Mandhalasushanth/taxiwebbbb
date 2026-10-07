@@ -1,0 +1,5 @@
+{
+  // Lets editors opened on the src folder find the real app config one level up.
+  // Builds use ../tsconfig.json (project references) and are unaffected.
+  "extends": "../tsconfig.app.json"
+}

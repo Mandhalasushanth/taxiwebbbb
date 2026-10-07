@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { CalendarDays, Check, Briefcase, FileText, Calculator } from 'lucide-react'
 import './PreviousYearItr.css'
+import './PreviousYearItr.part2.css'
 
 export interface AssessmentYearOptionItem {
   id: string

@@ -10,20 +10,20 @@
   margin: 0 0 0.35rem 0;
   font-size: 1.2rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .personal-documents-header__subtitle {
   margin: 0 0 1rem 0;
   font-size: 0.88rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.4;
 }
 
 /* Mandatory Document Progress Card */
 .personal-doc-progress-card {
-  background: #ffffff;
-  border: 1.5px solid #edf2f7;
+  background: var(--surface);
+  border: 1.5px solid var(--palette-sky-100);
   border-radius: 16px;
   padding: 1.25rem 1.5rem;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
@@ -41,19 +41,19 @@
 .personal-doc-progress-card__label {
   font-size: 0.88rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .personal-doc-progress-card__val {
   font-size: 0.88rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .personal-doc-progress-card__track {
   width: 100%;
   height: 8px;
-  background: #e2e8f0;
+  background: var(--border);
   border-radius: 9999px;
   margin-top: 0.75rem;
   overflow: hidden;
@@ -61,7 +61,7 @@
 
 .personal-doc-progress-card__bar {
   height: 100%;
-  background: #2563eb;
+  background: var(--palette-blue-600);
   border-radius: 9999px;
   transition: width 0.3s ease;
 }

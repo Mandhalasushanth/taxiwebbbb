@@ -8,8 +8,8 @@ import type {
   BankCorrectionState,
   DocumentTypeId,
   UploadedDocument,
-} from '../../../types/revisedItr.types'
-import { calculateTaxLiability } from '../../../validation/revisedItrValidation'
+} from '@modules/itr/types/revisedItr.types'
+import { calculateTaxLiability } from '@modules/itr/validation/revisedItrValidation'
 import './RevisionReviewSummary.css'
 
 export interface RevisionReviewSummaryProps {

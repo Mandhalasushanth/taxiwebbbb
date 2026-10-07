@@ -6,6 +6,7 @@ import { createDocDef } from '@modules/loans/documents/loanDocument.types'
 import type { LoanDocumentDefinition } from '@modules/loans/documents/loanDocument.types'
 import type { HomeLoanData } from '@modules/loans/types/homeLoan.types'
 import './Documents.css'
+import { UPLOAD_HINT } from '@shared/upload'
 
 export interface DocumentsProps {
   formData?: HomeLoanData
@@ -221,7 +222,7 @@ export const Documents: React.FC<DocumentsProps> = ({
           <div className={`home-loan-docs__progress-fill ${getProgressFillClass(progressPercent)}`} />
         </div>
         <p className="home-loan-docs__progress-subtitle">
-          Supported formats: PDF, JPG, PNG, Word (.docx), Excel (.xlsx) · Max 10MB per file
+          Supported files: {UPLOAD_HINT} per file
         </p>
       </div>
 

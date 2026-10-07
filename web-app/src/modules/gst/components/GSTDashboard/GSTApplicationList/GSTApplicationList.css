@@ -1,6 +1,6 @@
 .gst-app-list-container {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
@@ -18,20 +18,20 @@
 .gst-app-list-header__title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 0.25rem 0;
 }
 
 .gst-app-list-header__count {
   font-size: 0.84rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
 }
 
 .gst-app-list-tabs {
   display: flex;
   align-items: center;
-  background: #f1f5f9;
+  background: var(--subtle-border);
   padding: 3px;
   border-radius: 8px;
   gap: 2px;
@@ -42,7 +42,7 @@
   border: none;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--secondary-text);
   padding: 0.4rem 0.85rem;
   border-radius: 6px;
   cursor: pointer;
@@ -51,8 +51,8 @@
 }
 
 .gst-app-list-tab--active {
-  background: #ffffff;
-  color: #083B75;
+  background: var(--surface);
+  color: var(--primary-navy);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
@@ -66,18 +66,18 @@
   display: flex;
   align-items: center;
   padding: 1.1rem 1.25rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 10px;
   gap: 1.25rem;
   transition: all 0.2s ease;
-  background: #ffffff;
+  background: var(--surface);
   text-decoration: none;
   color: inherit;
 }
 
 .gst-app-item:hover {
   transform: translateY(-2px);
-  border-color: #cbd5e1;
+  border-color: var(--grey-300);
   box-shadow: 0 4px 14px rgba(8, 59, 117, 0.06);
 }
 
@@ -104,13 +104,13 @@
 .gst-app-item__title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 0.35rem 0;
 }
 
 .gst-app-item__meta {
   font-size: 0.8125rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -153,7 +153,7 @@
 .gst-app-item__progress-bar {
   width: 120px;
   height: 6px;
-  background: #f1f5f9;
+  background: var(--subtle-border);
   border-radius: 9999px;
   overflow: hidden;
 }
@@ -165,40 +165,40 @@
 
 .gst-app-item__progress-text {
   font-size: 0.72rem;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 500;
 }
 
 /* Theme Variants */
 .theme-blue .gst-app-item__icon-wrapper,
 .theme-blue .gst-app-item__badge {
-  background-color: #e0f2fe;
-  color: #0284c7;
+  background-color: var(--palette-sky-100-e0f2fe);
+  color: var(--palette-sky-600);
 }
 
 .theme-blue .gst-app-item__badge-dot,
 .theme-blue .gst-app-item__progress-fill {
-  --gst-progress-color: #0284c7;
+  --gst-progress-color: var(--palette-sky-600);
 }
 
 .theme-orange .gst-app-item__icon-wrapper,
 .theme-orange .gst-app-item__badge {
-  background-color: #fff3e0;
-  color: #f97316;
+  background-color: var(--palette-orange-100-fff3e0);
+  color: var(--primary-orange);
 }
 
 .theme-orange .gst-app-item__badge-dot,
 .theme-orange .gst-app-item__progress-fill {
-  --gst-progress-color: #f97316;
+  --gst-progress-color: var(--primary-orange);
 }
 
 /* Empty State */
 .gst-app-list-empty {
   text-align: center;
   padding: 2.5rem 1.5rem;
-  background: #f8fafc;
+  background: var(--palette-slate-50);
   border-radius: 12px;
-  border: 1.5px dashed #cbd5e1;
+  border: 1.5px dashed var(--grey-300);
 }
 
 .gst-app-list-empty--filtered {
@@ -213,8 +213,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #eaf1fe;
-  color: #083B75;
+  background: var(--light-blue);
+  color: var(--primary-navy);
 }
 
 .gst-app-list-empty__icon svg {
@@ -225,13 +225,13 @@
 .gst-app-list-empty__title {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 0.5rem 0;
 }
 
 .gst-app-list-empty__text {
   font-size: 0.88rem;
-  color: #64748b;
+  color: var(--secondary-text);
   max-width: 480px;
   margin: 0 auto 1.25rem;
   line-height: 1.55;
@@ -243,8 +243,8 @@
   justify-content: center;
   padding: 0.65rem 1.4rem;
   border-radius: 9999px;
-  background-color: #F97316;
-  color: #ffffff;
+  background-color: var(--primary-orange);
+  color: var(--surface);
   font-size: 0.875rem;
   font-weight: 700;
   text-decoration: none;
@@ -253,7 +253,7 @@
 }
 
 .gst-app-list-empty__btn:hover {
-  background-color: #ea580c;
+  background-color: var(--palette-orange-600);
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(249, 115, 22, 0.45);
 }

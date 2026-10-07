@@ -8,7 +8,7 @@
   flex-direction: column;
   gap: 1.25rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1.5px solid #e2e8f0;
+  border-bottom: 1.5px solid var(--border);
   width: 100%;
 }
 
@@ -22,7 +22,7 @@
   margin: 0;
   font-size: 1.95rem;
   font-weight: 800;
-  color: #083b75; /* Navy Blue */
+  color: var(--primary-navy); /* Navy Blue */
   letter-spacing: -0.02em;
 }
 
@@ -30,7 +30,7 @@
   margin: 0;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #f97316; /* Orange accent */
+  color: var(--primary-orange); /* Orange accent */
 }
 
 /* 5-Step Desktop Stepper Track - Full Width Responsive */
@@ -71,24 +71,24 @@
 }
 
 .itr-stepper-dot--active {
-  background: #f97316;
-  color: #ffffff;
-  border: 2.5px solid #f97316;
+  background: var(--primary-orange);
+  color: var(--surface);
+  border: 2.5px solid var(--primary-orange);
   box-shadow: 0 4px 14px rgba(249, 115, 22, 0.42);
   transform: scale(1.06);
 }
 
 .itr-stepper-dot--completed {
-  background: #083b75;
-  color: #ffffff;
-  border: 2.5px solid #083b75;
+  background: var(--primary-navy);
+  color: var(--surface);
+  border: 2.5px solid var(--primary-navy);
   box-shadow: 0 4px 14px rgba(8, 59, 117, 0.35);
 }
 
 .itr-stepper-dot--inactive {
-  background: #ffffff;
-  color: #94a3b8;
-  border: 2px solid #cbd5e1;
+  background: var(--surface);
+  color: var(--muted-text);
+  border: 2px solid var(--grey-300);
 }
 
 .itr-stepper-track .itr-stepper-line,
@@ -99,7 +99,7 @@
   flex: 1 1 0%;
   min-width: 1.5rem;
   height: 3px;
-  background: #cbd5e1;
+  background: var(--grey-300);
   align-self: flex-start;
   margin-top: 19px;
   margin-left: 0.5rem;
@@ -112,19 +112,19 @@
 
 .itr-stepper-track .itr-stepper-line--completed,
 .itr-stepper-line--completed {
-  background: #083b75;
+  background: var(--primary-navy);
 }
 
 .itr-stepper-label {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--secondary-text);
   white-space: nowrap;
   text-align: center;
 }
 
 .itr-stepper-label--active {
-  color: #f97316;
+  color: var(--primary-orange);
   font-weight: 700;
 }
 

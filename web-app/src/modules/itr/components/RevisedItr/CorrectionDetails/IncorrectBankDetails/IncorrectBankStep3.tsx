@@ -1,5 +1,5 @@
 import React from 'react'
-import type { BankCorrectionState } from '../../../../types/revisedItr.types'
+import type { BankCorrectionState } from '@modules/itr/types/revisedItr.types'
 import '../Step3CorrectionBase.css'
 
 interface IncorrectBankStep3Props {

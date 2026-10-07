@@ -1,4 +1,3 @@
-import { gstFileSizeError } from '@modules/gst/utils/gstFile'
 import { useState, useRef, useMemo, type ChangeEvent, type FormEvent } from 'react'
 import { detectGstFieldKind, gstRuleForField } from '@modules/gst/validation/gstFieldRules'
 import { gstInputForKind } from '@modules/gst/utils/gstInputFormatters'
@@ -36,17 +35,10 @@ export const useGSTAmendmentForm = ({
     setErrors({})
   }
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      const sizeError = gstFileSizeError(file)
-      if (sizeError) {
-        setErrors((prev) => ({ ...prev, document: sizeError }))
-        return
-      }
-      setSelectedFile(file)
-      setErrors((prev) => ({ ...prev, document: undefined }))
-    }
+  // Type, size and content are already checked by the shared upload rule
+  const handleFileChange = (file: File) => {
+    setSelectedFile(file)
+    setErrors((prev) => ({ ...prev, document: undefined }))
   }
 
   const handleBrowseClick = () => {

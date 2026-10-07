@@ -57,9 +57,7 @@ export class LocalStorageUserRepository implements IUserRepository {
       ) || {}
 
       // Normalize legacy and new schema records
-      const normalized: Record<string, StoredUserRecord> = {}
-      for (const [key, val] of Object.entries(records)) {
-        if (!val) continue
+      const toStored = ([key, val]: [string, NonNullable<(typeof records)[string]>]): [string, StoredUserRecord] => {
         const profile: AuthUser = (val as StoredUserRecord).profile || (val as { user?: AuthUser }).user || {
           id: `usr_${key}`,
           fullName: '',
@@ -74,7 +72,7 @@ export class LocalStorageUserRepository implements IUserRepository {
         const passcode = val.passcode || ''
         const hasPass = Boolean(passcode && passcode.trim().length > 0)
 
-        normalized[key] = {
+        const normalized: StoredUserRecord = {
           mobile: key,
           passcode,
           hasPasscode: hasPass,
@@ -84,8 +82,13 @@ export class LocalStorageUserRepository implements IUserRepository {
           createdAt: (val as StoredUserRecord).createdAt || new Date().toISOString(),
           updatedAt: (val as StoredUserRecord).updatedAt || new Date().toISOString(),
         }
+        return [key, normalized]
       }
-      return normalized
+      return Object.fromEntries(
+        Object.entries(records)
+          .filter((entry): entry is [string, NonNullable<(typeof records)[string]>] => Boolean(entry[1]))
+          .map(toStored)
+      )
     } catch {
       return {}
     }

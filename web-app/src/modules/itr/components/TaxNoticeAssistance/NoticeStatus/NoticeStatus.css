@@ -20,8 +20,8 @@
   width: 76px;
   height: 76px;
   border-radius: 50%;
-  background: #22c55e;
-  color: #ffffff;
+  background: var(--palette-green-500);
+  color: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,14 +37,14 @@
 .notice-status-hero__title {
   font-size: 1.65rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 0.5rem;
   letter-spacing: -0.015em;
 }
 
 .notice-status-hero__desc {
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--secondary-text);
   max-width: 600px;
   line-height: 1.5;
   margin: 0;
@@ -68,8 +68,8 @@
 
 /* Left Column: Timeline Stepper Card */
 .notice-status-timeline-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 20px;
   padding: 1.5rem 1.75rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
@@ -101,7 +101,7 @@
   left: 12px;
   bottom: 0;
   width: 2px;
-  background: #22c55e;
+  background: var(--palette-green-500);
 }
 
 .notice-status-step:last-child::after {
@@ -109,7 +109,7 @@
 }
 
 .notice-status-step--pending::after {
-  background: #e2e8f0;
+  background: var(--border);
 }
 
 .notice-status-step__dot {
@@ -124,14 +124,14 @@
 }
 
 .notice-status-step__dot--completed {
-  background: #22c55e;
-  color: #ffffff;
+  background: var(--palette-green-500);
+  color: var(--surface);
 }
 
 .notice-status-step__dot--pending {
-  background: #ffffff;
-  border: 2px solid #cbd5e1;
-  color: #94a3b8;
+  background: var(--surface);
+  border: 2px solid var(--grey-300);
+  color: var(--muted-text);
 }
 
 .notice-status-step__content {
@@ -150,31 +150,31 @@
 .notice-status-step__title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .notice-status-step__tag {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .notice-status-step__tag--green {
-  color: #16a34a;
+  color: var(--success);
   font-weight: 700;
 }
 
 .notice-status-step__desc {
   font-size: 0.8125rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 3px 0 0;
   line-height: 1.4;
 }
 
 /* Right Column: Key Details Table Card */
 .notice-status-details-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 20px;
   padding: 1.5rem 1.75rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
@@ -192,7 +192,7 @@
   align-items: center;
   gap: 1rem;
   padding-bottom: 0.95rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--subtle-border);
 }
 
 .notice-status-table__row:last-child {
@@ -202,13 +202,13 @@
 
 .notice-status-table__label {
   font-size: 0.9rem;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 500;
 }
 
 .notice-status-table__value {
   font-size: 0.9375rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-weight: 700;
   text-align: right;
   word-break: break-word;
@@ -221,9 +221,9 @@
   border-radius: 9999px;
   font-size: 0.8125rem;
   font-weight: 700;
-  background: #dcfce7;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
+  background: var(--palette-green-100);
+  color: var(--palette-green-700);
+  border: 1px solid var(--palette-green-200);
 }
 
 /* Actions at Bottom */
@@ -257,19 +257,19 @@
 }
 
 .notice-status-actions__btn--download {
-  background: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  color: #2563eb;
+  background: var(--surface);
+  border: 1.5px solid var(--grey-300);
+  color: var(--palette-blue-600);
 }
 
 .notice-status-actions__btn--download:hover {
-  background: #eff6ff;
-  border-color: #93c5fd;
+  background: var(--palette-blue-50);
+  border-color: var(--palette-blue-300);
 }
 
 .notice-status-actions__btn--primary {
-  background: linear-gradient(135deg, #ff6a00 0%, #ff8533 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--palette-orange-500) 0%, var(--palette-orange-400-ff8533) 100%);
+  color: var(--surface);
   border: none;
   box-shadow: 0 4px 14px rgba(255, 106, 0, 0.28);
 }

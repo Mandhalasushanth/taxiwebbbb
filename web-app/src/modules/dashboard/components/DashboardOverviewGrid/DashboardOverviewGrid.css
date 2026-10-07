@@ -8,8 +8,8 @@
 .overview-card {
   display: flex;
   flex-direction: column;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 1.35rem 1.35rem 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
@@ -34,8 +34,8 @@
   place-items: center;
   width: 36px;
   height: 36px;
-  background: #e0edff;
-  color: #2563eb;
+  background: var(--palette-sky-100-e0edff);
+  color: var(--palette-blue-600);
   border-radius: 10px;
   flex-shrink: 0;
 }
@@ -50,14 +50,14 @@
   font-family: var(--font-sans);
   font-size: 1.05rem;
   font-weight: 800;
-  color: #083B75;
+  color: var(--primary-navy);
   line-height: 1.25;
 }
 
 .overview-card__subtitle {
   margin: 2px 0 0;
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.3;
 }
 
@@ -68,7 +68,7 @@
   font-family: var(--font-sans);
   font-size: 0.82rem;
   font-weight: 700;
-  color: #2563eb;
+  color: var(--palette-blue-600);
   text-decoration: none;
   background: transparent;
   border: none;
@@ -77,7 +77,7 @@
   transition: all 0.18s ease;
 }
 .overview-card__view-all:hover {
-  color: #1d4ed8;
+  color: var(--palette-blue-700);
   gap: 0.45rem;
 }
 
@@ -91,9 +91,9 @@
   font-family: var(--font-sans);
   font-size: 0.82rem;
   font-weight: 700;
-  color: #2563eb;
-  background: #f1f5f9;
-  border: 1px dashed #cbd5e1;
+  color: var(--palette-blue-600);
+  background: var(--subtle-border);
+  border: 1px dashed var(--grey-300);
   border-radius: 10px;
   text-decoration: none;
   transition: all 0.18s ease;
@@ -101,9 +101,9 @@
   box-sizing: border-box;
 }
 .overview-card__manage-link:hover {
-  background: #e2e8f0;
-  color: #1d4ed8;
-  border-color: #94a3b8;
+  background: var(--border);
+  color: var(--palette-blue-700);
+  border-color: var(--muted-text);
 }
 
 .overview-card__body {
@@ -120,7 +120,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  background: #f8fafc;
+  background: var(--palette-slate-50);
   border-radius: 12px;
   padding: 2.25rem 1.5rem;
   min-height: 185px;
@@ -133,8 +133,8 @@
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: #e0edff;
-  color: #2563eb;
+  background: var(--palette-sky-100-e0edff);
+  color: var(--palette-blue-600);
   margin-bottom: 0.85rem;
 }
 
@@ -148,14 +148,14 @@
   font-family: var(--font-sans);
   font-size: 0.95rem;
   font-weight: 800;
-  color: #083B75;
+  color: var(--primary-navy);
   line-height: 1.3;
 }
 
 .overview-card__empty-desc {
   margin: 0;
   font-size: 0.82rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.45;
   max-width: 380px;
 }
@@ -169,9 +169,9 @@
   font-family: var(--font-sans);
   font-size: 0.85rem;
   font-weight: 700;
-  color: #ffffff;
-  background: #FF7A00;
-  border: 1px solid #FF7A00;
+  color: var(--surface);
+  background: var(--feature-orange);
+  border: 1px solid var(--feature-orange);
   border-radius: 9999px;
   text-decoration: none;
   box-shadow: 0 3px 10px rgba(255, 122, 0, 0.3);
@@ -180,8 +180,8 @@
   cursor: pointer;
 }
 .overview-card__empty-btn:hover {
-  background: #e66e00;
-  border-color: #e66e00;
+  background: var(--orange-600);
+  border-color: var(--orange-600);
   transform: translateY(-1px);
   box-shadow: 0 5px 14px rgba(255, 122, 0, 0.4);
 }
@@ -198,16 +198,16 @@
   flex-direction: column;
   gap: 0.45rem;
   padding: 0.95rem 1.1rem;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 12px;
   text-decoration: none;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   transition: all 0.18s ease;
 }
 .overview-card__item:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
+  background: var(--palette-slate-50);
+  border-color: var(--grey-300);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -220,14 +220,14 @@
 .overview-card__item-code {
   font-size: 0.8rem;
   font-weight: 700;
-  color: #059669;
+  color: var(--feature-success);
   letter-spacing: 0.02em;
 }
 
 .overview-card__item-title {
   font-size: 0.95rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   line-height: 1.35;
   margin: 0.15rem 0;
 }
@@ -241,21 +241,21 @@
 
 .overview-card__item-meta {
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 500;
 }
 
 .overview-card__item-view-details {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #083B75;
+  color: var(--primary-navy);
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
 }
 
 .overview-card__item:hover .overview-card__item-view-details {
-  color: #2563eb;
+  color: var(--palette-blue-600);
 }
 
 .overview-card__badge {
@@ -265,15 +265,15 @@
   font-size: 0.72rem;
   font-weight: 600;
   border-radius: 9999px;
-  background: #e0edff;
-  color: #2563eb;
+  background: var(--palette-sky-100-e0edff);
+  color: var(--palette-blue-600);
   flex-shrink: 0;
 }
 
-.overview-card__badge--success { background: #dcfce7; color: #16a34a; }
-.overview-card__badge--warning { background: #fef3c7; color: #d97706; }
-.overview-card__badge--info { background: #e0edff; color: #2563eb; }
-.overview-card__badge--draft { background: #f1f5f9; color: #475569; }
+.overview-card__badge--success { background: var(--palette-green-100); color: var(--success); }
+.overview-card__badge--warning { background: var(--warning-light); color: var(--palette-amber-600); }
+.overview-card__badge--info { background: var(--palette-sky-100-e0edff); color: var(--palette-blue-600); }
+.overview-card__badge--draft { background: var(--subtle-border); color: var(--palette-slate-600); }
 
 .overview-card__btn-action {
   display: inline-flex;
@@ -281,16 +281,16 @@
   padding: 4px 10px;
   font-size: 0.78rem;
   font-weight: 700;
-  color: #FF7A00;
+  color: var(--feature-orange);
   border: 1px solid rgba(255, 122, 0, 0.4);
-  background: #fff;
+  background: var(--surface);
   border-radius: 6px;
   text-decoration: none;
   transition: all 0.15s ease;
 }
 .overview-card__btn-action:hover {
-  background: #FF7A00;
-  color: #fff;
+  background: var(--feature-orange);
+  color: var(--surface);
 }
 
 @media (max-width: 992px) {

@@ -27,6 +27,7 @@ import {
   Wallet,
 } from 'lucide-react'
 import type { TdsProfile, TdsBankDetails, TdsIncomeTaxData } from '../types/tdsRefund.types'
+import { errorTracker } from '@core/errors'
 
 const createCustomSvgIcon =
   (src: string, defaultSize = 20): React.FC<{ size?: number; width?: number; height?: number; color?: string; className?: string }> =>
@@ -212,6 +213,7 @@ export const TdsIcons = {
   User,
   Building,
   Briefcase,
+  Wallet,
   Percent,
   TrendingUp,
   ChevronRight,
@@ -235,22 +237,20 @@ export interface TdsDocumentConfig {
   title: string
   subtitle: string
   required: boolean
-  accept: string
-  maxSizeMb: number
   bgColor: string
   iconColor: string
 }
 
 export const TDS_DOCUMENTS: TdsDocumentConfig[] = [
-  { id: 'pan', title: 'PAN', subtitle: 'Permanent Account Number Card · up to 5MB', required: true, accept: '.pdf,.jpg,.jpeg,.png', maxSizeMb: 5, bgColor: '#e0f2fe', iconColor: '#0284c7' },
-  { id: 'form16', title: 'Form 16 (Part A & B)', subtitle: 'TDS Certificate issued by employer · up to 10MB', required: true, accept: '.pdf', maxSizeMb: 10, bgColor: '#ffe4e6', iconColor: '#e11d48' },
-  { id: 'form16a', title: 'Form 16A', subtitle: 'Non-salary TDS Certificate from banks/others · up to 10MB', required: false, accept: '.pdf', maxSizeMb: 10, bgColor: '#f3e8ff', iconColor: '#9333ea' },
-  { id: 'ais', title: 'AIS', subtitle: 'Annual Information Statement from IT Portal · up to 10MB', required: true, accept: '.pdf,.json', maxSizeMb: 10, bgColor: '#e0f2fe', iconColor: '#0284c7' },
-  { id: 'tis', title: 'TIS', subtitle: 'Taxpayer Information Summary · up to 25MB', required: false, accept: '.pdf', maxSizeMb: 25, bgColor: '#dcfce7', iconColor: '#16a34a' },
-  { id: 'bankStatements', title: 'Bank Statements', subtitle: 'Last 6–12 months bank statements · up to 25MB', required: true, accept: '.pdf', maxSizeMb: 25, bgColor: '#fef3c7', iconColor: '#d97706' },
-  { id: 'previousItr', title: 'Previous ITR', subtitle: 'Previous assessment year filed acknowledgement · up to 10MB', required: false, accept: '.pdf', maxSizeMb: 10, bgColor: '#e0e7ff', iconColor: '#6366f1' },
-  { id: 'tdsCertificates', title: 'TDS Certificates', subtitle: 'Form 16B/16C or other deduction proofs · up to 10MB', required: true, accept: '.pdf', maxSizeMb: 10, bgColor: '#dcfce7', iconColor: '#16a34a' },
-  { id: 'supportingDocs', title: 'Supporting Income Documents', subtitle: 'Interest certificates, capital gain sheets · up to 15MB', required: false, accept: '.pdf,.xlsx,.csv', maxSizeMb: 15, bgColor: '#ffedd5', iconColor: '#ea580c' },
+  { id: 'pan', title: 'PAN', subtitle: 'Permanent Account Number Card', required: true, bgColor: '#e0f2fe', iconColor: '#0284c7' },
+  { id: 'form16', title: 'Form 16 (Part A & B)', subtitle: 'TDS Certificate issued by employer', required: true, bgColor: '#ffe4e6', iconColor: '#e11d48' },
+  { id: 'form16a', title: 'Form 16A', subtitle: 'Non-salary TDS Certificate from banks/others', required: false, bgColor: '#f3e8ff', iconColor: '#9333ea' },
+  { id: 'ais', title: 'AIS', subtitle: 'Annual Information Statement from IT Portal', required: true, bgColor: '#e0f2fe', iconColor: '#0284c7' },
+  { id: 'tis', title: 'TIS', subtitle: 'Taxpayer Information Summary', required: false, bgColor: '#dcfce7', iconColor: '#16a34a' },
+  { id: 'bankStatements', title: 'Bank Statements', subtitle: 'Last 6–12 months bank statements', required: true, bgColor: '#fef3c7', iconColor: '#d97706' },
+  { id: 'previousItr', title: 'Previous ITR', subtitle: 'Previous assessment year filed acknowledgement', required: false, bgColor: '#e0e7ff', iconColor: '#6366f1' },
+  { id: 'tdsCertificates', title: 'TDS Certificates', subtitle: 'Form 16B/16C or other deduction proofs', required: true, bgColor: '#dcfce7', iconColor: '#16a34a' },
+  { id: 'supportingDocs', title: 'Supporting Income Documents', subtitle: 'Interest certificates, capital gain sheets', required: false, bgColor: '#ffedd5', iconColor: '#ea580c' },
 ]
 
 export const DocIcons: Record<string, React.FC<{ color?: string }>> = {
@@ -336,19 +336,14 @@ export const syncProfileWithAuthUser = (
       address: formattedAddress || undefined,
     }
 
-    let hasChanges = false
-    const next = { ...current }
+    // Fill only the fields the taxpayer has not entered yet
+    const fills = (Object.entries(sourceMap) as [keyof TdsTaxpayerProfile, string | undefined][])
+      .filter(([key, val]) => !current[key] && val)
+    const next: TdsTaxpayerProfile = { ...current, ...Object.fromEntries(fills) }
 
-    for (const [key, val] of Object.entries(sourceMap) as [keyof TdsTaxpayerProfile, string | undefined][]) {
-      if (!next[key] && val) {
-        next[key] = val as any
-        hasChanges = true
-      }
-    }
-
-    return { profile: next, hasChanges }
+    return { profile: next, hasChanges: fills.length > 0 }
   } catch (error) {
-    console.error('Failed to sync profile with user data:', error)
+    errorTracker.captureException(error, { tags: { area: 'tds-profile-sync' } })
     return { profile: current, hasChanges: false }
   }
 }

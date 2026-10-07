@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useAppStore } from '@store/index'
+import { FileInput } from '@shared/upload'
 import type { PendingTask } from '../../types/dashboard.types'
 import './PendingOnYou.css'
 
@@ -49,9 +50,9 @@ export const PendingOnYou = ({ tasks = [] }: PendingOnYouProps) => {
     fileInputRef.current?.click()
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file || !activeTaskIdRef.current) return
+  /** An allowed file (PDF, Excel, JPG or PNG up to 15 MB) for the task being completed */
+  const handleFileChange = (file: File) => {
+    if (!activeTaskIdRef.current) return
 
     const targetId = activeTaskIdRef.current
     setUploadedOverrides((prev) => ({
@@ -66,18 +67,15 @@ export const PendingOnYou = ({ tasks = [] }: PendingOnYouProps) => {
     }))
 
     pushToast(`Document "${file.name}" uploaded successfully!`, 'success')
-    e.target.value = ''
     activeTaskIdRef.current = null
   }
 
   return (
     <section className="pending-section" aria-labelledby="pending-heading">
-      <input
-        type="file"
+      <FileInput
         ref={fileInputRef}
         className="pending-file-input"
-        accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.zip"
-        onChange={handleFileChange}
+        onFileSelected={handleFileChange}
         aria-hidden="true"
         tabIndex={-1}
       />

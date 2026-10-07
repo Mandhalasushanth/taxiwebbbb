@@ -19,10 +19,10 @@
 
 /* Top Section: Navy Blue Hero Header Banner */
 .loan-marketplace__header-banner {
-  background: linear-gradient(135deg, #041d3e 0%, #073b75 60%, #032b5b 100%);
+  background: linear-gradient(135deg, var(--palette-sky-900-041d3e) 0%, var(--palette-sky-800-073b75) 60%, var(--palette-sky-800-032b5b) 100%);
   border-radius: 20px;
   padding: 1.75rem 2rem;
-  color: #ffffff;
+  color: var(--surface);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -61,7 +61,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--surface);
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   flex-shrink: 0;
@@ -76,7 +76,7 @@
 .loan-marketplace__eyebrow {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #93c5fd;
+  color: var(--palette-blue-300);
   letter-spacing: 0.02em;
 }
 
@@ -85,7 +85,7 @@
   font-size: 1.65rem;
   font-weight: 800;
   letter-spacing: -0.015em;
-  color: #ffffff;
+  color: var(--surface);
 }
 
 /* Loan List (One card per loan product) */
@@ -97,8 +97,8 @@
 }
 
 .loan-item-card {
-  background: #ffffff;
-  border: 1.5px solid #edf2f7;
+  background: var(--surface);
+  border: 1.5px solid var(--palette-sky-100);
   border-radius: 18px;
   padding: 1.15rem 1.5rem;
   display: flex;
@@ -112,7 +112,7 @@
 
 .loan-item-card:hover {
   transform: translateY(-2px);
-  border-color: #ff7a00;
+  border-color: var(--feature-orange);
   box-shadow: 0 8px 24px rgba(255, 122, 0, 0.12);
 }
 
@@ -137,48 +137,48 @@
 }
 
 .loan-item-card__icon-tile--business-loan {
-  background-color: #f0f4ff;
-  border-color: #dbeafe;
+  background-color: var(--palette-blue-50-f0f4ff);
+  border-color: var(--palette-blue-100);
 }
 
 .loan-item-card__icon-tile--personal-loan {
-  background-color: #fffbeb;
-  border-color: #fef3c7;
+  background-color: var(--palette-amber-50);
+  border-color: var(--warning-light);
 }
 
 .loan-item-card__icon-tile--home-loan {
-  background-color: #f0fdf4;
-  border-color: #dcfce7;
+  background-color: var(--palette-green-50);
+  border-color: var(--palette-green-100);
 }
 
 .loan-item-card__icon-tile--property-loan {
-  background-color: #fff1f2;
-  border-color: #ffe4e6;
+  background-color: var(--palette-rose-50-fff1f2);
+  border-color: var(--palette-rose-100);
 }
 
 .loan-item-card__icon-tile--vehicle-loan {
-  background-color: #f0fdfa;
-  border-color: #ccfbf1;
+  background-color: var(--palette-teal-50-f0fdfa);
+  border-color: var(--palette-teal-100);
 }
 
 .loan-item-card__icon-tile--working-capital {
-  background-color: #fff7ed;
-  border-color: #ffedd5;
+  background-color: var(--palette-orange-50);
+  border-color: var(--orange-100);
 }
 
 .loan-item-card__icon-tile--machinery-loan {
-  background-color: #ecfeff;
-  border-color: #cffafe;
+  background-color: var(--palette-cyan-50-ecfeff);
+  border-color: var(--palette-cyan-100);
 }
 
 .loan-item-card__icon-tile--project-finance {
-  background-color: #f5f3ff;
-  border-color: #ede9fe;
+  background-color: var(--palette-violet-50);
+  border-color: var(--palette-violet-100);
 }
 
 .loan-item-card__icon-tile--msme-loan {
-  background-color: #fefce8;
-  border-color: #fef9c3;
+  background-color: var(--palette-yellow-50-fefce8);
+  border-color: var(--palette-yellow-100);
 }
 
 .loan-item-card:hover .loan-item-card__icon-tile {
@@ -204,15 +204,15 @@
   height: 36px;
 }
 
-.loan-item-card__icon-tile--business-loan .loan-item-card__icon-svg { color: #2563eb; }
-.loan-item-card__icon-tile--personal-loan .loan-item-card__icon-svg { color: #d97706; }
-.loan-item-card__icon-tile--home-loan .loan-item-card__icon-svg { color: #16a34a; }
-.loan-item-card__icon-tile--property-loan .loan-item-card__icon-svg { color: #e11d48; }
-.loan-item-card__icon-tile--vehicle-loan .loan-item-card__icon-svg { color: #0d9488; }
-.loan-item-card__icon-tile--working-capital .loan-item-card__icon-svg { color: #ea580c; }
-.loan-item-card__icon-tile--machinery-loan .loan-item-card__icon-svg { color: #0891b2; }
-.loan-item-card__icon-tile--project-finance .loan-item-card__icon-svg { color: #7c3aed; }
-.loan-item-card__icon-tile--msme-loan .loan-item-card__icon-svg { color: #ca8a04; }
+.loan-item-card__icon-tile--business-loan .loan-item-card__icon-svg { color: var(--palette-blue-600); }
+.loan-item-card__icon-tile--personal-loan .loan-item-card__icon-svg { color: var(--palette-amber-600); }
+.loan-item-card__icon-tile--home-loan .loan-item-card__icon-svg { color: var(--success); }
+.loan-item-card__icon-tile--property-loan .loan-item-card__icon-svg { color: var(--palette-rose-600); }
+.loan-item-card__icon-tile--vehicle-loan .loan-item-card__icon-svg { color: var(--palette-teal-600); }
+.loan-item-card__icon-tile--working-capital .loan-item-card__icon-svg { color: var(--palette-orange-600); }
+.loan-item-card__icon-tile--machinery-loan .loan-item-card__icon-svg { color: var(--palette-cyan-600); }
+.loan-item-card__icon-tile--project-finance .loan-item-card__icon-svg { color: var(--palette-violet-600); }
+.loan-item-card__icon-tile--msme-loan .loan-item-card__icon-svg { color: var(--palette-yellow-600); }
 
 .loan-item-card__info {
   display: flex;
@@ -225,13 +225,13 @@
   margin: 0;
   font-size: 1.05rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .loan-item-card__desc {
   margin: 0;
   font-size: 0.84rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.4;
 }
 
@@ -245,20 +245,20 @@
 .loan-item-card__rate {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #c26105;
+  color: var(--palette-orange-600-c26105);
   white-space: nowrap;
 }
 
 .loan-item-card__chevron {
   width: 18px;
   height: 18px;
-  color: #94a3b8;
+  color: var(--muted-text);
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .loan-item-card:hover .loan-item-card__chevron {
   transform: translateX(3px);
-  color: #ff7a00;
+  color: var(--feature-orange);
 }
 
 /* Responsive adjustments for static header and cards */

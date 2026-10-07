@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config/routePaths'
-import type { OriginalReturnDetails, UploadedDocument, DocumentTypeId } from '../../../types/revisedItr.types'
+import type { OriginalReturnDetails, UploadedDocument, DocumentTypeId } from '@modules/itr/types/revisedItr.types'
 import { RevisedItrTimelineCard } from './RevisedItrTimelineCard'
 import './Step6ApplicationReceived.css'
 

@@ -16,7 +16,7 @@
   padding: 0;
   font: inherit;
   font-weight: 600;
-  color: #b91c1c;
+  color: var(--palette-red-700);
   cursor: pointer;
 }
 
@@ -24,8 +24,8 @@
   margin-top: 1rem;
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
-  color: #b91c1c;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  color: var(--palette-red-700);
+  background: var(--palette-red-50);
+  border: 1px solid var(--palette-red-200);
   border-radius: 0.75rem;
 }

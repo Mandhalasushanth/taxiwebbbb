@@ -1,13 +1,13 @@
 /* TaxEdge GST Dashboard Hero Banner */
 .gst-hero-banner {
-  background-color: #032b69;
+  background-color: var(--palette-blue-800-032b69);
   background-image: url('/assets/images/dashboard-banner-bg.png');
   background-size: cover;
   background-position: center right;
   background-repeat: no-repeat;
   border-radius: 16px;
   padding: 2rem 2.25rem;
-  color: #ffffff;
+  color: var(--surface);
   position: relative;
   overflow: hidden;
   box-shadow: 0 6px 20px rgba(3, 43, 105, 0.2);
@@ -23,7 +23,7 @@
 .gst-hero-banner__title {
   font-size: 2rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--surface);
   margin: 0 0 0.65rem 0;
   line-height: 1.2;
   letter-spacing: -0.02em;
