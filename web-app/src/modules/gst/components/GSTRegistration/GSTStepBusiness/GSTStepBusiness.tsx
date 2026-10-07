@@ -1,6 +1,6 @@
 import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
 import { GST_STEP_ERROR } from '@modules/gst/validation/gstFieldRules'
-import { useState, type FormEvent, type ChangeEvent } from 'react'
+import { useEffect, useState, type FormEvent, type ChangeEvent } from 'react'
 import { StepActionBar } from '@shared/components'
 import { GSTBusinessDetails } from '../GSTBusinessDetails/GSTBusinessDetails'
 import { GSTBankDetails } from '../GSTBankDetails/GSTBankDetails'
@@ -14,15 +14,27 @@ export type { GstBusinessFormData, BusinessFormData }
 interface GSTStepBusinessProps {
   data: GstBusinessFormData
   isEditMode?: boolean
+  /** Review section chosen with "Edit" — the matching card is scrolled into view */
+  focusSection?: string | null
   onChange: <K extends keyof GstBusinessFormData>(field: K, value: GstBusinessFormData[K]) => void
   onNext: () => void
   onCancel?: () => void
   onSaveDraft?: () => void
 }
 
+const AADHAAR_CONSENT_TEXT = 'I consent to Aadhaar authentication (e-KYC) for this GST registration.'
+
+/** Review "Edit" section → the card that holds those fields */
+const SECTION_ANCHORS: Record<string, string> = {
+  business: 'gst-business-identity',
+  bank: 'gst-bank-details',
+  signatory: 'gst-authorised-signatory',
+}
+
 export const GSTStepBusiness = ({
   data,
   isEditMode = false,
+  focusSection = null,
   onChange,
   onNext,
   onCancel,
@@ -30,6 +42,16 @@ export const GSTStepBusiness = ({
 }: GSTStepBusinessProps) => {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [stepError, setStepError] = useState<string | null>(null)
+
+  // Opened from a Review "Edit": bring the chosen card into view (after the step's scroll-to-top)
+  useEffect(() => {
+    const anchorId = focusSection ? SECTION_ANCHORS[focusSection] : undefined
+    if (!anchorId) return
+    const frame = requestAnimationFrame(() => {
+      document.getElementById(anchorId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [focusSection])
 
   const clearErr = (k: string) => {
     setStepError(null)
@@ -45,112 +67,62 @@ export const GSTStepBusiness = ({
     clearErr('aadhaarConsent')
   }
 
+  const scrollToField = (field: string) => {
+    // Wait a frame so a collapsed section holding the error has opened
+    requestAnimationFrame(() => {
+      const el = document.querySelector(`[name="${field}"], #${field}`)
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
+  }
+
   const handleSubmit = (e?: FormEvent) => {
     e?.preventDefault()
     const errs = validateGstBusinessForm(data)
-    if (Object.keys(errs).length > 0) {
+    const firstErrorField = Object.keys(errs)[0]
+    if (firstErrorField) {
       setErrors(errs)
       setStepError(GST_STEP_ERROR)
-      const firstErrorField = Object.keys(errs)[0]
-      const el = document.querySelector(`[name="${firstErrorField}"], #${firstErrorField}`)
-      el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      scrollToField(firstErrorField)
       return
     }
     onNext()
   }
 
+  const consentClass = [
+    'gst-consent-card',
+    data.aadhaarConsent ? 'gst-consent-card--checked' : '',
+    errors.aadhaarConsent ? 'gst-consent-card--error' : '',
+  ].filter(Boolean).join(' ')
+
   return (
-    <form className="gst-step-business gst-step-business-container" onSubmit={handleSubmit} noValidate>
-      {/* 1. Business Details Section */}
-      <GSTBusinessDetails
-        data={data}
-        onChange={onChange}
-        errors={errors}
-        onClearError={clearErr}
-      />
+    <form className="gst-step-business" onSubmit={handleSubmit} noValidate>
+      <GSTBusinessDetails data={data} onChange={onChange} errors={errors} onClearError={clearErr} />
+      <GSTBankDetails data={data} onChange={onChange} errors={errors} onClearError={clearErr} />
+      <GSTAuthorisedSignatory data={data} onChange={onChange} errors={errors} onClearError={clearErr} />
 
-      {/* 2. Bank Account Details Section */}
-      <GSTBankDetails
-        data={data}
-        onChange={onChange}
-        errors={errors}
-        onClearError={clearErr}
-      />
-
-      {/* 3. Authorised Signatory Details Section */}
-      <GSTAuthorisedSignatory
-        data={data}
-        onChange={onChange}
-        errors={errors}
-        onClearError={clearErr}
-      />
-
-      {/* 4. Aadhaar Authentication Consent Section */}
-      <div className="gst-form-card gst-consent-card">
-        <div className="gst-form-card__header">
-          <div className="gst-form-card__icon-badge gst-form-card__icon-badge--green">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <path d="m9 12 2 2 4-4" />
-            </svg>
-          </div>
-          <div>
-            <h2 className="gst-form-card__title">Aadhaar Authentication Consent</h2>
-            <p className="gst-consent-subtitle">
-              Mandatory consent for biometric / OTP-based Aadhaar verification as per GST Rules
-            </p>
-          </div>
-        </div>
-
-        <div className="gst-form-card__body">
-          <div
-            className={`gst-consent-box ${
-              data.aadhaarConsent ? 'gst-consent-box--checked' : ''
-            } ${errors.aadhaarConsent ? 'gst-consent-box--error' : ''}`}
-          >
-            <label
-              htmlFor="aadhaarConsent"
-              className="gst-consent-checkbox-wrapper"
-            >
-              <input
-                id="aadhaarConsent"
-                name="aadhaarConsent"
-                type="checkbox"
-                checked={data.aadhaarConsent}
-                onChange={handleConsentChange}
-                className="gst-consent-checkbox"
-                aria-invalid={Boolean(errors.aadhaarConsent)}
-              />
-              <span className="gst-consent-text">
-                I hereby give consent to use my Aadhaar details for GST registration authentication and OTP verification with UIDAI. <span className="gst-required-star">*</span>
-              </span>
-            </label>
-
-            {errors.aadhaarConsent && (
-              <div className="gst-consent-error" role="alert">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="gst-consent-error-icon">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg>
-                <span>{errors.aadhaarConsent}</span>
-              </div>
-            )}
-
-            <div className="gst-consent-security-note">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="gst-consent-shield-icon">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-              <span>UIDAI Compliant: Aadhaar details are encrypted and utilized solely for identity authentication as mandated under GST Rule 8.</span>
-            </div>
-          </div>
-        </div>
+      <div className={consentClass}>
+        <label htmlFor="aadhaarConsent" className="gst-consent-card__label">
+          <input
+            id="aadhaarConsent"
+            name="aadhaarConsent"
+            type="checkbox"
+            checked={data.aadhaarConsent}
+            onChange={handleConsentChange}
+            className="gst-consent-card__checkbox"
+            aria-invalid={Boolean(errors.aadhaarConsent)}
+            aria-describedby={errors.aadhaarConsent ? 'aadhaarConsent-error' : undefined}
+          />
+          <span className="gst-consent-card__text">{AADHAAR_CONSENT_TEXT}</span>
+        </label>
+        {errors.aadhaarConsent && (
+          <span id="aadhaarConsent-error" className="gst-consent-card__error" role="alert">
+            {errors.aadhaarConsent}
+          </span>
+        )}
       </div>
 
       <GSTStepErrorBanner message={stepError} />
 
-      {/* Action Buttons */}
       <StepActionBar
         onBack={onCancel}
         onSaveDraft={onSaveDraft}

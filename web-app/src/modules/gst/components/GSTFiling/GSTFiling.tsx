@@ -29,6 +29,7 @@ export const GSTFiling = () => {
     handleStepClick,
     handleStep1Continue,
     handleStep1Back,
+    handleStep2Back,
     handleStep2Next,
     handleStep3Approve,
     handleStep4Success,
@@ -69,7 +70,7 @@ export const GSTFiling = () => {
           onToggleNotApplicable={handleToggleNotApplicable}
           onStepClick={handleStepClick}
           onSaveDraft={openModal}
-          onBack={() => goToStep(1)}
+          onBack={handleStep2Back}
           onNext={handleStep2Next}
         />
       )}

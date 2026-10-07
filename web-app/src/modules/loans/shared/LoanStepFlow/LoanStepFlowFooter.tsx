@@ -37,6 +37,7 @@ export function LoanStepFlowFooter<T extends object>({
         onSaveDraft={() => flow.setIsDraftModalOpen(true)}
         saveDraftLabel="Save Draft & Exit"
         nextLabel="Continue"
+        isEditMode={flow.isEditMode}
         isSubmitting={flow.isSubmitting}
         nextDisabled={flow.isSubmitting || nextDisabled}
         nextTestId={flow.isLastStep ? `${prefix}submit-application-btn` : `${prefix}step-continue-btn`}

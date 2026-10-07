@@ -27,6 +27,7 @@ export const GSTRegistration = () => {
     setDocuments,
     goToStep,
     isEditMode,
+    editSection,
     startEditingFromReview,
     handleStep1Next,
     handleStep2Back,
@@ -94,6 +95,7 @@ export const GSTRegistration = () => {
               <GSTStepBusiness
                 data={businessData}
                 isEditMode={isEditMode}
+                focusSection={editSection}
                 onChange={handleBusinessChange}
                 onNext={handleStep1Next}
                 onCancel={handleCancel}
@@ -116,7 +118,7 @@ export const GSTRegistration = () => {
               <GSTStepReview
                 businessData={businessData}
                 documents={documents}
-                onEdit={(section) => startEditingFromReview(section === 'documents' ? 2 : 1)}
+                onEdit={(section) => startEditingFromReview(section === 'documents' ? 2 : 1, section ?? null)}
                 onBack={handleStep3Back}
                 onProceed={handleStep3Proceed}
                 onSaveDraft={openDraftModal}

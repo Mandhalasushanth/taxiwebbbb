@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { DocumentCard, DocumentTracker, StepActionBar } from '@shared/components'
 import { useIncorporationFlow } from '../../hooks'
@@ -15,8 +14,7 @@ interface KycDocumentItem {
 }
 
 export const DocumentsKyc: React.FC = () => {
-  const navigate = useNavigate()
-  const { formData, updateFormData } = useIncorporationFlow()
+  const { formData, updateFormData, draft, reviewEdit, goToStep } = useIncorporationFlow()
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const promoterDocs: KycDocumentItem[] = formData.documentsKyc?.promoterDocs || [
@@ -147,7 +145,7 @@ export const DocumentsKyc: React.FC = () => {
       }
     })
 
-    navigate(routePaths.incorporation.linkedRegistrations)
+    goToStep(routePaths.incorporation.linkedRegistrations)
   }
 
   const renderDocSection = (
@@ -207,9 +205,10 @@ export const DocumentsKyc: React.FC = () => {
 
       {/* Footer Navigation */}
       <StepActionBar
-        onBack={() => navigate(routePaths.incorporation.capitalDetails)}
+        onBack={() => goToStep(routePaths.incorporation.capitalDetails)}
         onNext={handleContinue}
-        onSaveDraft={() => navigate(routePaths.dashboard)}
+        isEditMode={reviewEdit.isEditMode}
+        onSaveDraft={draft.openDraftModal}
         nextLabel="Continue"
       />
     </div>

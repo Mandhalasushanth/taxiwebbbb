@@ -2,7 +2,9 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 100%;
+  /* Same width on every filing screen (period, documents, review, payment, success) */
+  max-width: var(--service-page-max-width);
+  box-sizing: border-box;
   margin: 0 auto;
   padding: 1.5rem 1rem 3.5rem 1rem;
 }

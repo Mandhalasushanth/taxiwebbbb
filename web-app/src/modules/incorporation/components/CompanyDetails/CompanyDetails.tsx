@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { defaultCompanyDetails } from '../../data/companyRegistrationData'
 import type { CompanyDetailsFormData, CompanyEntityType } from '../../types/incorporation.types'
@@ -9,8 +8,7 @@ import { useIncorporationFlow } from '../../hooks'
 import './CompanyDetails.css'
 
 export const CompanyDetails: React.FC = () => {
-  const navigate = useNavigate()
-  const { formData, updateFormData } = useIncorporationFlow()
+  const { formData, updateFormData, draft, reviewEdit, goToStep } = useIncorporationFlow()
   
   const selectedCompanyType = formData.companyType || 'pvt_ltd'
   const companyDetails = formData.companyDetails || {}
@@ -102,7 +100,7 @@ export const CompanyDetails: React.FC = () => {
       return
     }
     setErrors({})
-    navigate(routePaths.incorporation.registeredOffice)
+    goToStep(routePaths.incorporation.registeredOffice)
   }
 
   return (
@@ -253,9 +251,10 @@ export const CompanyDetails: React.FC = () => {
 
       {/* Footer Navigation */}
       <StepActionBar
-        onBack={() => navigate(routePaths.incorporation.selectType)}
+        onBack={() => goToStep(routePaths.incorporation.selectType)}
         onNext={handleContinue}
-        onSaveDraft={() => navigate(routePaths.dashboard)}
+        isEditMode={reviewEdit.isEditMode}
+        onSaveDraft={draft.openDraftModal}
         nextLabel="Continue"
       />
     </div>

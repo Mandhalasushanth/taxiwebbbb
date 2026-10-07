@@ -25,6 +25,8 @@ export interface ItrPersonalInfoViewProps {
   onBack: () => void;
   onNext: () => void;
   onSaveDraft?: () => void;
+  /** Opened with "Edit" from the review: the main button reads "Update & Review" */
+  isEditMode?: boolean;
   initialAssessmentYear?: AssessmentYearOption;
   onAssessmentYearChange?: (ay: AssessmentYearOption) => void;
   initialResidentialStatus?: ResidentialStatusOption;
@@ -43,6 +45,7 @@ export const ItrPersonalInfoView: React.FC<ItrPersonalInfoViewProps> = ({
   onBack,
   onNext,
   onSaveDraft,
+  isEditMode = false,
   initialAssessmentYear,
   onAssessmentYearChange,
   initialResidentialStatus,
@@ -214,6 +217,7 @@ export const ItrPersonalInfoView: React.FC<ItrPersonalInfoViewProps> = ({
         onBack={onBack}
         onNext={handleNext}
         onSaveDraft={onSaveDraft}
+        isEditMode={isEditMode}
         nextLabel="Continue"
         nextDisabled={!isFormValid}
       />

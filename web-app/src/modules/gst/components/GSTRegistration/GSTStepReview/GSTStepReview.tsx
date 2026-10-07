@@ -203,7 +203,7 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
       />
 
       {/* 4. Uploaded Documents Section */}
-      <GSTReviewDocsList documents={documents} onViewDoc={handleViewDoc} />
+      <GSTReviewDocsList documents={documents} onViewDoc={handleViewDoc} onEdit={() => onEdit('documents')} />
 
       {/* 5. Declaration Checkbox Card */}
       <GSTReviewDeclaration

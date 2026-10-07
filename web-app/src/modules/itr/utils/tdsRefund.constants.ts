@@ -212,6 +212,7 @@ export const TdsIcons = {
   User,
   Building,
   Briefcase,
+  Wallet,
   Percent,
   TrendingUp,
   ChevronRight,

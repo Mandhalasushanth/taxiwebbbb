@@ -284,6 +284,8 @@ export interface TdsRefundCustomerIncomeProps {
   onBack: () => void;
   onNext: () => void;
   onSaveDraft?: () => void;
+  /** Opened with "Edit" from the review: the main button reads "Update & Review" */
+  isEditMode?: boolean;
   currentStep?: number;
   initialProfile?: TdsTaxpayerProfile;
   onProfileChange?: (profile: TdsTaxpayerProfile) => void;
@@ -405,6 +407,7 @@ export const TdsRefundCustomerIncome: React.FC<
   onBack,
   onNext,
   onSaveDraft,
+  isEditMode = false,
   currentStep = 1,
   initialProfile,
   onProfileChange,
@@ -1327,6 +1330,7 @@ export const TdsRefundCustomerIncome: React.FC<
         onBack={onBack}
         onNext={handleContinue}
         onSaveDraft={onSaveDraft}
+        isEditMode={isEditMode}
         nextLabel="Continue"
         nextDisabled={!isFormValid}
       />

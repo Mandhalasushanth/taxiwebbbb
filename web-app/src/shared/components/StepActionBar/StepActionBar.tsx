@@ -1,4 +1,5 @@
 import React from 'react'
+import { UPDATE_AND_REVIEW_LABEL } from '@shared/constants'
 import './StepActionBar.css'
 
 export interface StepActionBarProps {
@@ -8,6 +9,8 @@ export interface StepActionBarProps {
   saveDraftLabel?: string
   backLabel?: string
   nextLabel?: string
+  /** Step opened with "Edit" from a review page: the main button reads "Update & Review" */
+  isEditMode?: boolean
   isSubmitting?: boolean
   nextDisabled?: boolean
   backDisabled?: boolean
@@ -30,7 +33,8 @@ export const StepActionBar: React.FC<StepActionBarProps> = ({
   onSaveDraft,
   saveDraftLabel = 'Save Draft & Exit',
   backLabel = 'Back',
-  nextLabel: _nextLabel = 'Continue',
+  nextLabel = 'Continue',
+  isEditMode = false,
   isSubmitting = false,
   nextDisabled = false,
   backDisabled = false,
@@ -109,8 +113,12 @@ export const StepActionBar: React.FC<StepActionBarProps> = ({
     }
   }
 
-  // Consistent label enforcement: Continue is always strictly 'Continue' (or 'Processing...' if submitting)
-  const displayContinueLabel = isSubmitting ? 'Processing...' : 'Continue'
+  // 'Continue' by default; screens opened with "Edit" from a review page pass 'Update & Review'
+  const displayContinueLabel = isSubmitting
+    ? 'Processing...'
+    : isEditMode
+      ? UPDATE_AND_REVIEW_LABEL
+      : nextLabel || 'Continue'
   const displayBackLabel = backLabel || 'Back'
   const displaySaveDraftLabel = saveDraftLabel || 'Save Draft & Exit'
 

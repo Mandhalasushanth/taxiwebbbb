@@ -13,6 +13,8 @@ export interface NoticeInformationProps {
   onNext: () => void
   onBack: () => void
   onSaveDraftAndExit: () => void
+  /** Opened with "Edit" from the review: the main button reads "Update & Review" */
+  isEditMode?: boolean
 }
 
 export const NoticeInformation: React.FC<NoticeInformationProps> = ({
@@ -21,6 +23,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
   onNext,
   onBack,
   onSaveDraftAndExit,
+  isEditMode = false,
 }) => {
   const [touched, setTouched] = useState<Record<string, boolean>>({})
   const [noticeTypeOpen, setNoticeTypeOpen] = useState(false)
@@ -395,6 +398,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
         onBack={onBack}
         onSaveDraft={onSaveDraftAndExit}
         nextLabel="Continue"
+        isEditMode={isEditMode}
         nextType="submit"
         nextDisabled={!canProceed}
       />

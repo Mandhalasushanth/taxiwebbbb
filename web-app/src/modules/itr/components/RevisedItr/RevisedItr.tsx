@@ -44,7 +44,8 @@ export const RevisedItr: React.FC = () => {
     handleContinue,
     handlePaymentSuccess,
     handleDownloadReceipt,
-    goToStep,
+    editStep,
+    isEditMode,
     isModalOpen,
     openModal,
     handleSaveAndExit,
@@ -124,7 +125,7 @@ export const RevisedItr: React.FC = () => {
         bankCorrections={bankCorrections}
         otherReasonText={otherReasonText}
         uploadedDocuments={uploadedDocuments}
-        onEditStep={goToStep}
+        onEditStep={editStep}
       />
     ),
   }
@@ -165,6 +166,7 @@ export const RevisedItr: React.FC = () => {
             onSaveDraft={openModal}
             backLabel="Back"
             nextLabel="Continue"
+            isEditMode={isEditMode}
             isSubmitting={isLoading}
           />
         </>

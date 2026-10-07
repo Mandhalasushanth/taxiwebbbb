@@ -4,6 +4,9 @@
 :root {
   color-scheme: light;
 
+  /* One content width for every screen of a service (GST, ITR, Incorporation, Loans) */
+  --service-page-max-width: 1120px;
+
   /* Semantic colour tokens */
   --color-bg: var(--background);
   --color-surface: var(--surface);

@@ -2,8 +2,8 @@
 
 .gst-amend-select-container {
   width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   padding: 1.5rem 2rem 3.5rem 2rem;
   box-sizing: border-box;
   font-family: inherit;
@@ -350,5 +350,23 @@
   .gst-amend-help-banner {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+/* Save Draft & Exit — same placement as the loan step footers */
+.gst-amend-select-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+@media (max-width: 640px) {
+  .gst-amend-select-footer {
+    justify-content: stretch;
+  }
+
+  .gst-amend-select-footer > * {
+    width: 100%;
   }
 }

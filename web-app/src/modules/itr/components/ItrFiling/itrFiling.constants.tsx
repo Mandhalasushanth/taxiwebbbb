@@ -189,6 +189,9 @@ export const ITR_STEPS = [
   { id: 5, label: 'Review & File' },
 ]
 
+/** Step each review section's "Edit" opens */
+export const ITR_REVIEW_EDIT_STEPS = { taxpayer: 1, documents: 4 } as const
+
 export const ITR_STEP_LABELS = ['Personal & Filing Info', 'Income Sources', 'Regime & Deductions', 'Document Checklist', 'Review & File']
 
 export const getStoredTaxpayerProfile = (overrideUser?: AuthUser | null): TaxpayerProfile => {

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { filterDigits, isPositiveNumber } from '../../utils/validation'
 import { StepActionBar } from '@shared/components'
@@ -7,8 +6,7 @@ import { useIncorporationFlow } from '../../hooks'
 import './CapitalDetails.css'
 
 export const CapitalDetails: React.FC = () => {
-  const navigate = useNavigate()
-  const { formData, updateFormData } = useIncorporationFlow()
+  const { formData, updateFormData, draft, reviewEdit, goToStep } = useIncorporationFlow()
 
   const companyType = formData.companyType || 'pvt_ltd'
   const isOpc = companyType === 'opc'
@@ -67,7 +65,7 @@ export const CapitalDetails: React.FC = () => {
     }
 
     setErrors({})
-    navigate(routePaths.incorporation.documentsKyc)
+    goToStep(routePaths.incorporation.documentsKyc)
   }
 
   return (
@@ -228,9 +226,10 @@ export const CapitalDetails: React.FC = () => {
 
       {/* Footer Navigation */}
       <StepActionBar
-        onBack={() => navigate(routePaths.incorporation.promoterDetails)}
+        onBack={() => goToStep(routePaths.incorporation.promoterDetails)}
         onNext={handleContinue}
-        onSaveDraft={() => navigate(routePaths.dashboard)}
+        isEditMode={reviewEdit.isEditMode}
+        onSaveDraft={draft.openDraftModal}
         nextLabel="Continue"
       />
     </div>

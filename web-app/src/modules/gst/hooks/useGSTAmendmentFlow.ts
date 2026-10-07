@@ -5,6 +5,7 @@ import { routePaths } from '@core/config'
 import { useAppStore } from '@store/index'
 import { userStorage } from '@core/storage/userStorage'
 import { useGstDraft, readGstDraft } from '@modules/gst/hooks/useGstDraft'
+import { useReviewEdit } from '@shared/hooks'
 import { AMENDMENT_OPTIONS } from '@modules/gst/constants/gstAmendmentOptions'
 import { getAmendmentConfig } from '@modules/gst/components/GSTAmendment/amendmentConfigs'
 import { gstService } from '@modules/gst/services/gstService'
@@ -66,7 +67,12 @@ export const useGSTAmendmentFlow = () => {
     return null
   })
   const [isReviewing, setIsReviewing] = useState<boolean>(() => Boolean(restored?.isReviewing && restored?.savedFormData))
-  const [isEditMode, setIsEditMode] = useState(false)
+  // "Edit" from the review: shared behaviour (Update & Review / Back return to the review)
+  const reviewEdit = useReviewEdit(() => {
+    setIsReviewing(true)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  })
+  const { isEditMode } = reviewEdit
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submittedRecord, setSubmittedRecord] = useState<GstAmendmentRecord | null>(null)
 
@@ -116,21 +122,18 @@ export const useGSTAmendmentFlow = () => {
         (data.file ? formatGstFileSize(data.file.size) : prev?.fileSizeText),
     }))
     setIsReviewing(true)
-    setIsEditMode(false)
+    reviewEdit.cancelEdit()
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleEdit = () => {
-    setIsEditMode(true)
-    setIsReviewing(false)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    reviewEdit.startEdit(() => {
+      setIsReviewing(false)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    })
   }
 
-  const handleReviewBack = () => {
-    setIsEditMode(true)
-    setIsReviewing(false)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  const handleReviewBack = handleEdit
 
   const handleFormChange = (data: Partial<GSTAmendmentFormData>) => {
     setFormData((prev) => ({
@@ -229,7 +232,8 @@ export const useGSTAmendmentFlow = () => {
     isReviewing,
     setIsReviewing,
     isEditMode,
-    setIsEditMode,
+    /** Leaves edit mode and shows the review again (Back on an edit form) */
+    returnToReview: reviewEdit.finishEdit,
     isSubmitting,
     submittedRecord,
     isModalOpen: draft.isDraftModalOpen,

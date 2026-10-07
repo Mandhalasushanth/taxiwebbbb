@@ -8,7 +8,7 @@
   --theme-required: var(--taxedge-error, #DC2626);
   background: var(--color-surface, #FFFFFF); border: 1px solid var(--theme-border-light);
   border-radius: var(--radius-lg, 16px); padding: 2.25rem 2.5rem;
-  box-shadow: 0 4px 20px rgba(8, 59, 117, 0.06); max-width: 820px; margin: 0 auto;
+  box-shadow: 0 4px 20px rgba(8, 59, 117, 0.06); max-width: 100%; margin: 0;
   font-family: var(--font-sans, inherit); box-sizing: border-box;
 
   .compliance-spec-header {

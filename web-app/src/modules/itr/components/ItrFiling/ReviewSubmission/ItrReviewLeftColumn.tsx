@@ -11,6 +11,7 @@ import type {
   CapitalGainsDetails,
   OtherSourcesDetails,
 } from '../itrFiling.constants'
+import { ITR_REVIEW_EDIT_STEPS } from '../itrFiling.constants'
 import { parseAmount } from '../itrTaxCalculator'
 
 export interface ItrReviewLeftColumnProps {
@@ -31,7 +32,8 @@ export interface ItrReviewLeftColumnProps {
   otherSourcesDetails?: OtherSourcesDetails
   selectedSources?: string[]
   tdsCredits?: number
-  onEdit: () => void
+  /** Opens the step that holds a review section (see ITR_REVIEW_EDIT_STEPS) */
+  onEdit: (step: number) => void
 }
 
 export const ItrReviewLeftColumn: React.FC<ItrReviewLeftColumnProps> = ({
@@ -354,7 +356,7 @@ export const ItrReviewLeftColumn: React.FC<ItrReviewLeftColumnProps> = ({
             </svg>
             Filing &amp; Taxpayer Details
           </h3>
-          <button type="button" className="itr-rv2-edit-btn" onClick={onEdit}>
+          <button type="button" className="itr-rv2-edit-btn" onClick={() => onEdit(ITR_REVIEW_EDIT_STEPS.taxpayer)}>
             Edit
           </button>
         </div>
@@ -406,7 +408,7 @@ export const ItrReviewLeftColumn: React.FC<ItrReviewLeftColumnProps> = ({
             </svg>
             Uploaded Documents ({docCount})
           </h3>
-          <button type="button" className="itr-rv2-edit-btn" onClick={onEdit}>
+          <button type="button" className="itr-rv2-edit-btn" onClick={() => onEdit(ITR_REVIEW_EDIT_STEPS.documents)}>
             Edit
           </button>
         </div>

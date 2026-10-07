@@ -16,6 +16,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { TaxNoticeAssistance } from '../../src/modules/itr/components/TaxNoticeAssistance/TaxNoticeAssistance'
 import { userStorage } from '../../src/core/storage/userStorage'
+import { localStore } from '../../src/core/storage/localStorage'
 
 afterEach(() => {
   cleanup()
@@ -24,6 +25,8 @@ afterEach(() => {
 describe('TaxNoticeAssistance Component', () => {
   beforeEach(() => {
     localStorage.clear()
+    // Drafts are auto-saved through localStore (cached in memory); start every test without one
+    localStore.clear()
     window.scrollTo = () => {}
   })
 

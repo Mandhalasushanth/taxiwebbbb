@@ -1,6 +1,7 @@
 import React from 'react'
 import { routePaths } from '@core/config/routePaths'
 import { DraftConfirmModal } from '@shared/components'
+import { useReviewEdit } from '@shared/hooks'
 import { Check as CheckIcon } from 'lucide-react'
 import { NoticeInformation, NoticeDocument } from './NoticeInformation'
 import { NoticeSummary } from './NoticeSummary'
@@ -111,14 +112,19 @@ export const TaxNoticeAssistance: React.FC = () => {
     }
   }
 
+  // "Edit" from the review (step 5): the step shows "Update & Review" and Continue / Back return to the review
+  const reviewEdit = useReviewEdit(() => goToStep(5))
+  const { isEditMode, nextOrReview, backOrReview } = reviewEdit
+
   const stepRenderers: Record<number, () => React.ReactNode> = {
     1: () => (
       <NoticeInformation
         formData={formData}
         onChange={handleUpdateFormData}
-        onBack={handleBack}
+        onBack={backOrReview(handleBack)}
         onSaveDraftAndExit={handleSaveDraftAndExit}
-        onNext={() => goToStep(2)}
+        onNext={nextOrReview(() => goToStep(2))}
+        isEditMode={isEditMode}
       />
     ),
     2: () => (
@@ -151,7 +157,7 @@ export const TaxNoticeAssistance: React.FC = () => {
       <ReviewResponse
         formData={formData}
         userName={user?.fullName || 'Assessee'}
-        onEditRequest={() => goToStep(1)}
+        onEditRequest={() => reviewEdit.startEdit(() => goToStep(1))}
         onApproveAndSubmit={handleFinalApproveAndSubmit}
         isSubmitting={isSubmitting}
       />
@@ -181,6 +187,7 @@ export const TaxNoticeAssistance: React.FC = () => {
             currentStep={step}
             onStepClick={(targetStep) => {
               if (targetStep < step) {
+                reviewEdit.cancelEdit()
                 goToStep(targetStep as 1 | 2 | 3 | 4 | 5)
               }
             }}

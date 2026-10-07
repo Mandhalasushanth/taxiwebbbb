@@ -1,5 +1,6 @@
 import React from "react";
 import { DraftConfirmModal } from "@shared/components";
+import { useReviewEdit } from "@shared/hooks";
 import { ItrCategorySelectionView } from "./CategorySelection";
 import { ItrPersonalInfoView } from "./PersonalInfo";
 import { ItrIncomeSourcesView } from "./IncomeSources";
@@ -9,6 +10,8 @@ import { ItrReviewSubmissionView } from "./ReviewSubmission";
 import { ItrFilingSubmittedView } from "./FilingSubmitted";
 import { useItrFilingState } from "./useItrFilingState";
 import "./ItrFiling.css";
+
+const REVIEW_STEP = 5;
 
 export const ItrFiling: React.FC = () => {
   const {
@@ -71,17 +74,22 @@ export const ItrFiling: React.FC = () => {
     }
   };
 
+  // "Edit" from the review (step 5): the step shows "Update & Review" and Continue / Back return to the review
+  const reviewEdit = useReviewEdit(() => navigateToStep(REVIEW_STEP));
+  const { isEditMode, nextOrReview, backOrReview } = reviewEdit;
+
   const stepRenderers: Record<number, () => React.ReactNode> = {
     1: () => (
       <ItrPersonalInfoView
-        onBack={() => {
+        onBack={backOrReview(() => {
           if (isDirty) {
             openModal();
           } else {
             setIsStarted(false);
           }
-        }}
-        onNext={() => navigateToStep(2)}
+        })}
+        onNext={nextOrReview(() => navigateToStep(2))}
+        isEditMode={isEditMode}
         onSaveDraft={openModal}
         initialAssessmentYear={assessmentYear}
         onAssessmentYearChange={setAssessmentYear}
@@ -99,8 +107,9 @@ export const ItrFiling: React.FC = () => {
     ),
     2: () => (
       <ItrIncomeSourcesView
-        onBack={() => navigateToStep(1)}
-        onNext={() => navigateToStep(3)}
+        onBack={backOrReview(() => navigateToStep(1))}
+        onNext={nextOrReview(() => navigateToStep(3))}
+        isEditMode={isEditMode}
         onSaveDraft={openModal}
         salaryDetails={salaryDetails}
         onSalaryDetailsChange={setSalaryDetails}
@@ -119,8 +128,9 @@ export const ItrFiling: React.FC = () => {
     ),
     3: () => (
       <ItrRegimeDeductionsView
-        onBack={() => navigateToStep(2)}
-        onNext={() => navigateToStep(4)}
+        onBack={backOrReview(() => navigateToStep(2))}
+        onNext={nextOrReview(() => navigateToStep(4))}
+        isEditMode={isEditMode}
         onSaveDraft={openModal}
         selectedSources={selectedSources}
         salaryDetails={salaryDetails}
@@ -136,8 +146,9 @@ export const ItrFiling: React.FC = () => {
     ),
     4: () => (
       <ItrDocumentsChecklistView
-        onBack={() => navigateToStep(3)}
-        onNext={() => navigateToStep(5)}
+        onBack={backOrReview(() => navigateToStep(3))}
+        onNext={nextOrReview(() => navigateToStep(REVIEW_STEP))}
+        isEditMode={isEditMode}
         onSaveDraft={openModal}
         uploadedDocs={uploadedDocs}
         onUploadDoc={handleUploadDoc}
@@ -147,6 +158,7 @@ export const ItrFiling: React.FC = () => {
     5: () => (
       <ItrReviewSubmissionView
         onBack={() => navigateToStep(4)}
+        onEditStep={(step) => reviewEdit.startEdit(() => navigateToStep(step))}
         onSubmit={handleFinalSubmit}
         onSaveDraft={openModal}
         assessmentYear={assessmentYear}

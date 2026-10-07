@@ -17,6 +17,8 @@ export interface ItrDocumentsChecklistViewProps {
   onBack: () => void
   onNext: () => void
   onSaveDraft?: () => void
+  /** Opened with "Edit" from the review: the main button reads "Update & Review" */
+  isEditMode?: boolean
   uploadedDocs: Record<string, UploadedDocInfo>
   onUploadDoc: (docId: string, doc: UploadedDocInfo) => void
   onRemoveDoc: (docId: string) => void
@@ -26,6 +28,7 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
   onBack,
   onNext,
   onSaveDraft,
+  isEditMode = false,
   uploadedDocs,
   onUploadDoc,
   onRemoveDoc,
@@ -127,6 +130,7 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
         onBack={onBack}
         onNext={onNext}
         onSaveDraft={onSaveDraft}
+        isEditMode={isEditMode}
         backLabel="Back"
         nextLabel="Continue"
         nextDisabled={!isDocumentsValid}

@@ -7,6 +7,7 @@ import { generateGstReference } from '@modules/gst/utils/gstFormat'
 import { GST_FEES, withPlatformGst } from '@modules/gst/constants/gstBusiness.constants'
 import { getDefaultFilingData, STEP_LABELS } from '@modules/gst/utils/gstFiling.constants'
 import { useGstDraft, readGstDraft, hasGstFormChanged } from '@modules/gst/hooks/useGstDraft'
+import { useReviewEdit } from '@shared/hooks'
 import type { FilingPeriodData } from '../components/GSTFiling'
 import type { PaymentResult } from '@modules/gst/types/gst.types'
 import type { UploadedFileInfo } from '@modules/gst/utils/gstDocumentsData'
@@ -16,6 +17,7 @@ type FilingStep = 1 | 2 | 3 | 4 | 5 | 6
 const SERVICE_ID = 'gst-filing'
 const SERVICE_TITLE = 'GST Filing'
 const TOTAL_STEPS = 4
+const REVIEW_STEP = 3
 
 interface FilingDraft {
   filingData: FilingPeriodData
@@ -108,9 +110,11 @@ export const useGSTFilingFlow = () => {
     if (routeStep) setCurrentStep(routeStep)
   }
 
+  // Steps replace the history entry (same as the loans flows): the browser Back button
+  // leaves the filing and opens the save-draft dialog instead of stepping back
   const goToStep = (step: FilingStep) => {
     setCurrentStep(step)
-    navigate(FILING_PATH_BY_STEP[step])
+    navigate(FILING_PATH_BY_STEP[step], { replace: true })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -135,31 +139,25 @@ export const useGSTFilingFlow = () => {
     if (stepId >= 1 && stepId <= TOTAL_STEPS) goToStep(stepId as FilingStep)
   }
 
-  const [editingFromReview, setEditingFromReview] = useState(false)
+  // "Edit" from the Review step: shared behaviour (Update & Review / Back return to the review)
+  const reviewEdit = useReviewEdit(() => goToStep(REVIEW_STEP))
 
-  const startEditingFromReview = (step: FilingStep) => {
-    setEditingFromReview(true)
-    goToStep(step)
-  }
+  const startEditingFromReview = (step: FilingStep) => reviewEdit.startEdit(() => goToStep(step))
 
   const finishEditingToReview = (updatedData?: FilingPeriodData) => {
     if (updatedData) {
       setFilingData(updatedData)
     }
-    setEditingFromReview(false)
-    goToStep(3)
+    reviewEdit.finishEdit()
   }
 
-  const handleStep1Back = () => navigate(routePaths.gst.root)
+  // While editing from Review, Back returns to the Review step instead of leaving the flow
+  const handleStep1Back = reviewEdit.backOrReview(() => navigate(routePaths.gst.root))
+  const handleStep2Back = reviewEdit.backOrReview(() => goToStep(1))
 
   const handleStep1Continue = (data: FilingPeriodData) => {
     setFilingData(data)
-    if (editingFromReview) {
-      setEditingFromReview(false)
-      goToStep(3)
-    } else {
-      goToStep(2)
-    }
+    reviewEdit.nextOrReview(() => goToStep(2))()
   }
 
   const handleStep4Success = (res: PaymentResult) => {
@@ -198,16 +196,14 @@ export const useGSTFilingFlow = () => {
     handleStepClick,
     handleStep1Continue,
     handleStep1Back,
-    handleStep2Next: () => {
-      setEditingFromReview(false)
-      goToStep(3)
-    },
+    handleStep2Back,
+    handleStep2Next: reviewEdit.nextOrReview(() => goToStep(REVIEW_STEP)),
     handleStep3Approve: () => goToStep(4),
     handleStep4Success,
     handleFileUpload,
     handleFileRemove,
     handleToggleNotApplicable,
-    isEditMode: editingFromReview,
+    isEditMode: reviewEdit.isEditMode,
     startEditingFromReview,
     finishEditingToReview,
   }

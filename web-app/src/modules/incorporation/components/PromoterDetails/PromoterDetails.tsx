@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { DirectorCard } from '../../components'
 import { defaultDirectors } from '../../data/companyRegistrationData'
@@ -18,8 +17,7 @@ import type { DirectorDetails } from '../../types/incorporation.types'
 import './PromoterDetails.css'
 
 export const PromoterDetails: React.FC = () => {
-  const navigate = useNavigate()
-  const { formData, updateFormData } = useIncorporationFlow()
+  const { formData, updateFormData, draft, reviewEdit, goToStep } = useIncorporationFlow()
   const companyType = formData.companyType || 'pvt_ltd'
   const isOpc = companyType === 'opc'
   const minDirectors = isOpc ? 1 : companyType === 'public_ltd' ? 3 : 2
@@ -164,7 +162,7 @@ export const PromoterDetails: React.FC = () => {
 
     setError('')
     setDirectorErrors({})
-    navigate(routePaths.incorporation.capitalDetails)
+    goToStep(routePaths.incorporation.capitalDetails)
   }
 
   return (
@@ -231,9 +229,10 @@ export const PromoterDetails: React.FC = () => {
 
       {/* Footer Navigation */}
       <StepActionBar
-        onBack={() => navigate(routePaths.incorporation.registeredOffice)}
+        onBack={() => goToStep(routePaths.incorporation.registeredOffice)}
         onNext={handleContinue}
-        onSaveDraft={() => navigate(routePaths.dashboard)}
+        isEditMode={reviewEdit.isEditMode}
+        onSaveDraft={draft.openDraftModal}
         nextLabel="Continue"
       />
     </div>

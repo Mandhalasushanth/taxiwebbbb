@@ -31,9 +31,8 @@ export const GSTAmendment = () => {
     formData,
     setFormData,
     isReviewing,
-    setIsReviewing,
     isEditMode,
-    setIsEditMode,
+    returnToReview,
     isSubmitting,
     submittedRecord,
     isModalOpen,
@@ -116,8 +115,7 @@ export const GSTAmendment = () => {
 
     const handleFormBack = () => {
       if (isEditMode) {
-        setIsReviewing(true)
-        setIsEditMode(false)
+        returnToReview()
       } else {
         setSelectedOption(null)
         setFormData(null)
@@ -222,6 +220,7 @@ export const GSTAmendment = () => {
           setSelectedOption(option)
           window.scrollTo({ top: 0, behavior: 'smooth' })
         }}
+        onSaveDraft={openDraftModal}
       />
       <DraftConfirmModal
         isOpen={isModalOpen}

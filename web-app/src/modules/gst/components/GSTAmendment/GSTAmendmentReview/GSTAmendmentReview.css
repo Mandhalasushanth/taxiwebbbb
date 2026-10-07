@@ -1,8 +1,8 @@
 /* GST Amendment Review Screen - Desktop-Optimized & Fully Responsive */
 .gst-amend-review-container {
   width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   padding: 1.5rem 2rem 4rem 2rem;
   box-sizing: border-box;
   font-family: inherit;

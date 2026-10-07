@@ -51,7 +51,6 @@ export const TdsRefundStatus: React.FC<TdsRefundStatusProps> = ({
   applicationId = 'TDS-2026-59303',
   appliedDate,
   assessmentYear = '2025-26',
-  onBack,
   onBackToDashboard,
   onContactSupport,
 }) => {

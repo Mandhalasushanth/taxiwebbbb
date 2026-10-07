@@ -8,7 +8,7 @@ import './FeesPayment.css'
 
 export const FeesPayment: React.FC = () => {
   const navigate = useNavigate()
-  const { formData } = useIncorporationFlow()
+  const { formData, draft } = useIncorporationFlow()
 
   const [selectedMethod, setSelectedMethod] = useState<'upi' | 'card' | 'netbanking' | null>(null)
   const [paymentError, setPaymentError] = useState<string>('')
@@ -45,7 +45,7 @@ export const FeesPayment: React.FC = () => {
       applicationDate,
     }
 
-    userStorage.deleteDraft('incorporation')
+    draft.clearDraft()
     userStorage.saveUserApplication({
       id: applicationId,
       code: applicationId,

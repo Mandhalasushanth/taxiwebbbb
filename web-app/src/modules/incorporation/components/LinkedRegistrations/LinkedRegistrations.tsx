@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { StepActionBar } from '@shared/components'
 import { useIncorporationFlow } from '../../hooks'
@@ -13,8 +12,7 @@ interface RegistrationItem {
 }
 
 export const LinkedRegistrations: React.FC = () => {
-  const navigate = useNavigate()
-  const { formData, updateFormData } = useIncorporationFlow()
+  const { formData, updateFormData, draft, reviewEdit, goToStep } = useIncorporationFlow()
   
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -85,7 +83,7 @@ export const LinkedRegistrations: React.FC = () => {
     }
 
     setErrors({})
-    navigate(routePaths.incorporation.reviewApplication)
+    goToStep(routePaths.incorporation.reviewApplication)
   }
 
   return (
@@ -151,9 +149,10 @@ export const LinkedRegistrations: React.FC = () => {
 
       {/* Footer Actions */}
       <StepActionBar
-        onBack={() => navigate(routePaths.incorporation.documentsKyc)}
+        onBack={() => goToStep(routePaths.incorporation.documentsKyc)}
         onNext={handleContinue}
-        onSaveDraft={() => navigate(routePaths.dashboard)}
+        isEditMode={reviewEdit.isEditMode}
+        onSaveDraft={draft.openDraftModal}
         nextLabel="Continue"
       />
     </div>

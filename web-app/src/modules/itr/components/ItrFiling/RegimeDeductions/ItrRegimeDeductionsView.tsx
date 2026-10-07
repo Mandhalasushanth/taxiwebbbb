@@ -150,6 +150,8 @@ export interface ItrRegimeDeductionsViewProps {
   onBack: () => void
   onNext: () => void
   onSaveDraft?: () => void
+  /** Opened with "Edit" from the review: the main button reads "Update & Review" */
+  isEditMode?: boolean
   selectedSources?: string[]
   salaryDetails: SalaryDetails
   housePropertyDetails?: HousePropertyDetails
@@ -178,7 +180,7 @@ const hasAnyDeductionValue = (deductions: DeductionsData, trimCheck = false): bo
 }
 
 export const ItrRegimeDeductionsView: React.FC<ItrRegimeDeductionsViewProps> = ({
-  onBack, onNext, onSaveDraft, selectedSources = [], salaryDetails, housePropertyDetails,
+  onBack, onNext, onSaveDraft, isEditMode = false, selectedSources = [], salaryDetails, housePropertyDetails,
   businessDetails, capitalGainsDetails, otherSourcesDetails, selectedRegime, onRegimeChange,
   deductions, onDeductionsChange,
 }) => {
@@ -243,6 +245,7 @@ export const ItrRegimeDeductionsView: React.FC<ItrRegimeDeductionsViewProps> = (
         onBack={onBack}
         onNext={onNext}
         onSaveDraft={onSaveDraft}
+        isEditMode={isEditMode}
         backLabel="Back"
         nextLabel="Continue"
         nextDisabled={!isRegimeDeductionsValid}

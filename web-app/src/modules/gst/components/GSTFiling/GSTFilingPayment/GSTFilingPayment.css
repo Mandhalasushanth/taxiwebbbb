@@ -1,6 +1,6 @@
 .gst-filing-payment-stepper-wrap {
-  max-width: 840px;
-  margin: 0 auto 1.5rem auto;
+  max-width: 100%;
+  margin: 0 0 1.5rem 0;
 }
 .gst-pay-wrapper { display: flex; flex-direction: column; width: 100%; }
 .gst-pay-header { margin-bottom: 1.5rem; }

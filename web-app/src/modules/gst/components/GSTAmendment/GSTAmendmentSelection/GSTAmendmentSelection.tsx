@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { gstFieldRules } from '@modules/gst/validation/gstFieldRules'
+import { GSTSaveDraftButton } from '@modules/gst/shared/GSTSaveDraftButton'
 import './GSTAmendmentSelection.css'
 
 import { CORE_AMENDMENTS, NON_CORE_AMENDMENTS, type AmendmentCardItem } from '@modules/gst/constants/gstAmendmentOptions'
@@ -10,12 +11,15 @@ interface GSTAmendmentSelectionProps {
   gstin: string
   onGstinChange: (value: string) => void
   onSelectOption: (option: AmendmentCardItem) => void
+  /** Opens the save / discard / keep-editing dialog (same as every loan step) */
+  onSaveDraft?: () => void
 }
 
 export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
   gstin,
   onGstinChange,
   onSelectOption,
+  onSaveDraft,
 }) => {
   const [errorText, setErrorText] = useState<string>('')
 
@@ -207,6 +211,12 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
           ))}
         </div>
       </section>
+
+      {onSaveDraft && gstin && (
+        <div className="gst-amend-select-footer">
+          <GSTSaveDraftButton onClick={onSaveDraft} />
+        </div>
+      )}
     </div>
   )
 }

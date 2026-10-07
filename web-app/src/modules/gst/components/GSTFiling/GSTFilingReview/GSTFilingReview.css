@@ -1,7 +1,7 @@
 .gst-review-page {
   width: 100%;
-  max-width: 860px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   padding: 16px 20px 64px;
   font-family: inherit;
   color: #1e293b;

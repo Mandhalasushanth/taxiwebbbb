@@ -32,6 +32,8 @@ export interface ItrIncomeSourcesViewProps {
   onBack: () => void;
   onNext: () => void;
   onSaveDraft?: () => void;
+  /** Opened with "Edit" from the review: the main button reads "Update & Review" */
+  isEditMode?: boolean;
   salaryDetails: SalaryDetails;
   onSalaryDetailsChange: (details: SalaryDetails) => void;
   housePropertyDetails: HousePropertyDetails;
@@ -51,6 +53,7 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
   onBack,
   onNext,
   onSaveDraft,
+  isEditMode = false,
   salaryDetails,
   onSalaryDetailsChange,
   housePropertyDetails,
@@ -253,6 +256,7 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
         onBack={onBack}
         onNext={handleNext}
         onSaveDraft={onSaveDraft}
+        isEditMode={isEditMode}
         backLabel="Back"
         nextLabel="Continue"
         nextDisabled={!isIncomeSourcesValid}

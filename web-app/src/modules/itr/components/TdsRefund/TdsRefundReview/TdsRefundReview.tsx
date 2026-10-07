@@ -180,7 +180,7 @@ export const TdsRefundReview: React.FC<TdsRefundReviewProps> = ({
               </div>
               <div className="tds-review-rows">
                 {section.rows.map((row) => (
-                  <div key={row.label} className="tds-review-row"><span className="tds-review-label">{row.label}</span><span className={`tds-review-value ${row.isMono ? 'tds-review-value--mono' : ''}`}>{row.value}</span></div>
+                  <div key={row.label} className="tds-review-row"><span className="tds-review-label">{row.label}</span><span className={`tds-review-value ${'isMono' in row && row.isMono ? 'tds-review-value--mono' : ''}`}>{row.value}</span></div>
                 ))}
               </div>
             </section>

@@ -84,3 +84,6 @@ export const REGEX = {
 
 /** RFC 5321 limits on total address and local-part length */
 export const EMAIL_LIMITS = { maxLength: 254, maxLocalLength: 64 } as const
+
+/** Main button label on a step opened with "Edit" from a review page (every service) */
+export const UPDATE_AND_REVIEW_LABEL = 'Update & Review'

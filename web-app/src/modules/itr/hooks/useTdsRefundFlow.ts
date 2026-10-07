@@ -1,11 +1,16 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { routePaths } from '@core/config'
-import { useAppStore, useAuthStore } from '@store/index'
+import { useAuthStore } from '@store/index'
 import { userStorage } from '@core/storage/userStorage'
-import { useDraftBlocker } from '@shared/hooks'
+import { useServiceDraft, readServiceDraft } from '@shared/hooks'
 import { authStorage } from '@core/auth'
 import { EMPTY_PROFILE, EMPTY_BANK, EMPTY_TAX, syncProfileWithAuthUser } from '../utils/tdsRefund.constants'
+import { ITR_DRAFT_NAMESPACE } from '../utils/itrDraft.constants'
 import type { TdsProfile, TdsBankDetails, TdsIncomeTaxData, UploadedFileMeta } from '../types/tdsRefund.types'
+
+const SERVICE_ID = 'tds-refund'
+const TOTAL_STEPS = 4
+const SUCCESS_STEP = 5
 
 const STEP_LABELS: Record<number, string> = {
   1: 'Customer & Income',
@@ -14,40 +19,38 @@ const STEP_LABELS: Record<number, string> = {
   4: 'Payment',
 }
 
+interface TdsRefundDraft {
+  profile: TdsProfile
+  bankDetails: TdsBankDetails
+  taxData: TdsIncomeTaxData
+  uploads: Record<string, UploadedFileMeta>
+}
+
 export const useTdsRefundFlow = () => {
-  const pushToast = useAppStore((s) => s.pushToast)
   const user = useAuthStore((s) => s.user)
 
-  const [draft] = useState(() => {
-    try {
-      return userStorage.getDraft('tds-refund')
-    } catch {
-      return undefined
-    }
-  })
+  const [draft] = useState(() => readServiceDraft<TdsRefundDraft>(SERVICE_ID, ITR_DRAFT_NAMESPACE))
 
   const [tdsRef] = useState(
     () => `TDS-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`
   )
 
   const [currentStep, setCurrentStep] = useState<number>(() =>
-    draft && draft.currentStep >= 1 && draft.currentStep <= 4 ? draft.currentStep : 0
+    draft && draft.currentStep >= 1 && draft.currentStep <= TOTAL_STEPS ? draft.currentStep : 0
   )
 
   const [profile, setProfile] = useState<TdsProfile>(() => {
     try {
-      const draftProf = draft?.formData?.profile as TdsProfile | undefined
       const u = user || authStorage.getUser()
-      const base = { ...EMPTY_PROFILE, ...draftProf }
+      const base = { ...EMPTY_PROFILE, ...draft?.formData?.profile }
       return syncProfileWithAuthUser(base, u).profile
-    } catch (err) {
-      console.error('Failed to initialize TDS refund profile:', err)
+    } catch {
       return { ...EMPTY_PROFILE }
     }
   })
 
   const [bankDetails, setBankDetails] = useState<TdsBankDetails>(() => {
-    const draftBank = draft?.formData?.bankDetails as TdsBankDetails | undefined
+    const draftBank = draft?.formData?.bankDetails
     const u = user || authStorage.getUser()
     return {
       ...EMPTY_BANK,
@@ -68,45 +71,21 @@ export const useTdsRefundFlow = () => {
         })
       }, 0)
       return () => clearTimeout(timer)
-    } catch (err) {
-      console.error('Failed to sync TDS refund profile:', err)
+    } catch {
+      // Profile sync is a convenience; the user can still type the details
     }
   }, [user])
 
   const [taxData, setTaxData] = useState<TdsIncomeTaxData>(
-    () => (draft?.formData?.taxData as TdsIncomeTaxData) || { ...EMPTY_TAX }
+    () => draft?.formData?.taxData || { ...EMPTY_TAX }
   )
   const [uploads, setUploads] = useState<Record<string, UploadedFileMeta>>(
-    () => (draft?.formData?.uploads as Record<string, UploadedFileMeta>) || {}
+    () => draft?.formData?.uploads || {}
   )
-
-  const saveCurrentDraft = useCallback(() => {
-    try {
-      const timeStr = new Date().toLocaleTimeString([], {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-      })
-      const stepLabel = STEP_LABELS[currentStep] || 'Payment'
-      userStorage.saveDraft({
-        serviceId: 'tds-refund',
-        serviceTitle: 'TDS Refund',
-        currentStep,
-        totalSteps: 4,
-        stepLabel,
-        formData: { profile, bankDetails, taxData, uploads },
-        savedAt: timeStr,
-        savedTimestamp: Date.now(),
-        resumeRoute: routePaths.itr.tdsRefund,
-      })
-    } catch {
-      // Fallback
-    }
-  }, [currentStep, profile, bankDetails, taxData, uploads])
 
   const isDirty = Boolean(
     currentStep >= 1 &&
-      currentStep <= 4 &&
+      currentStep <= TOTAL_STEPS &&
       (currentStep > 1 ||
         Boolean(draft) ||
         taxData.taxRegime !== null ||
@@ -127,30 +106,25 @@ export const useTdsRefundFlow = () => {
         Object.keys(uploads).length > 0)
   )
 
-  useEffect(() => {
-    if (isDirty) {
-      saveCurrentDraft()
-    }
-  }, [currentStep, isDirty, saveCurrentDraft])
-
-  const { isModalOpen, openModal, handleSaveAndExit, handleDiscardAndExit, handleKeepEditing } =
-    useDraftBlocker({
-      shouldBlock: isDirty,
-      onSaveDraft: () => {
-        saveCurrentDraft()
-        pushToast('Application saved as draft', 'success')
-      },
-      onDiscardDraft: () => {
-        userStorage.deleteDraft('tds-refund')
-        pushToast('Draft discarded', 'info')
-        setCurrentStep(0)
-      },
-      defaultExitRoute: routePaths.itr.root,
-    })
+  // Same draft behaviour as loans and GST: auto-save, save / discard dialog, browser Back prompt
+  const serviceDraft = useServiceDraft<TdsRefundDraft>({
+    serviceId: SERVICE_ID,
+    serviceTitle: 'TDS Refund',
+    totalSteps: TOTAL_STEPS,
+    currentStep: Math.min(Math.max(currentStep, 1), TOTAL_STEPS),
+    stepLabel: STEP_LABELS[currentStep] || STEP_LABELS[1],
+    resumeRoute: routePaths.itr.tdsRefund,
+    exitRoute: routePaths.itr.root,
+    formData: { profile, bankDetails, taxData, uploads },
+    hasEnteredData: isDirty,
+    isComplete: currentStep >= SUCCESS_STEP,
+    storageNamespace: ITR_DRAFT_NAMESPACE,
+    onDiscard: () => setCurrentStep(0),
+  })
 
   const handleFinishSubmission = () => {
     try {
-      userStorage.deleteDraft('tds-refund')
+      serviceDraft.clearDraft()
       const refundClaim = Number(taxData.totalTdsDeducted || 0) + Number(taxData.tcsAmount || 0)
       userStorage.saveUserApplication({
         id: `app-tds-${Date.now()}`,
@@ -169,9 +143,9 @@ export const useTdsRefundFlow = () => {
       setBankDetails({ ...EMPTY_BANK })
       setTaxData({ ...EMPTY_TAX })
       setUploads({})
-      setCurrentStep(5)
+      setCurrentStep(SUCCESS_STEP)
     } catch {
-      setCurrentStep(5)
+      setCurrentStep(SUCCESS_STEP)
     }
   }
 
@@ -188,11 +162,11 @@ export const useTdsRefundFlow = () => {
     setTaxData,
     uploads,
     setUploads,
-    isModalOpen,
-    openModal,
-    handleSaveAndExit,
-    handleDiscardAndExit,
-    handleKeepEditing,
+    isModalOpen: serviceDraft.isDraftModalOpen,
+    openModal: serviceDraft.openDraftModal,
+    handleSaveAndExit: serviceDraft.handleSaveAndExit,
+    handleDiscardAndExit: serviceDraft.handleDiscardAndExit,
+    handleKeepEditing: serviceDraft.handleKeepEditing,
     handleFinishSubmission,
     isDirty,
   }

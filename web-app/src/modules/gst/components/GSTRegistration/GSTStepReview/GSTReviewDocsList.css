@@ -124,3 +124,12 @@
   font-weight: 600;
   flex-shrink: 0;
 }
+
+/* Uploaded count + Edit button on the right of the header */
+.gst-review-docs-header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}

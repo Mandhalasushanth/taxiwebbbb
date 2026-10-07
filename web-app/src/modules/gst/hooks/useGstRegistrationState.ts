@@ -10,6 +10,7 @@ import { INITIAL_DOCUMENTS } from '@modules/gst/utils/gstDocuments.constants'
 import { clampRegistrationStep } from '@modules/gst/utils/gstRegistrationGuard'
 import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
 import { useGstDraft, readGstDraft, hasGstFormChanged } from '@modules/gst/hooks/useGstDraft'
+import { useReviewEdit } from '@shared/hooks'
 import type { DocumentItem } from '@modules/gst/types/gstDocuments.types'
 import type { GstBusinessFormData } from '@modules/gst/types/gstBusiness.types'
 import type { PaymentResult } from '@modules/gst/types/gst.types'
@@ -22,11 +23,7 @@ const TOTAL_STEPS = 4
 const STEP_LABELS = ['Business', 'Documents', 'Review', 'Payment']
 const STEP_NAMES: Record<number, string> = { 1: 'business', 2: 'documents', 3: 'review', 4: 'payment' }
 const STATUS_STEP = 5
-
-/** Router state stored on each wizard history entry (lets the in-page Back reuse browser history) */
-interface WizardHistoryState {
-  gstPrevStep?: number
-}
+const REVIEW_STEP = 3
 
 interface RegistrationDraft {
   businessData: GstBusinessFormData
@@ -155,25 +152,15 @@ export const useGstRegistrationState = () => {
   }
 
   /**
-   * Forward moves add a browser history entry, so the browser Back button returns to the previous step.
-   * The in-page Back button pops that entry when it is the step we are going to, keeping both in sync.
+   * Step changes replace the current history entry (same as the loans flows), so the browser
+   * Back button leaves the wizard and opens the save-draft dialog instead of stepping back.
+   * The in-page Back button moves between steps.
    */
   const goToStep = (requestedStep: number) => {
     const step = allowedStep(requestedStep)
-    const historyState = location.state as WizardHistoryState | null
-    const isBackToPreviousEntry = step < currentStep && historyState?.gstPrevStep === step
     window.scrollTo({ top: 0, behavior: 'smooth' })
-    if (isBackToPreviousEntry) {
-      navigate(-1)
-      return
-    }
     setCurrentStep(step)
-    if (!STEP_NAMES[step]) return
-    const isForward = step > currentStep
-    setSearchParams(
-      { step: STEP_NAMES[step] },
-      isForward ? { state: { gstPrevStep: currentStep } satisfies WizardHistoryState } : { replace: true },
-    )
+    if (STEP_NAMES[step]) setSearchParams({ step: STEP_NAMES[step] }, { replace: true })
   }
 
   // Leaving from step 1 asks to save when something was entered (same as the loans flows)
@@ -220,11 +207,15 @@ export const useGstRegistrationState = () => {
     recordApplication(result.applicationRef || applicationRef)
   }
 
-  const [editingFromReview, setEditingFromReview] = useState(false)
+  // "Edit" from the Review step: shared behaviour (Update & Review / Back return to the review)
+  const reviewEdit = useReviewEdit(() => goToStep(REVIEW_STEP))
+  // Review section the user chose to edit (business / bank / signatory / documents)
+  const [editSection, setEditSection] = useState<string | null>(null)
+  const editingSection = reviewEdit.isEditMode ? editSection : null
 
-  const startEditingFromReview = (step: number) => {
-    setEditingFromReview(true)
-    goToStep(step)
+  const startEditingFromReview = (step: number, section: string | null = null) => {
+    setEditSection(section)
+    reviewEdit.startEdit(() => goToStep(step))
   }
 
   const handleDiscardAndExit = () => {
@@ -240,28 +231,20 @@ export const useGstRegistrationState = () => {
     applicationRef,
     isDraftModalOpen: draft.isDraftModalOpen,
     openDraftModal: draft.openDraftModal,
-    handleCancel,
     handleSaveAndExit: draft.handleSaveAndExit,
     handleDiscardAndExit,
     handleKeepEditing: draft.handleKeepEditing,
     handleBusinessChange,
     setDocuments,
     goToStep,
-    isEditMode: editingFromReview,
+    isEditMode: reviewEdit.isEditMode,
+    editSection: editingSection,
     startEditingFromReview,
-    handleStep1Next: () => {
-      if (editingFromReview) {
-        setEditingFromReview(false)
-        goToStep(3)
-      } else {
-        goToStep(2)
-      }
-    },
-    handleStep2Back: () => goToStep(1),
-    handleStep2Next: () => {
-      setEditingFromReview(false)
-      goToStep(3)
-    },
+    // While editing from Review, Back and "Update & Review" both return to the Review step
+    handleCancel: reviewEdit.backOrReview(handleCancel),
+    handleStep1Next: reviewEdit.nextOrReview(() => goToStep(2)),
+    handleStep2Back: reviewEdit.backOrReview(() => goToStep(1)),
+    handleStep2Next: reviewEdit.nextOrReview(() => goToStep(REVIEW_STEP)),
     handleStep3Back: () => goToStep(2),
     handleStep3Proceed: () => goToStep(4),
     handleStep4Back: () => goToStep(3),

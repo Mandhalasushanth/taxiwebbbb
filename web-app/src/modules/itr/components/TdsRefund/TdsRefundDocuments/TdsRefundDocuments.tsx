@@ -79,6 +79,8 @@ export interface TdsRefundDocumentsProps {
   onBack: () => void
   onNext?: () => void
   onSaveDraft?: () => void
+  /** Opened with "Edit" from the review: the main button reads "Update & Review" */
+  isEditMode?: boolean
   initialUploads?: Record<string, UploadedFileMeta>
   onUploadsChange?: (uploads: Record<string, UploadedFileMeta>) => void
 }
@@ -90,6 +92,7 @@ export const TdsRefundDocuments: React.FC<TdsRefundDocumentsProps> = ({
   onBack,
   onNext,
   onSaveDraft,
+  isEditMode = false,
   initialUploads,
   onUploadsChange,
 }) => {
@@ -261,6 +264,7 @@ export const TdsRefundDocuments: React.FC<TdsRefundDocumentsProps> = ({
         onBack={onBack}
         onNext={handleContinue}
         onSaveDraft={onSaveDraft}
+        isEditMode={isEditMode}
         nextLabel="Continue"
         nextDisabled={!isDocumentsValid}
         nextTestId="tds-docs-proceed-btn"
