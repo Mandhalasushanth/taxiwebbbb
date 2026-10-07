@@ -1,5 +1,4 @@
 export { AppRouter } from './AppRouter'
 export { CustomerRoute } from './CustomerRoute'
 export { PublicRoute } from './PublicRoute'
-export { StaffRoute } from './StaffRoute'
 export { routeConfig } from './routeConfig'

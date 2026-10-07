@@ -44,15 +44,4 @@ export const navSections: NavSection[] = [
       { label: 'Profile', to: routePaths.profile, icon: '☺' },
     ],
   },
-  {
-    title: 'Back office',
-    items: [
-      { label: 'Admin Dashboard', to: routePaths.staff.dashboard, icon: '📊' },
-      { label: 'Applications Desk', to: routePaths.staff.applications, icon: '📄' },
-      { label: 'Customers (CRM)', to: routePaths.staff.customers, icon: '👥' },
-      { label: 'Staff & Roles', to: routePaths.staff.staffManagement, icon: '🛡️' },
-      { label: 'Service Pricing', to: routePaths.staff.pricing, icon: '🏷️' },
-      { label: 'Reports', to: routePaths.staff.reports, icon: '📥' },
-    ],
-  },
 ]

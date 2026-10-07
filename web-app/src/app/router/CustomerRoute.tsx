@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
-import { buildLoginPath, isStaffRole } from '@core/auth'
+import { buildLoginPath } from '@core/auth'
 import { routePaths } from '@core/config'
 import { Loader } from '@shared/components'
 import { useAuthStore } from '@store/index'
@@ -8,8 +8,8 @@ import { useAuthStore } from '@store/index'
 import { buildProfilePromptState, isProfileFreePath } from './profileGate'
 
 /**
- * Customer-only routes. Staff are redirected to their own dashboard, and customers
- * with an incomplete profile are sent to the dashboard's "Complete Your Profile" prompt.
+ * Customer-only routes. Customers with an incomplete profile
+ * are sent to the dashboard's "Complete Your Profile" prompt.
  */
 export const CustomerRoute = () => {
   const location = useLocation()
@@ -20,8 +20,6 @@ export const CustomerRoute = () => {
   if (!isAuthenticated || !user) {
     return <Navigate to={buildLoginPath(location)} replace />
   }
-
-  if (isStaffRole(user.role)) return <Navigate to={routePaths.staff.dashboard} replace />
 
   // Profile gate: service pages opened by direct URL need a completed profile
   if (!user.isProfileComplete && !isProfileFreePath(location.pathname)) {

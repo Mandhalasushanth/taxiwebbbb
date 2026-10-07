@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { isStaffRole } from '@core/auth'
 import { routePaths } from '@core/config'
 import { useAuthStore } from '@store/index'
 import type { AuthSession } from '@core/auth'
@@ -17,11 +16,6 @@ export const useAuth = () => {
   const completeSignIn = useCallback(
     (session: AuthSession) => {
       signIn(session)
-
-      if (isStaffRole(session.user.role)) {
-        navigate(routePaths.staff.dashboard, { replace: true })
-        return
-      }
 
       navigate(routePaths.dashboard, {
         replace: true,
@@ -48,11 +42,6 @@ export const useAuth = () => {
     async (payload: VerifyPasscodePayload) => {
       const session = await authFlowService.verifyPasscode(payload)
       signIn(session)
-
-      if (isStaffRole(session.user.role)) {
-        navigate(routePaths.staff.dashboard, { replace: true })
-        return
-      }
 
       navigate(routePaths.dashboard, { replace: true })
     },

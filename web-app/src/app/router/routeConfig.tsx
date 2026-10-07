@@ -3,7 +3,6 @@ import type { RouteObject } from 'react-router-dom'
 
 import { AuthLayout } from '../layouts/AuthLayout'
 import { DashboardLayout } from '../layouts/DashboardLayout'
-import { StaffLayout } from '../layouts/StaffLayout'
 import { NotFound } from '../pages/NotFound'
 
 import { routePaths } from '@core/config'
@@ -23,12 +22,10 @@ import { itrRoutes } from '@modules/itr/routes'
 import { loansRoutes } from '@modules/loans/routes'
 import { paymentsRoutes } from '@modules/payments/routes'
 import { profileRoutes } from '@modules/profile/routes'
-import { staffRoutes } from '@modules/staff/routes'
 import { notificationsRoutes } from '@modules/notifications'
 
 import { CustomerRoute } from './CustomerRoute'
 import { PublicRoute } from './PublicRoute'
-import { StaffRoute } from './StaffRoute'
 
 const authLayoutRoutes = authenticationRoutes.filter(
   (r) =>
@@ -70,10 +67,6 @@ export const routeConfig: RouteObject[] = [
         children: authLayoutRoutes,
       },
     ],
-  },
-  {
-    element: <StaffRoute />,
-    children: [{ element: <StaffLayout />, children: staffRoutes }],
   },
   {
     element: <CustomerRoute />,
