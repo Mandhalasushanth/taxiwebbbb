@@ -15,9 +15,9 @@
   height: 48px;
   padding: 0 1rem;
   border-radius: 10px;
-  border: 1.5px solid #cbd5e1;
-  background-color: #ffffff;
-  color: #334155;
+  border: 1.5px solid var(--grey-300);
+  background-color: var(--surface);
+  color: var(--grey-700);
   font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
@@ -30,27 +30,27 @@
 }
 
 .machinery-loan-toggle-btn:hover {
-  border-color: #1d4ed8;
-  background-color: #f8fafc;
+  border-color: var(--palette-blue-700);
+  background-color: var(--palette-slate-50);
 }
 
 .machinery-loan-toggle-btn--active {
-  border-color: #2563eb;
-  background-color: #eff6ff;
-  color: #1d4ed8;
+  border-color: var(--palette-blue-600);
+  background-color: var(--palette-blue-50);
+  color: var(--palette-blue-700);
   font-weight: 700;
-  box-shadow: 0 0 0 1px #2563eb;
+  box-shadow: 0 0 0 1px var(--palette-blue-600);
 }
 
 .machinery-loan-select {
   width: 100%;
   height: 48px;
   padding: 0 2.5rem 0 1rem;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--grey-300);
   border-radius: 10px;
   font-size: 0.95rem;
-  color: #0f172a;
-  background-color: #ffffff;
+  color: var(--palette-slate-900);
+  background-color: var(--surface);
   outline: none;
   cursor: pointer;
   font-family: inherit;
@@ -59,16 +59,16 @@
 }
 
 .machinery-loan-select:focus {
-  border-color: #ff7a00;
+  border-color: var(--feature-orange);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.12);
 }
 
 .machinery-loan-select--error {
-  border-color: #ef4444 !important;
-  background-color: #fff5f5 !important;
+  border-color: var(--palette-red-500) !important;
+  background-color: var(--palette-red-50-fff5f5) !important;
 }
 
 .machinery-loan-select--error:focus {
-  border-color: #dc2626 !important;
+  border-color: var(--error) !important;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
 }

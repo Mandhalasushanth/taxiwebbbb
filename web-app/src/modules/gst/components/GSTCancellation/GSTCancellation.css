@@ -1,6 +1,6 @@
 .gst-cancellation-page {
   padding: 2.5rem 1.5rem;
-  background-color: var(--color-bg, #f8fafc);
+  background-color: var(--color-bg, var(--palette-slate-50));
   min-height: calc(100vh - 64px);
   box-sizing: border-box;
 }

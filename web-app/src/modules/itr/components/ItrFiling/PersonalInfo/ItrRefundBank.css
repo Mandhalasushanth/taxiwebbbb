@@ -2,7 +2,7 @@
 .itr-add-bank-title {
   margin: 0 0 0.5rem;
   font: 800 1.15rem / 1.3 inherit;
-  color: #083b75;
+  color: var(--primary-navy);
 }
 
 .itr-bank-account-card {
@@ -11,16 +11,16 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.9rem 1.25rem;
-  background: #fff;
-  border: 1.5px solid #cbd5e1;
+  background: var(--surface);
+  border: 1.5px solid var(--grey-300);
   border-radius: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .itr-bank-account-card--selected {
-  border-color: #10b981;
-  background: #f0fdf4;
+  border-color: var(--palette-emerald-500);
+  background: var(--palette-green-50);
 }
 
 .itr-bank-card-content {
@@ -37,7 +37,7 @@
 
 .itr-bank-name {
   font: 700 0.95rem inherit;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .itr-bank-badge {
@@ -47,19 +47,19 @@
   font: 700 0.72rem inherit;
   padding: 0.2rem 0.55rem;
   border-radius: 6px;
-  background: #dcfce7;
-  color: #15803d;
+  background: var(--palette-green-100);
+  color: var(--palette-green-700);
 }
 
 .itr-bank-acc-num {
   font: 700 1.05rem inherit;
-  color: #083b75;
+  color: var(--primary-navy);
   letter-spacing: 0.05em;
 }
 
 .itr-bank-meta {
   font-size: 0.82rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .itr-bank-radio-col {
@@ -69,9 +69,9 @@
 }
 
 .itr-bank-form-error {
-  color: #dc2626;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  color: var(--error);
+  background: var(--palette-red-50);
+  border: 1px solid var(--palette-red-200);
   padding: 0.35rem 0.65rem;
   border-radius: 6px;
   font: 600 0.82rem / 1.3 inherit;
@@ -90,7 +90,7 @@
 
 .itr-input-label {
   font: 700 0.85rem / 1.25 inherit;
-  color: #334155;
+  color: var(--grey-700);
   margin: 0;
 }
 
@@ -99,16 +99,16 @@
   width: 100%;
   height: 42px;
   padding: 0 0.85rem;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--grey-300);
   border-radius: 10px;
   font-size: 0.88rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .itr-text-input::placeholder,
 .itr-select-input:invalid {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: var(--muted-text);
 }
 
 .itr-add-bank-actions {
@@ -125,19 +125,19 @@
 }
 
 .itr-btn-save-bank {
-  background: #f97316;
-  border-color: #f97316;
-  color: #fff;
+  background: var(--primary-orange);
+  border-color: var(--primary-orange);
+  color: var(--surface);
 }
 
 .itr-btn-cancel-bank {
-  background: #fff;
-  border-color: #cbd5e1;
-  color: #64748b;
+  background: var(--surface);
+  border-color: var(--grey-300);
+  color: var(--secondary-text);
 }
 
 .itr-btn-add-bank {
-  color: #083b75;
+  color: var(--primary-navy);
   background: none;
   border: none;
   font-weight: 700;

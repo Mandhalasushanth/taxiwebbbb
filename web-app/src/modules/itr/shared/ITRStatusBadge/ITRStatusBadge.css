@@ -9,26 +9,26 @@
 }
 
 .itr-status-badge--e-verified {
-  background-color: #dcfce7;
-  color: #166534;
+  background-color: var(--palette-green-100);
+  color: var(--palette-green-800);
 }
 
 .itr-status-badge--processed {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: var(--palette-blue-100);
+  color: var(--palette-blue-800-1e40af);
 }
 
 .itr-status-badge--defective {
-  background-color: #fee2e2;
-  color: #991b1b;
+  background-color: var(--palette-red-100-fee2e2);
+  color: var(--palette-red-800);
 }
 
 .itr-status-badge--processing {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: var(--warning-light);
+  color: var(--palette-amber-800);
 }
 
 .itr-status-badge--not-filed {
-  background-color: #f3f4f6;
-  color: #374151;
+  background-color: var(--palette-gray-100);
+  color: var(--palette-gray-700);
 }

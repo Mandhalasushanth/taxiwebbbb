@@ -23,27 +23,27 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   font-size: 0.875rem;
-  color: var(--secondary-text, #64748b);
+  color: var(--secondary-text, var(--secondary-text));
 }
 
 .gst-cert-header__breadcrumb-link {
-  color: var(--secondary-text, #64748b);
+  color: var(--secondary-text, var(--secondary-text));
   text-decoration: none;
   font-weight: 500;
   transition: color 0.15s ease;
 }
 
 .gst-cert-header__breadcrumb-link:hover {
-  color: var(--primary-navy, #083b75);
+  color: var(--primary-navy, var(--primary-navy));
 }
 
 .gst-cert-header__breadcrumb-separator {
-  color: #94a3b8;
+  color: var(--muted-text);
   font-size: 0.8rem;
 }
 
 .gst-cert-header__breadcrumb-current {
-  color: var(--primary-text, #172033);
+  color: var(--primary-text, var(--primary-text));
   font-weight: 600;
 }
 
@@ -58,7 +58,7 @@
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #64748b;
+  color: var(--secondary-text);
   text-transform: uppercase;
 }
 
@@ -72,7 +72,7 @@
 .gst-cert-header__title {
   font-size: 1.875rem;
   font-weight: 800;
-  color: #083B75;
+  color: var(--primary-navy);
   margin: 0;
   letter-spacing: -0.025em;
   line-height: 1.2;
@@ -80,7 +80,7 @@
 
 .gst-cert-header__description {
   font-size: 0.9375rem;
-  color: #475569;
+  color: var(--palette-slate-600);
   margin: 0;
   line-height: 1.5;
 }

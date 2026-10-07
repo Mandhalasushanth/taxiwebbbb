@@ -15,9 +15,9 @@
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
-  color: #334155;
+  background-color: var(--surface);
+  border: 1px solid var(--grey-300);
+  color: var(--grey-700);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,9 +26,9 @@
 }
 
 .loan-page-nav__back-btn:hover {
-  background-color: #f1f5f9;
-  border-color: #94a3b8;
-  color: #0f172a;
+  background-color: var(--subtle-border);
+  border-color: var(--muted-text);
+  color: var(--palette-slate-900);
 }
 
 .loan-page-nav__titles {
@@ -39,7 +39,7 @@
 .loan-page-nav__category {
   font-size: 0.775rem;
   font-weight: 700;
-  color: #ff7a00;
+  color: var(--feature-orange);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.15rem;
@@ -49,12 +49,12 @@
   margin: 0;
   font-size: 1.65rem;
   font-weight: 800;
-  color: #083b75;
+  color: var(--primary-navy);
   letter-spacing: -0.015em;
 }
 
 .loan-page-nav__subtitle {
   margin: 0.2rem 0 0 0;
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }

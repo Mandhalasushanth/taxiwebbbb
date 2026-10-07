@@ -1,6 +1,6 @@
 .itr-tax-summary-card {
   background: white;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--palette-gray-200);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
@@ -8,7 +8,7 @@
 .itr-tax-summary-title {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--palette-gray-900);
   margin-bottom: 1.25rem;
 }
 .itr-tax-summary-list {
@@ -23,26 +23,26 @@
 }
 .itr-tax-summary-label {
   font-size: 0.875rem;
-  color: #4b5563;
+  color: var(--palette-gray-600);
 }
 .itr-tax-summary-value {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #111827;
+  color: var(--palette-gray-900);
 }
 .itr-tax-summary-value.minus {
-  color: #ef4444;
+  color: var(--palette-red-500);
 }
 .itr-tax-summary-divider {
   height: 1px;
-  background-color: #e5e7eb;
+  background-color: var(--palette-gray-200);
   margin: 0.5rem 0;
 }
 .itr-tax-summary-item.highlight {
   font-weight: 600;
 }
 .itr-tax-summary-item.highlight .itr-tax-summary-label {
-  color: #111827;
+  color: var(--palette-gray-900);
 }
 .itr-tax-summary-final {
   margin-top: 0.5rem;
@@ -53,12 +53,12 @@
   align-items: center;
 }
 .itr-tax-summary-final.refund {
-  background-color: #ecfdf5;
-  border: 1px solid #a7f3d0;
+  background-color: var(--palette-emerald-50);
+  border: 1px solid var(--palette-emerald-200);
 }
 .itr-tax-summary-final.payable {
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
+  background-color: var(--palette-red-50);
+  border: 1px solid var(--palette-red-200);
 }
 .itr-tax-summary-final-label {
   font-size: 1rem;
@@ -66,11 +66,11 @@
 }
 .itr-tax-summary-final.refund .itr-tax-summary-final-label,
 .itr-tax-summary-final.refund .itr-tax-summary-final-value {
-  color: #059669;
+  color: var(--feature-success);
 }
 .itr-tax-summary-final.payable .itr-tax-summary-final-label,
 .itr-tax-summary-final.payable .itr-tax-summary-final-value {
-  color: #dc2626;
+  color: var(--error);
 }
 .itr-tax-summary-final-value {
   font-size: 1.25rem;

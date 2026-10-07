@@ -22,14 +22,14 @@
   font-family: var(--font-sans);
   font-size: 1.2rem;
   font-weight: 800;
-  color: #083B75;
+  color: var(--primary-navy);
   letter-spacing: -0.015em;
 }
 
 .quick-services__subtitle {
   margin: 0;
   font-size: 0.82rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .quick-services__grid {
@@ -47,8 +47,8 @@
   text-align: center;
   padding: 1.4rem 0.5rem 1.25rem;
   min-height: 125px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: 0 1px 4px rgba(8, 59, 117, 0.04);
   text-decoration: none;
@@ -59,7 +59,7 @@
 .quick-service:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(8, 59, 117, 0.1);
-  border-color: #cbd5e1;
+  border-color: var(--grey-300);
 }
 
 .quick-service__icon-wrap {
@@ -70,8 +70,8 @@
   height: 54px;
   border-radius: 50%;
   flex-shrink: 0;
-  background: #F4F8FC;
-  border: 1.5px solid #E2EAF4;
+  background: var(--palette-sky-50);
+  border: 1.5px solid var(--palette-sky-100-e2eaf4);
   padding: 3px;
   margin-bottom: 0.75rem;
   box-shadow: 0 2px 8px rgba(8, 59, 117, 0.06);
@@ -95,7 +95,7 @@
   font-family: var(--font-sans);
   font-size: 0.88rem;
   font-weight: 800;
-  color: #083B75;
+  color: var(--primary-navy);
   line-height: 1.25;
   letter-spacing: -0.01em;
   text-align: center;

@@ -1,7 +1,7 @@
 .sign-in-card {
   width: 100%;
   height: auto;
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 28px;
   padding: 1.45rem 1.85rem 1.35rem 1.85rem;
   box-shadow: 0 20px 50px rgba(0, 8, 25, 0.26);
@@ -54,7 +54,7 @@
 .sign-in-card__brand-divider {
   width: 1.5px;
   height: 28px;
-  background: #cbd5e1;
+  background: var(--grey-300);
   border-radius: 1px;
 }
 
@@ -83,18 +83,18 @@
 }
 
 .brand-title--navy {
-  color: #0b1f44;
+  color: var(--palette-blue-800);
 }
 
 .brand-title--orange {
-  color: #ff6a00;
+  color: var(--palette-orange-500);
 }
 
 .sign-in-card__brand-sub {
   font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.14em;
-  color: #1e293b;
+  color: var(--palette-slate-800);
   margin-top: 3px;
 }
 
@@ -116,7 +116,7 @@
   margin: 0 0 0.25rem 0;
   font-size: 1.65rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.025em;
   line-height: 1.2;
 }
@@ -124,7 +124,7 @@
 .sign-in-card__subtitle {
   margin: 0;
   font-size: 0.825rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.45;
 }
 
@@ -133,9 +133,9 @@
   padding: 0.65rem 0.85rem;
   font-size: 0.8125rem;
   line-height: 1.45;
-  color: #9a3412;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
+  color: var(--orange-800);
+  background: var(--palette-orange-50);
+  border: 1px solid var(--orange-200);
   border-radius: 10px;
 }
 

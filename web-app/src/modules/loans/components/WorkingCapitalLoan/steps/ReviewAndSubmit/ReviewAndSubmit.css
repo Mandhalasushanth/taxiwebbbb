@@ -11,8 +11,8 @@
 }
 
 .working-capital-review-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -24,7 +24,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--subtle-border);
   padding-bottom: 0.75rem;
 }
 
@@ -32,7 +32,7 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .working-capital-review-card__verified {
@@ -41,13 +41,13 @@
   gap: 4px;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #16a34a;
+  color: var(--success);
 }
 
 .working-capital-review-card__edit-btn {
   background: transparent;
   border: none;
-  color: #0284c7;
+  color: var(--palette-sky-600);
   font-size: 0.875rem;
   font-weight: 600;
   display: inline-flex;
@@ -60,7 +60,7 @@
 }
 
 .working-capital-review-card__edit-btn:hover {
-  color: #0369a1;
+  color: var(--palette-sky-700);
 }
 
 .working-capital-review-card__grid {
@@ -77,18 +77,18 @@
 
 .working-capital-review-card__label {
   font-size: 0.78125rem;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 500;
 }
 
 .working-capital-review-card__value {
   font-size: 0.9375rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-weight: 600;
 }
 
 .working-capital-review-card__value--highlight {
-  color: #0369a1;
+  color: var(--palette-sky-700);
   font-size: 1.05rem;
   font-weight: 700;
 }
@@ -105,10 +105,10 @@
   align-items: center;
   gap: 6px;
   padding: 0.4rem 0.75rem;
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background-color: var(--palette-green-50);
+  border: 1px solid var(--palette-green-200);
   border-radius: 8px;
-  color: #15803d;
+  color: var(--palette-green-700);
   font-size: 0.8125rem;
   font-weight: 600;
 }
@@ -124,8 +124,8 @@
   align-items: flex-start;
   gap: 0.875rem;
   padding: 1.25rem;
-  background-color: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background-color: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 14px;
 }
 
@@ -133,14 +133,14 @@
   margin-top: 0.2rem;
   width: 20px;
   height: 20px;
-  accent-color: #ff7a00;
+  accent-color: var(--feature-orange);
   cursor: pointer;
   flex-shrink: 0;
 }
 
 .working-capital-review__label {
   font-size: 0.875rem;
-  color: #334155;
+  color: var(--grey-700);
   line-height: 1.5;
   cursor: pointer;
   user-select: none;

@@ -24,49 +24,49 @@
 .banking-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--palette-slate-800);
   display: flex;
   align-items: center;
   gap: 0.25rem;
 }
 
 .banking-label__req {
-  color: #ef4444;
+  color: var(--palette-red-500);
   font-weight: bold;
 }
 
 .banking-label__opt {
   font-size: 0.8125rem;
   font-weight: 400;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .banking-input {
   width: 100%;
   padding: 0.75rem 1rem;
   font-size: 0.9375rem;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid var(--border);
   border-radius: 8px;
-  background-color: #ffffff;
-  color: #0f172a;
+  background-color: var(--surface);
+  color: var(--palette-slate-900);
   outline: none;
   transition: all 0.2s ease;
   box-sizing: border-box;
 }
 
 .banking-input:focus {
-  border-color: #ff7a00;
+  border-color: var(--feature-orange);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.12);
 }
 
 .banking-input--error {
-  border-color: #ef4444 !important;
-  background-color: #fffafb;
+  border-color: var(--palette-red-500) !important;
+  background-color: var(--palette-rose-50);
 }
 
 .banking-input-hint {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin-top: 0.25rem;
 }
 
@@ -88,23 +88,23 @@
   font-size: 0.875rem;
   font-weight: 500;
   border-radius: 8px;
-  border: 1.5px solid #e2e8f0;
-  background: #ffffff;
-  color: #475569;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--palette-slate-600);
   cursor: pointer;
   text-align: center;
   transition: all 0.2s ease;
 }
 
 .banking-toggle-btn:hover {
-  border-color: #cbd5e1;
-  background: #f8fafc;
+  border-color: var(--grey-300);
+  background: var(--palette-slate-50);
 }
 
 .banking-toggle-btn--active {
-  border-color: #ff7a00;
-  background: #fff7ed;
-  color: #ea580c;
+  border-color: var(--feature-orange);
+  background: var(--palette-orange-50);
+  color: var(--palette-orange-600);
   font-weight: 600;
 }
 
@@ -114,8 +114,8 @@
   gap: 0.375rem;
   margin-top: 0.5rem;
   padding: 0.375rem 0.75rem;
-  background-color: #ecfdf5;
-  color: #065f46;
+  background-color: var(--palette-emerald-50);
+  color: var(--palette-emerald-800);
   border-radius: 6px;
   font-size: 0.8125rem;
   font-weight: 500;
@@ -125,13 +125,13 @@
 .banking-branch-check {
   width: 16px;
   height: 16px;
-  color: #10b981;
+  color: var(--palette-emerald-500);
   flex-shrink: 0;
 }
 
 .banking-field-error {
   font-size: 0.75rem;
-  color: #ef4444;
+  color: var(--palette-red-500);
   font-weight: 500;
   margin-top: 0.25rem;
 }

@@ -18,8 +18,8 @@
   margin-top: 0.5rem;
 }
 .docs-kyc-stepbar__badge {
-  background: #0b2546;
-  color: #ffffff;
+  background: var(--palette-sky-800-0b2546);
+  color: var(--surface);
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.25rem 0.65rem;
@@ -30,12 +30,12 @@
 .docs-kyc-stepbar__text {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 .docs-kyc-stepbar__line {
   flex: 1;
   height: 4px;
-  background: #e2e8f0;
+  background: var(--border);
   border-radius: 9999px;
   position: relative;
   overflow: hidden;
@@ -43,7 +43,7 @@
 .docs-kyc-stepbar__line-fill {
   width: 54.54%;
   height: 100%;
-  background: #f25a22;
+  background: var(--palette-orange-500-f25a22);
   border-radius: 9999px;
 }
 
@@ -57,13 +57,13 @@
   margin: 0;
   font-size: 1.75rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.02em;
 }
 .docs-kyc-header__subtitle {
   margin: 0;
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.5;
 }
 
@@ -77,7 +77,7 @@
   margin: 0;
   font-size: 0.92rem;
   font-weight: 800;
-  color: #0b2546;
+  color: var(--palette-sky-800-0b2546);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -93,13 +93,13 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 1rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border);
   gap: 1rem;
 }
 .docs-kyc-btn-back {
-  background: #f1f5f9;
-  color: #334155;
-  border: 1px solid #e2e8f0;
+  background: var(--subtle-border);
+  color: var(--grey-700);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 0.75rem 1.75rem;
   font-size: 0.95rem;
@@ -108,12 +108,12 @@
   transition: all 0.2s ease;
 }
 .docs-kyc-btn-back:hover {
-  background: #e2e8f0;
-  color: #0f172a;
+  background: var(--border);
+  color: var(--palette-slate-900);
 }
 .docs-kyc-btn-continue {
-  background: #f25a22;
-  color: #ffffff;
+  background: var(--palette-orange-500-f25a22);
+  color: var(--surface);
   border: none;
   border-radius: 10px;
   padding: 0.8rem 2.25rem;
@@ -124,7 +124,7 @@
   transition: all 0.2s ease;
 }
 .docs-kyc-btn-continue:hover {
-  background: #e04b15;
+  background: var(--palette-orange-500-e04b15);
   transform: translateY(-1px);
 }
 
@@ -134,13 +134,13 @@
 }
 
 .doc-card--error {
-  border-color: #ef4444 !important;
-  background-color: #fffafb !important;
+  border-color: var(--palette-red-500) !important;
+  background-color: var(--palette-rose-50) !important;
 }
 
 .docs-field-error {
   font-size: 0.76rem;
-  color: #dc2626;
+  color: var(--error);
   font-weight: 500;
   margin-top: 0.35rem;
   line-height: 1.25;

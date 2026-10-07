@@ -16,7 +16,7 @@
   position: relative;
   width: 100%;
   max-width: 440px;
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 24px;
   padding: 2.25rem 2rem 2rem;
   box-shadow:
@@ -37,9 +37,9 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: #eef5ff;
-  border: 1px solid #dbeafe;
-  color: #083B75;
+  background: var(--palette-blue-50-eef5ff);
+  border: 1px solid var(--palette-blue-100);
+  color: var(--primary-navy);
   margin-bottom: 1.35rem;
   box-shadow: 0 4px 14px rgba(8, 59, 117, 0.08);
 }
@@ -55,7 +55,7 @@
   font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
   font-size: 1.35rem;
   font-weight: 800;
-  color: #083B75;
+  color: var(--primary-navy);
   line-height: 1.25;
 }
 
@@ -63,7 +63,7 @@
   margin: 0 0 1.75rem;
   font-size: 0.92rem;
   font-weight: 500;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.45;
   max-width: 340px;
 }
@@ -83,9 +83,9 @@
   gap: 0.55rem;
   width: 100%;
   height: 48px;
-  background: #083B75;
-  color: #ffffff;
-  border: 1px solid #083B75;
+  background: var(--primary-navy);
+  color: var(--surface);
+  border: 1px solid var(--primary-navy);
   border-radius: 9999px;
   font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
   font-size: 0.95rem;
@@ -96,8 +96,8 @@
 }
 
 .complete-profile-modal__btn-primary:hover {
-  background: #062b56;
-  border-color: #062b56;
+  background: var(--palette-sky-800-062b56);
+  border-color: var(--palette-sky-800-062b56);
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(8, 59, 117, 0.35);
 }
@@ -113,9 +113,9 @@
   justify-content: center;
   width: 100%;
   height: 46px;
-  background: #f8fafc;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
+  background: var(--palette-slate-50);
+  color: var(--secondary-text);
+  border: 1px solid var(--border);
   border-radius: 9999px;
   font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
   font-size: 0.92rem;
@@ -125,9 +125,9 @@
 }
 
 .complete-profile-modal__btn-secondary:hover {
-  background: #f1f5f9;
-  color: #0f172a;
-  border-color: #cbd5e1;
+  background: var(--subtle-border);
+  color: var(--palette-slate-900);
+  border-color: var(--grey-300);
 }
 
 /* Animations */

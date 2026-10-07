@@ -33,7 +33,7 @@
   width: 100%;
   max-width: 440px;
   padding: 2.5rem 2.25rem 2.25rem;
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 24px;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
   text-align: center;
@@ -48,9 +48,9 @@
   width: 76px;
   height: 76px;
   border-radius: 50%;
-  background: #FFF3E6;
-  border: 1.5px solid #FFE4CC;
-  color: #FF7A00;
+  background: var(--palette-orange-50-fff3e6);
+  border: 1.5px solid var(--palette-orange-100-ffe4cc);
+  color: var(--feature-orange);
   margin: 0 auto 1.35rem;
   box-shadow: 0 4px 14px rgba(255, 122, 0, 0.15);
 }
@@ -65,7 +65,7 @@
   font-family: var(--font-sans);
   font-size: 1.35rem;
   font-weight: 800;
-  color: #083B75;
+  color: var(--primary-navy);
   letter-spacing: -0.015em;
   line-height: 1.25;
 }
@@ -73,7 +73,7 @@
 .draft-modal__subtitle {
   margin: 0 0 1.85rem;
   font-size: 0.92rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.5;
   padding: 0 0.5rem;
 }
@@ -108,32 +108,32 @@
 }
 
 .draft-modal__btn--save {
-  background: linear-gradient(135deg, #FF7A00 0%, #ea6e00 100%);
-  color: #ffffff;
-  border: 1px solid #FF7A00;
+  background: linear-gradient(135deg, var(--feature-orange) 0%, var(--palette-orange-500-ea6e00) 100%);
+  color: var(--surface);
+  border: 1px solid var(--feature-orange);
   box-shadow: 0 4px 16px rgba(255, 122, 0, 0.35);
 }
 .draft-modal__btn--save:hover {
-  background: linear-gradient(135deg, #ff8c1a 0%, #e66e00 100%);
-  border-color: #ff8c1a;
+  background: linear-gradient(135deg, var(--palette-orange-400-ff8c1a) 0%, var(--orange-600) 100%);
+  border-color: var(--palette-orange-400-ff8c1a);
   transform: translateY(-2px);
   box-shadow: 0 8px 22px rgba(255, 122, 0, 0.45);
 }
 
 .draft-modal__btn--discard {
-  background: #FFF1F1;
-  color: #EF4444;
+  background: var(--palette-red-50-fff1f1);
+  color: var(--palette-red-500);
   border: 1px solid rgba(239, 68, 68, 0.25);
 }
 .draft-modal__btn--discard:hover {
-  background: #FEE2E2;
+  background: var(--palette-red-100-fee2e2);
   border-color: rgba(239, 68, 68, 0.4);
   transform: translateY(-1px);
 }
 
 .draft-modal__btn--keep {
   background: transparent;
-  color: #64748B;
+  color: var(--secondary-text);
   border: none;
   font-size: 0.9rem;
   font-weight: 600;
@@ -141,5 +141,5 @@
   margin-top: 0.2rem;
 }
 .draft-modal__btn--keep:hover {
-  color: #083B75;
+  color: var(--primary-navy);
 }

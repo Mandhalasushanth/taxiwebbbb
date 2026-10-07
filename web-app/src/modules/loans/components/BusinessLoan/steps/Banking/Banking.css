@@ -12,8 +12,8 @@
 
 /* 1. Banking Cards */
 .banking-card {
-  background: #ffffff;
-  border: 1.5px solid #edf2f7;
+  background: var(--surface);
+  border: 1.5px solid var(--palette-sky-100);
   border-radius: 16px;
   padding: 1.5rem 1.75rem;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
@@ -33,9 +33,9 @@
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background-color: #fff7ed;
-  border: 1px solid #ffedd5;
-  color: #ea580c;
+  background-color: var(--palette-orange-50);
+  border: 1px solid var(--orange-100);
+  color: var(--palette-orange-600);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,14 +51,14 @@
 .banking-card-title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #041d3e;
+  color: var(--palette-sky-900-041d3e);
   margin: 0;
   letter-spacing: -0.01em;
 }
 
 .banking-card-subtitle {
   font-size: 0.85rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
   line-height: 1.4;
 }
@@ -82,13 +82,13 @@
 .banking-field-label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--palette-slate-800);
   display: flex;
   align-items: center;
 }
 
 .banking-field-label .text-required {
-  color: #ef4444;
+  color: var(--palette-red-500);
   margin-left: 0.2rem;
   font-weight: 700;
 }
@@ -98,9 +98,9 @@
   width: 100%;
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
-  color: #0f172a;
-  background-color: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  color: var(--palette-slate-900);
+  background-color: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   box-sizing: border-box;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -108,22 +108,22 @@
 }
 
 .banking-input::placeholder {
-  color: #94a3b8;
+  color: var(--muted-text);
 }
 
 .banking-input:focus {
   outline: none;
-  border-color: #ea580c;
+  border-color: var(--palette-orange-600);
   box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
 }
 
 .banking-input--error {
-  border-color: #ef4444;
-  background-color: #fef2f2;
+  border-color: var(--palette-red-500);
+  background-color: var(--palette-red-50);
 }
 
 .banking-input--error:focus {
-  border-color: #ef4444;
+  border-color: var(--palette-red-500);
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
 }
 
@@ -137,8 +137,8 @@
   width: 100%;
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
-  background-color: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background-color: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -153,21 +153,21 @@
 .banking-dropdown-trigger:focus,
 .banking-dropdown-trigger--open {
   outline: none;
-  border-color: #ea580c;
+  border-color: var(--palette-orange-600);
   box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
 }
 
 .banking-dropdown-trigger--error {
-  border-color: #ef4444;
-  background-color: #fef2f2;
+  border-color: var(--palette-red-500);
+  background-color: var(--palette-red-50);
 }
 
 .banking-dropdown-placeholder {
-  color: #94a3b8;
+  color: var(--muted-text);
 }
 
 .banking-dropdown-value {
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-weight: 500;
 }
 
@@ -187,8 +187,8 @@
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
   max-height: 240px;
@@ -201,7 +201,7 @@
   width: 100%;
   padding: 0.65rem 1rem;
   font-size: 0.875rem;
-  color: #334155;
+  color: var(--grey-700);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -214,13 +214,13 @@
 }
 
 .banking-dropdown-option:hover {
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--palette-slate-50);
+  color: var(--palette-slate-900);
 }
 
 .banking-dropdown-option--selected {
-  background: #fff7ed;
-  color: #ea580c;
+  background: var(--palette-orange-50);
+  color: var(--palette-orange-600);
   font-weight: 700;
 }
 
@@ -231,7 +231,7 @@
 /* 5. Validation Error Message */
 .banking-field-error {
   font-size: 0.78rem;
-  color: #ef4444;
+  color: var(--palette-red-500);
   margin-top: 0.2rem;
   font-weight: 500;
 }

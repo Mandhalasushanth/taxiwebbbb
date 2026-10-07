@@ -12,34 +12,34 @@
   align-items: center;
   gap: var(--space-2);
   font-size: 0.88rem;
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--secondary-text));
   margin-bottom: var(--space-2);
 }
 
 .receipt-view-page__breadcrumb-muted {
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--secondary-text));
   font-weight: var(--font-weight-normal, 400);
 }
 
 .receipt-view-page__breadcrumb-link {
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--secondary-text));
   text-decoration: none;
   font-weight: var(--font-weight-normal, 400);
   transition: color var(--transition-fast, 150ms ease);
 }
 
 .receipt-view-page__breadcrumb-link:hover {
-  color: var(--taxedge-blue, #0b5ed7);
+  color: var(--taxedge-blue, var(--primary-blue));
 }
 
 .receipt-view-page__breadcrumb-arrow {
   width: 14px;
   height: 14px;
-  stroke: var(--grey-400, #94a3b8);
+  stroke: var(--grey-400, var(--muted-text));
 }
 
 .receipt-view-page__breadcrumb-current {
-  color: var(--color-text, #172033);
+  color: var(--color-text, var(--primary-text));
   font-weight: var(--font-weight-semibold, 600);
 }
 

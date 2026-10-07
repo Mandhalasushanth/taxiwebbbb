@@ -1,7 +1,7 @@
 /* Applications styles (continued): imported right after Applications.css so rule order is unchanged */
 
 .app-search-input:focus {
-  border-color: #ff6b00;
+  border-color: var(--palette-orange-500-ff6b00);
   box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.12);
 }
 
@@ -11,7 +11,7 @@
   background: none;
   border: none;
   font-size: 1.1rem;
-  color: #94a3b8;
+  color: var(--muted-text);
   cursor: pointer;
 }
 
@@ -26,8 +26,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 18px;
   padding: 1.35rem 1.75rem;
   cursor: pointer;
@@ -40,7 +40,7 @@
 
 .app-item-card:hover {
   transform: translateY(-2px) translateZ(0);
-  border-color: #cbd5e1;
+  border-color: var(--grey-300);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
@@ -59,12 +59,12 @@
   width: 54px;
   height: 54px;
   border-radius: 14px;
-  background: #eff6ff;
-  border: 1.5px solid #dbeafe;
+  background: var(--palette-blue-50);
+  border: 1.5px solid var(--palette-blue-100);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1d4ed8;
+  color: var(--palette-blue-700);
   flex-shrink: 0;
 }
 
@@ -89,16 +89,16 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 1.1rem;
   font-weight: 800;
-  color: #093374;
+  color: var(--palette-blue-800-093374);
   letter-spacing: 0.02em;
 }
 
 .app-item-card__status-pill {
   font-size: 0.78rem;
   font-weight: 700;
-  color: #7c3aed;
-  background: #f5f3ff;
-  border: 1px solid #ddd6fe;
+  color: var(--palette-violet-600);
+  background: var(--palette-violet-50);
+  border: 1px solid var(--palette-violet-200);
   padding: 0.25rem 0.8rem;
   border-radius: 9999px;
   white-space: nowrap;
@@ -108,7 +108,7 @@
   margin: 0;
   font-size: 1.05rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   line-height: 1.35;
 }
 
@@ -117,7 +117,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.85rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .app-item-card__cal-emoji {
@@ -125,15 +125,15 @@
 }
 
 .app-item-card__separator {
-  color: #cbd5e1;
+  color: var(--grey-300);
 }
 
 .app-item-card__tag-pill {
   font-size: 0.72rem;
   font-weight: 800;
-  color: #0284c7;
-  background: #e0f2fe;
-  border: 1px solid #bae6fd;
+  color: var(--palette-sky-600);
+  background: var(--palette-sky-100-e0f2fe);
+  border: 1px solid var(--palette-sky-200);
   padding: 1px 7px;
   border-radius: 4px;
 }
@@ -142,7 +142,7 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  color: #ff6b00;
+  color: var(--palette-orange-500-ff6b00);
   font-weight: 700;
   font-size: 0.92rem;
 }
@@ -167,7 +167,7 @@
 .app-chevron-svg {
   width: 18px;
   height: 18px;
-  stroke: #ff6b00;
+  stroke: var(--palette-orange-500-ff6b00);
   transition: transform 0.18s ease;
   will-change: transform;
 }
@@ -183,8 +183,8 @@
   align-items: center;
   justify-content: center;
   padding: 3.5rem 1.5rem;
-  background: #ffffff;
-  border: 1.5px dashed #cbd5e1;
+  background: var(--surface);
+  border: 1.5px dashed var(--grey-300);
   border-radius: 18px;
   text-align: center;
 }
@@ -198,19 +198,19 @@
   margin: 0 0 0.35rem 0;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .app-empty-card__desc {
   margin: 0 0 1.25rem 0;
   font-size: 0.92rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .app-empty-card__reset-btn {
-  background: #f1f5f9;
-  border: 1.5px solid #cbd5e1;
-  color: #334155;
+  background: var(--subtle-border);
+  border: 1.5px solid var(--grey-300);
+  color: var(--grey-700);
   font-weight: 700;
   font-size: 0.9rem;
   padding: 0.6rem 1.25rem;
@@ -220,7 +220,7 @@
 }
 
 .app-empty-card__reset-btn:hover {
-  background: #e2e8f0;
+  background: var(--border);
 }
 
 /* Responsive Collapse for Tablets & Mobile */

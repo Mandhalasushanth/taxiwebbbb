@@ -47,14 +47,14 @@
   right: calc(-50% + 24px);
   height: 2.5px;
   transform: translateY(-50%);
-  background-color: #e2e8f0;
+  background-color: var(--border);
   transition: background-color 0.3s ease;
   z-index: 1;
   pointer-events: none;
 }
 
 .flow-step-line--completed {
-  background-color: #083b75;
+  background-color: var(--primary-navy);
 }
 
 /* Button & Circle */
@@ -101,53 +101,53 @@
   user-select: none;
   position: relative;
   z-index: 2;
-  background-color: #ffffff;
+  background-color: var(--surface);
   box-sizing: border-box;
 }
 
 /* 1. Upcoming / Pending State */
 .flow-step-button--upcoming .flow-step-circle {
-  background-color: #ffffff;
-  color: #8da4be;
-  border: 1.5px solid #d0dbe7;
+  background-color: var(--surface);
+  color: var(--palette-sky-400-8da4be);
+  border: 1.5px solid var(--palette-sky-100-d0dbe7);
 }
 
 .flow-step-button--upcoming .flow-step-label {
-  color: #5a6f87;
+  color: var(--palette-sky-600-5a6f87);
   font-weight: 500;
 }
 
 /* 2. Active State (Orange) */
 .flow-step-button--active .flow-step-circle {
-  background-color: #ff7a00;
-  color: #ffffff;
-  border: 2px solid #ff7a00;
+  background-color: var(--feature-orange);
+  color: var(--surface);
+  border: 2px solid var(--feature-orange);
   box-shadow: 0 4px 12px rgba(255, 122, 0, 0.4);
   transform: scale(1.04);
 }
 
 .flow-step-button--active .flow-step-label {
-  color: #ff7a00;
+  color: var(--feature-orange);
   font-weight: 700;
 }
 
 /* 3. Completed State (Navy Blue) */
 .flow-step-button--completed .flow-step-circle {
-  background-color: #1a237e;
-  color: #ffffff;
-  border: 2px solid #1a237e;
+  background-color: var(--palette-blue-700-1a237e);
+  color: var(--surface);
+  border: 2px solid var(--palette-blue-700-1a237e);
   box-shadow: 0 3px 10px rgba(26, 35, 126, 0.28);
 }
 
 .flow-step-button--completed .flow-step-label {
-  color: #1a237e;
+  color: var(--palette-blue-700-1a237e);
   font-weight: 600;
 }
 
 .flow-step-check-icon {
   width: 16px;
   height: 16px;
-  stroke: #ffffff;
+  stroke: var(--surface);
   stroke-width: 2.8;
   fill: none;
   stroke-linecap: round;

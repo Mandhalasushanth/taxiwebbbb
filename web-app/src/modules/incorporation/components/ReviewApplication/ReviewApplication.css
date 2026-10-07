@@ -18,8 +18,8 @@
   margin-top: 0.5rem;
 }
 .review-app-stepbar__badge {
-  background: #0b2546;
-  color: #ffffff;
+  background: var(--palette-sky-800-0b2546);
+  color: var(--surface);
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.25rem 0.65rem;
@@ -30,12 +30,12 @@
 .review-app-stepbar__text {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 .review-app-stepbar__line {
   flex: 1;
   height: 4px;
-  background: #e2e8f0;
+  background: var(--border);
   border-radius: 9999px;
   position: relative;
   overflow: hidden;
@@ -43,7 +43,7 @@
 .review-app-stepbar__line-fill {
   width: 72.72%;
   height: 100%;
-  background: #f25a22;
+  background: var(--palette-orange-500-f25a22);
   border-radius: 9999px;
 }
 
@@ -57,13 +57,13 @@
   margin: 0;
   font-size: 1.75rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.02em;
 }
 .review-app-header__subtitle {
   margin: 0;
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.5;
 }
 
@@ -75,8 +75,8 @@
 }
 
 .review-card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 14px;
   padding: 1.35rem 1.5rem;
   display: flex;
@@ -86,7 +86,7 @@
   transition: all 0.2s ease;
 }
 .review-card:hover {
-  border-color: #cbd5e1;
+  border-color: var(--grey-300);
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
 }
 
@@ -94,20 +94,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--subtle-border);
   padding-bottom: 0.65rem;
 }
 .review-card__title {
   margin: 0;
   font-size: 1.05rem;
   font-weight: 700;
-  color: #0b2546;
+  color: var(--palette-sky-800-0b2546);
   letter-spacing: -0.01em;
 }
 .review-card__edit-btn {
   background: none;
   border: none;
-  color: #f25a22;
+  color: var(--palette-orange-500-f25a22);
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
@@ -119,8 +119,8 @@
   transition: all 0.15s ease;
 }
 .review-card__edit-btn:hover {
-  background: #fff7ed;
-  color: #e04b15;
+  background: var(--palette-orange-50);
+  color: var(--palette-orange-500-e04b15);
 }
 
 /* Rows in Card */
@@ -137,22 +137,22 @@
 }
 .review-row__label {
   font-size: 0.9rem;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 500;
 }
 .review-row__value {
   font-size: 0.92rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-weight: 700;
   text-align: right;
 }
 .review-row__value--accent {
-  color: #166534;
-  background: #f0fdf4;
+  color: var(--palette-green-800);
+  background: var(--palette-green-50);
   padding: 0.2rem 0.65rem;
   border-radius: 6px;
   font-size: 0.84rem;
-  border: 1px solid #bbf7d0;
+  border: 1px solid var(--palette-green-200);
 }
 
 /* Chips Container */
@@ -163,9 +163,9 @@
   margin-top: 0.25rem;
 }
 .review-chip {
-  background: #f0f7ff;
-  color: #0b2546;
-  border: 1px solid #bfdbfe;
+  background: var(--palette-sky-50-f0f7ff);
+  color: var(--palette-sky-800-0b2546);
+  border: 1px solid var(--palette-blue-200);
   padding: 0.3rem 0.75rem;
   border-radius: 8px;
   font-size: 0.8rem;
@@ -176,7 +176,7 @@
 .review-linked-reg-text {
   font-size: 0.92rem;
   font-weight: 700;
-  color: #0b2546;
+  color: var(--palette-sky-800-0b2546);
   letter-spacing: 0.03em;
   line-height: 1.5;
 }
@@ -187,13 +187,13 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 1rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border);
   gap: 1rem;
 }
 .review-app-btn-back {
-  background: #f1f5f9;
-  color: #334155;
-  border: 1px solid #e2e8f0;
+  background: var(--subtle-border);
+  color: var(--grey-700);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 0.75rem 1.75rem;
   font-size: 0.95rem;
@@ -202,12 +202,12 @@
   transition: all 0.2s ease;
 }
 .review-app-btn-back:hover {
-  background: #e2e8f0;
-  color: #0f172a;
+  background: var(--border);
+  color: var(--palette-slate-900);
 }
 .review-app-btn-continue {
-  background: #f25a22;
-  color: #ffffff;
+  background: var(--palette-orange-500-f25a22);
+  color: var(--surface);
   border: none;
   border-radius: 10px;
   padding: 0.8rem 2.25rem;
@@ -218,7 +218,7 @@
   transition: all 0.2s ease;
 }
 .review-app-btn-continue:hover {
-  background: #e04b15;
+  background: var(--palette-orange-500-e04b15);
   transform: translateY(-1px);
 }
 

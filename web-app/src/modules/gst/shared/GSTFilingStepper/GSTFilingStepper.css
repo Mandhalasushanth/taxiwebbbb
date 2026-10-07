@@ -32,7 +32,7 @@
 
 .gst-filing-stepper__item--clickable:hover .gst-filing-stepper__label--completed,
 .gst-filing-stepper__item.clickable:hover .gst-filing-stepper__label--completed {
-  color: #083b75;
+  color: var(--primary-navy);
 }
 
 .gst-filing-stepper__badge {
@@ -50,24 +50,24 @@
 }
 
 .gst-filing-stepper__badge--completed {
-  background-color: #083b75;
-  color: #ffffff;
-  border: 2.5px solid #083b75;
+  background-color: var(--primary-navy);
+  color: var(--surface);
+  border: 2.5px solid var(--primary-navy);
   box-shadow: 0 4px 14px rgba(8, 59, 117, 0.35);
 }
 
 .gst-filing-stepper__badge--active {
-  background-color: #f97316;
-  color: #ffffff;
-  border: 2.5px solid #f97316;
+  background-color: var(--primary-orange);
+  color: var(--surface);
+  border: 2.5px solid var(--primary-orange);
   box-shadow: 0 4px 14px rgba(249, 115, 22, 0.42);
   transform: scale(1.06);
 }
 
 .gst-filing-stepper__badge--pending {
-  background-color: #ffffff;
-  color: #94a3b8;
-  border: 2px solid #cbd5e1;
+  background-color: var(--surface);
+  color: var(--muted-text);
+  border: 2px solid var(--grey-300);
 }
 
 .gst-filing-stepper__check-icon {
@@ -78,30 +78,30 @@
 .gst-filing-stepper__label {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--secondary-text);
   white-space: nowrap;
   text-align: center;
 }
 
 .gst-filing-stepper__label--completed {
-  color: #083b75;
+  color: var(--primary-navy);
   font-weight: 600;
 }
 
 .gst-filing-stepper__label--active {
-  color: #f97316;
+  color: var(--primary-orange);
   font-weight: 700;
 }
 
 .gst-filing-stepper__label--pending {
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .gst-filing-stepper__line {
   flex: 1;
   min-width: 24px;
   height: 2.5px;
-  background-color: #e2e8f0;
+  background-color: var(--border);
   margin: 0 0.75rem;
   margin-bottom: 1.45rem; /* Aligns with circle centers */
   transition: background-color 0.3s ease;
@@ -109,7 +109,7 @@
 }
 
 .gst-filing-stepper__line--completed {
-  background-color: #083b75;
+  background-color: var(--primary-navy);
 }
 
 @media (max-width: 680px) {

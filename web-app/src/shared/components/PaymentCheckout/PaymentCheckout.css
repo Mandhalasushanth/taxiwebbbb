@@ -22,8 +22,8 @@
 
 /* Method Selector Card */
 .payment-methods-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 0.875rem;
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
@@ -32,7 +32,7 @@
 .payment-section-title {
   font-size: 1.0625rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 1rem;
 }
 
@@ -48,8 +48,8 @@
   gap: 1rem;
   padding: 1rem 1.25rem;
   border-radius: 0.75rem;
-  border: 1.5px solid #e2e8f0;
-  background: #ffffff;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
   cursor: pointer;
   text-align: left;
   transition: all 0.2s ease;
@@ -57,13 +57,13 @@
 }
 
 .payment-method-card:hover {
-  border-color: #cbd5e1;
-  background: #f8fafc;
+  border-color: var(--grey-300);
+  background: var(--palette-slate-50);
 }
 
 .payment-method-card--active {
-  border-color: #f97316;
-  background: #fff7ed;
+  border-color: var(--primary-orange);
+  background: var(--palette-orange-50);
 }
 
 .payment-method-radio {
@@ -77,7 +77,7 @@
   width: 1.125rem;
   height: 1.125rem;
   border-radius: 50%;
-  border: 2px solid #cbd5e1;
+  border: 2px solid var(--grey-300);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,9 +85,9 @@
 }
 
 .payment-radio-circle--checked {
-  border-color: #f97316;
-  background: #f97316;
-  box-shadow: inset 0 0 0 3px #ffffff;
+  border-color: var(--primary-orange);
+  background: var(--primary-orange);
+  box-shadow: inset 0 0 0 3px var(--surface);
 }
 
 .payment-method-info {
@@ -99,18 +99,18 @@
 .payment-method-title {
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .payment-method-sub {
   font-size: 0.8125rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 /* Method Forms */
 .payment-form-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 0.875rem;
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
@@ -128,15 +128,15 @@
 .payment-form-title {
   font-size: 1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
 }
 
 .payment-badge-zero-fee {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #083b75;
-  background: #eff6ff;
+  color: var(--primary-navy);
+  background: var(--palette-blue-50);
   padding: 0.25rem 0.625rem;
   border-radius: 9999px;
 }
@@ -150,9 +150,9 @@
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  color: #475569;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
+  color: var(--palette-slate-600);
+  background: var(--subtle-border);
+  border: 1px solid var(--border);
   border-radius: 0.375rem;
   padding: 0.2rem 0.5rem;
 }
@@ -166,7 +166,7 @@
 .payment-label-sm {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #475569;
+  color: var(--palette-slate-600);
 }
 
 .payment-upi-apps-row {
@@ -180,22 +180,22 @@
   font-weight: 600;
   padding: 0.4375rem 0.875rem;
   border-radius: 0.5rem;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  color: #334155;
+  border: 1px solid var(--border);
+  background: var(--palette-slate-50);
+  color: var(--grey-700);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .payment-upi-app-btn:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
+  background: var(--subtle-border);
+  border-color: var(--grey-300);
 }
 
 .payment-upi-app-btn--active {
-  background: #fff7ed;
-  border-color: #f97316;
-  color: #ea580c;
+  background: var(--palette-orange-50);
+  border-color: var(--primary-orange);
+  color: var(--palette-orange-600);
 }
 
 .payment-popular-banks {
@@ -215,9 +215,9 @@
   font-weight: 600;
   padding: 0.5rem 0.625rem;
   border-radius: 0.5rem;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  color: #334155;
+  border: 1px solid var(--border);
+  background: var(--palette-slate-50);
+  color: var(--grey-700);
   cursor: pointer;
   text-align: center;
   transition: all 0.15s ease;
@@ -227,13 +227,13 @@
 }
 
 .payment-bank-chip:hover {
-  background: #f1f5f9;
+  background: var(--subtle-border);
 }
 
 .payment-bank-chip--active {
-  background: #fff7ed;
-  border-color: #f97316;
-  color: #ea580c;
+  background: var(--palette-orange-50);
+  border-color: var(--primary-orange);
+  color: var(--palette-orange-600);
 }
 
 /* Inputs */
@@ -252,18 +252,18 @@
 .payment-input-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #334155;
+  color: var(--grey-700);
 }
 
 .payment-input,
 .payment-select {
   font-family: inherit;
   font-size: 0.9375rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   padding: 0.6875rem 0.875rem;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--grey-300);
   border-radius: 0.625rem;
-  background: #ffffff;
+  background: var(--surface);
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   width: 100%;

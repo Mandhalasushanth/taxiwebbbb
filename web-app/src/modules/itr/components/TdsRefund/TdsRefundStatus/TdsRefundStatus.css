@@ -36,8 +36,8 @@
 
 /* Base Status Card */
 .tds-status-card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 16px;
   padding: 1.5rem 1.75rem;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
@@ -66,7 +66,7 @@
 .tds-status-app-id-label {
   font-size: 0.75rem;
   font-weight: 800;
-  color: #64748b;
+  color: var(--secondary-text);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   margin-bottom: 0.25rem;
@@ -74,7 +74,7 @@
 .tds-status-app-id-val {
   font-size: 1.5rem;
   font-weight: 900;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.01em;
   margin: 0;
 }
@@ -83,9 +83,9 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background: #fff7ed;
-  color: #ea580c;
-  border: 1px solid #fed7aa;
+  background: var(--palette-orange-50);
+  color: var(--palette-orange-600);
+  border: 1px solid var(--orange-200);
   padding: 0.35rem 0.85rem;
   border-radius: 9999px;
   font-size: 0.82rem;
@@ -95,7 +95,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #ea580c;
+  background: var(--palette-orange-600);
 }
 
 /* Overview Info Grid */
@@ -113,15 +113,15 @@
 .tds-status-item-label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 .tds-status-item-val {
   font-size: 0.95rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 .tds-status-item-val--green {
-  color: #083b75;
+  color: var(--primary-navy);
 }
 
 /* Progress Bar */
@@ -133,14 +133,14 @@
 .tds-status-progress-track {
   width: 100%;
   height: 8px;
-  background: #e2e8f0;
+  background: var(--border);
   border-radius: 9999px;
   overflow: hidden;
 }
 .tds-status-progress-fill {
   width: 30%;
   height: 100%;
-  background: linear-gradient(90deg, #083b75 0%, #f97316 100%);
+  background: linear-gradient(90deg, var(--primary-navy) 0%, var(--primary-orange) 100%);
   border-radius: 9999px;
   transition: width 0.5s ease;
 }
@@ -148,7 +148,7 @@
   align-self: flex-end;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 /* 9-Stage Vertical Lifecycle Tracker */
@@ -177,10 +177,10 @@
   top: 32px;
   bottom: 0;
   width: 2px;
-  background: #e2e8f0;
+  background: var(--border);
 }
 .tds-timeline-item--completed .tds-timeline-line {
-  background: #083b75;
+  background: var(--primary-navy);
 }
 
 /* Timeline node icon / circle */
@@ -199,21 +199,21 @@
   transition: all 0.2s;
 }
 .tds-timeline-item--completed .tds-timeline-node {
-  background: #083b75;
-  color: #ffffff;
-  border: 2px solid #083b75;
+  background: var(--primary-navy);
+  color: var(--surface);
+  border: 2px solid var(--primary-navy);
   box-shadow: 0 2px 6px rgba(8, 59, 117, 0.25);
 }
 .tds-timeline-item--active .tds-timeline-node {
-  background: #f97316;
-  color: #ffffff;
-  border: 3px solid #ffedd5;
+  background: var(--primary-orange);
+  color: var(--surface);
+  border: 3px solid var(--orange-100);
   box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.2);
 }
 .tds-timeline-item--pending .tds-timeline-node {
-  background: #f1f5f9;
-  color: #94a3b8;
-  border: 1.5px solid #cbd5e1;
+  background: var(--subtle-border);
+  color: var(--muted-text);
+  border: 1.5px solid var(--grey-300);
 }
 
 /* Timeline text */
@@ -226,26 +226,26 @@
 .tds-timeline-title {
   font-size: 0.98rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
 }
 .tds-timeline-item--pending .tds-timeline-title {
-  color: #94a3b8;
+  color: var(--muted-text);
   font-weight: 700;
 }
 .tds-timeline-desc {
   font-size: 0.82rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
 }
 .tds-timeline-item--pending .tds-timeline-desc {
-  color: #94a3b8;
+  color: var(--muted-text);
 }
 
 /* Assigned CA Card */
 .tds-ca-card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 16px;
   padding: 1.35rem;
   display: flex;
@@ -261,9 +261,9 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #eff6ff;
-  border: 1.5px solid #bfdbfe;
-  color: #1d4ed8;
+  background: var(--palette-blue-50);
+  border: 1.5px solid var(--palette-blue-200);
+  color: var(--palette-blue-700);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -274,20 +274,20 @@
 .tds-ca-name {
   font-size: 1rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
 }
 .tds-ca-role {
   font-size: 0.78rem;
   font-weight: 700;
-  color: #083b75;
+  color: var(--primary-navy);
   margin: 0;
 }
 .tds-ca-eta {
   font-size: 0.82rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.45;
-  background: #f8fafc;
+  background: var(--palette-slate-50);
   border-radius: 8px;
   padding: 0.5rem 0.75rem;
 }
@@ -305,9 +305,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border: 1.5px solid #cbd5e1;
-  background: #ffffff;
-  color: #083b75;
+  border: 1.5px solid var(--grey-300);
+  background: var(--surface);
+  color: var(--primary-navy);
   border-radius: 12px;
   height: 48px;
   padding: 0 2rem;
@@ -317,8 +317,8 @@
   transition: all 0.2s;
 }
 .tds-btn-contact-support:hover {
-  background: #f8fafc;
-  border-color: #94a3b8;
+  background: var(--palette-slate-50);
+  border-color: var(--muted-text);
   transform: translateY(-1px);
 }
 .tds-btn-dashboard {
@@ -326,9 +326,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: #f97316;
+  background: var(--primary-orange);
   border: none;
-  color: #ffffff;
+  color: var(--surface);
   border-radius: 12px;
   height: 48px;
   padding: 0 2.25rem;
@@ -339,7 +339,7 @@
   transition: all 0.2s;
 }
 .tds-btn-dashboard:hover {
-  background: #ea580c;
+  background: var(--palette-orange-600);
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35);
 }
@@ -355,16 +355,16 @@
   box-sizing: border-box;
 }
 .tds-status-sidebar .tds-sidebar-card--navy {
-  background: #022145 !important;
-  border-color: #083b75 !important;
-  color: #ffffff !important;
+  background: var(--palette-sky-900) !important;
+  border-color: var(--primary-navy) !important;
+  color: var(--surface) !important;
   box-shadow: 0 4px 16px rgba(2, 33, 69, 0.18);
 }
 .tds-status-sidebar .tds-sidebar-card--navy .tds-sidebar-card-title {
-  color: #ffffff !important;
+  color: var(--surface) !important;
 }
 .tds-status-sidebar .tds-sidebar-card--navy .tds-sidebar-card-desc {
-  color: #94a3b8 !important;
+  color: var(--muted-text) !important;
 }
 
 /* Responsive adjustments */

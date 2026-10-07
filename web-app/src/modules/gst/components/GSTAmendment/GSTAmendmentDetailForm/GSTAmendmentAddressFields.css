@@ -14,11 +14,11 @@
 .gst-amend-select-input {
   width: 100%;
   padding: 0.75rem 2.25rem 0.75rem 1rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--grey-300);
   border-radius: 10px;
   font-size: 0.9375rem;
-  color: #0f172a;
-  background-color: #ffffff;
+  color: var(--palette-slate-900);
+  background-color: var(--surface);
   appearance: none;
   -webkit-appearance: none;
   transition: all 0.2s ease;
@@ -27,13 +27,13 @@
 
 .gst-amend-select-input:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: var(--palette-blue-600);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .gst-amend-select-input.has-error {
-  border-color: #ef4444;
-  background-color: #fef2f2;
+  border-color: var(--palette-red-500);
+  background-color: var(--palette-red-50);
 }
 
 .gst-amend-select-chevron {
@@ -43,7 +43,7 @@
   transform: translateY(-50%);
   width: 18px;
   height: 18px;
-  color: #64748b;
+  color: var(--secondary-text);
   pointer-events: none;
   display: flex;
   align-items: center;
@@ -64,7 +64,7 @@
 
 .gst-amend-counter-hint {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: var(--muted-text);
   font-weight: 500;
   margin-left: auto;
 }

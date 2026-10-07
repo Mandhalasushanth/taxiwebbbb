@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  background-color: #ffffff;
-  border-top: 1px solid #e2e8f0;
+  background-color: var(--surface);
+  border-top: 1px solid var(--border);
   padding: 0.85rem 1.25rem;
   border-radius: 0 0 16px 16px;
 }
@@ -19,18 +19,18 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  background-color: #f1f5f9;
-  border: 1px solid #cbd5e1;
+  background-color: var(--subtle-border);
+  border: 1px solid var(--grey-300);
   padding: 0.35rem 0.65rem;
   border-radius: 6px;
   font-size: 0.82rem;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .cs-input-bar__chip-icon {
   width: 14px;
   height: 14px;
-  color: #032b69;
+  color: var(--palette-blue-800-032b69);
 }
 
 .cs-input-bar__chip-remove {
@@ -38,13 +38,13 @@
   border: none;
   font-size: 1.15rem;
   cursor: pointer;
-  color: #94a3b8;
+  color: var(--muted-text);
   padding: 0 0.2rem;
   line-height: 1;
 }
 
 .cs-input-bar__chip-remove:hover {
-  color: #ef4444;
+  color: var(--palette-red-500);
 }
 
 .cs-input-bar__controls {
@@ -63,7 +63,7 @@
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 8px;
-  color: #64748b;
+  color: var(--secondary-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -71,8 +71,8 @@
 }
 
 .cs-input-bar__btn-attach:hover {
-  background-color: #f1f5f9;
-  color: #032b69;
+  background-color: var(--subtle-border);
+  color: var(--palette-blue-800-032b69);
 }
 
 .cs-input-bar__attach-icon {
@@ -86,19 +86,19 @@
 
 .cs-input-bar__input {
   width: 100%;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid var(--border);
   border-radius: 24px;
   padding: 0.75rem 1.25rem;
   font-size: 0.95rem;
   outline: none;
-  color: #0f172a;
-  background-color: #f8fafc;
+  color: var(--palette-slate-900);
+  background-color: var(--palette-slate-50);
   transition: all 0.2s ease;
 }
 
 .cs-input-bar__input:focus {
-  border-color: #032b69;
-  background-color: #ffffff;
+  border-color: var(--palette-blue-800-032b69);
+  background-color: var(--surface);
   box-shadow: 0 0 0 3px rgba(3, 43, 105, 0.1);
 }
 
@@ -107,8 +107,8 @@
   height: 44px;
   border-radius: 50%;
   border: none;
-  background-color: #e2e8f0;
-  color: #94a3b8;
+  background-color: var(--border);
+  color: var(--muted-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -117,14 +117,14 @@
 }
 
 .cs-input-bar__btn-send--active {
-  background: #032b69;
-  color: #ffffff;
+  background: var(--palette-blue-800-032b69);
+  color: var(--surface);
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(3, 43, 105, 0.25);
 }
 
 .cs-input-bar__btn-send--active:hover {
-  background: #022254;
+  background: var(--palette-blue-800-022254);
   transform: scale(1.04);
 }
 

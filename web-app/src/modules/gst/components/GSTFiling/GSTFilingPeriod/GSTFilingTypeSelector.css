@@ -7,7 +7,7 @@
 .gst-filing-type__label {
   font-size: 14px;
   font-weight: 600;
-  color: #111827;
+  color: var(--palette-gray-900);
   margin-bottom: 8px;
 }
 
@@ -23,21 +23,21 @@
   align-items: center;
   gap: 14px;
   padding: 16px 20px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background-color: #ffffff;
+  background-color: var(--surface);
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
 }
 
 .gst-filing-type__card:hover {
-  border-color: #cbd5e1;
+  border-color: var(--grey-300);
 }
 
 .gst-filing-type__card--active {
-  border-color: #ff5722;
-  background-color: #fffaf8;
+  border-color: var(--active-tab-orange);
+  background-color: var(--palette-orange-50-fffaf8);
 }
 
 .gst-filing-type__radio-circle {
@@ -47,21 +47,21 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 1.5px solid #9ca3af;
-  background-color: #ffffff;
+  border: 1.5px solid var(--palette-gray-400);
+  background-color: var(--surface);
   flex-shrink: 0;
   transition: all 0.2s ease;
 }
 
 .gst-filing-type__card--active .gst-filing-type__radio-circle {
-  border-color: #ff5722;
+  border-color: var(--active-tab-orange);
 }
 
 .gst-filing-type__radio-dot {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background-color: #ff5722;
+  background-color: var(--active-tab-orange);
 }
 
 .gst-filing-type__content {
@@ -73,12 +73,12 @@
 .gst-filing-type__title {
   font-size: 15px;
   font-weight: 700;
-  color: #111827;
+  color: var(--palette-gray-900);
 }
 
 .gst-filing-type__desc {
   font-size: 13px;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.4;
 }
 

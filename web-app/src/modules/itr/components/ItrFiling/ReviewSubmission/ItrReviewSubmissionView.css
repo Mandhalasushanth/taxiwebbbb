@@ -19,15 +19,15 @@
   border: 1.5px solid;
 }
 .itr-rv2-alert {
-  background: #f0fdf4;
-  border-color: #86efac;
+  background: var(--palette-green-50);
+  border-color: var(--palette-green-300);
 }
 .itr-rv2-alert__icon {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #dcfce7;
-  color: #16a34a;
+  background: var(--palette-green-100);
+  color: var(--success);
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -40,11 +40,11 @@
 .itr-rv2-alert__title {
   font-size: 0.9rem;
   font-weight: 800;
-  color: #15803d;
+  color: var(--palette-green-700);
 }
 .itr-rv2-alert__desc {
   font-size: 0.8rem;
-  color: #166534;
+  color: var(--palette-green-800);
 }
 
 .itr-rv2-section-title {
@@ -54,7 +54,7 @@
   margin: 0;
   font-size: 0.95rem;
   font-weight: 800;
-  color: #083b75;
+  color: var(--primary-navy);
 }
 
 .itr-rv2-section-header-row,
@@ -75,7 +75,7 @@
   border: none;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #f97316;
+  color: var(--primary-orange);
   cursor: pointer;
   padding: 0.25rem 0.5rem;
 }
@@ -85,7 +85,7 @@
 .itr-rv2-tax-row,
 .itr-rv2-doc-row {
   padding: 0.65rem 0;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--subtle-border);
 }
 .itr-rv2-identity-row:last-child,
 .itr-rv2-detail-row:last-child {
@@ -95,14 +95,14 @@
 .itr-rv2-identity-label,
 .itr-rv2-detail-row__label {
   font-size: 0.82rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 .itr-rv2-identity-val,
 .itr-rv2-detail-row__val,
 .itr-rv2-tax-row__val {
   font-size: 0.88rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .itr-rv2-badge,
@@ -114,19 +114,19 @@
   font-weight: 700;
   border-radius: 9999px;
   padding: 0.25rem 0.65rem;
-  border: 1px solid #bfdbfe;
-  background: #eff6ff;
-  color: #1e40af;
+  border: 1px solid var(--palette-blue-200);
+  background: var(--palette-blue-50);
+  color: var(--palette-blue-800-1e40af);
 }
 .itr-rv2-badge--green {
-  background: #dcfce7;
-  color: #15803d;
-  border-color: #86efac;
+  background: var(--palette-green-100);
+  color: var(--palette-green-700);
+  border-color: var(--palette-green-300);
 }
 .itr-rv2-badge--blue {
-  background: #eff6ff;
-  color: #1e40af;
-  border-color: #bfdbfe;
+  background: var(--palette-blue-50);
+  color: var(--palette-blue-800-1e40af);
+  border-color: var(--palette-blue-200);
 }
 .itr-rv2-badge--rect {
   border-radius: 6px;
@@ -143,26 +143,26 @@
 .itr-rv2-row-amount {
   font-size: 0.98rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.01em;
 }
 .itr-rv2-regime-badge {
-  color: #ea580c;
-  background: #fff7ed;
-  border-color: #fed7aa;
+  color: var(--palette-orange-600);
+  background: var(--palette-orange-50);
+  border-color: var(--orange-200);
 }
 
 .itr-rv2-tax-card {
-  background: #fff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(8, 59, 117, 0.04);
 }
 .itr-rv2-tax-card__header {
   padding: 1rem 1.25rem;
-  background: #f8fafc;
-  border-bottom: 1.5px solid #e2e8f0;
+  background: var(--palette-slate-50);
+  border-bottom: 1.5px solid var(--border);
 }
 .itr-rv2-tax-card__title-row {
   display: flex;
@@ -173,8 +173,8 @@
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--palette-blue-100);
+  color: var(--palette-blue-800-1e40af);
   display: grid;
   place-items: center;
 }
@@ -182,7 +182,7 @@
   margin: 0;
   font-size: 0.95rem;
   font-weight: 800;
-  color: #083b75;
+  color: var(--primary-navy);
 }
 
 .itr-rv2-tax-rows {
@@ -190,17 +190,17 @@
 }
 .itr-rv2-tax-row--bold {
   font-weight: 800;
-  color: #083b75;
-  border-block: 1.5px solid #e2e8f0;
+  color: var(--primary-navy);
+  border-block: 1.5px solid var(--border);
   padding: 0.65rem 0;
 }
 .itr-rv2-tax-row__val--neg {
-  color: #059669;
+  color: var(--feature-success);
 }
 
 .itr-rv2-net-tax-box {
-  background: #fff1f2;
-  border: 1.5px solid #fecdd3;
+  background: var(--palette-rose-50-fff1f2);
+  border: 1.5px solid var(--palette-rose-200);
   border-radius: 12px;
   margin: 1.25rem 1.25rem 1.25rem;
   padding: 0.9rem 1.25rem;
@@ -213,40 +213,40 @@
 .itr-rv2-net-tax-title {
   font-size: 0.92rem;
   font-weight: 800;
-  color: #083b75;
+  color: var(--primary-navy);
 }
 .itr-rv2-net-tax-sub {
   font-size: 0.78rem;
   font-weight: 500;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 .itr-rv2-net-tax-box--refund {
-  background: #f0fdf4;
-  border-color: #86efac;
+  background: var(--palette-green-50);
+  border-color: var(--palette-green-300);
 }
 .itr-rv2-net-tax-amount {
   font-size: 1.25rem;
   font-weight: 900;
-  color: #e11d48;
+  color: var(--palette-rose-600);
 }
 .itr-rv2-net-tax-box--refund .itr-rv2-net-tax-amount {
-  color: #16a34a;
+  color: var(--success);
 }
 
 .itr-rv2-info-note {
-  background: #fffbeb;
-  border-color: #fde68a;
+  background: var(--palette-amber-50);
+  border-color: var(--palette-amber-200);
   margin: 0 1.25rem 1.5rem;
   font-size: 0.8rem;
-  color: #92400e;
+  color: var(--palette-amber-800);
 }
 
 .itr-rv2-doc-check {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #dcfce7;
-  color: #16a34a;
+  background: var(--palette-green-100);
+  color: var(--success);
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -257,7 +257,7 @@
 }
 .itr-rv2-doc-meta {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: var(--muted-text);
 }
 
 .itr-rv2-declaration-card {
@@ -273,7 +273,7 @@
 :is(.itr-declaration-checkbox, .itr-rv2-declaration-check) {
   width: 18px;
   height: 18px;
-  accent-color: #f97316;
+  accent-color: var(--primary-orange);
   flex-shrink: 0;
 }
 

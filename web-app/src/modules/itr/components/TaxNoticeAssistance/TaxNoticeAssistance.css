@@ -42,8 +42,8 @@
 }
 
 .notice-action-bar__btn--primary {
-  background: linear-gradient(135deg, #ff6a00 0%, #ff8533 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--palette-orange-500) 0%, var(--palette-orange-400-ff8533) 100%);
+  color: var(--surface);
   box-shadow: 0 4px 14px rgba(255, 106, 0, 0.28);
 }
 
@@ -53,16 +53,16 @@
 }
 
 .notice-action-bar__btn--secondary {
-  background: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  color: #334155;
+  background: var(--surface);
+  border: 1.5px solid var(--grey-300);
+  color: var(--grey-700);
   padding: 0 1.5rem;
 }
 
 .notice-action-bar__btn--secondary:hover {
-  background: #f8fafc;
-  border-color: #94a3b8;
-  color: #0f172a;
+  background: var(--palette-slate-50);
+  border-color: var(--muted-text);
+  color: var(--palette-slate-900);
 }
 
 /* Connected Circular 5-Step Stepper */
@@ -119,30 +119,30 @@
 }
 
 .notice-stepper-circle--completed {
-  background: #083b75;
-  color: #ffffff;
-  border: 2.5px solid #083b75;
+  background: var(--primary-navy);
+  color: var(--surface);
+  border: 2.5px solid var(--primary-navy);
   box-shadow: 0 4px 14px rgba(8, 59, 117, 0.35);
 }
 
 .notice-stepper-circle--active {
-  background: #f97316;
-  color: #ffffff;
-  border: 2.5px solid #f97316;
+  background: var(--primary-orange);
+  color: var(--surface);
+  border: 2.5px solid var(--primary-orange);
   box-shadow: 0 4px 14px rgba(249, 115, 22, 0.42);
   transform: scale(1.06);
 }
 
 .notice-stepper-circle--inactive {
-  background: #ffffff;
-  color: #94a3b8;
-  border: 2px solid #cbd5e1;
+  background: var(--surface);
+  color: var(--muted-text);
+  border: 2px solid var(--grey-300);
 }
 
 .notice-stepper-line {
   flex: 1;
   height: 2.5px;
-  background: #e2e8f0;
+  background: var(--border);
   margin: 0 0.75rem;
   margin-bottom: 1.45rem;
   transition: background 0.3s ease;
@@ -150,30 +150,30 @@
 }
 
 .notice-stepper-line--completed {
-  background: #083b75;
+  background: var(--primary-navy);
 }
 
 .notice-stepper-label {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--secondary-text);
   white-space: nowrap;
   text-align: center;
   transition: color 0.3s ease;
 }
 
 .notice-stepper-label--completed {
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 600;
 }
 
 .notice-stepper-label--active {
-  color: #f97316;
+  color: var(--primary-orange);
   font-weight: 700;
 }
 
 .notice-stepper-label--inactive {
-  color: #94a3b8;
+  color: var(--muted-text);
   font-weight: 500;
 }
 

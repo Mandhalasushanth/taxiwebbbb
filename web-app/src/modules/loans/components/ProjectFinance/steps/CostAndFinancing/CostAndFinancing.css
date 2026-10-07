@@ -6,7 +6,7 @@
 }
 
 .pf-field-error-msg {
-  color: #ef4444;
+  color: var(--palette-red-500);
   font-size: 0.8125rem;
   font-weight: 500;
   margin-top: 0.25rem;
@@ -18,7 +18,7 @@
 }
 
 .pf-date-input-wrapper input[type='date'] {
-  color: #041d3e;
+  color: var(--palette-sky-900-041d3e);
   font-family: inherit;
   font-size: 0.95rem;
 }

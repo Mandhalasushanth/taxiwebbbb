@@ -3,8 +3,8 @@
    ========================================================================== */
 
 .gst-docs-checklist-card {
-  background: var(--gst-doc-card-bg, #ffffff);
-  border: 1px solid var(--gst-doc-border, #e2e8f0);
+  background: var(--gst-doc-card-bg, var(--surface));
+  border: 1px solid var(--gst-doc-border, var(--border));
   border-radius: var(--gst-doc-radius, 12px);
   padding: 1.25rem 1.75rem;
   margin-bottom: 2rem;
@@ -31,9 +31,9 @@
   width: 38px;
   height: 38px;
   border-radius: 9px;
-  background-color: var(--gst-doc-peach-bg, #fff7ed);
-  border: 1.5px solid var(--gst-doc-peach-border, #fed7aa);
-  color: var(--gst-doc-orange, #f97316);
+  background-color: var(--gst-doc-peach-bg, var(--palette-orange-50));
+  border: 1.5px solid var(--gst-doc-peach-border, var(--orange-200));
+  color: var(--gst-doc-orange, var(--primary-orange));
   flex-shrink: 0;
 }
 
@@ -41,36 +41,36 @@
   margin: 0;
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--gst-doc-text-main, #0f172a);
+  color: var(--gst-doc-text-main, var(--palette-slate-900));
   letter-spacing: -0.01em;
 }
 
 .gst-docs-checklist-card__subtitle {
   margin: 0.25rem 0 0 0;
   font-size: 0.8125rem;
-  color: var(--gst-doc-text-muted, #64748b);
+  color: var(--gst-doc-text-muted, var(--secondary-text));
 }
 
 .gst-docs-checklist-card__badge {
-  background-color: var(--gst-doc-peach-bg, #fff7ed);
-  color: var(--gst-doc-orange-hover, #ea580c);
+  background-color: var(--gst-doc-peach-bg, var(--palette-orange-50));
+  color: var(--gst-doc-orange-hover, var(--palette-orange-600));
   font-size: 0.8125rem;
   font-weight: 700;
   padding: 0.35rem 0.85rem;
   border-radius: 9999px;
-  border: 1px solid var(--gst-doc-peach-border, #fed7aa);
+  border: 1px solid var(--gst-doc-peach-border, var(--orange-200));
 }
 
 .gst-docs-checklist-card__progress-track {
   width: 100%;
   height: 6px;
-  background-color: #ffedd5;
+  background-color: var(--orange-100);
   border-radius: 9999px;
   overflow: hidden;
 }
 
 .gst-docs-checklist-card__progress-fill {
   height: 100%;
-  --gst-progress-color: linear-gradient(90deg, var(--gst-doc-orange, #f97316) 0%, var(--gst-doc-orange-hover, #ea580c) 100%);
+  --gst-progress-color: linear-gradient(90deg, var(--gst-doc-orange, var(--primary-orange)) 0%, var(--gst-doc-orange-hover, var(--palette-orange-600)) 100%);
   border-radius: 9999px;
 }

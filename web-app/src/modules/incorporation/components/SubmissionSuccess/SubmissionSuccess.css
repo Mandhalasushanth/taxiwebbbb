@@ -19,8 +19,8 @@
   width: 100%;
 }
 .submit-success-stepbar__badge {
-  background: #0b2546;
-  color: #ffffff;
+  background: var(--palette-sky-800-0b2546);
+  color: var(--surface);
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.25rem 0.65rem;
@@ -31,12 +31,12 @@
 .submit-success-stepbar__text {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 .submit-success-stepbar__line {
   flex: 1;
   height: 4px;
-  background: #e2e8f0;
+  background: var(--border);
   border-radius: 9999px;
   position: relative;
   overflow: hidden;
@@ -44,7 +44,7 @@
 .submit-success-stepbar__line-fill {
   width: 90.9%;
   height: 100%;
-  background: #f25a22;
+  background: var(--palette-orange-500-f25a22);
   border-radius: 9999px;
 }
 
@@ -65,12 +65,12 @@
   width: 88px;
   height: 88px;
   border-radius: 50%;
-  background: #dcfce7;
+  background: var(--palette-green-100);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #16a34a;
-  box-shadow: 0 0 0 8px #f0fdf4;
+  color: var(--success);
+  box-shadow: 0 0 0 8px var(--palette-green-50);
   animation: pulseIn 0.5s ease-out;
 }
 
@@ -89,13 +89,13 @@
   margin: 0;
   font-size: 1.85rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.02em;
 }
 .submit-success-header__subtitle {
   margin: 0;
   font-size: 0.98rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.5;
   max-width: 520px;
 }
@@ -103,8 +103,8 @@
 /* Details Card */
 .submit-success-card {
   width: 100%;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 16px;
   padding: 1.75rem 2rem;
   display: flex;
@@ -122,13 +122,13 @@
 }
 .submit-success-row__label {
   font-size: 0.92rem;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 500;
   text-align: left;
 }
 .submit-success-row__val {
   font-size: 0.98rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-weight: 700;
   text-align: right;
 }
@@ -137,13 +137,13 @@
   font-family: monospace;
   font-size: 1.05rem;
   letter-spacing: 0.04em;
-  color: #0b2546;
+  color: var(--palette-sky-800-0b2546);
 }
 
 .submit-success-status {
-  background: #f0fdf4;
-  color: #166534;
-  border: 1px solid #bbf7d0;
+  background: var(--palette-green-50);
+  color: var(--palette-green-800);
+  border: 1px solid var(--palette-green-200);
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.86rem;
@@ -160,8 +160,8 @@
 
 .submit-success-btn-primary {
   width: 100%;
-  background: #0b2546;
-  color: #ffffff;
+  background: var(--palette-sky-800-0b2546);
+  color: var(--surface);
   border: none;
   border-radius: 12px;
   padding: 0.95rem;
@@ -172,6 +172,6 @@
   transition: all 0.2s ease;
 }
 .submit-success-btn-primary:hover {
-  background: #143560;
+  background: var(--palette-sky-800-143560);
   transform: translateY(-1px);
 }

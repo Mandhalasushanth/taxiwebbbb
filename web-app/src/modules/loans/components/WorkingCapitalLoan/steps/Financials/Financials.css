@@ -17,22 +17,22 @@
 .working-capital-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .working-capital-label__req {
-  color: #ef4444;
+  color: var(--palette-red-500);
 }
 
 .working-capital-input {
   width: 100%;
   height: 48px;
   padding: 0 1rem;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--grey-300);
   border-radius: 10px;
   font-size: 0.95rem;
-  color: #0f172a;
-  background-color: #ffffff;
+  color: var(--palette-slate-900);
+  background-color: var(--surface);
   outline: none;
   font-family: inherit;
   transition: all 0.18s ease;
@@ -43,11 +43,11 @@
   width: 100%;
   height: 48px;
   padding: 0 2.5rem 0 1rem;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--grey-300);
   border-radius: 10px;
   font-size: 0.95rem;
-  color: #0f172a;
-  background-color: #ffffff;
+  color: var(--palette-slate-900);
+  background-color: var(--surface);
   outline: none;
   cursor: pointer;
   font-family: inherit;
@@ -57,19 +57,19 @@
 
 .working-capital-input:focus,
 .working-capital-select:focus {
-  border-color: #ff7a00;
+  border-color: var(--feature-orange);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.12);
 }
 
 .working-capital-input--error,
 .working-capital-select--error {
-  border-color: #ef4444 !important;
-  background-color: #fff5f5 !important;
+  border-color: var(--palette-red-500) !important;
+  background-color: var(--palette-red-50-fff5f5) !important;
 }
 
 .working-capital-input--error:focus,
 .working-capital-select--error:focus {
-  border-color: #dc2626 !important;
+  border-color: var(--error) !important;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
 }
 
@@ -78,7 +78,7 @@
   align-items: center;
   gap: 4px;
   font-size: 0.78125rem;
-  color: #dc2626;
+  color: var(--error);
   font-weight: 500;
   margin-top: 0.25rem;
   line-height: 1.3;
@@ -95,9 +95,9 @@
 .working-capital-amount-pill {
   padding: 0.45rem 0.95rem;
   border-radius: 9999px;
-  border: 1.5px solid #e2e8f0;
-  background-color: #f8fafc;
-  color: #475569;
+  border: 1.5px solid var(--border);
+  background-color: var(--palette-slate-50);
+  color: var(--palette-slate-600);
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
@@ -106,15 +106,15 @@
 }
 
 .working-capital-amount-pill:hover {
-  border-color: #ff7a00;
-  color: #ff7a00;
-  background-color: #fff7ed;
+  border-color: var(--feature-orange);
+  color: var(--feature-orange);
+  background-color: var(--palette-orange-50);
 }
 
 .working-capital-amount-pill--active {
-  border-color: #ff7a00;
-  background: linear-gradient(135deg, #ff7a00 0%, #ff5722 100%);
-  color: #ffffff;
+  border-color: var(--feature-orange);
+  background: linear-gradient(135deg, var(--feature-orange) 0%, var(--active-tab-orange) 100%);
+  color: var(--surface);
   box-shadow: 0 2px 8px rgba(255, 122, 0, 0.22);
 }
 
@@ -129,9 +129,9 @@
 .working-capital-purpose-pill {
   padding: 0.55rem 1.1rem;
   border-radius: 9999px;
-  border: 1.5px solid #e2e8f0;
-  background-color: #f8fafc;
-  color: #334155;
+  border: 1.5px solid var(--border);
+  background-color: var(--palette-slate-50);
+  color: var(--grey-700);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -140,17 +140,17 @@
 }
 
 .working-capital-purpose-pill:hover {
-  border-color: #ff7a00;
-  color: #ea580c;
-  background-color: #fff7ed;
+  border-color: var(--feature-orange);
+  color: var(--palette-orange-600);
+  background-color: var(--palette-orange-50);
 }
 
 .working-capital-purpose-pill--active {
-  border-color: #ea580c;
-  background-color: #ffffff;
-  color: #ea580c;
+  border-color: var(--palette-orange-600);
+  background-color: var(--surface);
+  color: var(--palette-orange-600);
   font-weight: 600;
-  box-shadow: 0 0 0 1.5px #ea580c inset, 0 2px 6px rgba(234, 88, 12, 0.12);
+  box-shadow: 0 0 0 1.5px var(--palette-orange-600) inset, 0 2px 6px rgba(234, 88, 12, 0.12);
 }
 
 /* Active Borrowings Toggle (Segmented style matching prototype) */
@@ -158,7 +158,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
-  background-color: #f1f5f9;
+  background-color: var(--subtle-border);
   padding: 0.35rem;
   border-radius: 12px;
 }
@@ -168,7 +168,7 @@
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #64748b;
+  color: var(--secondary-text);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -176,7 +176,7 @@
 }
 
 .working-capital-toggle-btn--active {
-  background-color: #ffffff;
-  color: #c2410c;
+  background-color: var(--surface);
+  color: var(--palette-orange-700);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }

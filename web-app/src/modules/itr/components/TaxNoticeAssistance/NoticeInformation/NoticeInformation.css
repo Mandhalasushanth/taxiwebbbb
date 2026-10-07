@@ -15,20 +15,20 @@
 .notice-progress__bar {
   flex: 1;
   height: 100%;
-  background: #e2e8f0;
+  background: var(--border);
   border-radius: 9999px;
   transition: background-color 250ms ease;
 }
 
 .notice-progress__bar--active {
-  background: linear-gradient(90deg, #ff6a00, #ff8533);
+  background: linear-gradient(90deg, var(--palette-orange-500), var(--palette-orange-400-ff8533));
 }
 
 .notice-progress__label {
   display: block;
   font-size: 0.78125rem;
   font-weight: 800;
-  color: #ea580c;
+  color: var(--palette-orange-600);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -41,7 +41,7 @@
 .notice-form__heading {
   font-size: 1.45rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 0.4rem;
   line-height: 1.25;
   letter-spacing: -0.015em;
@@ -49,7 +49,7 @@
 
 .notice-form__subheading {
   font-size: 0.9375rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.5;
   margin: 0;
   max-width: 720px;
@@ -91,14 +91,14 @@
 .notice-field__label {
   font-size: 0.875rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--palette-slate-800);
   margin-bottom: 0.45rem;
   display: flex;
   align-items: center;
 }
 
 .notice-field__required {
-  color: #dc2626;
+  color: var(--error);
   margin-left: 3px;
 }
 
@@ -107,12 +107,12 @@
 .notice-field__textarea {
   width: 100%;
   box-sizing: border-box;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 12px;
   padding: 0.825rem 1rem;
   font-size: 0.9375rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-family: inherit;
   transition: all 180ms ease;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
@@ -121,7 +121,7 @@
 /* Placeholder styling for text inputs and textareas */
 .notice-field__input::placeholder,
 .notice-field__textarea::placeholder {
-  color: #94a3b8;
+  color: var(--muted-text);
   font-size: 0.8125rem;
   font-weight: 400;
   opacity: 0.85;
@@ -130,26 +130,26 @@
 /* Select element placeholder styling */
 .notice-field__select--placeholder,
 .notice-field__select:has(option[value=""]:checked) {
-  color: #94a3b8 !important;
+  color: var(--muted-text) !important;
   font-size: 0.8125rem;
   font-weight: 400;
 }
 
 .notice-field__select option {
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-size: 0.9375rem;
   font-weight: 400;
 }
 
 .notice-field__select option[value=""],
 .notice-field__option-placeholder {
-  color: #94a3b8;
+  color: var(--muted-text);
   font-size: 0.8125rem;
 }
 
 /* Date input placeholder (dd-mm-yyyy) styling */
 .notice-field__input--date-empty {
-  color: #94a3b8 !important;
+  color: var(--muted-text) !important;
   font-size: 0.8125rem;
   font-weight: 400;
 }
@@ -160,18 +160,18 @@
 .notice-field__input--date-empty::-webkit-datetime-edit-month-field,
 .notice-field__input--date-empty::-webkit-datetime-edit-day-field,
 .notice-field__input--date-empty::-webkit-datetime-edit-year-field {
-  color: #94a3b8 !important;
+  color: var(--muted-text) !important;
   font-size: 0.8125rem;
   font-weight: 400;
 }
 
 .notice-field__input--date:not(.notice-field__input--date-empty) {
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-size: 0.9375rem;
 }
 
 .notice-field__input--date:not(.notice-field__input--date-empty)::-webkit-datetime-edit {
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-size: 0.9375rem;
   font-weight: 500;
 }
@@ -189,7 +189,7 @@
 .notice-field__input:focus,
 .notice-field__select:focus,
 .notice-field__textarea:focus {
-  border-color: #ff6a00;
+  border-color: var(--palette-orange-500);
   outline: none;
   box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.12);
 }
@@ -197,20 +197,20 @@
 .notice-field__input--error,
 .notice-field__select--error,
 .notice-field__textarea--error {
-  border-color: #ef4444;
-  background: #fffafa;
+  border-color: var(--palette-red-500);
+  background: var(--palette-red-50-fffafa);
 }
 
 .notice-field__error {
   font-size: 0.75rem;
-  color: #dc2626;
+  color: var(--error);
   margin-top: 0.35rem;
   font-weight: 600;
 }
 
 .notice-field__help-text {
   font-size: 0.78125rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin-top: 0.35rem;
   line-height: 1.35;
 }
@@ -241,13 +241,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #94a3b8;
+  color: var(--muted-text);
   border-radius: 50%;
   transition: all 150ms ease;
 }
 
 .notice-field__clear-cross-btn:hover {
-  color: #64748b;
+  color: var(--secondary-text);
   transform: translateY(-50%) scale(1.08);
 }
 
@@ -272,12 +272,12 @@
 .notice-field__select-trigger {
   width: 100%;
   box-sizing: border-box;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 12px;
   padding: 0.825rem 1rem;
   font-size: 0.9375rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-family: inherit;
   transition: all 180ms ease;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
@@ -290,19 +290,19 @@
 
 .notice-field__select-trigger:focus,
 .notice-field__select-trigger--open {
-  border-color: #ff6a00;
+  border-color: var(--palette-orange-500);
   outline: none;
   box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.12);
 }
 
 .notice-field__select-trigger--placeholder .notice-field__select-trigger-text {
-  color: #94a3b8;
+  color: var(--muted-text);
   font-size: 0.8125rem;
   font-weight: 400;
 }
 
 .notice-field__select-trigger-text {
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-size: 0.9375rem;
   font-weight: 500;
   white-space: nowrap;
@@ -314,7 +314,7 @@
 .notice-field__chevron-icon {
   width: 18px;
   height: 18px;
-  color: #64748b;
+  color: var(--secondary-text);
   flex-shrink: 0;
   transition: transform 200ms ease;
 }
@@ -324,8 +324,8 @@
 }
 
 .notice-field__select-trigger--error {
-  border-color: #ef4444;
-  background: #fffafa;
+  border-color: var(--palette-red-500);
+  background: var(--palette-red-50-fffafa);
 }
 
 /* Custom Dropdown Menu (matches Image 2) */
@@ -334,8 +334,8 @@
   top: calc(100% + 6px);
   left: 0;
   right: 0;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 14px;
   box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
   z-index: 50;
@@ -347,7 +347,7 @@
 /* Dropdown Option Items */
 .notice-type-option-item {
   padding: 0.9rem 1.15rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--subtle-border);
   cursor: pointer;
   transition: background-color 150ms ease;
 }
@@ -358,29 +358,29 @@
 
 .notice-type-option-item:hover,
 .notice-type-option-item:focus {
-  background: #f8fafc;
+  background: var(--palette-slate-50);
   outline: none;
 }
 
 .notice-type-option-item--selected {
-  background: #fff7ed;
+  background: var(--palette-orange-50);
 }
 
 .notice-type-option-title {
   font-size: 0.885rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   line-height: 1.35;
   margin-bottom: 0.25rem;
 }
 
 .notice-type-option-item--selected .notice-type-option-title {
-  color: #ea580c;
+  color: var(--palette-orange-600);
 }
 
 .notice-type-option-desc {
   font-size: 0.765rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.35;
 }
 
@@ -395,7 +395,7 @@
   right: 1rem;
   width: 18px;
   height: 18px;
-  color: #64748b;
+  color: var(--secondary-text);
   pointer-events: none;
 }
 
@@ -410,22 +410,22 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.95rem 1.15rem;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
+  background: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-200);
   border-radius: 14px;
 }
 
 .notice-info-card__icon {
   width: 20px;
   height: 20px;
-  color: #2563eb;
+  color: var(--palette-blue-600);
   flex-shrink: 0;
   margin-top: 1px;
 }
 
 .notice-info-card__text {
   font-size: 0.84375rem;
-  color: #1e40af;
+  color: var(--palette-blue-800-1e40af);
   line-height: 1.45;
   margin: 0;
 }

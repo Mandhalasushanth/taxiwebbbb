@@ -19,28 +19,28 @@
   justify-content: space-between;
   align-items: center;
   padding-bottom: 1.25rem;
-  border-bottom: 1.5px solid #e2e8f0;
+  border-bottom: 1.5px solid var(--border);
 }
 
 .applications-web-header__title {
   margin: 0;
   font-size: 1.85rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.02em;
 }
 
 .applications-web-header__subtitle {
   margin: 0.25rem 0 0 0;
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 /* Category Navigation Tabs */
 .app-cat-tabs-container {
   width: 100%;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 18px;
   padding: 0.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
@@ -64,20 +64,20 @@
   border: none;
   border-radius: 12px;
   cursor: pointer;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 600;
   font-size: 0.92rem;
   transition: all 0.2s ease;
 }
 
 .app-cat-tab-btn:hover {
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--palette-slate-50);
+  color: var(--palette-slate-900);
 }
 
 .app-cat-tab-btn--active {
-  background: #fff7ed;
-  color: #ea580c;
+  background: var(--palette-orange-50);
+  color: var(--palette-orange-600);
   font-weight: 700;
 }
 
@@ -96,8 +96,8 @@
   font-size: 0.75rem;
   padding: 2px 7px;
   border-radius: 9999px;
-  background: #fed7aa;
-  color: #9a3412;
+  background: var(--orange-200);
+  color: var(--orange-800);
   font-weight: 800;
 }
 
@@ -107,7 +107,7 @@
   left: 20%;
   right: 20%;
   height: 3px;
-  background: #ff6b00;
+  background: var(--palette-orange-500-ff6b00);
   border-radius: 9999px;
 }
 
@@ -122,7 +122,7 @@
   margin: 0;
   font-size: 1.25rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.01em;
 }
 
@@ -134,8 +134,8 @@
 
 .app-stat-card {
   position: relative;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 16px;
   padding: 1.25rem 1.5rem;
   cursor: pointer;
@@ -151,13 +151,13 @@
 
 .app-stat-card:hover {
   transform: translateY(-2px) translateZ(0);
-  border-color: #cbd5e1;
+  border-color: var(--grey-300);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
 }
 
 .app-stat-card--selected {
-  background: #fff7ed;
-  border-color: #fdba74;
+  background: var(--palette-orange-50);
+  border-color: var(--orange-300);
 }
 
 .app-stat-card__content {
@@ -172,15 +172,15 @@
   line-height: 1;
 }
 
-.app-stat-card--total .app-stat-card__value { color: #ea580c; }
-.app-stat-card--in-progress .app-stat-card__value { color: #0284c7; }
-.app-stat-card--completed .app-stat-card__value { color: #059669; }
-.app-stat-card--under-verification .app-stat-card__value { color: #7c3aed; }
+.app-stat-card--total .app-stat-card__value { color: var(--palette-orange-600); }
+.app-stat-card--in-progress .app-stat-card__value { color: var(--palette-sky-600); }
+.app-stat-card--completed .app-stat-card__value { color: var(--feature-success); }
+.app-stat-card--under-verification .app-stat-card__value { color: var(--palette-violet-600); }
 
 .app-stat-card__label {
   font-size: 0.88rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .app-stat-card__bottom-bar {
@@ -189,7 +189,7 @@
   left: 1.5rem;
   right: 1.5rem;
   height: 3px;
-  background: #ff6b00;
+  background: var(--palette-orange-500-ff6b00);
   border-radius: 9999px;
 }
 
@@ -215,8 +215,8 @@
 }
 
 .app-list-count-badge {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--subtle-border);
+  color: var(--palette-slate-600);
   font-size: 0.8rem;
   font-weight: 700;
   padding: 0.2rem 0.65rem;
@@ -235,7 +235,7 @@
   left: 14px;
   width: 17px;
   height: 17px;
-  color: #94a3b8;
+  color: var(--muted-text);
   pointer-events: none;
 }
 
@@ -244,10 +244,10 @@
   height: 42px;
   padding: 0 2rem 0 2.5rem;
   border-radius: 12px;
-  border: 1.5px solid #e2e8f0;
-  background: #ffffff;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
   font-size: 0.88rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   outline: none;
   transition: all 0.2s ease;
 }

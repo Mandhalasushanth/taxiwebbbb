@@ -7,7 +7,7 @@
 .gst-filing-frequency__label {
   font-size: 14px;
   font-weight: 600;
-  color: #111827;
+  color: var(--palette-gray-900);
   margin-bottom: 8px;
 }
 
@@ -23,12 +23,12 @@
   justify-content: center;
   height: 48px;
   padding: 0 16px;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 10px;
   font-size: 15px;
   font-weight: 600;
-  color: #111827;
+  color: var(--palette-gray-900);
   cursor: pointer;
   outline: none;
   transition: all 0.2s ease;
@@ -36,22 +36,22 @@
 }
 
 .gst-filing-frequency__btn:hover {
-  border-color: #cbd5e1;
-  background-color: #fafaf9;
+  border-color: var(--grey-300);
+  background-color: var(--palette-neutral-50-fafaf9);
 }
 
 .gst-filing-frequency__btn--active {
-  background-color: #ff5722;
-  background: linear-gradient(135deg, #ff5722 0%, #ea580c 100%);
+  background-color: var(--active-tab-orange);
+  background: linear-gradient(135deg, var(--active-tab-orange) 0%, var(--palette-orange-600) 100%);
   border: 1px solid transparent;
-  color: #ffffff;
+  color: var(--surface);
   font-weight: 700;
   box-shadow: 0 4px 14px rgba(255, 87, 34, 0.35);
 }
 
 .gst-filing-frequency__btn--active:hover {
-  background: linear-gradient(135deg, #f4511e 0%, #d84315 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--palette-red-500-f4511e) 0%, var(--palette-red-500-d84315) 100%);
+  color: var(--surface);
 }
 
 @media (max-width: 640px) {

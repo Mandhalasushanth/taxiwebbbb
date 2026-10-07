@@ -12,9 +12,9 @@
   text-align: center;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #172033;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  color: var(--primary-text);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 12px;
   outline: none;
   transition: all 150ms ease;
@@ -23,18 +23,18 @@
 }
 
 .passcode-digit-input__box:focus {
-  border-color: #f97316;
+  border-color: var(--primary-orange);
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
 }
 
 .passcode-digit-input__box--filled {
-  border-color: #cbd5e1;
-  background: #fafafa;
+  border-color: var(--grey-300);
+  background: var(--palette-neutral-50);
 }
 
 .passcode-digit-input__box--error {
-  border-color: #dc2626;
-  background: #fef2f2;
+  border-color: var(--error);
+  background: var(--palette-red-50);
 }
 
 @media (max-width: 380px) {

@@ -14,12 +14,12 @@
 .itr-docs-count-text {
   font-size: 0.95rem;
   font-weight: 800;
-  color: #083b75;
+  color: var(--primary-navy);
 }
 
 .itr-badge-ready {
-  background: #ffedd5;
-  color: #c2410c;
+  background: var(--orange-100);
+  color: var(--palette-orange-700);
   font-size: 0.78rem;
   font-weight: 800;
   padding: 0.25rem 0.75rem;
@@ -27,8 +27,8 @@
 }
 
 .itr-docs-shield-card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--palette-slate-50);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1rem 1.25rem;
   display: flex;
@@ -51,12 +51,12 @@
   margin: 0;
   font-size: 0.95rem;
   font-weight: 800;
-  color: #083b75;
+  color: var(--primary-navy);
 }
 
 .itr-docs-shield-sub {
   margin: 0;
   font-size: 0.82rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.4;
 }

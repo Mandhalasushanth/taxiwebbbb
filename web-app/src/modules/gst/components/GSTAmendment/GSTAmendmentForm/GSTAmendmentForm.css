@@ -1,7 +1,7 @@
 .gst-amend-live-card {
   width: 100%;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 1.75rem 2.25rem;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
@@ -14,20 +14,20 @@
   justify-content: space-between;
   gap: 1rem;
   padding-bottom: 1.25rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--subtle-border);
   margin-bottom: 1.5rem;
 }
 
 .gst-amend-live-card__title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
 }
 
 .gst-amend-live-card__subtitle {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0.25rem 0 0 0;
 }
 
@@ -35,8 +35,8 @@
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.75rem;
-  background-color: #f1f5f9;
-  color: #475569;
+  background-color: var(--subtle-border);
+  color: var(--palette-slate-600);
   font-size: 0.75rem;
   font-weight: 600;
   border-radius: 9999px;
@@ -72,9 +72,9 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background-color: #f8fafc;
-  border: 1px solid #cbd5e1;
-  color: #475569;
+  background-color: var(--palette-slate-50);
+  border: 1px solid var(--grey-300);
+  color: var(--palette-slate-600);
   font-size: 0.6875rem;
   font-weight: 700;
   flex-shrink: 0;
@@ -83,31 +83,31 @@
 .gst-amend-form__label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .gst-amend-form__required-star {
-  color: #dc2626;
+  color: var(--error);
 }
 
 .gst-amend-form__autofill-badge {
   display: inline-flex;
   align-items: center;
   padding: 0.15rem 0.55rem;
-  background-color: #EAF1FE;
-  color: #083B75;
+  background-color: var(--light-blue);
+  color: var(--primary-navy);
   font-size: 0.6875rem;
   font-weight: 600;
   border-radius: 9999px;
-  border: 1px solid #bfdbfe;
+  border: 1px solid var(--palette-blue-200);
 }
 
 .gst-amend-form__autofill-box {
-  background-color: #F8FAFC;
-  border: 1px solid #CBD5E1;
+  background-color: var(--palette-slate-50);
+  border: 1px solid var(--grey-300);
   border-radius: 10px;
   padding: 0.85rem 1.1rem;
-  color: #083B75;
+  color: var(--primary-navy);
   font-size: 0.9375rem;
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -119,7 +119,7 @@
 .gst-amend-form__autofill-box--multiline {
   line-height: 1.5;
   font-weight: 600;
-  color: #083B75;
+  color: var(--primary-navy);
 }
 
 .gst-amend-form__select-wrapper {
@@ -130,13 +130,13 @@
 .gst-amend-form__select {
   width: 100%;
   appearance: none;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
+  background-color: var(--surface);
+  border: 1px solid var(--grey-300);
   border-radius: 10px;
   padding: 0.85rem 2.5rem 0.85rem 1.1rem;
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   cursor: pointer;
   transition: all 0.15s ease;
   font-family: inherit;
@@ -145,7 +145,7 @@
 
 .gst-amend-form__select:focus {
   outline: none;
-  border-color: #FF7A00;
+  border-color: var(--feature-orange);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.15);
 }
 
@@ -155,7 +155,7 @@
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
-  color: #64748b;
+  color: var(--secondary-text);
   display: flex;
   align-items: center;
 }
@@ -167,13 +167,13 @@
 
 .gst-amend-form__input {
   width: 100%;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
+  background-color: var(--surface);
+  border: 1px solid var(--grey-300);
   border-radius: 10px;
   padding: 0.85rem 1.1rem;
   font-size: 0.9375rem;
   font-weight: 400;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   font-family: inherit;
   resize: vertical;
   min-height: 52px;
@@ -183,13 +183,13 @@
 
 .gst-amend-form__input:focus {
   outline: none;
-  border-color: #FF7A00;
+  border-color: var(--feature-orange);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.15);
 }
 
 .gst-amend-form__input.has-error {
-  border-color: #dc2626;
-  background-color: #fff8f8;
+  border-color: var(--error);
+  background-color: var(--palette-red-50-fff8f8);
 }
 
 .gst-amend-form__file-hidden {
@@ -201,23 +201,23 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--grey-300);
   border-radius: 12px;
   padding: 0.85rem 1.1rem;
-  background-color: #fafbfc;
+  background-color: var(--palette-sky-50-fafbfc);
   cursor: pointer;
   transition: all 0.15s ease;
   box-sizing: border-box;
 }
 
 .gst-amend-form__upload-box:hover {
-  background-color: #f1f5f9;
-  border-color: #94a3b8;
+  background-color: var(--subtle-border);
+  border-color: var(--muted-text);
 }
 
 .gst-amend-form__upload-box.has-error {
-  border-color: #dc2626;
-  background-color: #fff8f8;
+  border-color: var(--error);
+  background-color: var(--palette-red-50-fff8f8);
 }
 
 .gst-amend-form__upload-icon {
@@ -227,8 +227,8 @@
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  background-color: #EAF1FE;
-  color: #083B75;
+  background-color: var(--light-blue);
+  color: var(--primary-navy);
   flex-shrink: 0;
 }
 
@@ -248,12 +248,12 @@
 .gst-amend-form__upload-title {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .gst-amend-form__upload-sub {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .gst-amend-form__selected-file {
@@ -266,60 +266,60 @@
 
 .gst-amend-form__selected-file .file-name {
   font-weight: 600;
-  color: #083B75;
+  color: var(--primary-navy);
   word-break: break-all;
 }
 
 .gst-amend-form__selected-file .file-size {
-  color: #64748b;
+  color: var(--secondary-text);
   font-size: 0.75rem;
 }
 
 .gst-amend-form__browse-btn {
   padding: 0.45rem 1rem;
-  background-color: #FEF0E6;
-  color: #FF7A00;
+  background-color: var(--light-orange);
+  color: var(--feature-orange);
   font-size: 0.8125rem;
   font-weight: 600;
   border-radius: 8px;
-  border: 1px solid #fed7aa;
+  border: 1px solid var(--orange-200);
   cursor: pointer;
   transition: all 0.15s ease;
   flex-shrink: 0;
 }
 
 .gst-amend-form__browse-btn:hover {
-  background-color: #ffedd5;
-  color: #e66e00;
+  background-color: var(--orange-100);
+  color: var(--orange-600);
 }
 
 .gst-amend-form__remove-btn {
   padding: 0.45rem 0.85rem;
-  background-color: #fee2e2;
-  color: #b91c1c;
+  background-color: var(--palette-red-100-fee2e2);
+  color: var(--palette-red-700);
   font-size: 0.8125rem;
   font-weight: 600;
   border-radius: 8px;
-  border: 1px solid #fecaca;
+  border: 1px solid var(--palette-red-200);
   cursor: pointer;
   transition: all 0.15s ease;
   flex-shrink: 0;
 }
 
 .gst-amend-form__remove-btn:hover {
-  background-color: #fca5a5;
+  background-color: var(--palette-red-300);
 }
 
 .gst-amend-form__hint {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin-top: 0.2rem;
   line-height: 1.4;
 }
 
 .gst-amend-form__error-text {
   font-size: 0.75rem;
-  color: #dc2626;
+  color: var(--error);
   font-weight: 500;
   margin-top: 0.2rem;
 }
@@ -331,7 +331,7 @@
   gap: 1rem;
   margin-top: 1rem;
   padding-top: 1.25rem;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--subtle-border);
 }
 
 .gst-amend-form__btn-all-forms {
@@ -340,10 +340,10 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.65rem 1.65rem;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--grey-300);
   border-radius: 9999px;
-  background-color: #ffffff;
-  color: #0f172a;
+  background-color: var(--surface);
+  color: var(--palette-slate-900);
   font-size: 0.92rem;
   font-weight: 700;
   text-decoration: none;
@@ -352,9 +352,9 @@
 }
 
 .gst-amend-form__btn-all-forms:hover {
-  background-color: #f8fafc;
-  border-color: #94a3b8;
-  color: #0f172a;
+  background-color: var(--palette-slate-50);
+  border-color: var(--muted-text);
+  color: var(--palette-slate-900);
   transform: translateY(-1px);
 }
 
@@ -364,8 +364,8 @@
   justify-content: center;
   padding: 0.75rem 1.75rem;
   border-radius: 9999px;
-  background: linear-gradient(135deg, #FF7A00 0%, #e66e00 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--feature-orange) 0%, var(--orange-600) 100%);
+  color: var(--surface);
   font-size: 0.9375rem;
   font-weight: 700;
   border: none;
@@ -376,7 +376,7 @@
 }
 
 .gst-amend-form__btn-submit:hover:not(:disabled) {
-  background: #e66e00;
+  background: var(--orange-600);
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(255, 122, 0, 0.45);
 }

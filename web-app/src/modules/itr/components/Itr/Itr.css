@@ -19,14 +19,14 @@
 
 /* 1. Hero Banner */
 .itr-hero-banner {
-  background-color: #032b69;
+  background-color: var(--palette-blue-800-032b69);
   background-image: url("/assets/images/dashboard-banner-bg.png");
   background-size: cover;
   background-position: center right;
   background-repeat: no-repeat;
   border-radius: 16px;
   padding: 2rem 2.25rem;
-  color: #ffffff;
+  color: var(--surface);
   box-shadow: 0 6px 20px rgba(3, 43, 105, 0.2);
   position: relative;
   overflow: hidden;
@@ -40,7 +40,7 @@
   letter-spacing: -0.02em;
   margin: 0 0 0.5rem 0;
   line-height: 1.2;
-  color: #ffffff;
+  color: var(--surface);
 }
 .itr-hero-banner__subtitle {
   font-size: 0.95rem;
@@ -57,8 +57,8 @@
   flex-wrap: wrap;
 }
 .itr-hero-btn-accent {
-  background: #ea580c;
-  color: #ffffff;
+  background: var(--palette-orange-600);
+  color: var(--surface);
   font-weight: 700;
   font-size: 0.9rem;
   padding: 0.65rem 1.3rem;
@@ -69,7 +69,7 @@
   box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
 }
 .itr-hero-btn-accent:hover {
-  background: #f97316;
+  background: var(--primary-orange);
   transform: translateY(-2px);
 }
 
@@ -90,9 +90,9 @@
   }
 }
 .itr-service-card {
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   padding: 1.25rem;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
   display: flex;
@@ -101,7 +101,7 @@
   transition: all 0.25s ease;
 }
 .itr-service-card:hover {
-  border-color: #cbd5e1;
+  border-color: var(--grey-300);
   box-shadow: 0 8px 24px rgba(8, 59, 117, 0.1);
   transform: translateY(-2px);
 }
@@ -128,19 +128,19 @@
 .itr-service-card__title {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
 }
 .itr-service-card__desc {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.45;
   margin: 0;
   min-height: 42px;
 }
 .itr-service-card__divider {
   border: none;
-  border-top: 1px dashed #e2e8f0;
+  border-top: 1px dashed var(--border);
   margin: 0.4rem 0;
 }
 .itr-service-card__footer {
@@ -157,11 +157,11 @@
 .itr-service-card__price {
   font-size: 1.05rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 .itr-service-card__timeline {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--secondary-text);
   display: flex;
   align-items: center;
   gap: 0.35rem;
@@ -170,7 +170,7 @@
 .itr-service-card__start-btn {
   background: transparent;
   border: none;
-  color: #083b75;
+  color: var(--primary-navy);
   font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
@@ -182,7 +182,7 @@
   transition: all 0.2s ease;
 }
 .itr-service-card:hover .itr-service-card__start-btn {
-  color: #f97316;
+  color: var(--primary-orange);
   transform: translateX(3px);
 }
 

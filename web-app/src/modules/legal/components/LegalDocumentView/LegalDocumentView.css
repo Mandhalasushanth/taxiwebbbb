@@ -1,5 +1,5 @@
 .legal-doc {
-  color: #334155;
+  color: var(--grey-700);
   line-height: 1.6;
   font-size: 0.9375rem;
 }
@@ -8,13 +8,13 @@
   margin: 0 0 0.25rem;
   font-size: clamp(1.5rem, 2.4vw, 2rem);
   font-weight: 700;
-  color: #172033;
+  color: var(--primary-text);
 }
 
 .legal-doc__meta {
   margin: 0 0 1rem;
   font-size: 0.8125rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .legal-doc__section {
@@ -25,7 +25,7 @@
   margin: 0 0 0.4rem;
   font-size: 1rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: var(--palette-indigo-950);
 }
 
 .legal-doc__paragraph {

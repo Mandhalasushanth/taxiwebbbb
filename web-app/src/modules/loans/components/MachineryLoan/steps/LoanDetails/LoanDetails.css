@@ -13,22 +13,22 @@
 .machinery-loan-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .machinery-loan-label__req {
-  color: #ef4444;
+  color: var(--palette-red-500);
 }
 
 .machinery-loan-input {
   width: 100%;
   height: 48px;
   padding: 0 1rem;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--grey-300);
   border-radius: 10px;
   font-size: 0.95rem;
-  color: #0f172a;
-  background-color: #ffffff;
+  color: var(--palette-slate-900);
+  background-color: var(--surface);
   outline: none;
   font-family: inherit;
   transition: all 0.18s ease;
@@ -39,11 +39,11 @@
   width: 100%;
   height: 48px;
   padding: 0 2.5rem 0 1rem;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--grey-300);
   border-radius: 10px;
   font-size: 0.95rem;
-  color: #0f172a;
-  background-color: #ffffff;
+  color: var(--palette-slate-900);
+  background-color: var(--surface);
   outline: none;
   cursor: pointer;
   font-family: inherit;
@@ -53,19 +53,19 @@
 
 .machinery-loan-input:focus,
 .machinery-loan-select:focus {
-  border-color: #ff7a00;
+  border-color: var(--feature-orange);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.12);
 }
 
 .machinery-loan-input--error,
 .machinery-loan-select--error {
-  border-color: #ef4444 !important;
-  background-color: #fff5f5 !important;
+  border-color: var(--palette-red-500) !important;
+  background-color: var(--palette-red-50-fff5f5) !important;
 }
 
 .machinery-loan-input--error:focus,
 .machinery-loan-select--error:focus {
-  border-color: #dc2626 !important;
+  border-color: var(--error) !important;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
 }
 
@@ -74,7 +74,7 @@
   align-items: center;
   gap: 4px;
   font-size: 0.78125rem;
-  color: #dc2626;
+  color: var(--error);
   font-weight: 500;
   margin-top: 0.25rem;
   line-height: 1.3;
@@ -90,9 +90,9 @@
 .machinery-loan-amount-pill {
   padding: 0.45rem 0.95rem;
   border-radius: 9999px;
-  border: 1.5px solid #e2e8f0;
-  background-color: #f8fafc;
-  color: #475569;
+  border: 1.5px solid var(--border);
+  background-color: var(--palette-slate-50);
+  color: var(--palette-slate-600);
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
@@ -101,14 +101,14 @@
 }
 
 .machinery-loan-amount-pill:hover {
-  border-color: #ff7a00;
-  color: #ff7a00;
-  background-color: #fff7ed;
+  border-color: var(--feature-orange);
+  color: var(--feature-orange);
+  background-color: var(--palette-orange-50);
 }
 
 .machinery-loan-amount-pill--active {
-  border-color: #ff7a00;
-  background: linear-gradient(135deg, #ff7a00 0%, #ff5722 100%);
-  color: #ffffff;
+  border-color: var(--feature-orange);
+  background: linear-gradient(135deg, var(--feature-orange) 0%, var(--active-tab-orange) 100%);
+  color: var(--surface);
   box-shadow: 0 2px 8px rgba(255, 122, 0, 0.22);
 }

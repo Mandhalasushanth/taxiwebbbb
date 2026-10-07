@@ -8,7 +8,7 @@
 .profile-section__title {
   font-size: 13px;
   font-weight: 700;
-  color: #6b7280;
+  color: var(--palette-gray-500);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin: 0;
@@ -16,7 +16,7 @@
 }
 
 .profile-section__card {
-  background-color: #ffffff;
+  background-color: var(--surface);
   border-radius: 20px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
   overflow: hidden;

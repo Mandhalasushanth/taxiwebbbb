@@ -65,40 +65,40 @@
 
 /* Pending Step */
 .gst-reg-stepper__step--pending .gst-reg-stepper__circle {
-  background-color: #ffffff;
-  color: #94a3b8;
-  border: 2px solid #cbd5e1;
+  background-color: var(--surface);
+  color: var(--muted-text);
+  border: 2px solid var(--grey-300);
 }
 
 .gst-reg-stepper__step--pending .gst-reg-stepper__label {
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 600;
 }
 
 /* Current Active Step (Orange) */
 .gst-reg-stepper__step--current .gst-reg-stepper__circle {
-  background-color: #f97316;
-  color: #ffffff;
-  border: 2.5px solid #f97316;
+  background-color: var(--primary-orange);
+  color: var(--surface);
+  border: 2.5px solid var(--primary-orange);
   box-shadow: 0 4px 14px rgba(249, 115, 22, 0.42);
   transform: scale(1.06);
 }
 
 .gst-reg-stepper__step--current .gst-reg-stepper__label {
-  color: #f97316;
+  color: var(--primary-orange);
   font-weight: 700;
 }
 
 /* Completed Step */
 .gst-reg-stepper__step--completed .gst-reg-stepper__circle {
-  background-color: #083b75;
-  color: #ffffff;
-  border: 2.5px solid #083b75;
+  background-color: var(--primary-navy);
+  color: var(--surface);
+  border: 2.5px solid var(--primary-navy);
   box-shadow: 0 4px 14px rgba(8, 59, 117, 0.35);
 }
 
 .gst-reg-stepper__step--completed .gst-reg-stepper__label {
-  color: #083b75;
+  color: var(--primary-navy);
   font-weight: 600;
 }
 
@@ -118,7 +118,7 @@
 .gst-reg-stepper__line {
   flex: 1;
   height: 2.5px;
-  background-color: #e2e8f0;
+  background-color: var(--border);
   margin: 0 0.75rem;
   margin-bottom: 1.45rem; /* Align horizontally with the center of 40px circles */
   transition: background-color 0.3s ease;
@@ -126,7 +126,7 @@
 }
 
 .gst-reg-stepper__line--completed {
-  background-color: #083b75;
+  background-color: var(--primary-navy);
 }
 
 @media (max-width: 640px) {

@@ -31,8 +31,8 @@
 }
 
 .gst-amend-bank-accepted-proofs-banner {
-  background-color: #fff7ed;
-  border: 1px solid #fed7aa;
+  background-color: var(--palette-orange-50);
+  border: 1px solid var(--orange-200);
   border-top: none;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
@@ -50,8 +50,8 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background-color: #f97316;
-  color: #ffffff;
+  background-color: var(--primary-orange);
+  color: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -66,12 +66,12 @@
 .gst-amend-bank-banner-title {
   font-size: 0.9375rem;
   font-weight: 700;
-  color: #9a3412;
+  color: var(--orange-800);
 }
 
 .gst-amend-bank-banner-desc {
   font-size: 0.8125rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.5;
   margin: 0;
 }

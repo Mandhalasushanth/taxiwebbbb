@@ -27,7 +27,7 @@
 .passcode-login-form__change-btn {
   background: transparent;
   border: none;
-  color: #0b5ed7;
+  color: var(--primary-blue);
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
@@ -37,7 +37,7 @@
 }
 
 .passcode-login-form__change-btn:hover {
-  color: #f97316;
+  color: var(--primary-orange);
   text-decoration: none;
 }
 
@@ -54,12 +54,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 12px;
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #172033;
+  color: var(--primary-text);
   flex-shrink: 0;
 }
 
@@ -68,13 +68,13 @@
   height: 44px;
   display: flex;
   align-items: center;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 12px;
   padding: 0 1rem;
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #172033;
+  color: var(--primary-text);
   letter-spacing: 0.04em;
 }
 
@@ -95,14 +95,14 @@
 .passcode-login-form__label {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #172033;
+  color: var(--primary-text);
   margin-bottom: 0;
 }
 
 .passcode-login-form__toggle-visibility-btn {
   background: transparent;
   border: none;
-  color: #0b5ed7;
+  color: var(--primary-blue);
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
@@ -112,7 +112,7 @@
 }
 
 .passcode-login-form__toggle-visibility-btn:hover {
-  color: #f97316;
+  color: var(--primary-orange);
   text-decoration: none;
 }
 
@@ -130,9 +130,9 @@
   text-align: center;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #172033;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  color: var(--primary-text);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 12px;
   outline: none;
   transition: all 150ms ease;
@@ -140,31 +140,31 @@
 }
 
 .passcode-login-form__box:focus {
-  border-color: #f97316;
+  border-color: var(--primary-orange);
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
 }
 
 .passcode-login-form__box--filled {
-  border-color: #cbd5e1;
-  background: #fafafa;
+  border-color: var(--grey-300);
+  background: var(--palette-neutral-50);
 }
 
 .passcode-login-form__box--error {
-  border-color: #dc2626;
-  background: #fef2f2;
+  border-color: var(--error);
+  background: var(--palette-red-50);
 }
 
 .passcode-login-form__error-msg {
   margin-top: 0.35rem;
   font-size: 0.75rem;
-  color: #dc2626;
+  color: var(--error);
   font-weight: 500;
 }
 
 .passcode-login-form__notice-msg {
   margin-top: 0.35rem;
   font-size: 0.75rem;
-  color: #15803d;
+  color: var(--palette-green-700);
   font-weight: 500;
 }
 
@@ -178,7 +178,7 @@
 .passcode-login-form__forgot-link {
   background: transparent;
   border: none;
-  color: #f97316;
+  color: var(--primary-orange);
   font-size: 0.775rem;
   font-weight: 600;
   cursor: pointer;
@@ -188,7 +188,7 @@
 }
 
 .passcode-login-form__forgot-link:hover {
-  color: #ea580c;
+  color: var(--palette-orange-600);
   text-decoration: none;
 }
 
@@ -214,20 +214,20 @@
 }
 
 .passcode-login-form__btn-primary--active {
-  background: #f97316;
-  color: #ffffff;
+  background: var(--primary-orange);
+  color: var(--surface);
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
 }
 
 .passcode-login-form__btn-primary--active:hover {
-  background: #ea580c;
+  background: var(--palette-orange-600);
   transform: translateY(-1px);
 }
 
 .passcode-login-form__btn-primary--disabled {
-  background: #f1f5f9;
-  color: #94a3b8;
+  background: var(--subtle-border);
+  color: var(--muted-text);
   cursor: not-allowed;
 }
 

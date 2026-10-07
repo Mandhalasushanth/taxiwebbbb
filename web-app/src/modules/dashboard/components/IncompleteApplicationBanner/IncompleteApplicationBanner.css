@@ -28,82 +28,82 @@
    Variant 1: Application (Peach / Vibrant Orange Theme)
    ========================================================================== */
 .incomplete-banner--application {
-  background: #FEF0E6;
-  border: 1.5px solid #EA580C;
+  background: var(--light-orange);
+  border: 1.5px solid var(--palette-orange-600);
   box-shadow: 0 4px 16px rgba(234, 88, 12, 0.08);
 }
 
 .incomplete-banner--application:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 24px rgba(234, 88, 12, 0.16);
-  border-color: #C2410C;
+  border-color: var(--palette-orange-700);
 }
 
 .incomplete-banner--application .incomplete-banner__badge {
-  background: #EA580C;
-  color: #ffffff;
+  background: var(--palette-orange-600);
+  color: var(--surface);
 }
 
 .incomplete-banner--application .incomplete-banner__divider {
-  background: #FFD8BF;
+  background: var(--palette-orange-100);
 }
 
 .incomplete-banner--application .incomplete-banner__cta-text {
-  color: #EA580C;
+  color: var(--palette-orange-600);
 }
 
 .incomplete-banner--application:hover .incomplete-banner__cta-text {
-  color: #C2410C;
+  color: var(--palette-orange-700);
 }
 
 .incomplete-banner--application .incomplete-banner__circle-btn {
-  background: #EA580C;
-  color: #ffffff;
+  background: var(--palette-orange-600);
+  color: var(--surface);
 }
 
 .incomplete-banner--application:hover .incomplete-banner__circle-btn {
-  background: #C2410C;
+  background: var(--palette-orange-700);
 }
 
 /* ==========================================================================
    Variant 2: Filing (Soft Blue / Navy Theme)
    ========================================================================== */
 .incomplete-banner--filing {
-  background: #EAF1FE;
-  border: 1.5px solid #1D4ED8;
+  background: var(--light-blue);
+  border: 1.5px solid var(--palette-blue-700);
   box-shadow: 0 4px 16px rgba(29, 78, 216, 0.08);
 }
 
 .incomplete-banner--filing:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 24px rgba(29, 78, 216, 0.16);
-  border-color: #1E40AF;
+  border-color: var(--palette-blue-800-1e40af);
 }
 
 .incomplete-banner--filing .incomplete-banner__badge {
-  background: #083B75;
-  color: #ffffff;
+  background: var(--primary-navy);
+  color: var(--surface);
 }
 
 .incomplete-banner--filing .incomplete-banner__divider {
-  background: #BFDBFE;
+  background: var(--palette-blue-200);
 }
 
 .incomplete-banner--filing .incomplete-banner__cta-text {
-  color: #083B75;
+  color: var(--primary-navy);
 }
 
 .incomplete-banner--filing:hover .incomplete-banner__cta-text {
-  color: #1D4ED8;
+  color: var(--palette-blue-700);
 }
 
 .incomplete-banner--filing .incomplete-banner__circle-btn {
-  background: #083B75;
-  color: #ffffff;
+  background: var(--primary-navy);
+  color: var(--surface);
 }
 
 .incomplete-banner--filing:hover .incomplete-banner__circle-btn {
-  background: #1D4ED8;
+  background: var(--palette-blue-700);
 }
 
 /* ==========================================================================
@@ -145,7 +145,7 @@
   font-family: var(--font-sans);
   font-size: 0.8rem;
   font-weight: 600;
-  color: #64748B;
+  color: var(--secondary-text);
 }
 
 .incomplete-banner__discard-btn {
@@ -156,7 +156,7 @@
   border-radius: 50%;
   background: transparent;
   border: none;
-  color: #94A3B8;
+  color: var(--muted-text);
   cursor: pointer;
   padding: 0;
   transition: all 0.15s ease;
@@ -164,7 +164,7 @@
 
 .incomplete-banner__discard-btn:hover {
   background: rgba(0, 0, 0, 0.06);
-  color: #EF4444;
+  color: var(--palette-red-500);
 }
 
 .incomplete-banner__discard-svg {
@@ -183,7 +183,7 @@
   font-family: var(--font-sans);
   font-size: 1.15rem;
   font-weight: 800;
-  color: #083B75;
+  color: var(--primary-navy);
   letter-spacing: -0.015em;
   line-height: 1.25;
 }
@@ -192,7 +192,7 @@
   margin: 0;
   font-family: var(--font-sans);
   font-size: 0.84rem;
-  color: #64748B;
+  color: var(--secondary-text);
   font-weight: 500;
 }
 

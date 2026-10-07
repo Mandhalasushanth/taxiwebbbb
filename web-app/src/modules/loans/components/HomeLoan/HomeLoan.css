@@ -14,7 +14,7 @@
   font-size: 1.85rem;
   font-weight: 800;
   letter-spacing: -0.015em;
-  color: #041d3e;
+  color: var(--palette-sky-900-041d3e);
 }
 
 .home-loan-page__card {

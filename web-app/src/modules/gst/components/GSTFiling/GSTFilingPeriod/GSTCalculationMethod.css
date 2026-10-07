@@ -8,7 +8,7 @@
 .gst-calc-method__label {
   font-size: 14px;
   font-weight: 600;
-  color: #111827;
+  color: var(--palette-gray-900);
   margin-bottom: 8px;
 }
 
@@ -23,21 +23,21 @@
   align-items: flex-start;
   gap: 14px;
   padding: 16px 20px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background-color: #ffffff;
+  background-color: var(--surface);
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
 }
 
 .gst-calc-method__card:hover {
-  border-color: #cbd5e1;
+  border-color: var(--grey-300);
 }
 
 .gst-calc-method__card--active {
-  border-color: #ff5722;
-  background-color: #fffaf8;
+  border-color: var(--active-tab-orange);
+  background-color: var(--palette-orange-50-fffaf8);
 }
 
 .gst-calc-method__radio-circle {
@@ -47,22 +47,22 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 1.5px solid #9ca3af;
-  background-color: #ffffff;
+  border: 1.5px solid var(--palette-gray-400);
+  background-color: var(--surface);
   flex-shrink: 0;
   margin-top: 2px;
   transition: all 0.2s ease;
 }
 
 .gst-calc-method__card--active .gst-calc-method__radio-circle {
-  border-color: #ff5722;
+  border-color: var(--active-tab-orange);
 }
 
 .gst-calc-method__radio-dot {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background-color: #ff5722;
+  background-color: var(--active-tab-orange);
 }
 
 .gst-calc-method__content {
@@ -74,12 +74,12 @@
 .gst-calc-method__title {
   font-size: 15px;
   font-weight: 700;
-  color: #111827;
+  color: var(--palette-gray-900);
 }
 
 .gst-calc-method__desc {
   font-size: 13px;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.4;
 }
 
@@ -89,8 +89,8 @@
   gap: 18px;
   margin-top: 18px;
   padding: 24px;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background-color: var(--palette-slate-50);
+  border: 1px solid var(--border);
   border-radius: 16px;
   animation: fadeInCalc 0.25s ease-out;
 }
@@ -115,34 +115,34 @@
 .gst-calc-method__field-label {
   font-size: 14px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .gst-calc-method__input {
   width: 100%;
   height: 48px;
   padding: 0 16px;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
+  background-color: var(--surface);
+  border: 1px solid var(--grey-300);
   border-radius: 10px;
   font-size: 14px;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .gst-calc-method__input::placeholder {
-  color: #94a3b8;
+  color: var(--muted-text);
 }
 
 .gst-calc-method__input:focus {
-  border-color: #ff5722;
+  border-color: var(--active-tab-orange);
   box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.12);
 }
 
 .gst-calc-method__error {
   font-size: 12px;
-  color: #dc2626;
+  color: var(--error);
   margin-top: 6px;
 }
 

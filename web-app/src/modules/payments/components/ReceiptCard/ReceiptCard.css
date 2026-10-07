@@ -2,8 +2,8 @@
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
-  background-color: var(--color-surface, #ffffff);
-  border: 1px solid var(--color-border, #e2e8f0);
+  background-color: var(--color-surface, var(--surface));
+  border: 1px solid var(--color-border, var(--border));
   border-radius: var(--radius-xl, 20px);
   box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
   overflow: hidden;
@@ -16,8 +16,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.25rem 1.75rem;
-  background-color: var(--taxedge-success-feature, #059669);
-  color: #ffffff;
+  background-color: var(--taxedge-success-feature, var(--feature-success));
+  color: var(--surface);
 }
 
 .tax-receipt-card__brand {
@@ -33,7 +33,7 @@
   width: 38px;
   height: 38px;
   background-color: rgba(0, 0, 0, 0.22);
-  color: #ffffff;
+  color: var(--surface);
   font-size: 0.95rem;
   font-weight: var(--font-weight-bold, 700);
   border-radius: var(--radius-sm, 8px);
@@ -50,7 +50,7 @@
   margin: 0;
   font-size: 1.05rem;
   font-weight: var(--font-weight-bold, 700);
-  color: #ffffff;
+  color: var(--surface);
 }
 
 .tax-receipt-card__company-gstin {
@@ -76,7 +76,7 @@
 .tax-receipt-card__invoice-number {
   font-size: 1rem;
   font-weight: var(--font-weight-bold, 700);
-  color: #ffffff;
+  color: var(--surface);
   letter-spacing: 0.2px;
 }
 
@@ -90,7 +90,7 @@
 .tax-receipt-card__section-label {
   font-size: 0.72rem;
   font-weight: var(--font-weight-bold, 700);
-  color: var(--grey-400, #94a3b8);
+  color: var(--grey-400, var(--muted-text));
   letter-spacing: 0.6px;
   margin-bottom: 0.5rem;
   display: block;
@@ -113,7 +113,7 @@
   margin: 0 0 2px 0;
   font-size: 1rem;
   font-weight: var(--font-weight-bold, 700);
-  color: var(--color-text, #172033);
+  color: var(--color-text, var(--primary-text));
 }
 
 .tax-receipt-card__client-trade,
@@ -121,7 +121,7 @@
 .tax-receipt-card__client-gstin {
   margin: 0;
   font-size: 0.84rem;
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--secondary-text));
   line-height: 1.4;
 }
 
@@ -144,12 +144,12 @@
 }
 
 .tax-receipt-card__detail-key {
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--secondary-text));
 }
 
 .tax-receipt-card__detail-val {
   font-weight: var(--font-weight-semibold, 600);
-  color: var(--color-text, #172033);
+  color: var(--color-text, var(--primary-text));
 }
 
 /* Perforation Ticket Cutout Divider */
@@ -165,7 +165,7 @@
   position: absolute;
   width: 14px;
   height: 24px;
-  background-color: var(--color-bg, #f7f9fc);
+  background-color: var(--color-bg, var(--background));
   z-index: 2;
 }
 
@@ -173,19 +173,19 @@
   left: 0;
   border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
-  border-right: 1px solid var(--color-border, #e2e8f0);
+  border-right: 1px solid var(--color-border, var(--border));
 }
 
 .tax-receipt-card__perforation-cutout--right {
   right: 0;
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
-  border-left: 1px solid var(--color-border, #e2e8f0);
+  border-left: 1px solid var(--color-border, var(--border));
 }
 
 .tax-receipt-card__perforation-line {
   width: 100%;
-  border-top: 1.5px dashed var(--color-border, #e2e8f0);
+  border-top: 1.5px dashed var(--color-border, var(--border));
   margin: 0 14px;
 }
 
@@ -204,7 +204,7 @@
 .tax-receipt-card__th {
   font-size: 0.72rem;
   font-weight: var(--font-weight-bold, 700);
-  color: var(--grey-400, #94a3b8);
+  color: var(--grey-400, var(--muted-text));
   letter-spacing: 0.6px;
   padding-bottom: 0.75rem;
   text-align: left;
@@ -231,24 +231,24 @@
 }
 
 .tax-receipt-card__item-title {
-  color: var(--color-text, #172033);
+  color: var(--color-text, var(--primary-text));
   font-weight: var(--font-weight-semibold, 600);
 }
 
 .tax-receipt-card__item-sub {
   font-size: 0.8rem;
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--secondary-text));
 }
 
 .tax-receipt-card__td--sac {
   text-align: center;
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--secondary-text));
 }
 
 .tax-receipt-card__td--amount {
   text-align: right;
   font-weight: var(--font-weight-semibold, 600);
-  color: var(--color-text, #172033);
+  color: var(--color-text, var(--primary-text));
 }
 
 /* Breakdown */
@@ -269,16 +269,16 @@
 }
 
 .tax-receipt-card__breakdown-label {
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--secondary-text));
 }
 
 .tax-receipt-card__breakdown-value {
   font-weight: var(--font-weight-semibold, 600);
-  color: var(--color-text, #172033);
+  color: var(--color-text, var(--primary-text));
 }
 
 .tax-receipt-card__breakdown-divider {
-  border-top: 1px solid var(--color-border, #e2e8f0);
+  border-top: 1px solid var(--color-border, var(--border));
   margin: 4px 0;
 }
 
@@ -289,12 +289,12 @@
 
 .tax-receipt-card__total-label {
   font-weight: var(--font-weight-bold, 700);
-  color: var(--color-text, #172033);
+  color: var(--color-text, var(--primary-text));
 }
 
 .tax-receipt-card__total-value {
   font-weight: var(--font-weight-bold, 700);
-  color: var(--taxedge-success-feature, #059669);
+  color: var(--taxedge-success-feature, var(--feature-success));
   font-size: 1.25rem;
 }
 
@@ -315,12 +315,12 @@
 .tax-receipt-card__payment-method {
   font-size: 0.88rem;
   font-weight: var(--font-weight-semibold, 600);
-  color: var(--color-text, #172033);
+  color: var(--color-text, var(--primary-text));
 }
 
 .tax-receipt-card__payment-txn {
   font-size: 0.78rem;
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--secondary-text));
 }
 
 .tax-receipt-card__paid-badge {
@@ -328,8 +328,8 @@
   align-items: center;
   gap: 6px;
   padding: 0.35rem 0.85rem;
-  background-color: var(--taxedge-success-light, #e6f5f0);
-  color: var(--taxedge-success-feature, #059669);
+  background-color: var(--taxedge-success-light, var(--success-light));
+  color: var(--taxedge-success-feature, var(--feature-success));
   border: 1px solid rgba(5, 150, 105, 0.2);
   border-radius: var(--radius-pill, 9999px);
   font-size: 0.82rem;
@@ -340,7 +340,7 @@
   width: 6px;
   height: 6px;
   border-radius: var(--radius-pill, 9999px);
-  background-color: var(--taxedge-success-feature, #059669);
+  background-color: var(--taxedge-success-feature, var(--feature-success));
 }
 
 /* Footer */
@@ -356,14 +356,14 @@
 .tax-receipt-card__footer-words {
   margin: 0;
   font-size: 0.78rem;
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--secondary-text));
   line-height: 1.4;
 }
 
 @media print {
   .tax-receipt-card {
     box-shadow: none;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--grey-300);
     max-width: 100%;
   }
 }

@@ -21,8 +21,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 1.25rem;
-  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
-  border: 1.5px solid #a7f3d0;
+  background: linear-gradient(135deg, var(--palette-emerald-50) 0%, var(--palette-green-50) 100%);
+  border: 1.5px solid var(--palette-emerald-200);
   border-radius: 18px;
   padding: 1.25rem 1.75rem;
   margin-bottom: 1.5rem;
@@ -35,12 +35,12 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background-color: #10b981;
+  background-color: var(--palette-emerald-500);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #ffffff;
+  color: var(--surface);
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
 }
 
@@ -58,21 +58,21 @@
   margin: 0 0 0.25rem 0;
   font-size: 1.25rem;
   font-weight: 800;
-  color: #065f46;
+  color: var(--palette-emerald-800);
   letter-spacing: -0.01em;
 }
 
 .gst-status-alert__desc {
   margin: 0;
   font-size: 0.92rem;
-  color: #047857;
+  color: var(--palette-emerald-700);
   line-height: 1.45;
 }
 
 .gst-status-alert__tag {
-  background: #ffffff;
-  border: 1px solid #a7f3d0;
-  color: #065f46;
+  background: var(--surface);
+  border: 1px solid var(--palette-emerald-200);
+  color: var(--palette-emerald-800);
   font-size: 0.88rem;
   font-weight: 700;
   padding: 0.55rem 1.15rem;
@@ -87,8 +87,8 @@
    ========================================================================== */
 
 .gst-status-summary-card {
-  color: #ffffff;
-  background: linear-gradient(135deg, #093374 0%, #062354 100%);
+  color: var(--surface);
+  background: linear-gradient(135deg, var(--palette-blue-800-093374) 0%, var(--palette-blue-800-062354) 100%);
   border-radius: 20px;
   padding: 1.65rem 2.25rem;
   box-shadow: 0 10px 30px rgba(9, 51, 116, 0.25);
@@ -114,7 +114,7 @@
 
 .gst-status-summary-card__id-label {
   letter-spacing: 0.08em;
-  color: #93c5fd;
+  color: var(--palette-blue-300);
   text-transform: uppercase;
   font-size: 0.8rem;
   font-weight: 700;
@@ -122,7 +122,7 @@
 
 .gst-status-summary-card__id-value {
   letter-spacing: 0.04em;
-  color: #ffffff;
+  color: var(--surface);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 1.45rem;
   font-weight: 800;
@@ -130,9 +130,9 @@
 }
 
 .gst-status-summary-card__badge {
-  color: #92400e;
+  color: var(--palette-amber-800);
   white-space: nowrap;
-  background-color: #fef3c7;
+  background-color: var(--warning-light);
   border-radius: 9999px;
   padding: 0.42rem 1.15rem;
   font-size: 0.84rem;
@@ -158,7 +158,7 @@
 }
 
 .gst-status-summary-card__meta-label {
-  color: #93c5fd;
+  color: var(--palette-blue-300);
   font-size: 0.78rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -166,7 +166,7 @@
 }
 
 .gst-status-summary-card__meta-value {
-  color: #ffffff;
+  color: var(--surface);
   font-size: 1.05rem;
   font-weight: 700;
   line-height: 1.35;
@@ -194,8 +194,8 @@
 }
 
 .gst-status-timeline-card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 20px;
   padding: 1.85rem 2.25rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
@@ -210,29 +210,29 @@
   gap: 1rem;
   margin-bottom: 1.75rem;
   padding-bottom: 1rem;
-  border-bottom: 1.5px solid #f1f5f9;
+  border-bottom: 1.5px solid var(--subtle-border);
 }
 
 .gst-status-section-title {
   font-size: 1.35rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 0.25rem 0;
   letter-spacing: -0.01em;
 }
 
 .gst-status-section-desc {
   font-size: 0.88rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
 }
 
 .gst-status-phase-indicator {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #ea580c;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
+  color: var(--palette-orange-600);
+  background: var(--palette-orange-50);
+  border: 1px solid var(--orange-200);
   padding: 0.4rem 0.95rem;
   border-radius: 9999px;
   white-space: nowrap;

@@ -19,23 +19,23 @@
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 600;
-  border: 1.5px solid #e2e8f0;
-  background-color: #ffffff;
-  color: #64748b;
+  border: 1.5px solid var(--border);
+  background-color: var(--surface);
+  color: var(--secondary-text);
   cursor: pointer;
   transition: all 0.18s ease;
 }
 
 .pf-doc-tab-pill:hover {
-  background-color: #f8fafc;
-  color: #0f172a;
-  border-color: #cbd5e1;
+  background-color: var(--palette-slate-50);
+  color: var(--palette-slate-900);
+  border-color: var(--grey-300);
 }
 
 .pf-doc-tab-pill--active {
-  border-color: #ff7a00 !important;
-  color: #ff7a00 !important;
-  background-color: #fff7ed !important;
+  border-color: var(--feature-orange) !important;
+  color: var(--feature-orange) !important;
+  background-color: var(--palette-orange-50) !important;
 }
 
 /* Document Upload Cards */
@@ -55,8 +55,8 @@
 .pf-doc-upload-card {
   display: flex;
   flex-direction: column;
-  background: #f8fafc;
-  border: 1.5px solid #e2e8f0;
+  background: var(--palette-slate-50);
+  border: 1.5px solid var(--border);
   border-radius: 14px;
   padding: 1rem 1.15rem;
   transition: all 0.18s ease;
@@ -64,13 +64,13 @@
 }
 
 .pf-doc-upload-card:hover {
-  border-color: #cbd5e1;
-  background-color: #ffffff;
+  border-color: var(--grey-300);
+  background-color: var(--surface);
 }
 
 .pf-doc-upload-card--uploaded {
-  background-color: #ffffff;
-  border-color: #e2e8f0;
+  background-color: var(--surface);
+  border-color: var(--border);
 }
 
 .pf-doc-card-main-row {
@@ -93,7 +93,7 @@
   width: 42px;
   height: 42px;
   border-radius: 10px;
-  background-color: #eff6ff;
+  background-color: var(--palette-blue-50);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,18 +110,18 @@
 .pf-doc-row-title {
   font-size: 0.925rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .pf-doc-row-sub {
   font-size: 0.785rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin-top: 2px;
 }
 
 .pf-doc-uploaded-filename {
   font-size: 0.785rem;
-  color: #475569;
+  color: var(--palette-slate-600);
   font-weight: 500;
   margin-top: 2px;
   white-space: nowrap;
@@ -133,9 +133,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background-color: #ecfdf5;
-  color: #10b981;
-  border: 1px solid #d1fae5;
+  background-color: var(--palette-emerald-50);
+  color: var(--palette-emerald-500);
+  border: 1px solid var(--palette-emerald-100);
   border-radius: 9999px;
   padding: 5px 14px;
   font-size: 12.5px;
@@ -149,9 +149,9 @@
   align-items: center;
   gap: 0.45rem;
   padding: 0.5rem 0.95rem;
-  border: 1.5px solid #c9ccf1;
-  background-color: #eef0fc;
-  color: #2b2a86;
+  border: 1.5px solid var(--palette-indigo-100-c9ccf1);
+  background-color: var(--palette-blue-50-eef0fc);
+  color: var(--palette-indigo-700);
   border-radius: 9999px;
   font-size: 0.825rem;
   font-weight: 700;
@@ -161,9 +161,9 @@
 }
 
 .pf-doc-upload-btn-outline:hover {
-  background-color: #e3e6fa;
-  border-color: #a9aee8;
-  color: #1f1e6e;
+  background-color: var(--palette-blue-100-e3e6fa);
+  border-color: var(--palette-indigo-200-a9aee8);
+  color: var(--palette-indigo-700-1f1e6e);
 }
 
 .pf-doc-file-input-hidden {
@@ -174,7 +174,7 @@
 .pf-doc-card-divider {
   width: 100%;
   height: 1px;
-  background-color: #f1f5f9;
+  background-color: var(--subtle-border);
   margin: 12px 0 8px 0;
 }
 
@@ -189,7 +189,7 @@
 .pf-doc-actions-separator {
   width: 1px;
   height: 16px;
-  background-color: #e2e8f0;
+  background-color: var(--border);
 }
 
 .pf-doc-action-btn {
@@ -200,7 +200,7 @@
   border: none;
   font-size: 0.825rem;
   font-weight: 600;
-  color: #475569;
+  color: var(--palette-slate-600);
   cursor: pointer;
   padding: 0.35rem 0.75rem;
   border-radius: 6px;
@@ -209,8 +209,8 @@
 }
 
 .pf-doc-action-btn:hover {
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: var(--palette-slate-50);
+  color: var(--palette-slate-900);
 }
 
 .pf-doc-action-btn svg {
@@ -219,30 +219,30 @@
 }
 
 .pf-doc-action-btn--view {
-  color: #0284c7;
+  color: var(--palette-sky-600);
 }
 
 .pf-doc-action-btn--view:hover {
-  color: #0369a1;
-  background-color: #f0f9ff;
+  color: var(--palette-sky-700);
+  background-color: var(--palette-sky-50-f0f9ff);
 }
 
 .pf-doc-action-btn--replace {
-  color: #475569;
+  color: var(--palette-slate-600);
 }
 
 .pf-doc-action-btn--replace:hover {
-  color: #0f172a;
-  background-color: #f8fafc;
+  color: var(--palette-slate-900);
+  background-color: var(--palette-slate-50);
 }
 
 .pf-doc-action-btn--delete {
-  color: #ef4444;
+  color: var(--palette-red-500);
 }
 
 .pf-doc-action-btn--delete:hover {
-  color: #dc2626;
-  background-color: #fef2f2;
+  color: var(--error);
+  background-color: var(--palette-red-50);
 }
 
 /* Review Application Step Rows */
@@ -257,15 +257,15 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.85rem 1rem;
-  border: 1.5px solid #f1f5f9;
-  background-color: #f8fafc;
+  border: 1.5px solid var(--subtle-border);
+  background-color: var(--palette-slate-50);
   border-radius: 10px;
   transition: all 0.15s ease;
 }
 
 .pf-review-step-row:hover {
-  background-color: #ffffff;
-  border-color: #e2e8f0;
+  background-color: var(--surface);
+  border-color: var(--border);
 }
 
 .pf-review-step-left {
@@ -277,7 +277,7 @@
 .pf-review-step-label {
   font-size: 0.925rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .pf-review-step-right {
@@ -290,8 +290,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  background-color: #f0fdf4;
-  color: #16a34a;
+  background-color: var(--palette-green-50);
+  color: var(--success);
   padding: 0.25rem 0.65rem;
   border-radius: 6px;
   font-size: 0.785rem;
@@ -304,7 +304,7 @@
   gap: 0.25rem;
   background: none;
   border: none;
-  color: #ea580c;
+  color: var(--palette-orange-600);
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
@@ -314,7 +314,7 @@
 }
 
 .pf-review-edit-action:hover {
-  background-color: #fff7ed;
+  background-color: var(--palette-orange-50);
 }
 
 /* Declarations List */
@@ -331,8 +331,8 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 1rem;
-  background-color: #eff6ff;
-  border: 1px solid #bfdbfe;
+  background-color: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-200);
   border-radius: 10px;
 }
 
@@ -346,7 +346,7 @@
 
 .pf-submit-info-box__text {
   font-size: 0.875rem;
-  color: #1e40af;
+  color: var(--palette-blue-800-1e40af);
   line-height: 1.5;
   margin: 0;
   font-weight: 500;

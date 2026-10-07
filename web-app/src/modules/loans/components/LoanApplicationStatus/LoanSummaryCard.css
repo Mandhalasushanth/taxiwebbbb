@@ -4,8 +4,8 @@
  */
 
 .loan-status-summary-card {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
@@ -16,7 +16,7 @@
   justify-content: space-between;
   align-items: flex-start;
   padding-bottom: 20px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--subtle-border);
 }
 
 .loan-status-summary-card__left {
@@ -35,7 +35,7 @@
 .loan-status-ref-text {
   font-size: 13.5px;
   font-weight: 600;
-  color: #475569;
+  color: var(--palette-slate-600);
 }
 
 .loan-status-copy-btn {
@@ -48,11 +48,11 @@
   border-radius: 4px;
   transition: background-color 0.15s ease;
   position: relative;
-  color: #2563eb;
+  color: var(--palette-blue-600);
 }
 
 .loan-status-copy-btn:hover {
-  background-color: #eff6ff;
+  background-color: var(--palette-blue-50);
 }
 
 .loan-status-copy-tooltip {
@@ -60,8 +60,8 @@
   left: calc(100% + 6px);
   top: 50%;
   transform: translateY(-50%);
-  background-color: #0f172a;
-  color: #ffffff;
+  background-color: var(--palette-slate-900);
+  color: var(--surface);
   font-size: 11px;
   font-weight: 600;
   padding: 2px 7px;
@@ -85,7 +85,7 @@
 .loan-status-loan-type {
   font-size: 19px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0 0 6px 0;
   letter-spacing: -0.01em;
 }
@@ -93,7 +93,7 @@
 .loan-status-amount {
   font-size: 26px;
   font-weight: 800;
-  color: #16a34a;
+  color: var(--success);
   letter-spacing: -0.02em;
 }
 
@@ -106,13 +106,13 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background-color: #eff6ff;
-  border: 1px solid #bfdbfe;
+  background-color: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-200);
   border-radius: 6px;
   padding: 6px 14px;
   font-size: 12.5px;
   font-weight: 600;
-  color: #2563eb;
+  color: var(--palette-blue-600);
   line-height: 1.4;
 }
 
@@ -128,7 +128,7 @@
   align-items: center;
   gap: 12px;
   padding: 0 20px;
-  border-right: 1px solid #f1f5f9;
+  border-right: 1px solid var(--subtle-border);
 }
 
 .loan-status-meta-col:first-child {
@@ -148,7 +148,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #2563eb;
+  color: var(--palette-blue-600);
 }
 
 .loan-status-meta-info {
@@ -159,14 +159,14 @@
 
 .loan-status-meta-label {
   font-size: 12px;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 500;
 }
 
 .loan-status-meta-value {
   font-size: 13.5px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   word-break: break-word;
 }
 
@@ -200,7 +200,7 @@
   .loan-status-meta-col {
     padding: 0;
     border-right: none;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--subtle-border);
     padding-bottom: 12px;
   }
 

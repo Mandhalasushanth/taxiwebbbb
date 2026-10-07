@@ -13,8 +13,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  background: linear-gradient(135deg, #eef6ff 0%, #e0f2fe 100%);
-  border: 1px solid #bae6fd;
+  background: linear-gradient(135deg, var(--palette-sky-50-eef6ff) 0%, var(--palette-sky-100-e0f2fe) 100%);
+  border: 1px solid var(--palette-sky-200);
   border-radius: 14px;
   padding: 1.35rem 1.25rem;
   overflow: hidden;
@@ -41,9 +41,9 @@
   top: 8px;
   width: 58px;
   height: 72px;
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 6px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--grey-300);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   padding: 5px 6px;
   display: flex;
@@ -55,7 +55,7 @@
 .gst-promo-sheet__badge {
   font-size: 0.55rem;
   font-weight: 800;
-  color: #083b75;
+  color: var(--primary-navy);
   letter-spacing: 0.05em;
   margin-bottom: 2px;
 }
@@ -68,9 +68,9 @@
 
 .gst-promo-check {
   font-size: 0.5rem;
-  color: #10b981;
+  color: var(--palette-emerald-500);
   font-weight: 800;
-  background: #ecfdf5;
+  background: var(--palette-emerald-50);
   border-radius: 2px;
   padding: 0 2px;
 }
@@ -78,7 +78,7 @@
 .gst-promo-bar {
   flex: 1;
   height: 3px;
-  background: #e2e8f0;
+  background: var(--border);
   border-radius: 2px;
 }
 
@@ -89,8 +89,8 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #10b981;
-  color: #ffffff;
+  background: var(--palette-emerald-500);
+  color: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,7 +109,7 @@
   top: 14px;
   width: 38px;
   height: 52px;
-  background: #1e293b;
+  background: var(--palette-slate-800);
   border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   padding: 4px;
@@ -122,7 +122,7 @@
 .gst-promo-calc__screen {
   width: 100%;
   height: 8px;
-  background: #38bdf8;
+  background: var(--palette-sky-400);
   border-radius: 2px;
   opacity: 0.85;
 }
@@ -136,7 +136,7 @@
 .gst-promo-calc__grid span {
   width: 100%;
   height: 5px;
-  background: #475569;
+  background: var(--palette-slate-600);
   border-radius: 1px;
 }
 
@@ -156,13 +156,13 @@
   left: 3px;
   width: 18px;
   height: 12px;
-  background: #f97316;
+  background: var(--primary-orange);
   border-radius: 2px 2px 4px 4px;
 }
 
 .gst-promo-plant__leaf {
   position: absolute;
-  background: #22c55e;
+  background: var(--palette-green-500);
   border-radius: 10px 0 10px 0;
 }
 
@@ -190,7 +190,7 @@
   margin: 0;
   font-size: 0.88rem;
   font-weight: 700;
-  color: #083b75;
+  color: var(--primary-navy);
   line-height: 1.35;
   letter-spacing: -0.01em;
 }
@@ -199,8 +199,8 @@
 .gst-sidebar-help-card {
   display: flex;
   gap: 0.85rem;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1.25rem 1.15rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -214,9 +214,9 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #0284c7;
+  background: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-200);
+  color: var(--palette-sky-600);
   flex-shrink: 0;
 }
 
@@ -235,14 +235,14 @@
   margin: 0;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .gst-sidebar-help-card__text {
   margin: 0 0 0.4rem 0;
   font-size: 0.8125rem;
   line-height: 1.45;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .gst-sidebar-help-card__link {
@@ -251,13 +251,13 @@
   gap: 0.35rem;
   font-size: 0.825rem;
   font-weight: 700;
-  color: #0284c7;
+  color: var(--palette-sky-600);
   text-decoration: none;
   transition: all 0.18s ease;
 }
 
 .gst-sidebar-help-card__link:hover {
-  color: #0369a1;
+  color: var(--palette-sky-700);
   transform: translateX(2px);
 }
 
@@ -268,8 +268,8 @@
 
 /* 3. Frequently Asked Questions Card */
 .gst-sidebar-faq-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1.25rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -279,7 +279,7 @@
   margin: 0 0 0.85rem 0;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.01em;
 }
 
@@ -289,7 +289,7 @@
 }
 
 .gst-faq-item {
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--subtle-border);
 }
 
 .gst-faq-item:last-child {
@@ -314,25 +314,25 @@
 .gst-faq-question-text {
   font-size: 0.8125rem;
   font-weight: 500;
-  color: #334155;
+  color: var(--grey-700);
   line-height: 1.35;
 }
 
 .gst-faq-question-btn:hover .gst-faq-question-text {
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .gst-faq-chevron {
   width: 15px;
   height: 15px;
-  color: #94a3b8;
+  color: var(--muted-text);
   flex-shrink: 0;
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .gst-faq-item--open .gst-faq-chevron {
   transform: rotate(90deg);
-  color: #0284c7;
+  color: var(--palette-sky-600);
 }
 
 .gst-faq-answer {
@@ -343,5 +343,5 @@
   margin: 0;
   font-size: 0.78rem;
   line-height: 1.5;
-  color: #64748b;
+  color: var(--secondary-text);
 }

@@ -1,7 +1,7 @@
 .loan-step-error-banner {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #dc2626;
+  background: var(--palette-red-50);
+  border: 1px solid var(--palette-red-200);
+  color: var(--error);
   border-radius: 10px;
   padding: 0.85rem 1.25rem;
   font-size: 0.875rem;

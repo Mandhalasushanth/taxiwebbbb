@@ -13,11 +13,11 @@
 .home-loan-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .home-loan-label__req {
-  color: #ef4444;
+  color: var(--palette-red-500);
 }
 
 .home-loan-select,
@@ -25,11 +25,11 @@
   width: 100%;
   height: 48px;
   padding: 0 1rem;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--grey-300);
   border-radius: 10px;
   font-size: 0.95rem;
-  color: #0f172a;
-  background-color: #ffffff;
+  color: var(--palette-slate-900);
+  background-color: var(--surface);
   outline: none;
   font-family: inherit;
   transition: all 0.18s ease;
@@ -43,19 +43,19 @@
 
 .home-loan-select:focus,
 .home-loan-input:focus {
-  border-color: #ff7a00;
+  border-color: var(--feature-orange);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.12);
 }
 
 .home-loan-select--error,
 .home-loan-input--error {
-  border-color: #ef4444 !important;
-  background-color: #fff5f5 !important;
+  border-color: var(--palette-red-500) !important;
+  background-color: var(--palette-red-50-fff5f5) !important;
 }
 
 .home-loan-select--error:focus,
 .home-loan-input--error:focus {
-  border-color: #dc2626 !important;
+  border-color: var(--error) !important;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
 }
 
@@ -64,7 +64,7 @@
   align-items: center;
   gap: 4px;
   font-size: 0.78125rem;
-  color: #dc2626;
+  color: var(--error);
   font-weight: 500;
   margin-top: 0.25rem;
   line-height: 1.3;

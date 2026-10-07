@@ -4,9 +4,9 @@
 }
 
 .gst-amend-dropzone {
-  border: 2px dashed #cbd5e1;
+  border: 2px dashed var(--grey-300);
   border-radius: 12px;
-  background-color: #f8fafc;
+  background-color: var(--palette-slate-50);
   padding: 1.75rem 1rem;
   display: flex;
   align-items: center;
@@ -17,13 +17,13 @@
 }
 
 .gst-amend-dropzone:hover {
-  border-color: #3b82f6;
-  background-color: #f0f7ff;
+  border-color: var(--palette-blue-500);
+  background-color: var(--palette-sky-50-f0f7ff);
 }
 
 .gst-amend-dropzone.has-error {
-  border-color: #ef4444;
-  background-color: #fef2f2;
+  border-color: var(--palette-red-500);
+  background-color: var(--palette-red-50);
 }
 
 .gst-amend-browse-btn-wrap {
@@ -38,8 +38,8 @@
   align-items: center;
   gap: 0.625rem;
   padding: 0.75rem 1.75rem;
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--primary-orange) 0%, var(--palette-orange-600) 100%);
+  color: var(--surface);
   border: none;
   border-radius: 12px;
   font-size: 0.9375rem;
@@ -81,18 +81,18 @@
 
 .gst-amend-selected-file-info .file-name {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .gst-amend-selected-file-info .file-size {
-  color: #64748b;
+  color: var(--secondary-text);
   font-size: 0.8125rem;
 }
 
 .gst-amend-remove-file-btn {
   background: none;
   border: none;
-  color: #dc2626;
+  color: var(--error);
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
@@ -104,11 +104,11 @@
 
 .gst-amend-proof-hint {
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .gst-amend-error-msg {
-  color: #dc2626;
+  color: var(--error);
   font-size: 0.8125rem;
   font-weight: 600;
   margin-top: 0.375rem;

@@ -11,8 +11,8 @@
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
+  background: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-200);
   border-radius: 18px;
   padding: 1.25rem 1.5rem;
   margin-bottom: 1.75rem;
@@ -21,7 +21,7 @@
 .review-response-why-card__icon {
   width: 24px;
   height: 24px;
-  color: #2563eb;
+  color: var(--palette-blue-600);
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -35,21 +35,21 @@
 .review-response-why-card__title {
   font-size: 1rem;
   font-weight: 800;
-  color: #1e3a8a;
+  color: var(--palette-blue-900-1e3a8a);
   margin: 0;
 }
 
 .review-response-why-card__desc {
   font-size: 0.875rem;
-  color: #1e40af;
+  color: var(--palette-blue-800-1e40af);
   line-height: 1.5;
   margin: 0;
 }
 
 /* Formal Legal Letter Draft Paper Card */
 .review-response-letter-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 20px;
   padding: clamp(1.5rem, 3vw, 2.5rem);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -64,38 +64,38 @@
   align-items: center;
   gap: 0.85rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--subtle-border);
 }
 
 .review-response-letter-card__icon-box {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--palette-slate-50);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #475569;
+  color: var(--palette-slate-600);
   flex-shrink: 0;
 }
 
 .review-response-letter-card__title {
   font-size: 1.15rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
 }
 
 .review-response-letter-card__body {
   font-size: 0.9375rem;
-  color: #334155;
+  color: var(--grey-700);
   line-height: 1.75;
   display: flex;
   flex-direction: column;
   gap: 1.15rem;
-  background: #fafaf9;
-  border: 1px solid #f5f5f4;
+  background: var(--palette-neutral-50-fafaf9);
+  border: 1px solid var(--palette-neutral-50-f5f5f4);
   border-radius: 14px;
   padding: 1.5rem;
   font-family: inherit;
@@ -103,7 +103,7 @@
 
 .review-response-letter-card__closing {
   margin-top: 0.5rem;
-  color: #1e293b;
+  color: var(--palette-slate-800);
   font-weight: 600;
 }
 
@@ -118,7 +118,7 @@
 
 .review-response-closing-author {
   margin: 0;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 /* Confirmation Checkbox */
@@ -127,8 +127,8 @@
   align-items: center;
   gap: 0.85rem;
   padding: 1rem 1.25rem;
-  background: #fffaf5;
-  border: 1.5px solid #fed7aa;
+  background: var(--palette-orange-50-fffaf5);
+  border: 1.5px solid var(--orange-200);
   border-radius: 14px;
   cursor: pointer;
   user-select: none;
@@ -136,14 +136,14 @@
 }
 
 .review-response-confirm-box:hover {
-  background: #fff7ed;
-  border-color: #fdba74;
+  background: var(--palette-orange-50);
+  border-color: var(--orange-300);
 }
 
 .review-response-confirm-box input[type="checkbox"] {
   width: 20px;
   height: 20px;
-  accent-color: #ff6a00;
+  accent-color: var(--palette-orange-500);
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -151,7 +151,7 @@
 .review-response-confirm-box__text {
   font-size: 0.9375rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 /* Actions Row: Edit Request vs Approve & Submit */
@@ -162,7 +162,7 @@
   gap: 1.25rem;
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border);
 }
 
 .review-response-actions__btn {
@@ -180,21 +180,21 @@
 }
 
 .review-response-actions__btn--edit {
-  background: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  color: #334155;
+  background: var(--surface);
+  border: 1.5px solid var(--grey-300);
+  color: var(--grey-700);
   min-width: 170px;
 }
 
 .review-response-actions__btn--edit:hover {
-  background: #f8fafc;
-  border-color: #94a3b8;
-  color: #0f172a;
+  background: var(--palette-slate-50);
+  border-color: var(--muted-text);
+  color: var(--palette-slate-900);
 }
 
 .review-response-actions__btn--submit {
-  background: linear-gradient(135deg, #ff6a00 0%, #ff8533 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--palette-orange-500) 0%, var(--palette-orange-400-ff8533) 100%);
+  color: var(--surface);
   border: none;
   flex: 1;
   max-width: 320px;

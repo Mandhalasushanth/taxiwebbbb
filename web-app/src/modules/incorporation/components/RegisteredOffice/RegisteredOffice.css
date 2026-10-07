@@ -18,8 +18,8 @@
   margin-top: 0.5rem;
 }
 .reg-office-stepbar__badge {
-  background: #0b2546;
-  color: #ffffff;
+  background: var(--palette-sky-800-0b2546);
+  color: var(--surface);
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.25rem 0.65rem;
@@ -30,7 +30,7 @@
 .reg-office-stepbar__line {
   flex: 1;
   height: 4px;
-  background: #e2e8f0;
+  background: var(--border);
   border-radius: 9999px;
   position: relative;
   overflow: hidden;
@@ -38,21 +38,21 @@
 .reg-office-stepbar__line-fill {
   width: 27.27%;
   height: 100%;
-  background: #f25a22;
+  background: var(--palette-orange-500-f25a22);
   border-radius: 9999px;
 }
 
 /* Header & Section */
 .reg-office-header { display: flex; flex-direction: column; gap: 0.25rem; }
-.reg-office-header__title { margin: 0; font-size: 1.45rem; font-weight: 800; color: #0f172a; letter-spacing: -0.01em; }
-.reg-office-header__subtitle { margin: 0; font-size: 0.88rem; color: #64748b; line-height: 1.45; }
+.reg-office-header__title { margin: 0; font-size: 1.45rem; font-weight: 800; color: var(--palette-slate-900); letter-spacing: -0.01em; }
+.reg-office-header__subtitle { margin: 0; font-size: 0.88rem; color: var(--secondary-text); line-height: 1.45; }
 .reg-office-section { display: flex; flex-direction: column; gap: 1.25rem; }
-.reg-office-section__title { margin: 0; font-size: 1.2rem; font-weight: 800; color: #0f172a; letter-spacing: -0.01em; }
+.reg-office-section__title { margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--palette-slate-900); letter-spacing: -0.01em; }
 
 /* Form Groups & Layout */
 .reg-office-group { display: flex; flex-direction: column; gap: 0.45rem; }
-.reg-office-label { font-size: 0.88rem; font-weight: 700; color: #1e293b; }
-.reg-office-required { color: #ef4444; }
+.reg-office-label { font-size: 0.88rem; font-weight: 700; color: var(--palette-slate-800); }
+.reg-office-required { color: var(--palette-red-500); }
 .reg-office-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
 
 /* Chips / Pill Selector */
@@ -62,9 +62,9 @@
   gap: 0.65rem;
 }
 .reg-office-chip {
-  background: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  color: #334155;
+  background: var(--surface);
+  border: 1.5px solid var(--grey-300);
+  color: var(--grey-700);
   padding: 0.55rem 1.35rem;
   border-radius: 8px;
   font-size: 0.88rem;
@@ -73,36 +73,36 @@
   transition: all 0.15s ease;
 }
 .reg-office-chip:hover {
-  background: #f8fafc;
-  border-color: #94a3b8;
+  background: var(--palette-slate-50);
+  border-color: var(--muted-text);
 }
 .reg-office-chip--active {
-  background: #0b2546;
-  border-color: #0b2546;
-  color: #ffffff;
+  background: var(--palette-sky-800-0b2546);
+  border-color: var(--palette-sky-800-0b2546);
+  color: var(--surface);
 }
 
 /* Inputs */
 .reg-office-input {
   width: 100%;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--grey-300);
   border-radius: 10px;
   padding: 0.75rem 1rem;
   font-size: 0.95rem;
-  color: #0f172a;
-  background: #ffffff;
+  color: var(--palette-slate-900);
+  background: var(--surface);
   box-sizing: border-box;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .reg-office-input:focus {
   outline: none;
-  border-color: #f25a22;
+  border-color: var(--palette-orange-500-f25a22);
   box-shadow: 0 0 0 3px rgba(242, 90, 34, 0.15);
 }
 
 .reg-office-input--error {
-  border-color: #ef4444 !important;
-  background-color: #fffafb;
+  border-color: var(--palette-red-500) !important;
+  background-color: var(--palette-rose-50);
 }
 
 .reg-office-input--error:focus {
@@ -110,13 +110,13 @@
 }
 
 .reg-office-chips--error .reg-office-chip {
-  border-color: #fca5a5;
-  background-color: #fffafb;
+  border-color: var(--palette-red-300);
+  background-color: var(--palette-rose-50);
 }
 
 .reg-office-field-error {
   font-size: 0.76rem;
-  color: #dc2626;
+  color: var(--error);
   font-weight: 500;
   margin-top: 0.35rem;
   line-height: 1.25;
@@ -130,15 +130,15 @@
 
 /* Info Box */
 .reg-office-info-box {
-  background: #f0f7ff;
-  border: 1px solid #d0e3ff;
+  background: var(--palette-sky-50-f0f7ff);
+  border: 1px solid var(--palette-blue-100-d0e3ff);
   border-radius: 12px;
   padding: 0.85rem 1.15rem;
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
   font-size: 0.85rem;
-  color: #1e3a8a;
+  color: var(--palette-blue-900-1e3a8a);
   line-height: 1.45;
 }
 .reg-office-info-box svg {
@@ -159,13 +159,13 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 1rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border);
   gap: 1rem;
 }
 .reg-office-btn-back {
-  background: #f1f5f9;
-  color: #334155;
-  border: 1px solid #e2e8f0;
+  background: var(--subtle-border);
+  color: var(--grey-700);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 0.75rem 1.75rem;
   font-size: 0.95rem;
@@ -174,12 +174,12 @@
   transition: all 0.2s ease;
 }
 .reg-office-btn-back:hover {
-  background: #e2e8f0;
-  color: #0f172a;
+  background: var(--border);
+  color: var(--palette-slate-900);
 }
 .reg-office-btn-continue {
-  background: #f25a22;
-  color: #ffffff;
+  background: var(--palette-orange-500-f25a22);
+  color: var(--surface);
   border: none;
   border-radius: 10px;
   padding: 0.8rem 2.25rem;
@@ -190,7 +190,7 @@
   transition: all 0.2s ease;
 }
 .reg-office-btn-continue:hover {
-  background: #e04b15;
+  background: var(--palette-orange-500-e04b15);
   transform: translateY(-1px);
 }
 

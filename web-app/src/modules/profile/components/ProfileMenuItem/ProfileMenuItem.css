@@ -5,7 +5,7 @@
   padding: 16px 20px;
   background: transparent;
   border: none;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--palette-gray-100);
   width: 100%;
   cursor: pointer;
   text-decoration: none;
@@ -18,7 +18,7 @@
 
 .profile-menu-item:hover,
 .profile-menu-item:active {
-  background-color: #f8fafc;
+  background-color: var(--palette-slate-50);
 }
 
 .profile-menu-item__left {
@@ -40,18 +40,18 @@
   height: 44px;
   border-radius: 12px;
   flex-shrink: 0;
-  background-color: #f3f4f6;
+  background-color: var(--palette-gray-100);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.profile-menu-item__icon-wrapper--purple { background-color: #f3e8ff; }
-.profile-menu-item__icon-wrapper--blue { background-color: #e0f2fe; }
-.profile-menu-item__icon-wrapper--indigo { background-color: #e0e7ff; }
-.profile-menu-item__icon-wrapper--orange { background-color: #ffedd5; }
-.profile-menu-item__icon-wrapper--grey { background-color: #f1f5f9; }
-.profile-menu-item__icon-wrapper--amber { background-color: #fef3c7; }
-.profile-menu-item__icon-wrapper--teal { background-color: #ccfbf1; }
-.profile-menu-item__icon-wrapper--red { background-color: #fee2e2; }
+.profile-menu-item__icon-wrapper--purple { background-color: var(--palette-purple-100); }
+.profile-menu-item__icon-wrapper--blue { background-color: var(--palette-sky-100-e0f2fe); }
+.profile-menu-item__icon-wrapper--indigo { background-color: var(--palette-indigo-100); }
+.profile-menu-item__icon-wrapper--orange { background-color: var(--orange-100); }
+.profile-menu-item__icon-wrapper--grey { background-color: var(--subtle-border); }
+.profile-menu-item__icon-wrapper--amber { background-color: var(--warning-light); }
+.profile-menu-item__icon-wrapper--teal { background-color: var(--palette-teal-100); }
+.profile-menu-item__icon-wrapper--red { background-color: var(--palette-red-100-fee2e2); }
 
 .profile-menu-item:hover .profile-menu-item__icon-wrapper {
   transform: scale(1.08);
@@ -61,7 +61,7 @@
 .profile-menu-item__label {
   font-size: 15px;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .profile-menu-item__right {

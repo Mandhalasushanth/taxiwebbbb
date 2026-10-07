@@ -35,24 +35,24 @@
 
 /* User Bubble: Premium Emerald/Deep Blue */
 .cs-msg-item--user .cs-msg-item__bubble {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--feature-success) 0%, var(--palette-emerald-700) 100%);
+  color: var(--surface);
   border-radius: 18px 18px 4px 18px;
   border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 /* Executive Bubble: Crisp Card with Distinct Header */
 .cs-msg-item--executive .cs-msg-item__bubble {
-  background: #ffffff;
-  color: #0f172a;
+  background: var(--surface);
+  color: var(--palette-slate-900);
   border-radius: 18px 18px 18px 4px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 }
 
 .cs-msg-item__sender-name {
   font-size: 0.78rem;
   font-weight: 700;
-  color: #032b69;
+  color: var(--palette-blue-800-032b69);
   margin-bottom: 0.25rem;
 }
 
@@ -77,7 +77,7 @@
 
 .cs-msg-item--executive .cs-msg-item__meta {
   justify-content: flex-start;
-  color: #94a3b8;
+  color: var(--muted-text);
 }
 
 .cs-msg-item__time {

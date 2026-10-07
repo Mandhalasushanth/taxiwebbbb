@@ -7,8 +7,8 @@
 
 /* 1. Applicant Identity Card */
 .applicant-id-card {
-  background: #ffffff;
-  border: 1.5px solid #edf2f7;
+  background: var(--surface);
+  border: 1.5px solid var(--palette-sky-100);
   border-radius: 16px;
   padding: 1.5rem 1.75rem;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
@@ -34,8 +34,8 @@
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: #fff7ed;
-  color: #ea580c;
+  background: var(--palette-orange-50);
+  color: var(--palette-orange-600);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,16 +46,16 @@
   margin: 0;
   font-size: 1.15rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .applicant-id-card__badge {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background: #ecfdf5;
-  color: #059669;
-  border: 1px solid #a7f3d0;
+  background: var(--palette-emerald-50);
+  color: var(--feature-success);
+  border: 1px solid var(--palette-emerald-200);
   border-radius: 9999px;
   padding: 0.35rem 0.85rem;
   font-size: 0.78rem;
@@ -70,8 +70,8 @@
 
 /* Security Alert Banner */
 .applicant-id-card__alert {
-  background: #eff6ff;
-  border: 1px solid #dbeafe;
+  background: var(--palette-blue-50);
+  border: 1px solid var(--palette-blue-100);
   border-radius: 10px;
   padding: 0.85rem 1.15rem;
   display: flex;
@@ -87,7 +87,7 @@
 
 .applicant-id-card__alert-text {
   font-size: 0.85rem;
-  color: #1e40af;
+  color: var(--palette-blue-800-1e40af);
   font-weight: 500;
   line-height: 1.4;
 }
@@ -111,7 +111,7 @@
 
 .applicant-id-card__divider {
   height: 1px;
-  background-color: #f1f5f9;
+  background-color: var(--subtle-border);
   width: 100%;
 }
 
@@ -124,21 +124,21 @@
 .applicant-id-card__field-label {
   font-size: 0.78rem;
   font-weight: 500;
-  color: #64748b;
+  color: var(--secondary-text);
   text-transform: capitalize;
 }
 
 .applicant-id-card__field-value {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   word-break: break-word;
 }
 
 /* Form Section Common Blocks */
 .form-section-block {
-  background: #ffffff;
-  border: 1.5px solid #edf2f7;
+  background: var(--surface);
+  border: 1.5px solid var(--palette-sky-100);
   border-radius: 16px;
   padding: 1.5rem 1.75rem;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
@@ -163,8 +163,8 @@
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: #fff7ed;
-  color: #ea580c;
+  background: var(--palette-orange-50);
+  color: var(--palette-orange-600);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,7 +174,7 @@
 .form-section-title {
   font-size: 0.98rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
   display: flex;
   align-items: center;
@@ -182,7 +182,7 @@
 }
 
 .text-required {
-  color: #ef4444;
+  color: var(--palette-red-500);
   font-weight: 700;
 }
 
@@ -190,7 +190,7 @@
   display: inline-flex;
   align-items: center;
   cursor: help;
-  color: #94a3b8;
+  color: var(--muted-text);
 }
 
 /* Employment Options Row */
@@ -205,8 +205,8 @@
   align-items: center;
   gap: 0.85rem;
   padding: 0.95rem 1.25rem;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -214,19 +214,19 @@
 }
 
 .employment-option-card:hover {
-  border-color: #cbd5e1;
-  background: #fafafa;
+  border-color: var(--grey-300);
+  background: var(--palette-neutral-50);
 }
 
 .employment-option-card--selected {
-  background: #fff7ed;
-  border-color: #ff7a00;
+  background: var(--palette-orange-50);
+  border-color: var(--feature-orange);
 }
 
 .employment-option-card__label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 /* Custom Radio Circle */
@@ -234,8 +234,8 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 2px solid #cbd5e1;
-  background: #ffffff;
+  border: 2px solid var(--grey-300);
+  background: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -244,14 +244,14 @@
 }
 
 .custom-radio-circle--selected {
-  border-color: #ff7a00;
+  border-color: var(--feature-orange);
 }
 
 .custom-radio-inner-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #ff7a00;
+  background: var(--feature-orange);
 }
 
 /* 2-Column Loan Requirements Grid */
@@ -263,8 +263,8 @@
 }
 
 .input-field-card {
-  background: #ffffff;
-  border: 1.5px solid #edf2f7;
+  background: var(--surface);
+  border: 1.5px solid var(--palette-sky-100);
   border-radius: 16px;
   padding: 1.35rem 1.5rem;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
@@ -290,12 +290,12 @@
 .custom-form-input {
   width: 100%;
   height: 48px;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   padding: 0 2.5rem 0 1rem;
   font-size: 0.925rem;
-  color: #0f172a;
-  background: #ffffff;
+  color: var(--palette-slate-900);
+  background: var(--surface);
   outline: none;
   box-sizing: border-box;
   font-family: inherit;
@@ -316,12 +316,12 @@
 
 .custom-form-select:focus,
 .custom-form-input:focus {
-  border-color: #ff7a00;
+  border-color: var(--feature-orange);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.12);
 }
 
 .custom-form-input--error {
-  border-color: #ef4444 !important;
+  border-color: var(--palette-red-500) !important;
 }
 
 .select-chevron-icon {
@@ -332,7 +332,7 @@
   pointer-events: none;
   display: flex;
   align-items: center;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 /* Existing Loans Row */
@@ -347,8 +347,8 @@
   align-items: flex-start;
   gap: 0.95rem;
   padding: 1.15rem 1.35rem;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -356,13 +356,13 @@
 }
 
 .existing-loan-card:hover {
-  border-color: #cbd5e1;
-  background: #fafafa;
+  border-color: var(--grey-300);
+  background: var(--palette-neutral-50);
 }
 
 .existing-loan-card--selected {
-  background: #fff7ed;
-  border-color: #ff7a00;
+  background: var(--palette-orange-50);
+  border-color: var(--feature-orange);
 }
 
 .existing-loan-card__content {
@@ -374,19 +374,19 @@
 .existing-loan-card__title {
   font-size: 0.925rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .existing-loan-card__subtitle {
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.4;
 }
 
 .field-error-text {
   font-size: 0.78rem;
   font-weight: 500;
-  color: #ef4444;
+  color: var(--palette-red-500);
 }
 
 /* Responsive adjustments */

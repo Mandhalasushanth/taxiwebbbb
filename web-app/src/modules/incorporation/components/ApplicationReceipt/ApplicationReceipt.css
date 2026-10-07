@@ -18,8 +18,8 @@
   margin-top: 0.5rem;
 }
 .app-receipt-stepbar__badge {
-  background: #0b2546;
-  color: #ffffff;
+  background: var(--palette-sky-800-0b2546);
+  color: var(--surface);
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.25rem 0.65rem;
@@ -30,12 +30,12 @@
 .app-receipt-stepbar__text {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 .app-receipt-stepbar__line {
   flex: 1;
   height: 4px;
-  background: #e2e8f0;
+  background: var(--border);
   border-radius: 9999px;
   position: relative;
   overflow: hidden;
@@ -43,7 +43,7 @@
 .app-receipt-stepbar__line-fill {
   width: 100%;
   height: 100%;
-  background: #f25a22;
+  background: var(--palette-orange-500-f25a22);
   border-radius: 9999px;
 }
 
@@ -57,20 +57,20 @@
   margin: 0;
   font-size: 1.75rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   letter-spacing: -0.02em;
 }
 .app-receipt-header__subtitle {
   margin: 0;
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--secondary-text);
   line-height: 1.5;
 }
 
 /* Receipt Card */
 .app-receipt-card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 16px;
   padding: 1.75rem 2rem;
   display: flex;
@@ -93,18 +93,18 @@
   margin: 0;
   font-size: 1.15rem;
   font-weight: 800;
-  color: #0b2546;
+  color: var(--palette-sky-800-0b2546);
   letter-spacing: -0.01em;
 }
 .app-receipt-card__sub {
   font-size: 0.82rem;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 500;
 }
 .app-receipt-badge {
   font-size: 0.85rem;
   font-weight: 800;
-  color: #f25a22;
+  color: var(--palette-orange-500-f25a22);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   margin-top: 0.15rem;
@@ -112,7 +112,7 @@
 
 .app-receipt-divider {
   height: 2px;
-  background: #0b2546;
+  background: var(--palette-sky-800-0b2546);
   margin: 0.15rem 0 0.35rem 0;
 }
 
@@ -131,17 +131,17 @@
 }
 .app-receipt-row__label {
   font-size: 0.92rem;
-  color: #64748b;
+  color: var(--secondary-text);
   font-weight: 500;
 }
 .app-receipt-row__val {
   font-size: 0.95rem;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   text-align: right;
 }
 .app-receipt-row__val--bold {
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .app-receipt-spacer {
@@ -154,17 +154,17 @@
 .app-receipt-row__label--total {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 .app-receipt-row__val--total {
   font-size: 1.35rem;
   font-weight: 800;
-  color: #0b2546;
+  color: var(--palette-sky-800-0b2546);
 }
 
 .app-receipt-status-badge {
-  background: #dcfce7;
-  color: #166534;
+  background: var(--palette-green-100);
+  color: var(--palette-green-800);
   font-size: 0.85rem;
   font-weight: 700;
   padding: 0.25rem 0.85rem;
@@ -178,13 +178,13 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 1rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border);
   gap: 1rem;
 }
 .app-receipt-btn-back {
-  background: #f1f5f9;
-  color: #334155;
-  border: 1px solid #e2e8f0;
+  background: var(--subtle-border);
+  color: var(--grey-700);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 0.75rem 1.75rem;
   font-size: 0.95rem;
@@ -193,12 +193,12 @@
   transition: all 0.2s ease;
 }
 .app-receipt-btn-back:hover {
-  background: #e2e8f0;
-  color: #0f172a;
+  background: var(--border);
+  color: var(--palette-slate-900);
 }
 .app-receipt-btn-download {
-  background: #0b2546;
-  color: #ffffff;
+  background: var(--palette-sky-800-0b2546);
+  color: var(--surface);
   border: none;
   border-radius: 10px;
   padding: 0.8rem 2.25rem;
@@ -212,12 +212,12 @@
   transition: all 0.2s ease;
 }
 .app-receipt-btn-download:hover {
-  background: #143560;
+  background: var(--palette-sky-800-143560);
   transform: translateY(-1px);
 }
 .app-receipt-btn-dashboard {
-  background: #f25a22;
-  color: #ffffff;
+  background: var(--palette-orange-500-f25a22);
+  color: var(--surface);
   border: none;
   border-radius: 10px;
   padding: 0.8rem 1.75rem;
@@ -231,6 +231,6 @@
   transition: all 0.2s ease;
 }
 .app-receipt-btn-dashboard:hover {
-  background: #e04b15;
+  background: var(--palette-orange-500-e04b15);
   transform: translateY(-1px);
 }

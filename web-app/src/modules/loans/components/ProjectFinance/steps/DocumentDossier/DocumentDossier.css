@@ -32,8 +32,8 @@
   width: 20px;
   height: 20px;
   border-radius: 6px;
-  border: 1.5px solid #cbd5e1;
-  background-color: #ffffff;
+  border: 1.5px solid var(--grey-300);
+  background-color: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,19 +44,19 @@
 }
 
 .pf-checkbox-label:hover .pf-checkbox-custom {
-  border-color: #ff7a00;
+  border-color: var(--feature-orange);
 }
 
 .pf-checkbox-input:checked + .pf-checkbox-custom {
-  background-color: #ff7a00;
-  border-color: #ff7a00;
+  background-color: var(--feature-orange);
+  border-color: var(--feature-orange);
 }
 
 .pf-checkbox-input:checked + .pf-checkbox-custom::after {
   content: '';
   width: 5px;
   height: 9px;
-  border: solid #ffffff;
+  border: solid var(--surface);
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
   margin-bottom: 2px;
@@ -64,14 +64,14 @@
 
 .pf-checkbox-text {
   font-size: 0.925rem;
-  color: #334155;
+  color: var(--grey-700);
   font-weight: 500;
   line-height: 1.4;
 }
 
 .pf-item-box {
-  background: #f8fafc;
-  border: 1.5px solid #e2e8f0;
+  background: var(--palette-slate-50);
+  border: 1.5px solid var(--border);
   border-radius: 12px;
   padding: 1.25rem;
   display: flex;
@@ -82,8 +82,8 @@
 }
 
 .pf-item-box:hover {
-  border-color: #cbd5e1;
-  background: #ffffff;
+  border-color: var(--grey-300);
+  background: var(--surface);
 }
 
 .pf-item-box__header {
@@ -94,8 +94,8 @@
 }
 
 .pf-item-box__badge {
-  background: #ffedd5;
-  color: #c2410c;
+  background: var(--orange-100);
+  color: var(--palette-orange-700);
   font-size: 0.785rem;
   font-weight: 700;
   padding: 0.25rem 0.65rem;
@@ -106,7 +106,7 @@
 .pf-item-box__remove-btn {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: var(--muted-text);
   font-size: 1.4rem;
   line-height: 1;
   cursor: pointer;
@@ -119,8 +119,8 @@
 }
 
 .pf-item-box__remove-btn:hover {
-  color: #ef4444;
-  background-color: #fee2e2;
+  color: var(--palette-red-500);
+  background-color: var(--palette-red-100-fee2e2);
 }
 
 .pf-compliance-toggles-list {
@@ -140,7 +140,7 @@
 .pf-compliance-toggle-title {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--palette-slate-800);
 }
 
 .pf-toggle-switch-wrapper {
@@ -162,7 +162,7 @@
 .pf-toggle-switch-track {
   width: 44px;
   height: 24px;
-  background-color: #cbd5e1;
+  background-color: var(--grey-300);
   border-radius: 9999px;
   position: relative;
   transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -175,14 +175,14 @@
 .pf-toggle-switch-thumb {
   width: 20px;
   height: 20px;
-  background-color: #ffffff;
+  background-color: var(--surface);
   border-radius: 50%;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .pf-toggle-switch-input:checked + .pf-toggle-switch-track {
-  background-color: #ff7a00;
+  background-color: var(--feature-orange);
 }
 
 .pf-toggle-switch-input:checked + .pf-toggle-switch-track .pf-toggle-switch-thumb {
@@ -192,7 +192,7 @@
 .pf-toggle-switch-label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--palette-slate-800);
   min-width: 24px;
 }
 

@@ -6,7 +6,7 @@
 /* Card header */
 .itr-ded-main-title {
   margin: 0;
-  color: #083b75;
+  color: var(--primary-navy);
   font-weight: 800;
   font-size: 1rem;
 }
@@ -14,7 +14,7 @@
 .itr-ded-main-desc {
   margin: 0;
   font-size: 0.85rem;
-  color: #475569;
+  color: var(--palette-slate-600);
   line-height: 1.5;
 }
 
@@ -39,13 +39,13 @@
   margin: 0;
   font-size: 1.05rem;
   font-weight: 800;
-  color: #083b75;
+  color: var(--primary-navy);
 }
 
 .itr-ded-card-desc {
   margin: 0;
   font-size: 0.85rem;
-  color: #475569;
+  color: var(--palette-slate-600);
   line-height: 1.4;
 }
 
@@ -55,7 +55,7 @@
   flex-direction: column;
   gap: 0.85rem;
   padding-top: 1rem;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--subtle-border);
 }
 
 .itr-ded-section-header {
@@ -68,15 +68,15 @@
 .itr-ded-section-label {
   font-size: 0.95rem;
   font-weight: 800;
-  color: #083b75;
+  color: var(--primary-navy);
 }
 
 .itr-ded-section-cap {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #f97316;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
+  color: var(--primary-orange);
+  background: var(--palette-orange-50);
+  border: 1px solid var(--orange-200);
   border-radius: 9999px;
   padding: 0.2rem 0.6rem;
   white-space: nowrap;
@@ -89,8 +89,8 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--palette-slate-50);
+  border: 1px solid var(--border);
   border-radius: 10px;
   cursor: pointer;
   user-select: none;
@@ -99,7 +99,7 @@
 .itr-ded-toggle-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #334155;
+  color: var(--grey-700);
   line-height: 1.35;
 }
 
@@ -107,14 +107,14 @@
   width: 44px;
   height: 24px;
   border-radius: 9999px;
-  background: #cbd5e1;
+  background: var(--grey-300);
   position: relative;
   flex-shrink: 0;
   transition: background 0.2s ease;
 }
 
 .itr-ded-toggle-switch--on {
-  background: #f97316;
+  background: var(--primary-orange);
 }
 
 .itr-ded-toggle-thumb {
@@ -124,7 +124,7 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--surface);
   box-shadow: 0 1px 4px rgba(0,0,0,0.18);
   transition: transform 0.2s ease;
 }
@@ -141,10 +141,10 @@
   gap: 0.5rem;
   width: 100%;
   padding: 0.85rem 1rem;
-  border: 1.5px dashed #cbd5e1;
+  border: 1.5px dashed var(--grey-300);
   border-radius: 12px;
-  background: #f8fafc;
-  color: #475569;
+  background: var(--palette-slate-50);
+  color: var(--palette-slate-600);
   font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
@@ -153,7 +153,7 @@
 }
 
 .itr-btn-add-other-ded:hover {
-  border-color: #f97316;
-  color: #ea580c;
-  background: #fff7ed;
+  border-color: var(--primary-orange);
+  color: var(--palette-orange-600);
+  background: var(--palette-orange-50);
 }

@@ -17,7 +17,7 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background-color: #22c55e;
+  background-color: var(--palette-green-500);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,13 +27,13 @@
 .gst-comp-success-title {
   font-size: 1.85rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
   letter-spacing: -0.02em;
 }
 .gst-comp-success-subtitle {
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin: 0;
   line-height: 1.5;
 }
@@ -41,8 +41,8 @@
 /* Details Card */
 .gst-comp-success-card {
   width: 100%;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1.75rem 2rem;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
@@ -62,31 +62,31 @@
 .gst-comp-meta-label {
   font-size: 0.725rem;
   font-weight: 800;
-  color: #94a3b8;
+  color: var(--muted-text);
   letter-spacing: 0.06em;
 }
 .gst-comp-ref-id-row { display: flex; align-items: center; gap: 0.75rem; }
-.gst-comp-ref-id { font-size: 1.15rem; font-weight: 800; color: #2563eb; }
+.gst-comp-ref-id { font-size: 1.15rem; font-weight: 800; color: var(--palette-blue-600); }
 .gst-comp-copy-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
   padding: 0.3rem 0.75rem;
-  background-color: #eff6ff;
-  color: #2563eb;
+  background-color: var(--palette-blue-50);
+  color: var(--palette-blue-600);
   border: none;
   border-radius: 8px;
   font-size: 0.7875rem;
   font-weight: 700;
   cursor: pointer;
 }
-.gst-comp-copy-btn:hover { background-color: #dbeafe; }
+.gst-comp-copy-btn:hover { background-color: var(--palette-blue-100); }
 .gst-comp-copy-btn svg { width: 14px; height: 14px; }
 .gst-comp-meta-val-row { display: flex; align-items: center; gap: 0.5rem; }
 .gst-comp-meta-val-row svg { width: 18px; height: 18px; }
-.gst-comp-meta-text { font-size: 0.9375rem; font-weight: 700; color: #0f172a; }
-.gst-comp-meta-text.highlight-blue { color: #2563eb; }
-.gst-comp-success-divider { height: 1px; background-color: #f1f5f9; }
+.gst-comp-meta-text { font-size: 0.9375rem; font-weight: 700; color: var(--palette-slate-900); }
+.gst-comp-meta-text.highlight-blue { color: var(--palette-blue-600); }
+.gst-comp-success-divider { height: 1px; background-color: var(--subtle-border); }
 
 .gst-comp-success-bottom-grid {
   display: grid;
@@ -106,18 +106,18 @@
   justify-content: center;
   flex-shrink: 0;
 }
-.gst-comp-block-icon.bg-orange { background-color: #fff7ed; }
-.gst-comp-block-icon.bg-blue { background-color: #eff6ff; }
+.gst-comp-block-icon.bg-orange { background-color: var(--palette-orange-50); }
+.gst-comp-block-icon.bg-blue { background-color: var(--palette-blue-50); }
 .gst-comp-block-icon svg { width: 22px; height: 22px; }
 .gst-comp-block-text { display: flex; flex-direction: column; gap: 0.2rem; }
-.gst-comp-block-title { font-size: 1rem; font-weight: 800; color: #0f172a; margin: 0; }
-.gst-comp-block-desc { font-size: 0.8125rem; color: #64748b; margin: 0; line-height: 1.35; }
+.gst-comp-block-title { font-size: 1rem; font-weight: 800; color: var(--palette-slate-900); margin: 0; }
+.gst-comp-block-desc { font-size: 0.8125rem; color: var(--secondary-text); margin: 0; line-height: 1.35; }
 
 /* What Happens Next Card */
 .gst-comp-next-card {
   width: 100%;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1.75rem 2rem;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
@@ -125,7 +125,7 @@
   flex-direction: column;
   gap: 1.25rem;
 }
-.gst-comp-next-title { font-size: 1.1rem; font-weight: 800; color: #083b75; margin: 0; }
+.gst-comp-next-title { font-size: 1.1rem; font-weight: 800; color: var(--primary-navy); margin: 0; }
 .gst-comp-steps-grid {
   display: flex;
   align-items: flex-start;
@@ -148,13 +148,13 @@
   justify-content: center;
   flex-shrink: 0;
 }
-.gst-comp-step-num.num-orange { background-color: #fff7ed; color: #ea580c; }
-.gst-comp-step-num.num-blue { background-color: #eff6ff; color: #2563eb; }
-.gst-comp-step-num.num-green { background-color: #f0fdf4; color: #16a34a; }
+.gst-comp-step-num.num-orange { background-color: var(--palette-orange-50); color: var(--palette-orange-600); }
+.gst-comp-step-num.num-blue { background-color: var(--palette-blue-50); color: var(--palette-blue-600); }
+.gst-comp-step-num.num-green { background-color: var(--palette-green-50); color: var(--success); }
 .gst-comp-step-content { display: flex; flex-direction: column; gap: 0.25rem; }
-.gst-comp-step-heading { font-size: 0.875rem; font-weight: 800; color: #0f172a; margin: 0; }
-.gst-comp-step-desc, .gst-comp-step-text { font-size: 0.8125rem; color: #475569; margin: 0; line-height: 1.4; }
-.gst-comp-step-arrow { font-size: 1.5rem; color: #cbd5e1; font-weight: 300; align-self: center; }
+.gst-comp-step-heading { font-size: 0.875rem; font-weight: 800; color: var(--palette-slate-900); margin: 0; }
+.gst-comp-step-desc, .gst-comp-step-text { font-size: 0.8125rem; color: var(--palette-slate-600); margin: 0; line-height: 1.4; }
+.gst-comp-step-arrow { font-size: 1.5rem; color: var(--grey-300); font-weight: 300; align-self: center; }
 
 /* Bottom Actions */
 .gst-comp-success-actions { display: flex; align-items: center; gap: 1.25rem; margin-top: 0.5rem; }
@@ -163,8 +163,8 @@
   align-items: center;
   gap: 0.625rem;
   padding: 0.875rem 2.25rem;
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--primary-orange) 0%, var(--palette-orange-600) 100%);
+  color: var(--surface);
   border: none;
   border-radius: 9999px;
   font-size: 0.9375rem;
@@ -179,13 +179,13 @@
   align-items: center;
   gap: 0.625rem;
   padding: 0.875rem 2.25rem;
-  background-color: #ffffff;
-  color: #2563eb;
-  border: 1.5px solid #2563eb;
+  background-color: var(--surface);
+  color: var(--palette-blue-600);
+  border: 1.5px solid var(--palette-blue-600);
   border-radius: 9999px;
   font-size: 0.9375rem;
   font-weight: 700;
   cursor: pointer;
 }
-.gst-comp-dashboard-btn:hover { background-color: #eff6ff; }
+.gst-comp-dashboard-btn:hover { background-color: var(--palette-blue-50); }
 .gst-comp-dashboard-btn svg { width: 18px; height: 18px; }

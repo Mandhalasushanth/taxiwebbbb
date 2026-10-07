@@ -14,11 +14,11 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.84rem;
-  color: #334155;
+  color: var(--grey-700);
 }
 
 .biz-service-card__feature-icon {
-  color: #10b981;
+  color: var(--palette-emerald-500);
   font-weight: 700;
 }
 
@@ -30,8 +30,8 @@
 }
 
 .biz-service-card__doc-chip {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--subtle-border);
+  color: var(--palette-slate-600);
   font-size: 0.75rem;
   padding: 0.25rem 0.6rem;
   border-radius: 6px;
@@ -39,7 +39,7 @@
 }
 
 .biz-service-card__footer {
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--subtle-border);
   padding-top: 1.25rem;
   display: flex;
   align-items: center;
@@ -55,17 +55,17 @@
 .biz-service-card__price {
   font-size: 1.25rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
 }
 
 .biz-service-card__turnaround {
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .biz-service-card__btn-apply {
-  background: #0c4a6e;
-  color: #ffffff;
+  background: var(--palette-sky-900-0c4a6e);
+  color: var(--surface);
   border: none;
   border-radius: 10px;
   padding: 0.65rem 1.2rem;
@@ -76,16 +76,16 @@
 }
 
 .biz-service-card__btn-apply:hover {
-  background: #075985;
+  background: var(--palette-sky-800-075985);
   transform: translateY(-1px);
 }
 
 /* 5. Compliance Calendar Section */
 .biz-calendar-section {
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 20px;
   padding: 2rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
 }
 
@@ -101,13 +101,13 @@
 .biz-section-header__title {
   font-size: 1.35rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
 }
 
 .biz-section-header__subtitle {
   font-size: 0.88rem;
-  color: #64748b;
+  color: var(--secondary-text);
   margin-top: 0.2rem;
 }
 
@@ -118,10 +118,10 @@
 }
 
 .biz-compliance-card {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1.25rem;
-  background: #f8fafc;
+  background: var(--palette-slate-50);
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -129,8 +129,8 @@
 }
 
 .biz-compliance-card:hover {
-  background: #ffffff;
-  border-color: #cbd5e1;
+  background: var(--surface);
+  border-color: var(--grey-300);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
@@ -140,8 +140,8 @@
   gap: 0.35rem;
   font-size: 0.78rem;
   font-weight: 700;
-  color: #dc2626;
-  background: #fef2f2;
+  color: var(--error);
+  background: var(--palette-red-50);
   padding: 0.25rem 0.55rem;
   border-radius: 6px;
   width: fit-content;
@@ -150,28 +150,28 @@
 .biz-compliance-card__title {
   font-size: 1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--palette-slate-900);
   margin: 0;
 }
 
 .biz-compliance-card__freq {
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--secondary-text);
 }
 
 .biz-compliance-card__penalty {
   font-size: 0.78rem;
-  color: #b91c1c;
+  color: var(--palette-red-700);
   font-weight: 500;
   margin-top: auto;
 }
 
 /* 6. Applications Tracker Table */
 .biz-tracker-section {
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 20px;
   padding: 2rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
 }
 
@@ -191,26 +191,26 @@
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: #64748b;
-  border-bottom: 2px solid #e2e8f0;
+  color: var(--secondary-text);
+  border-bottom: 2px solid var(--border);
   letter-spacing: 0.05em;
 }
 
 .biz-table td {
   padding: 1rem;
   font-size: 0.9rem;
-  border-bottom: 1px solid #f1f5f9;
-  color: #1e293b;
+  border-bottom: 1px solid var(--subtle-border);
+  color: var(--palette-slate-800);
 }
 
 .biz-table tr:hover td {
-  background: #f8fafc;
+  background: var(--palette-slate-50);
 }
 
 .biz-table__empty-cell {
   text-align: center;
   padding: 2.5rem 1rem;
-  color: #64748b;
+  color: var(--secondary-text);
   font-size: 0.925rem;
 }
 
@@ -225,23 +225,23 @@
 }
 
 .biz-status-badge--active {
-  background: #ecfdf5;
-  color: #059669;
+  background: var(--palette-emerald-50);
+  color: var(--feature-success);
 }
 
 .biz-status-badge--in_progress {
-  background: #eff6ff;
-  color: #2563eb;
+  background: var(--palette-blue-50);
+  color: var(--palette-blue-600);
 }
 
 .biz-status-badge--pending_docs {
-  background: #fffbeb;
-  color: #d97706;
+  background: var(--palette-amber-50);
+  color: var(--palette-amber-600);
 }
 
 .biz-status-badge--completed {
-  background: #f0fdf4;
-  color: #16a34a;
+  background: var(--palette-green-50);
+  color: var(--success);
 }
 
 /* Responsive */
