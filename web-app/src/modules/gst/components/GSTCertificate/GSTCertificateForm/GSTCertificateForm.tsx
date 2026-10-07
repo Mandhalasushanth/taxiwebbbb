@@ -2,7 +2,6 @@ import type { ChangeEvent, FormEvent } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { GST_CERTIFICATE_REQUEST_TYPES } from '@modules/gst/data/gstCertificateData'
 import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
-import { SaveDraftButton } from '@shared/saveDraft'
 import type { CertificateFields } from '@modules/gst/hooks/useGSTCertificateFlow'
 import './GSTCertificateForm.css'
 
@@ -14,7 +13,7 @@ interface GSTCertificateFormProps {
   contact: { mobile?: string; email?: string } | null
   isSubmitting?: boolean
   onSubmit: (e?: FormEvent) => void
-  onSaveDraft: () => void
+  onSaveDraft?: () => void
 }
 
 /**
@@ -29,7 +28,6 @@ export const GSTCertificateForm = ({
   contact: user,
   isSubmitting = false,
   onSubmit,
-  onSaveDraft,
 }: GSTCertificateFormProps) => {
   const { gstin, requestType: selectedRequestType } = values
 
@@ -173,11 +171,6 @@ export const GSTCertificateForm = ({
           </svg>
           <span>{isSubmitting ? 'PROCESSING...' : 'DOWNLOAD CERTIFICATE (REG-06)'}</span>
         </button>
-
-        {/* Secondary Save Draft Button */}
-        <div className="gst-cert-draft-row">
-          <SaveDraftButton onClick={onSaveDraft} />
-        </div>
       </form>
     </div>
   )

@@ -1,6 +1,6 @@
 /* ── GST Certificate Container & Layout ── */
 .gst-cert-container {
-  max-width: 620px;
+  max-width: 460px;
   width: 100%;
   margin: 0 auto;
   display: flex;
@@ -360,12 +360,6 @@
 .gst-cert-btn-icon {
   width: 19px;
   height: 19px;
-}
-
-.gst-cert-draft-row {
-  display: flex;
-  justify-content: center;
-  margin-top: 0.15rem;
 }
 
 @media (max-width: 640px) {

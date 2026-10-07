@@ -1,4 +1,3 @@
-import { ServiceDraftModal } from '@shared/saveDraft'
 import { useGSTCertificateFlow } from '@modules/gst/hooks/useGSTCertificateFlow'
 import { GSTCertificateForm } from './GSTCertificateForm/GSTCertificateForm'
 import { GSTCertificateSubmitted } from './GSTCertificateSubmitted/GSTCertificateSubmitted'
@@ -17,7 +16,6 @@ export default function GSTCertificate() {
     handleSubmit,
     handleBackToForm,
     handleAllForms,
-    openDraftModal,
   } = flow
 
   if (submittedRecord) {
@@ -44,9 +42,7 @@ export default function GSTCertificate() {
         contact={user}
         isSubmitting={isSubmitting}
         onSubmit={handleSubmit}
-        onSaveDraft={openDraftModal}
       />
-      <ServiceDraftModal draft={flow} serviceTitle="GST Certificate" />
     </div>
   )
 }
