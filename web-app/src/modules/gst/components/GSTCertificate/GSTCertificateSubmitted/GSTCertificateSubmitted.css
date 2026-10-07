@@ -1,363 +1,332 @@
-/* ── Outer Root Container ── */
-.gcs-root {
+/* ── Screen 2: GST Certificate Ready Container ── */
+.gst-cert-ready-container {
+  max-width: 620px;
+  width: 100%;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  width: 100%;
+  gap: 1.15rem;
+  font-family: var(--font-sans);
   box-sizing: border-box;
 }
 
-/* ── Top Hero Banner ── */
-.gcs-hero-banner {
-  background: linear-gradient(135deg, var(--palette-blue-50) 0%, var(--palette-blue-100) 100%);
-  border-radius: 20px;
-  padding: 2rem 2.5rem;
+/* ── Top Bar Header ── */
+.gst-cert-ready-top-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 2rem;
-  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06);
-  position: relative;
-  overflow: hidden;
+  padding: 0.25rem 0;
 }
 
-.gcs-hero-left {
+/* ── Hero Slot Illustration ── */
+.gst-cert-ready-hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0 0.5rem 0;
+}
+
+.gst-cert-ready-slot-wrap {
+  position: relative;
+  width: 140px;
+  height: 115px;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  max-width: 540px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.gst-cert-ready-paper {
+  width: 90px;
+  height: 85px;
+  background: #ffffff;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+  position: absolute;
+  top: 0;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.08);
   z-index: 1;
 }
 
-.gcs-success-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  background-color: var(--palette-green-100);
-  color: var(--palette-green-700);
-  font-size: 0.8125rem;
-  font-weight: 700;
-  padding: 0.3rem 0.85rem;
-  border-radius: 9999px;
-  width: fit-content;
-  margin-bottom: 0.2rem;
+.gst-cert-ready-paper-text {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  letter-spacing: 0.05em;
 }
 
-.gcs-hero-title {
-  font-size: 2.15rem;
+.gst-cert-ready-paper-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 65%;
+  margin-top: 8px;
+}
+
+.gst-cert-ready-paper-line {
+  height: 2px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  width: 100%;
+}
+
+.gst-cert-ready-paper-line--short {
+  width: 60%;
+}
+
+.gst-cert-ready-slot {
+  width: 130px;
+  height: 26px;
+  border-radius: 9999px;
+  background: #dbeafe;
+  border: 1.5px solid #93c5fd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  margin-top: 55px;
+}
+
+.gst-cert-ready-slot-inner {
+  width: 95px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #1e40af;
+}
+
+.gst-cert-ready-check-badge {
+  position: absolute;
+  bottom: 8px;
+  z-index: 3;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+.gst-cert-ready-check-svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Heading Text Block ── */
+.gst-cert-ready-text-block {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.gst-cert-ready-title {
+  font-size: 1.65rem;
   font-weight: 800;
-  color: var(--palette-slate-900);
+  color: #0f172a;
   margin: 0;
-  line-height: 1.15;
   letter-spacing: -0.02em;
 }
 
-.gcs-hero-title-highlight { color: var(--palette-blue-600); }
-
-.gcs-hero-subtitle1 {
-  font-size: 0.95rem;
-  color: var(--grey-700);
-  margin: 0.15rem 0 0 0;
+.gst-cert-ready-subtitle {
+  font-size: 0.92rem;
+  color: #64748b;
+  margin: 0;
   line-height: 1.5;
 }
 
-.gcs-gstin-bold { color: var(--palette-blue-600); font-weight: 700; }
-
-.gcs-hero-subtitle2 {
-  font-size: 0.85rem;
-  color: var(--secondary-text);
-  margin: 0;
+.gst-cert-ready-subtitle strong {
+  color: #0f172a;
 }
 
-.gcs-hero-right {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  position: relative;
-  z-index: 1;
-}
-
-.gcs-doc-illustration {
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 50%;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.gcs-doc-paper {
-  background: var(--surface);
-  border-radius: 12px;
-  padding: 1rem 1.15rem;
-  width: 120px;
-  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.gcs-doc-heading { font-size: 0.85rem; font-weight: 800; color: var(--palette-slate-900); }
-.gcs-doc-subheading { font-size: 0.6875rem; font-weight: 700; color: var(--secondary-text); margin-bottom: 0.5rem; }
-
-.gcs-doc-line {
-  height: 5px;
-  background-color: var(--border);
-  border-radius: 4px;
-  margin-bottom: 0.35rem;
-}
-.gcs-doc-line--short { width: 55%; }
-
-.gcs-doc-check-badge {
-  position: absolute;
-  bottom: -10px;
-  right: -10px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: var(--palette-green-500);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px rgba(34, 197, 94, 0.35);
-}
-
-.gcs-cursive-tagline {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.gcs-cursive-text {
-  font-family: 'Georgia', 'Caveat', 'Dancing Script', serif;
-  font-style: italic;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--palette-blue-500);
-  line-height: 1.2;
-}
-
-.gcs-cursive-swash { width: 100px; height: 12px; margin-top: 0.2rem; }
-
-/* ── Two Column Grid Layout ── */
-.gcs-layout {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 1.5rem;
-  align-items: start;
-  width: 100%;
-}
-
-/* ── LEFT: Details Card ── */
-.gcs-details-card {
-  background-color: var(--surface);
-  border: 1px solid var(--border);
+/* ── Summary Details Card ── */
+.gst-cert-ready-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
   border-radius: 16px;
-  padding: 1.75rem 2rem;
+  padding: 1.15rem 1.4rem;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  gap: 0.85rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  box-sizing: border-box;
 }
 
-.gcs-card-header {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  margin-bottom: 1.25rem;
-}
-
-.gcs-card-header-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background-color: var(--palette-blue-50);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gcs-card-title {
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: var(--palette-slate-900);
-  margin: 0;
-}
-
-.gcs-detail-rows { display: flex; flex-direction: column; }
-
-.gcs-detail-row {
+.gst-cert-ready-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.9rem 0;
-  border-bottom: 1px solid var(--subtle-border);
-  gap: 1rem;
 }
 
-.gcs-detail-row--last { border-bottom: none; padding-bottom: 0.5rem; }
-
-.gcs-detail-row-left { display: flex; align-items: center; gap: 0.65rem; }
-
-.gcs-row-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  background-color: var(--palette-slate-50);
+.gst-cert-ready-row-left {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gcs-detail-label { font-size: 0.875rem; color: var(--secondary-text); font-weight: 500; }
-.gcs-detail-value { font-size: 0.875rem; color: var(--palette-slate-900); text-align: right; }
-.gcs-detail-value--bold { font-weight: 700; }
-.gcs-filename-val { font-weight: 700; color: var(--palette-slate-900); }
-
-.gcs-status-ready-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  background-color: var(--palette-green-100);
-  color: var(--palette-green-700);
-  font-size: 0.8125rem;
-  font-weight: 700;
-  padding: 0.2rem 0.75rem;
-  border-radius: 9999px;
-}
-
-.gcs-status-dot { font-size: 0.65rem; }
-
-.gcs-actions-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--subtle-border);
-}
-
-.gcs-btn-download {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.65rem;
-  width: 100%;
-  padding: 0.9rem 1.5rem;
-  background: linear-gradient(135deg, var(--feature-orange) 0%, var(--orange-600) 100%);
-  color: var(--surface);
-  border: none;
-  border-radius: 9999px;
-  font-size: 0.9375rem;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(255, 122, 0, 0.35);
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-  font-family: inherit;
-}
-
-.gcs-btn-download:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 122, 0, 0.45); }
-
-.gcs-btn-share {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.65rem;
-  width: 100%;
-  padding: 0.9rem 1.5rem;
-  background-color: var(--surface);
-  border: 1.5px solid var(--palette-blue-600);
-  color: var(--palette-blue-600);
-  border-radius: 9999px;
-  font-size: 0.9375rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.15s ease;
-  font-family: inherit;
-}
-
-.gcs-btn-share:hover { background-color: var(--palette-blue-50); transform: translateY(-2px); }
-
-/* ── RIGHT: Sidebar ── */
-.gcs-sidebar { display: flex; flex-direction: column; gap: 1.25rem; }
-
-.gcs-whats-next-card {
-  background-color: var(--palette-amber-50);
-  border: 1px solid var(--warning-light);
-  border-radius: 16px;
-  padding: 1.25rem 1.35rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.gcs-wn-header { display: flex; align-items: flex-start; gap: 0.75rem; }
-
-.gcs-wn-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background-color: var(--warning-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gcs-wn-title { font-size: 0.95rem; font-weight: 800; color: var(--palette-slate-900); margin: 0 0 0.15rem 0; }
-.gcs-wn-subtitle { font-size: 0.75rem; color: var(--secondary-text); margin: 0; }
-.gcs-wn-list { display: flex; flex-direction: column; gap: 0.75rem; }
-
-.gcs-wn-item {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--grey-700);
-}
-
-.gcs-wn-item-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  background-color: var(--palette-blue-50);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gcs-security-card {
-  background-color: var(--palette-blue-50);
-  border: 1px solid var(--palette-blue-100);
-  border-radius: 16px;
-  padding: 1.25rem 1.35rem;
-  display: flex;
-  align-items: flex-start;
   gap: 0.75rem;
 }
 
-.gcs-security-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background-color: var(--palette-blue-100);
+.gst-cert-ready-icon-box {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: #eff6ff;
+  color: #2563eb;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.gcs-security-title { font-size: 0.875rem; font-weight: 800; color: var(--palette-slate-900); margin: 0 0 0.2rem 0; }
-.gcs-security-text { font-size: 0.75rem; color: var(--palette-slate-600); margin: 0; line-height: 1.45; }
-
-@media (max-width: 900px) {
-  .gcs-hero-banner { flex-direction: column; align-items: flex-start; }
-  .gcs-layout { grid-template-columns: 1fr; }
+.gst-cert-ready-icon-box--green {
+  background: #ecfdf5;
+  color: #10b981;
 }
 
-@media (max-width: 560px) {
-  .gcs-actions-grid { grid-template-columns: 1fr; }
+.gst-cert-ready-row-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.gst-cert-ready-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.gst-cert-ready-value {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.gst-cert-ready-divider {
+  height: 1px;
+  background: #f1f5f9;
+  width: 100%;
+}
+
+.gst-cert-ready-status-pill {
+  padding: 4px 13px;
+  border-radius: 9999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: 1px solid rgba(29, 78, 216, 0.15);
+}
+
+/* ── Primary Action Button: Share / Save ── */
+.gst-cert-btn-outline-blue {
+  width: 100%;
+  height: 50px;
+  background: #ffffff;
+  color: #2563eb;
+  border: 2px solid #2563eb;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-sizing: border-box;
+}
+
+.gst-cert-btn-outline-blue:hover {
+  background: #eff6ff;
+  border-color: #1d4ed8;
+  color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.gst-cert-btn-share-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Bottom Three Navigation Actions ── */
+.gst-cert-ready-bottom-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+  width: 100%;
+}
+
+.gst-cert-btn-nav {
+  height: 46px;
+  border-radius: 10px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-sizing: border-box;
+  padding: 0 0.65rem;
+  white-space: nowrap;
+}
+
+.gst-cert-btn-nav--dashboard {
+  background: #083b75;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(8, 59, 117, 0.2);
+}
+
+.gst-cert-btn-nav--dashboard:hover {
+  background: #062f5e;
+  box-shadow: 0 4px 14px rgba(8, 59, 117, 0.32);
+  transform: translateY(-1px);
+}
+
+.gst-cert-btn-nav--applications {
+  background: #ff7a00;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(255, 122, 0, 0.22);
+}
+
+.gst-cert-btn-nav--applications:hover {
+  background: #e66e00;
+  box-shadow: 0 4px 14px rgba(255, 122, 0, 0.32);
+  transform: translateY(-1px);
+}
+
+.gst-cert-btn-nav--chat {
+  background: #eff6ff;
+  color: #083b75;
+  border: 1.5px solid #bfdbfe;
+}
+
+.gst-cert-btn-nav--chat:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  transform: translateY(-1px);
+}
+
+.gst-cert-nav-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .gst-cert-ready-container {
+    padding: 0 0.5rem;
+  }
+
+  .gst-cert-ready-bottom-actions {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
 }

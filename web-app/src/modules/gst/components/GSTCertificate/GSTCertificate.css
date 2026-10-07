@@ -1,56 +1,11 @@
 .gst-certificate-page {
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 100%;
-  max-width: var(--service-page-max-width);
   margin: 0 auto;
   padding: 0.5rem 0 3.5rem 0;
   box-sizing: border-box;
-}
-
-.gst-cert-page-header {
-  margin-bottom: 1.5rem;
-}
-
-.gst-cert-page-title-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.35rem;
-}
-
-.gst-cert-page-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background-color: var(--palette-blue-50);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gst-cert-page-icon svg {
-  width: 20px;
-  height: 20px;
-}
-
-.gst-cert-page-title {
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: var(--palette-slate-900);
-  margin: 0;
-  letter-spacing: -0.02em;
-}
-
-.gst-cert-page-subtitle {
-  font-size: 0.9375rem;
-  color: var(--secondary-text);
-  margin: 0;
-}
-
-.gst-certificate-main {
-  width: 100%;
 }
 
 @media (max-width: 640px) {

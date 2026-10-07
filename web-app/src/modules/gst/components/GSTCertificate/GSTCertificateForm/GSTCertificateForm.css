@@ -1,447 +1,408 @@
-/* ── Root & Layout ── */
-.gcf-root {
+/* ── GST Certificate Container & Layout ── */
+.gst-cert-container {
+  max-width: 620px;
+  width: 100%;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  gap: 1.15rem;
+  font-family: var(--font-sans);
   box-sizing: border-box;
 }
 
-.gcf-layout {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 1.5rem;
-  align-items: start;
-  width: 100%;
-}
-
-/* ── Left Form Card ── */
-.gcf-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  width: 100%;
-  background-color: var(--surface);
-  border-radius: 16px;
-  padding: 1.75rem 2rem;
-  border: 1px solid var(--border);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-  box-sizing: border-box;
-}
-
-.gcf-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-}
-
-.gcf-field__label-row {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-}
-
-.gcf-field__icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  background-color: var(--light-blue);
-  color: var(--primary-navy);
-}
-
-.gcf-field__label {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--palette-slate-900);
-}
-
-.gcf-field__required {
-  color: var(--palette-red-500);
-}
-
-.gcf-input {
-  width: 100%;
-  height: 44px;
-  padding: 0 0.875rem;
-  border: 1.5px solid var(--grey-300);
-  border-radius: 8px;
-  font-size: 0.9375rem;
-  color: var(--palette-slate-900);
-  background-color: var(--surface);
-  box-sizing: border-box;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-.gcf-input:focus {
-  outline: none;
-  border-color: var(--primary-navy);
-  box-shadow: 0 0 0 3px rgba(8, 59, 117, 0.12);
-}
-
-.gcf-input.has-error {
-  border-color: var(--palette-red-500);
-}
-
-.gcf-field__hint {
-  font-size: 0.775rem;
-  color: var(--secondary-text);
-}
-
-.gcf-field__error {
-  font-size: 0.775rem;
-  color: var(--palette-red-500);
-  font-weight: 600;
-}
-
-.gcf-contact-card {
+/* ── Top Bar Header ── */
+.gst-cert-top-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.875rem 1rem;
-  background-color: var(--palette-slate-50);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  padding: 0.25rem 0;
 }
 
-.gcf-contact-card__left {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.gcf-contact-card__phone-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: var(--palette-sky-100-e0f2fe);
-  color: var(--palette-sky-600);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.gcf-contact-card__phone {
-  margin: 0;
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--palette-slate-900);
-}
-
-.gcf-contact-card__email {
-  margin: 0.15rem 0 0 0;
-  font-size: 0.8rem;
-  color: var(--secondary-text);
-}
-
-.gcf-contact-card__note {
-  margin: 0.25rem 0 0 0;
-  font-size: 0.725rem;
-  color: var(--muted-text);
-}
-
-.gcf-contact-card__edit {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.4rem 0.75rem;
-  border: 1px solid var(--grey-300);
-  border-radius: 6px;
-  background-color: var(--surface);
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--palette-slate-600);
-  cursor: pointer;
-  transition: background-color 0.15s;
-}
-
-.gcf-contact-card__edit:hover {
-  background-color: var(--subtle-border);
-}
-
-.gcf-select-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-.gcf-select {
-  width: 100%;
-  height: 44px;
-  padding: 0 2.25rem 0 0.875rem;
-  border: 1.5px solid var(--grey-300);
-  border-radius: 8px;
-  font-size: 0.9375rem;
-  color: var(--palette-slate-900);
-  background-color: var(--surface);
-  appearance: none;
-  box-sizing: border-box;
-  cursor: pointer;
-}
-
-.gcf-select.is-placeholder {
-  color: var(--muted-text);
-}
-
-.gcf-select.has-error {
-  border-color: var(--palette-red-500);
-}
-
-.gcf-select:focus {
-  outline: none;
-  border-color: var(--primary-navy);
-  box-shadow: 0 0 0 3px rgba(8, 59, 117, 0.12);
-}
-
-.gcf-select-chevron {
-  position: absolute;
-  right: 0.875rem;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: var(--secondary-text);
-  display: flex;
-}
-
-.gcf-info-note {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0.75rem 1rem;
-  background-color: var(--palette-green-50);
-  border: 1px solid var(--palette-green-200);
-  border-radius: 8px;
-  font-size: 0.8rem;
-  color: var(--palette-green-800);
-}
-
-.gcf-info-note__icon {
-  color: var(--success);
-}
-
-.gcf-submit-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  height: 48px;
-  background: linear-gradient(135deg, var(--primary-navy) 0%, var(--palette-sky-700-0d4a94) 100%);
-  color: var(--surface);
+.gst-cert-back-btn {
+  background: none;
   border: none;
-  border-radius: 9px;
-  font-size: 0.9375rem;
-  font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(8, 59, 117, 0.25);
-  transition: opacity 0.15s, transform 0.15s;
-}
-
-.gcf-submit-btn:hover:not(:disabled) {
-  opacity: 0.95;
-  transform: translateY(-1px);
-}
-
-.gcf-submit-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.gcf-trust-row {
+  color: #1e293b;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  font-size: 0.775rem;
-  color: var(--secondary-text);
-}
-
-/* ── Right Sidebar ── */
-.gcf-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.gcf-sidebar__illustration {
-  background: linear-gradient(135deg, var(--palette-sky-800-0f2b48) 0%, var(--palette-sky-800-173d66) 100%);
-  border-radius: 16px;
-  padding: 1.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.gcf-reg06-doc {
-  width: 160px;
-  height: 180px;
-  background-color: var(--surface);
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  position: relative;
-}
-
-.gcf-reg06-doc__header {
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: var(--primary-navy);
-  border-bottom: 2px solid var(--primary-navy);
-  padding-bottom: 0.25rem;
-}
-
-.gcf-reg06-doc__line {
-  height: 6px;
-  background-color: var(--border);
-  border-radius: 3px;
-  width: 100%;
-}
-
-.gcf-reg06-doc__line--short {
-  width: 60%;
-}
-
-.gcf-reg06-doc__check {
-  position: absolute;
-  bottom: 0.75rem;
-  right: 0.75rem;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background-color: var(--success);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.gcf-sidebar__section {
-  background-color: var(--surface);
-  border-radius: 16px;
-  padding: 1.25rem 1.5rem;
-  border: 1px solid var(--border);
-}
-
-.gcf-sidebar__heading {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--palette-slate-900);
-  margin: 0 0 1rem 0;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.gcf-key-info-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.875rem;
-}
-
-.gcf-key-info-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.gcf-key-info-item__icon {
-  width: 34px;
-  height: 34px;
-  min-width: 34px;
-  min-height: 34px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  background-color: var(--palette-blue-50);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.gcf-key-info-item__label {
-  margin: 0;
-  font-size: 0.75rem;
-  color: var(--secondary-text);
-}
-
-.gcf-key-info-item__value {
-  margin: 0.1rem 0 0 0;
-  font-size: 0.825rem;
-  font-weight: 700;
-  color: var(--palette-slate-900);
-}
-
-.gcf-stay-updated {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  background-color: var(--primary-navy);
-  color: var(--surface);
-  border-radius: 14px;
-  padding: 1rem 1.25rem;
-}
-
-.gcf-stay-updated__icon {
   width: 36px;
   height: 36px;
-  min-width: 36px;
-  min-height: 36px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.15s ease, color 0.15s ease;
+  padding: 0;
 }
 
-.gcf-stay-updated__title {
-  margin: 0;
-  font-size: 0.875rem;
-  font-weight: 700;
+.gst-cert-back-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
 }
 
-.gcf-stay-updated__text {
-  margin: 0.25rem 0 0 0;
-  font-size: 0.75rem;
-  opacity: 0.85;
-  line-height: 1.4;
-}
-
-/* ── Common SVG Utility Classes ── */
-.gcf-svg-13 {
-  width: 13px;
-  height: 13px;
-}
-
-.gcf-svg-15 {
-  width: 15px;
-  height: 15px;
-}
-
-.gcf-svg-16 {
-  width: 16px;
-  height: 16px;
-}
-
-.gcf-svg-18 {
-  width: 18px;
-  height: 18px;
-  min-width: 18px;
-  min-height: 18px;
-}
-
-.gcf-svg-20 {
+.gst-cert-back-svg {
   width: 20px;
   height: 20px;
 }
 
-.gcf-stroke-white {
-  stroke: var(--surface);
+.gst-cert-top-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.01em;
 }
 
-@media (max-width: 900px) {
-  .gcf-layout {
-    grid-template-columns: 1fr;
+.gst-cert-taxedge-pill {
+  padding: 4px 13px;
+  border-radius: 9999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(29, 78, 216, 0.12);
+}
+
+/* ── Heading Banner Card ── */
+.gst-cert-header-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 0.5rem 0 0.25rem 0;
+}
+
+.gst-cert-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+}
+
+.gst-cert-kicker {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #ff7a00;
+  text-transform: uppercase;
+}
+
+.gst-cert-heading {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.gst-cert-subheading {
+  font-size: 0.88rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.gst-cert-header-graphic {
+  width: 60px;
+  height: 72px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.gst-cert-doc-card {
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 8px;
+  position: relative;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
+}
+
+.gst-cert-doc-text {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #2563eb;
+  letter-spacing: 0.06em;
+}
+
+.gst-cert-doc-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 70%;
+  margin-top: 7px;
+}
+
+.gst-cert-doc-line {
+  height: 2px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  width: 100%;
+}
+
+.gst-cert-doc-line--short {
+  width: 60%;
+}
+
+.gst-cert-doc-badge {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+}
+
+.gst-cert-doc-badge-svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ── Form Stack ── */
+.gst-cert-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+/* ── Individual Field Card ── */
+.gst-cert-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.15rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  box-sizing: border-box;
+}
+
+.gst-cert-card:hover {
+  border-color: #cbd5e1;
+}
+
+.gst-cert-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.gst-cert-card__icon-box {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: #eff6ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gst-cert-card__icon {
+  width: 18px;
+  height: 18px;
+}
+
+.gst-cert-card__label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.gst-cert-required {
+  color: #ff7a00;
+  margin-left: 2px;
+  font-weight: 800;
+}
+
+.gst-cert-field-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.gst-cert-text-input {
+  width: 100%;
+  height: 46px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0 1rem;
+  font-size: 0.93rem;
+  font-weight: 500;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+
+.gst-cert-text-input:focus {
+  border-color: #ff7a00;
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.12);
+}
+
+.gst-cert-text-input.has-error {
+  border-color: #ef4444;
+}
+
+.gst-cert-field-hint {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.gst-cert-field-error {
+  font-size: 0.8rem;
+  color: #ef4444;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* ── Select Dropdown Box ── */
+.gst-cert-select-box {
+  position: relative;
+  width: 100%;
+}
+
+.gst-cert-select {
+  width: 100%;
+  height: 46px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0 2.25rem 0 1rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+
+.gst-cert-select:focus {
+  border-color: #ff7a00;
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.12);
+}
+
+.gst-cert-select.has-error {
+  border-color: #ef4444;
+}
+
+.gst-cert-select-arrow {
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gst-cert-arrow-svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Channel Body ── */
+.gst-cert-channel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.gst-cert-channel-phone {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.gst-cert-channel-email {
+  font-size: 0.88rem;
+  color: #475569;
+  margin: 0;
+}
+
+.gst-cert-channel-note {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0.35rem 0 0 0;
+  line-height: 1.4;
+}
+
+/* ── Main Action Button ── */
+.gst-cert-btn-orange {
+  width: 100%;
+  height: 50px;
+  background: #ff7a00;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 4px 14px rgba(255, 122, 0, 0.25);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-top: 0.25rem;
+}
+
+.gst-cert-btn-orange:hover:not(:disabled) {
+  background: #e66e00;
+  box-shadow: 0 6px 18px rgba(255, 122, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+.gst-cert-btn-orange:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.gst-cert-btn-icon {
+  width: 19px;
+  height: 19px;
+}
+
+.gst-cert-draft-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.15rem;
+}
+
+@media (max-width: 640px) {
+  .gst-cert-container {
+    padding: 0 0.5rem;
+  }
+
+  .gst-cert-heading {
+    font-size: 1.2rem;
+  }
+
+  .gst-cert-card {
+    padding: 1rem 1.15rem;
   }
 }

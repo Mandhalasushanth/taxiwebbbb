@@ -22,7 +22,10 @@ export const useGSTCertificateFlow = () => {
   const pushToast = useAppStore((state) => state.pushToast)
   const user = useMemo(() => authStorage.getUser(), [])
 
-  const [initialFields] = useState<CertificateFields>(() => ({ gstin: gstProfileService.get().gstin, requestType: '' }))
+  const [initialFields] = useState<CertificateFields>(() => ({
+    gstin: gstProfileService.get().gstin || '29AAAAA0000A1Z4',
+    requestType: 'Download Existing Certificate (Form REG-06)',
+  }))
   const [fields, setFields] = useState<CertificateFields>(() => ({
     ...initialFields,
     ...readServiceDraft<CertificateFields>(SERVICE_ID, DRAFT_NAMESPACES.gst)?.formData,
