@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { loanDocumentService } from '@modules/loans/documents/loanDocumentService'
 import { validateDocumentFile } from '@modules/loans/validation/businessLoanValidation'
 import type { UploadedLoanDocument } from '@modules/loans/documents/loanDocument.types'
+import { viewUploadedDocument } from '@shared/upload'
 
 export interface UseDocumentVerificationProps {
   uploadedDocs?: Record<string, UploadedLoanDocument>
@@ -56,11 +57,7 @@ export function useDocumentVerification({
 
   const handleView = useCallback(
     (doc: { id: string; title: string; fileName?: string; file?: File }) => {
-      if (doc.file) {
-        window.open(URL.createObjectURL(doc.file), '_blank')
-      } else {
-        alert(`Viewing ${doc.fileName || doc.title}`)
-      }
+      viewUploadedDocument({ id: doc.id, title: doc.title, fileName: doc.fileName, file: doc.file })
     },
     []
   )
