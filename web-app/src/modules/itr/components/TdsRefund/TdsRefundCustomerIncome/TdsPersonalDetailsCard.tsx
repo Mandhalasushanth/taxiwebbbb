@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { User, Pencil, Check } from "lucide-react";
 import { formatMobile } from "@shared/utils/validationUtils";
 import type { TdsTaxpayerProfile } from "@modules/itr/utils/tdsRefund.constants";
+import { DobDatePickerModal } from "@modules/authentication/components/DobDatePickerModal/DobDatePickerModal";
 import {
   formatDob,
   formatMaskedAadhaar,
@@ -25,7 +26,9 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
   isEditingPersonal,
   setIsEditingPersonal,
   handleProfileChange,
-}) => (
+}) => {
+  const [isDobPickerOpen, setIsDobPickerOpen] = useState(false);
+  return (
   <div className="tds-card" data-testid="tds-card-personal">
     <div className="tds-card-header">
       <div className="tds-card-title-wrap">
@@ -175,16 +178,28 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
             </span>
           )}
         </div>
-        <div className="tds-form-group">
+        <div className="tds-form-group" style={{ position: "relative" }}>
           <label htmlFor="tds-profile-dob" className="tds-label">
             Date of Birth
           </label>
           <input
             id="tds-profile-dob"
-            type="date"
+            type="text"
+            readOnly
+            placeholder="DD-MM-YYYY"
             className="tds-input"
+            style={{ cursor: "pointer" }}
+            value={profile.dob ? (profile.dob.includes("-") && profile.dob.length === 10 ? profile.dob.split("-").reverse().join("-") : profile.dob) : ""}
+            onClick={() => setIsDobPickerOpen((prev) => !prev)}
+          />
+          <DobDatePickerModal
+            isOpen={isDobPickerOpen}
+            title="Date of Birth"
+            format="YYYY-MM-DD"
             value={profile.dob}
-            onChange={(e) => handleProfileChange({ dob: e.target.value })}
+            maxDate={new Date()}
+            onApply={(val) => handleProfileChange({ dob: val })}
+            onClose={() => setIsDobPickerOpen(false)}
           />
         </div>
         <div className="tds-form-group">
@@ -251,4 +266,5 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
       </div>
     )}
   </div>
-);
+  )
+}

@@ -1,7 +1,8 @@
-import type { MouseEvent } from 'react'
+import { useState } from 'react'
 import { CalendarDays, ChevronDown } from 'lucide-react'
 import { GSTFieldShell } from './GSTFieldParts'
 import { fieldErrorId } from './gstFieldClasses'
+import { DobDatePickerModal } from '@modules/authentication/components/DobDatePickerModal/DobDatePickerModal'
 import './GSTFormFields.css'
 
 export interface GSTDateFieldProps {
@@ -19,14 +20,6 @@ export interface GSTDateFieldProps {
 /** YYYY-MM-DD → DD-MM-YYYY for display */
 const toDisplayDate = (iso: string) => iso.split('-').reverse().join('-')
 
-const openPicker = (e: MouseEvent<HTMLInputElement>) => {
-  try {
-    e.currentTarget.showPicker?.()
-  } catch {
-    // Browsers without showPicker (or blocked by user-activation rules) fall back to native behaviour
-  }
-}
-
 export const GSTDateField = ({
   id,
   label,
@@ -37,11 +30,19 @@ export const GSTDateField = ({
   error,
   onValueChange,
 }: GSTDateFieldProps) => {
+  const [isOpen, setIsOpen] = useState(false)
   const wrapClass = ['gst-date', error ? 'gst-date--error' : ''].filter(Boolean).join(' ')
+
+  const minDate = min ? new Date(min) : undefined
+  const maxDate = max ? new Date(max) : undefined
 
   return (
     <GSTFieldShell id={id} label={label} error={error}>
-      <div className={wrapClass}>
+      <div
+        className={wrapClass}
+        onClick={() => setIsOpen((prev) => !prev)}
+        style={{ position: 'relative', cursor: 'pointer' }}
+      >
         <span className="gst-date__icon" aria-hidden="true">
           <CalendarDays />
         </span>
@@ -52,16 +53,21 @@ export const GSTDateField = ({
         <input
           id={id}
           name={id}
-          type="date"
-          className="gst-date__native"
+          type="hidden"
           value={value}
-          min={min}
-          max={max}
-          onClick={openPicker}
-          onChange={(e) => onValueChange(e.target.value)}
           aria-required="true"
           aria-invalid={Boolean(error)}
           aria-describedby={error ? fieldErrorId(id) : undefined}
+        />
+        <DobDatePickerModal
+          isOpen={isOpen}
+          value={value}
+          title={label}
+          format="YYYY-MM-DD"
+          minDate={minDate}
+          maxDate={maxDate}
+          onApply={(dateStr) => onValueChange(dateStr)}
+          onClose={() => setIsOpen(false)}
         />
       </div>
     </GSTFieldShell>

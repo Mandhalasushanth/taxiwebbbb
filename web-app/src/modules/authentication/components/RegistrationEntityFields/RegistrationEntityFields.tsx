@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   BuildingIcon,
   CalendarIcon,
@@ -8,6 +8,7 @@ import {
   UserIcon,
 } from '../RegistrationIcons/RegistrationIcons'
 import { RegistrationMobileField } from '../RegistrationMobileField/RegistrationMobileField'
+import { DobDatePickerModal } from '../DobDatePickerModal/DobDatePickerModal'
 import type { EntityFormConfig } from '../../constants/profileFormConfig'
 import './RegistrationEntityFields.css'
 
@@ -68,30 +69,61 @@ export const RegistrationEntityFields: React.FC<RegistrationEntityFieldsProps> =
     { name: 'email', label: 'Email', placeholder: 'Enter official email', icon: <MailIcon />, required: true, type: 'email', autoComplete: 'email' },
   ]
 
-  const renderTextField = (field: TextFieldSpec) => (
-    <div className="reg-field" key={field.name}>
-      <label className="reg-field__label" htmlFor={`reg-${field.name}`}>
-        {field.label} {field.required && <span className="reg-field__required">*</span>}
-      </label>
-      <div className={`reg-field__control ${errors[field.name] ? 'reg-field__control--error' : ''}`}>
-        <span className="reg-field__icon">{field.icon}</span>
-        <input
-          id={`reg-${field.name}`}
-          name={field.name}
-          type={field.type ?? 'text'}
-          inputMode={field.inputMode}
-          className="reg-field__input"
-          placeholder={field.placeholder}
-          maxLength={field.maxLength}
-          value={values[field.name]}
-          onChange={onChange}
-          onBlur={onBlur}
-          autoComplete={field.autoComplete ?? 'off'}
-        />
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false)
+
+  const renderTextField = (field: TextFieldSpec) => {
+    const isDate = field.name === 'incorporationDate'
+    return (
+      <div className="reg-field" key={field.name}>
+        <label className="reg-field__label" htmlFor={`reg-${field.name}`}>
+          {field.label} {field.required && <span className="reg-field__required">*</span>}
+        </label>
+        <div className={`reg-field__control ${errors[field.name] ? 'reg-field__control--error' : ''}`}>
+          <span className="reg-field__icon">{field.icon}</span>
+          <input
+            id={`reg-${field.name}`}
+            name={field.name}
+            type={field.type ?? 'text'}
+            inputMode={field.inputMode}
+            className="reg-field__input"
+            placeholder={field.placeholder}
+            maxLength={field.maxLength}
+            value={values[field.name]}
+            onChange={onChange}
+            onBlur={onBlur}
+            autoComplete={field.autoComplete ?? 'off'}
+          />
+          {isDate && (
+            <>
+              <button
+                type="button"
+                className="reg-field__picker-btn"
+                onClick={() => setIsCalendarOpen((prev) => !prev)}
+                title="Open calendar"
+                aria-label="Open calendar"
+              >
+                <CalendarIcon size={18} color="#F97316" />
+              </button>
+              <DobDatePickerModal
+                isOpen={isCalendarOpen}
+                title={config.dateLabel || 'Select Date'}
+                value={values.incorporationDate}
+                maxDate={new Date()}
+                onApply={(val) => {
+                  const syntheticEvent = {
+                    target: { name: 'incorporationDate', value: val }
+                  } as unknown as React.ChangeEvent<HTMLInputElement>
+                  onChange(syntheticEvent)
+                }}
+                onClose={() => setIsCalendarOpen(false)}
+              />
+            </>
+          )}
+        </div>
+        {errors[field.name] && <p className="reg-field__error">{errors[field.name]}</p>}
       </div>
-      {errors[field.name] && <p className="reg-field__error">{errors[field.name]}</p>}
-    </div>
-  )
+    )
+  }
 
   return (
     <div className="reg-entity-fields">

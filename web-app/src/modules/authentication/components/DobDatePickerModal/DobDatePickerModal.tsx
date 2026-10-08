@@ -3,11 +3,13 @@ import './DobDatePickerModal.css'
 
 export interface DobDatePickerModalProps {
   isOpen: boolean
-  value: string // Format: DD-MM-YYYY
+  value: string // Format: DD-MM-YYYY or YYYY-MM-DD
   onApply: (formattedDate: string) => void
   onClose: () => void
   maxDate?: Date
   minDate?: Date
+  title?: string
+  format?: 'DD-MM-YYYY' | 'YYYY-MM-DD'
 }
 
 const MONTH_NAMES = [
@@ -32,34 +34,51 @@ export const DobDatePickerModal: React.FC<DobDatePickerModalProps> = ({
   value,
   onApply,
   onClose,
-  maxDate = new Date(),
+  maxDate = new Date(2100, 11, 31),
   minDate = new Date(1900, 0, 1),
+  title,
+  format,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const parseDate = useCallback((val: string): Date | null => {
-    const match = val.match(/^(\d{2})-(\d{2})-(\d{4})$/)
-    if (!match) return null
-    const day = parseInt(match[1], 10)
-    const month = parseInt(match[2], 10) - 1
-    const year = parseInt(match[3], 10)
-    const d = new Date(year, month, day)
-    if (d.getFullYear() === year && d.getMonth() === month && d.getDate() === day) {
-      return d
+    if (!val) return null
+    const dmy = val.match(/^(\d{2})-(\d{2})-(\d{4})$/)
+    if (dmy) {
+      const day = parseInt(dmy[1], 10)
+      const month = parseInt(dmy[2], 10) - 1
+      const year = parseInt(dmy[3], 10)
+      const d = new Date(year, month, day)
+      if (d.getFullYear() === year && d.getMonth() === month && d.getDate() === day) return d
+    }
+    const ymd = val.match(/^(\d{4})-(\d{2})-(\d{2})$/)
+    if (ymd) {
+      const year = parseInt(ymd[1], 10)
+      const month = parseInt(ymd[2], 10) - 1
+      const day = parseInt(ymd[3], 10)
+      const d = new Date(year, month, day)
+      if (d.getFullYear() === year && d.getMonth() === month && d.getDate() === day) return d
     }
     return null
   }, [])
 
   const initialDate = useMemo(() => parseDate(value), [value, parseDate])
+  const currentYear = useMemo(() => new Date().getFullYear(), [])
+  const fallbackYear = useMemo(() => {
+    if (maxDate && maxDate.getFullYear() < currentYear) {
+      return maxDate.getFullYear()
+    }
+    return currentYear
+  }, [maxDate, currentYear])
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(initialDate)
   const [viewYear, setViewYear] = useState<number>(() => {
     if (initialDate) return initialDate.getFullYear()
-    return 2000
+    return fallbackYear
   })
   const [viewMonth, setViewMonth] = useState<number>(() => {
     if (initialDate) return initialDate.getMonth()
-    return 0
+    return new Date().getMonth()
   })
 
   useEffect(() => {
@@ -71,11 +90,11 @@ export const DobDatePickerModal: React.FC<DobDatePickerModalProps> = ({
         setViewMonth(parsed.getMonth())
       } else {
         setSelectedDate(null)
-        setViewYear(2000)
-        setViewMonth(0)
+        setViewYear(fallbackYear)
+        setViewMonth(new Date().getMonth())
       }
     }
-  }, [isOpen, value, parseDate])
+  }, [isOpen, value, parseDate, fallbackYear])
 
   useEffect(() => {
     if (!isOpen) return
@@ -152,7 +171,8 @@ export const DobDatePickerModal: React.FC<DobDatePickerModalProps> = ({
     const dd = String(selectedDate.getDate()).padStart(2, '0')
     const mm = String(selectedDate.getMonth() + 1).padStart(2, '0')
     const yyyy = selectedDate.getFullYear()
-    onApply(`${dd}-${mm}-${yyyy}`)
+    const isIso = format === 'YYYY-MM-DD' || (!format && value && /^\d{4}-\d{2}-\d{2}$/.test(value))
+    onApply(isIso ? `${yyyy}-${mm}-${dd}` : `${dd}-${mm}-${yyyy}`)
     onClose()
   }
 
@@ -169,7 +189,7 @@ export const DobDatePickerModal: React.FC<DobDatePickerModalProps> = ({
     >
       <div className="dob-popover__header">
         <h4 id="dob-popover-title" className="dob-popover__title">
-          Select Date of Birth
+          {title || 'Select Date'}
         </h4>
         <button
           type="button"
