@@ -1,3 +1,29 @@
+# Dependencies
+node_modules
+*/node_modules/
+**/.pnpm-store
+
+# Production & Build outputs
+dist
+dist/
+dist-ssr
+dist-ssr/
+build/
+*/build/
+target/
+*/target/
+.next/
+*/.next/
+out/
+*/out/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+*.local
+
 # Logs
 logs
 *.log
@@ -7,21 +33,17 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
-.env
-.env.local
+# TypeScript cache
+*.tsbuildinfo
