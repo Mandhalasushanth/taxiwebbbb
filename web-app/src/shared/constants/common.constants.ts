@@ -57,12 +57,9 @@ export const SERVICE_LABELS: Record<ServiceType, string> = {
   ACCOUNTS: 'Accounts',
 }
 
-export const INDIAN_STATES = [
-  'Andhra Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Delhi', 'Goa', 'Gujarat',
-  'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala',
-  'Madhya Pradesh', 'Maharashtra', 'Odisha', 'Punjab', 'Rajasthan',
-  'Tamil Nadu', 'Telangana', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
-] as const
+import { CANONICAL_INDIAN_STATES_AND_UTS } from '../services/indianStates'
+
+export const INDIAN_STATES = CANONICAL_INDIAN_STATES_AND_UTS
 
 export const REGEX = {
   pan: /^[A-Z]{5}[0-9]{4}[A-Z]$/,
@@ -71,6 +68,8 @@ export const REGEX = {
   aadhaar: /^[0-9]{12}$/,
   aadhaarMasked: /^\d{4}$/,
   pincode: /^[1-9][0-9]{5}$/,
+  ifsc: /^[A-Z]{4}0[A-Z0-9]{6}$/,
+  bankAcc: /^\d{9,18}$/,
   /**
    * Local part: dot-separated atoms (no leading, trailing or consecutive dots).
    * Domain: dot-separated labels that do not start/end with "-", ending in a 2+ letter TLD.

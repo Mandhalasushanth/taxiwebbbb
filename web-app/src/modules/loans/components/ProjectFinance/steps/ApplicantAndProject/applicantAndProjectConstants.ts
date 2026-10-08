@@ -1,3 +1,5 @@
+import { INDIAN_STATE_DROPDOWN_OPTIONS } from '@shared/services/indianStates'
+
 export const ENTITY_TYPES = [
   { label: 'Private Limited', value: 'Private Limited' },
   { label: 'Public Limited', value: 'Public Limited' },
@@ -88,18 +90,7 @@ export const DEVELOPMENT_OPTIONS = [
   { label: 'Diversification', value: 'Diversification' },
 ]
 
-export const STATES_LIST = [
-  { label: 'Andhra Pradesh', value: 'Andhra Pradesh' },
-  { label: 'Telangana', value: 'Telangana' },
-  { label: 'Karnataka', value: 'Karnataka' },
-  { label: 'Maharashtra', value: 'Maharashtra' },
-  { label: 'Tamil Nadu', value: 'Tamil Nadu' },
-  { label: 'Gujarat', value: 'Gujarat' },
-  { label: 'Delhi NCR', value: 'Delhi NCR' },
-  { label: 'West Bengal', value: 'West Bengal' },
-  { label: 'Rajasthan', value: 'Rajasthan' },
-  { label: 'Uttar Pradesh', value: 'Uttar Pradesh' },
-]
+export const STATES_LIST = INDIAN_STATE_DROPDOWN_OPTIONS
 
 export const DISTRICTS_MAP: Record<string, { label: string; value: string }[]> = {
   Gujarat: [

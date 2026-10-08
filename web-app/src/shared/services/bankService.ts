@@ -13,7 +13,45 @@ export interface BankDetailsLookupResult {
   branch: string
   city?: string
   state?: string
-  source: 'api' | 'sample-dataset' | 'sample-generated'
+  source: 'api' | 'public-directory' | 'sample-dataset' | 'sample-generated'
+}
+
+export interface BankLookupOptions {
+  /** Also query the public Razorpay IFSC directory (real bank data) before falling back to samples */
+  usePublicDirectory?: boolean
+}
+
+const LOOKUP_TIMEOUT_MS = 2500
+const IFSC_LENGTH = 11
+const PUBLIC_IFSC_DIRECTORY = 'https://ifsc.razorpay.com'
+
+/** GET JSON with a timeout; null on any network or HTTP failure */
+const fetchJsonWithTimeout = async (url: string): Promise<Record<string, unknown> | null> => {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), LOOKUP_TIMEOUT_MS)
+  try {
+    const response = await fetch(url, { headers: { Accept: 'application/json' }, signal: controller.signal })
+    return response.ok ? ((await response.json()) as Record<string, unknown>) : null
+  } catch {
+    return null
+  } finally {
+    clearTimeout(timeoutId)
+  }
+}
+
+/** Real bank and branch from the public IFSC directory (full 11-character codes only) */
+const lookupPublicDirectory = async (ifsc: string): Promise<BankDetailsLookupResult | null> => {
+  if (ifsc.length !== IFSC_LENGTH) return null
+  const data = await fetchJsonWithTimeout(`${PUBLIC_IFSC_DIRECTORY}/${ifsc}`)
+  if (!data?.BANK || !data?.BRANCH) return null
+  return {
+    ifsc,
+    bankName: String(data.BANK),
+    branch: String(data.BRANCH),
+    city: data.CITY ? String(data.CITY) : undefined,
+    state: data.STATE ? String(data.STATE) : undefined,
+    source: 'public-directory',
+  }
 }
 
 /**
@@ -146,41 +184,35 @@ export function lookupSampleBankByIfsc(rawIfsc: string): BankDetailsLookupResult
  * 1. If backend API is configured, calls the API endpoint.
  * 2. If API fails or backend is not connected, falls back to the rich sample dataset.
  */
-export async function fetchBankDetailsByIfsc(rawIfsc: string): Promise<BankDetailsLookupResult | null> {
+export async function fetchBankDetailsByIfsc(
+  rawIfsc: string,
+  options: BankLookupOptions = {},
+): Promise<BankDetailsLookupResult | null> {
   const ifsc = rawIfsc.trim().toUpperCase().replace(/[^A-Z0-9]/g, '')
   if (ifsc.length < 4) return null
 
-  // Future API Hook (e.g. backend /api/banks/ifsc/:code or configured API gateway)
-  try {
-    const envApiUrl = import.meta.env.VITE_API_BASE_URL
-    if (envApiUrl && envApiUrl !== 'mock' && !envApiUrl.includes('localhost:5173')) {
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 2500)
-
-      const response = await fetch(`${envApiUrl}/api/banks/ifsc/${ifsc}`, {
-        headers: { Accept: 'application/json' },
-        signal: controller.signal,
-      })
-      clearTimeout(timeoutId)
-
-      if (response.ok) {
-        const data = await response.json()
-        if (data?.bankName && data?.branch) {
-          return {
-            ifsc,
-            bankName: data.bankName,
-            branch: data.branch,
-            city: data.city,
-            state: data.state,
-            source: 'api',
-          }
-        }
+  // 1. Backend API, when one is configured
+  const envApiUrl = import.meta.env.VITE_API_BASE_URL
+  if (envApiUrl && envApiUrl !== 'mock' && !envApiUrl.includes('localhost:5173')) {
+    const data = await fetchJsonWithTimeout(`${envApiUrl}/api/banks/ifsc/${ifsc}`)
+    if (data?.bankName && data?.branch) {
+      return {
+        ifsc,
+        bankName: String(data.bankName),
+        branch: String(data.branch),
+        city: data.city ? String(data.city) : undefined,
+        state: data.state ? String(data.state) : undefined,
+        source: 'api',
       }
     }
-  } catch {
-    // Graceful fallback to sample data when backend is not connected
   }
 
-  // Fallback to sample data
+  // 2. Public IFSC directory (opt-in)
+  if (options.usePublicDirectory) {
+    const publicMatch = await lookupPublicDirectory(ifsc)
+    if (publicMatch) return publicMatch
+  }
+
+  // 3. Sample data
   return lookupSampleBankByIfsc(ifsc)
 }

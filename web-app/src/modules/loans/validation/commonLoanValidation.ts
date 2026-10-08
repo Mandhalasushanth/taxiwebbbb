@@ -1,4 +1,13 @@
 
+import {
+  isValidIfsc as sharedIsValidIfsc,
+  isValidBankAccNumber as sharedIsValidBankAccNumber,
+  isValidPan as sharedIsValidPan,
+  isValidAadhaar as sharedIsValidAadhaar,
+  isValidGstin as sharedIsValidGstin,
+} from '@shared/utils/validationUtils'
+import { REGEX } from '@shared/constants'
+
 /** Result shape returned by every loan step validator */
 export interface LoanStepValidationResult {
   isValid: boolean
@@ -21,24 +30,24 @@ export const commonLoanValidation = {
   },
 
   isValidIfsc: (ifsc: string): boolean => {
-    return /^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc.trim().toUpperCase())
+    return sharedIsValidIfsc(ifsc)
   },
 
   isValidAccountNumber: (acc: string): boolean => {
-    return /^\d{9,18}$/.test(acc.trim())
+    return sharedIsValidBankAccNumber(acc)
   },
 
   isValidPan: (pan: string): boolean => {
-    return /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan.trim().toUpperCase())
+    return sharedIsValidPan(pan)
   },
 
   isValidAadhaar: (aadhaar: string): boolean => {
     const cleaned = aadhaar.replace(/\s+/g, '')
-    return /^\d{12}$/.test(cleaned)
+    return sharedIsValidAadhaar(cleaned) || /^\d{12}$/.test(cleaned)
   },
 
   isValidGst: (gst: string): boolean => {
-    return /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(gst.trim().toUpperCase())
+    return sharedIsValidGstin(gst)
   },
 
   validatePhone: (phone: string): { isValid: boolean; message?: string } => {
@@ -51,7 +60,7 @@ export const commonLoanValidation = {
   validatePan: (pan: string): { isValid: boolean; message?: string } => {
     const trimmed = pan.trim().toUpperCase()
     if (!trimmed) return { isValid: false, message: 'PAN number is required' }
-    if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(trimmed)) {
+    if (!sharedIsValidPan(trimmed)) {
       return { isValid: false, message: 'Enter a valid 10-character PAN' }
     }
     return { isValid: true }
@@ -60,7 +69,7 @@ export const commonLoanValidation = {
   validateAccountNumber: (acc: string): { isValid: boolean; message?: string } => {
     const cleaned = acc.replace(/\D/g, '')
     if (!cleaned) return { isValid: false, message: 'Account number is required' }
-    if (cleaned.length < 9 || cleaned.length > 18) {
+    if (!sharedIsValidBankAccNumber(cleaned)) {
       return { isValid: false, message: 'Account number must be between 9 and 18 digits' }
     }
     return { isValid: true }
@@ -69,7 +78,7 @@ export const commonLoanValidation = {
   validateIfsc: (ifsc: string): { isValid: boolean; message?: string } => {
     const trimmed = ifsc.trim().toUpperCase()
     if (!trimmed) return { isValid: false, message: 'IFSC code is required' }
-    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(trimmed)) {
+    if (!sharedIsValidIfsc(trimmed)) {
       return { isValid: false, message: 'Enter a valid 11-digit IFSC code' }
     }
     return { isValid: true }
@@ -84,15 +93,15 @@ export const LOAN_PATTERNS = {
   PERSON_NAME: /^[A-Za-z][A-Za-z .'-]*$/,
   BANK_NAME: /^[A-Za-z][A-Za-z .&'()-]*$/,
   PLACE_NAME: /^[A-Za-z][A-Za-z .'-]*$/,
-  MOBILE: /^[6-9]\d{9}$/,
-  PAN: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
-  GSTIN: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
+  MOBILE: REGEX.mobile,
+  PAN: REGEX.pan,
+  GSTIN: REGEX.gstin,
   UDYAM: /^UDYAM-[A-Z]{2}-(\d{2}-\d{7}|\d{6,8})$/,
-  PINCODE: /^[1-9]\d{5}$/,
+  PINCODE: REGEX.pincode,
   ITR_ACK: /^\d{15}$/,
-  EMAIL: /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/,
-  CIN: /^[LU][0-9]{5}[A-Z]{2}[0-9]{4}[A-Z]{3}[0-9]{6}$/,
-  LLPIN: /^[A-Z]{3}-[0-9]{4}$/,
+  EMAIL: REGEX.email,
+  CIN: REGEX.cin,
+  LLPIN: REGEX.llpin,
   DOB: /^(\d{2})\/(\d{2})\/(\d{4})$/,
 } as const
 

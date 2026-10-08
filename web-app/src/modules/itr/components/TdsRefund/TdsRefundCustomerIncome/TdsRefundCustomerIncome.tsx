@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuthStore } from "@store/index";
 import { authStorage } from "@core/auth";
 import { StepActionBar } from "@shared/components";
+import { fetchBankDetailsByIfsc } from "@shared/services";
 import {
   validatePan,
   validateMobileNumber,
@@ -13,7 +14,6 @@ import {
 import {
   EMPTY_BANK,
   EMPTY_TAX,
-  fetchIfscDetails,
   syncProfileWithAuthUser,
   type TdsTaxpayerProfile,
 } from "@modules/itr/utils/tdsRefund.constants";
@@ -174,7 +174,7 @@ export const TdsRefundCustomerIncome: React.FC<
       if (formatted.length === 11) {
         setIsFetchingIfsc(true);
         try {
-          const match = await fetchIfscDetails(formatted);
+          const match = await fetchBankDetailsByIfsc(formatted, { usePublicDirectory: true });
           if (match)
             handleBankChange({
               ifsc: formatted,

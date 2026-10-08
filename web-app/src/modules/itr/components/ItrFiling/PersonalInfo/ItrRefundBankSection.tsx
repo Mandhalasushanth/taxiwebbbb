@@ -4,6 +4,7 @@ import {
   PlusCircleIcon,
   type FilingBankAccount,
 } from '../itrFiling.constants'
+import { isValidIfsc } from '@shared/utils/validationUtils'
 import './ItrRefundBankSection.css'
 
 export interface ItrRefundBankSectionProps {
@@ -49,7 +50,7 @@ export const ItrRefundBankSection: React.FC<ItrRefundBankSectionProps> = ({
       setBankFormError('IFSC code is required')
       return
     }
-    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(newIfsc.trim().toUpperCase())) {
+    if (!isValidIfsc(newIfsc)) {
       setBankFormError('Enter a valid IFSC code')
       return
     }

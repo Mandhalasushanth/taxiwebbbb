@@ -265,30 +265,6 @@ export const DocIcons: Record<string, React.FC<{ color?: string }>> = {
   supportingDocs: ({ color }) => React.createElement(Wallet, { size: 22, color }),
 }
 
-export interface IfscDetails {
-  bankName: string
-  branch: string
-}
-
-export const fetchIfscDetails = async (ifsc: string): Promise<IfscDetails | null> => {
-  try {
-    const code = ifsc.toUpperCase().trim()
-    if (code.length !== 11) return null
-    const res = await fetch(`https://ifsc.razorpay.com/${code}`)
-    if (!res.ok) return null
-    const data = await res.json()
-    if (data && data.BANK && data.BRANCH) {
-      return {
-        bankName: String(data.BANK),
-        branch: String(data.BRANCH),
-      }
-    }
-    return null
-  } catch {
-    return null
-  }
-}
-
 export interface UserLike {
   fullName?: string
   name?: string

@@ -1,4 +1,5 @@
 import type React from 'react'
+import { formatPan, formatIfsc } from '@shared/utils'
 
 /**
  * Input filters and key handlers for all loan forms.
@@ -93,8 +94,8 @@ export const loanInputHelpers = {
   allowOnlyAlphanumericKeyDown: handleAlphanumericKeyDown,
   formatCurrencyString,
   digitsOnly: formatDigitsOnly,
-  cleanPan: (val: string): string => formatUppercaseAlphanumeric(val, LOAN_FIELD_LIMITS.PAN),
-  cleanIfsc: (val: string): string => formatUppercaseAlphanumeric(val, LOAN_FIELD_LIMITS.IFSC),
+  cleanPan: formatPan,
+  cleanIfsc: formatIfsc,
   cleanGstin: (val: string): string => formatUppercaseAlphanumeric(val, LOAN_FIELD_LIMITS.GSTIN),
   lettersOnly: formatLettersOnly,
   cleanUdyam: (val: string): string => formatUdyamNumber(val),

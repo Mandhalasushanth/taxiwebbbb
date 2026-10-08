@@ -1,42 +1,7 @@
-export const STEP2_STATES_LIST = [
-  { label: 'Andhra Pradesh', value: 'Andhra Pradesh' },
-  { label: 'Telangana', value: 'Telangana' },
-  { label: 'Karnataka', value: 'Karnataka' },
-  { label: 'Maharashtra', value: 'Maharashtra' },
-  { label: 'Tamil Nadu', value: 'Tamil Nadu' },
-  { label: 'Gujarat', value: 'Gujarat' },
-  { label: 'Delhi NCR', value: 'Delhi NCR' },
-  { label: 'West Bengal', value: 'West Bengal' },
-  { label: 'Rajasthan', value: 'Rajasthan' },
-  { label: 'Uttar Pradesh', value: 'Uttar Pradesh' },
-]
+import { STATES_LIST, DISTRICTS_MAP } from '../ApplicantAndProject/applicantAndProjectConstants'
 
-export const STEP2_DISTRICTS_MAP: Record<string, { label: string; value: string }[]> = {
-  Gujarat: [
-    { label: 'Ahmedabad', value: 'Ahmedabad' },
-    { label: 'Surat', value: 'Surat' },
-    { label: 'Vadodara', value: 'Vadodara' },
-    { label: 'Rajkot', value: 'Rajkot' },
-    { label: 'Gandhinagar', value: 'Gandhinagar' },
-  ],
-  Maharashtra: [
-    { label: 'Mumbai', value: 'Mumbai' },
-    { label: 'Pune', value: 'Pune' },
-    { label: 'Nagpur', value: 'Nagpur' },
-    { label: 'Nashik', value: 'Nashik' },
-  ],
-  Telangana: [
-    { label: 'Hyderabad', value: 'Hyderabad' },
-    { label: 'Rangareddy', value: 'Rangareddy' },
-    { label: 'Medchal', value: 'Medchal' },
-    { label: 'Warangal', value: 'Warangal' },
-  ],
-  Karnataka: [
-    { label: 'Bengaluru', value: 'Bengaluru' },
-    { label: 'Mysuru', value: 'Mysuru' },
-    { label: 'Mangaluru', value: 'Mangaluru' },
-  ],
-}
+export const STEP2_STATES_LIST = STATES_LIST
+export const STEP2_DISTRICTS_MAP = DISTRICTS_MAP
 
 export const PROJECT_ZONES = [
   { label: 'Industrial Zone', value: 'Industrial Zone' },

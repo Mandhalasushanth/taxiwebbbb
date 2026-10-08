@@ -1,6 +1,7 @@
 import React from 'react'
 import type { PropertyLoanStepProps } from '@modules/loans/types/propertyLoan.types'
 import { loanInputHelpers } from '@modules/loans/utils/loanInputFormatters'
+import { CANONICAL_INDIAN_STATES_AND_UTS } from '@shared/services/indianStates'
 import './PropertyDetails.css'
 
 export const PropertyDetails: React.FC<PropertyLoanStepProps> = ({
@@ -137,13 +138,9 @@ export const PropertyDetails: React.FC<PropertyLoanStepProps> = ({
               onChange={(e) => onChange({ propertyState: e.target.value })}
             >
               <option value="">Select state</option>
-              <option value="Telangana">Telangana</option>
-              <option value="Andhra Pradesh">Andhra Pradesh</option>
-              <option value="Karnataka">Karnataka</option>
-              <option value="Maharashtra">Maharashtra</option>
-              <option value="Tamil Nadu">Tamil Nadu</option>
-              <option value="Delhi">Delhi</option>
-              <option value="Gujarat">Gujarat</option>
+              {CANONICAL_INDIAN_STATES_AND_UTS.map((st) => (
+                <option key={st} value={st}>{st}</option>
+              ))}
               <option value="Other">Other</option>
             </select>
           </div>
