@@ -1,3 +1,5 @@
+import { formatINR } from '@shared/utils'
+
 /** "16 Sep 2026, 12:40 PM" from an ISO timestamp (or now when missing/invalid) */
 export const formatGstDateTime = (iso?: string): string => {
   const date = iso ? new Date(iso) : new Date()
@@ -8,7 +10,7 @@ export const formatGstDateTime = (iso?: string): string => {
 }
 
 /** "₹1,499" from a number */
-export const formatRupees = (amount: number): string => `₹${amount.toLocaleString('en-IN')}`
+export const formatRupees = (amount: number): string => formatINR(amount)
 
 /** Client-side reference until the backend issues one, e.g. "GST-CAN-2026-48213" */
 export const generateGstReference = (prefix: string): string =>

@@ -38,3 +38,9 @@ export const CANONICAL_INDIAN_STATES_AND_UTS = [
 ] as const
 
 export type CanonicalIndianState = (typeof CANONICAL_INDIAN_STATES_AND_UTS)[number]
+
+export const INDIAN_STATE_DROPDOWN_OPTIONS: { label: string; value: string }[] =
+  CANONICAL_INDIAN_STATES_AND_UTS.map((state) => ({
+    label: state,
+    value: state,
+  }))

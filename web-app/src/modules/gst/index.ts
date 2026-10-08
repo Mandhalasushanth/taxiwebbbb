@@ -8,11 +8,9 @@ export {
   GSTAmendmentSubmitted,
 } from './components/GSTAmendment'
 export {
-  GSTCertificateHeader,
   GSTCertificateForm,
   GSTCertificateSubmitted,
 } from './components/GSTCertificate'
-export { useGstApplication } from './hooks/useGstApplication'
 export { useGstReturns } from './hooks/useGstReturns'
 export { gstService } from './services/gstService'
 export type {

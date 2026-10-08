@@ -45,12 +45,6 @@ export const getTaxComputationRows = (isNilReturn: boolean): { items: TaxComputa
   netLiability: isNilReturn ? 0 : null,
 })
 
-export const DEFAULT_DOC_SUMMARY: DocumentSummaryItem[] = [
-  { id: '1', label: 'Required Documents', completed: 3, total: 3, type: 'required', status: 'verified', statusText: 'Verified' },
-  { id: '2', label: 'If Applicable Documents', completed: 4, total: 4, type: 'if_applicable', status: 'verified', statusText: 'Verified' },
-  { id: '3', label: 'Recommended Documents', completed: 4, total: 4, type: 'recommended', status: 'verified', statusText: 'Verified' },
-  { id: '4', label: 'Optional Documents', completed: 0, total: 1, type: 'optional', status: 'not_added', statusText: 'Not Added' },
-]
 
 export const WHAT_HAPPENS_NEXT_STEPS = [
   { step: 1, text: 'Review your details and tax computation' },

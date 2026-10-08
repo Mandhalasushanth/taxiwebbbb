@@ -1,4 +1,5 @@
 import { formatUploadSize } from '@shared/upload'
+import { isValidIfsc, isValidBankAccNumber } from '@shared/utils/validationUtils'
 import type {
   RevisionReasonKey,
   IncomeCorrectionState,
@@ -81,13 +82,13 @@ export const validateBankCorrections = (
 ): { bankAccountError?: string | null; ifscError?: string | null } => {
   const bankAccountError = !values.accountNumber?.trim()
     ? 'Bank account number is required.'
-    : !/^\d{9,18}$/.test(values.accountNumber.trim())
+    : !isValidBankAccNumber(values.accountNumber.trim())
       ? 'Please enter a valid bank account number.'
       : null
   const trimmedIfsc = values.ifsc?.trim() || ''
   const ifscError = !trimmedIfsc
     ? 'IFSC is required.'
-    : !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(trimmedIfsc.toUpperCase())
+    : !isValidIfsc(trimmedIfsc)
       ? 'Please enter a valid 11-character IFSC code.'
       : null
 

@@ -1,4 +1,3 @@
-export * from "./loans.types";
 export * from "./loanApplication.types";
 export * from "./loanMarketplace.types";
 export * from "./machineryLoan.types";

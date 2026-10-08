@@ -1,5 +1,4 @@
 export { itrRoutes } from './routes'
-export { useItr } from './hooks/useItr'
 export { useRevisedItr } from './hooks/useRevisedItr'
 export { itrService } from './services/itrService'
 export { revisedItrService } from './services/revisedItrService'

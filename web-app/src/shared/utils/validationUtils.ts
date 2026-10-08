@@ -98,7 +98,7 @@ export const validateMobileNumber = (mobile: string, label = 'Mobile number'): s
  */
 export const isValidIfsc = (ifsc: string): boolean => {
   const trimmed = ifsc.trim().toUpperCase()
-  return /^[A-Z]{4}0[A-Z0-9]{6}$/.test(trimmed)
+  return REGEX.ifsc.test(trimmed)
 }
 
 export const validateIfsc = (ifsc: string, label = 'IFSC code'): string | null => {
@@ -117,7 +117,7 @@ export const validateIfsc = (ifsc: string, label = 'IFSC code'): string | null =
  */
 export const isValidBankAccNumber = (acc: string): boolean => {
   const digits = (acc || '').replace(/\D/g, '').trim()
-  return digits.length >= 9 && digits.length <= 18
+  return REGEX.bankAcc.test(digits)
 }
 
 export const validateBankAccNumber = (acc: string, label = 'Bank account number'): string | null => {
@@ -388,7 +388,7 @@ export const isNonEmpty = (value: string | null | undefined): boolean => Boolean
  * Validates a required field with friendly error copy
  */
 export const validateRequired = (
-  value: string | number | null | undefined,
+  value: unknown,
   fieldLabel = 'This field'
 ): string | null => {
   if (value === null || value === undefined) {
@@ -403,7 +403,7 @@ export const validateRequired = (
 /**
  * Validates multiple required fields in an object, returning an errors map.
  */
-export const validateRequiredFields = <T extends Record<string, any>>(
+export const validateRequiredFields = <T extends Record<string, unknown>>(
   values: T,
   fieldLabels: Partial<Record<keyof T, string>>
 ): { isValid: boolean; errors: Partial<Record<keyof T, string>> } => {

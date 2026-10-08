@@ -14,7 +14,7 @@ vi.mock('@core/config/environment', () => ({
 
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { LoanApplicationStatus } from '../../src/modules/loans/components/LoanApplicationStatus'
+import { LoanApplicationStatus } from '../../src/modules/loans/shared/LoanApplicationStatus'
 import { loanApplicationService } from '../../src/modules/loans/services/loanApplicationService'
 import type { LoanApplicationBase } from '../../src/modules/loans/types/loanApplication.types'
 
