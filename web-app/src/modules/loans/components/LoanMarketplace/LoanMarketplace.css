@@ -233,9 +233,9 @@
 .loan-item-card__rate {
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--palette-orange-600-c26105);
-  background: var(--palette-orange-50);
-  border: 1px solid var(--orange-100);
+  color: var(--palette-blue-700, #1d4ed8);
+  background: var(--palette-blue-50, #eff6ff);
+  border: 1px solid var(--palette-blue-100, #dbeafe);
   padding: 0.25rem 0.65rem;
   border-radius: 20px;
   white-space: nowrap;
