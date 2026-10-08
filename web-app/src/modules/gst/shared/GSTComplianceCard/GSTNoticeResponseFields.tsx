@@ -1,8 +1,7 @@
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
-import React, { useState } from 'react'
+import React, { useRef } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { DocumentCard } from '@shared/components'
-import { DobDatePickerModal } from '@modules/authentication/components/DobDatePickerModal/DobDatePickerModal'
 import './GSTComplianceUploadFields.css'
 import { UPLOAD_HINT } from '@shared/upload'
 
@@ -32,8 +31,29 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
   onPreviewDoc,
 }) => {
   const { noticeNumber, issueDate, dueDate, additionalInfo } = values
-  const [isIssueOpen, setIsIssueOpen] = useState(false)
-  const [isDueOpen, setIsDueOpen] = useState(false)
+
+  const issueDateInputRef = useRef<HTMLInputElement>(null)
+  const dueDateInputRef = useRef<HTMLInputElement>(null)
+
+  const openIssueDatePicker = () => {
+    if (issueDateInputRef.current) {
+      try {
+        issueDateInputRef.current.showPicker()
+      } catch {
+        issueDateInputRef.current.focus()
+      }
+    }
+  }
+
+  const openDueDatePicker = () => {
+    if (dueDateInputRef.current) {
+      try {
+        dueDateInputRef.current.showPicker()
+      } catch {
+        dueDateInputRef.current.focus()
+      }
+    }
+  }
 
   const handleView = () => {
     if (!noticeFile) return
@@ -85,19 +105,15 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
             <label className="gst-notice-label">
               Notice Issue Date <span className="req-asterisk">*</span>
             </label>
-            <div
-              className="gst-notice-date-wrapper"
-              onClick={() => setIsIssueOpen((prev) => !prev)}
-              style={{ position: 'relative', cursor: 'pointer' }}
-            >
+            <div className="gst-notice-date-wrapper" onClick={openIssueDatePicker}>
               <input
-                type="text"
-                readOnly
-                placeholder="DD-MM-YYYY"
-                value={issueDate ? issueDate.split('-').reverse().join('-') : ''}
+                ref={issueDateInputRef}
+                type="date"
+                value={issueDate}
+                onChange={(e) => onChange('issueDate', e.target.value)}
                 className="gst-notice-date-input"
               />
-              <span className="gst-notice-date-icon">
+              <span className="gst-notice-date-icon" onClick={openIssueDatePicker}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                   <line x1="16" y1="2" x2="16" y2="6" />
@@ -105,15 +121,6 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
                   <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
               </span>
-              <DobDatePickerModal
-                isOpen={isIssueOpen}
-                value={issueDate}
-                title="Notice Issue Date"
-                format="YYYY-MM-DD"
-                maxDate={new Date()}
-                onApply={(val) => onChange('issueDate', val)}
-                onClose={() => setIsIssueOpen(false)}
-              />
             </div>
             {errors.issueDate && <span className="form-error">{errors.issueDate}</span>}
           </div>
@@ -122,19 +129,15 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
             <label className="gst-notice-label">
               Reply Due Date <span className="req-asterisk">*</span>
             </label>
-            <div
-              className="gst-notice-date-wrapper"
-              onClick={() => setIsDueOpen((prev) => !prev)}
-              style={{ position: 'relative', cursor: 'pointer' }}
-            >
+            <div className="gst-notice-date-wrapper" onClick={openDueDatePicker}>
               <input
-                type="text"
-                readOnly
-                placeholder="DD-MM-YYYY"
-                value={dueDate ? dueDate.split('-').reverse().join('-') : ''}
+                ref={dueDateInputRef}
+                type="date"
+                value={dueDate}
+                onChange={(e) => onChange('dueDate', e.target.value)}
                 className="gst-notice-date-input"
               />
-              <span className="gst-notice-date-icon">
+              <span className="gst-notice-date-icon" onClick={openDueDatePicker}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                   <line x1="16" y1="2" x2="16" y2="6" />
@@ -142,15 +145,6 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
                   <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
               </span>
-              <DobDatePickerModal
-                isOpen={isDueOpen}
-                value={dueDate}
-                title="Reply Due Date"
-                format="YYYY-MM-DD"
-                minDate={new Date()}
-                onApply={(val) => onChange('dueDate', val)}
-                onClose={() => setIsDueOpen(false)}
-              />
             </div>
             {errors.dueDate && <span className="form-error">{errors.dueDate}</span>}
           </div>

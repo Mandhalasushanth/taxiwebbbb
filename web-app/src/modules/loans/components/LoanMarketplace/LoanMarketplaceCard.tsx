@@ -45,7 +45,7 @@ export const LoanMarketplaceCard: React.FC<LoanMarketplaceCardProps> = ({ item, 
       aria-label={ariaLabel}
       data-testid={`loan-card-${item.id}`}
     >
-      <div className="loan-item-card__left">
+      <div className="loan-item-card__top">
         <div className={`loan-item-card__icon-tile loan-item-card__icon-tile--${item.id}`}>
           {iconSrc && !imageError ? (
             <img
@@ -59,15 +59,16 @@ export const LoanMarketplaceCard: React.FC<LoanMarketplaceCardProps> = ({ item, 
             item.icon
           )}
         </div>
-
-        <div className="loan-item-card__info">
-          <h2 className="loan-item-card__title">{item.title}</h2>
-          <p className="loan-item-card__desc">{item.desc}</p>
-        </div>
+        <span className="loan-item-card__rate">{item.rate}</span>
       </div>
 
-      <div className="loan-item-card__right">
-        <span className="loan-item-card__rate">{item.rate}</span>
+      <div className="loan-item-card__body">
+        <h2 className="loan-item-card__title">{item.title}</h2>
+        <p className="loan-item-card__desc">{item.desc}</p>
+      </div>
+
+      <div className="loan-item-card__footer">
+        <span className="loan-item-card__action-text">Apply Now</span>
         <RightChevronIcon />
       </div>
     </a>

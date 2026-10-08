@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Calendar } from 'lucide-react'
 import { StepActionBar } from '@shared/components'
-import { DobDatePickerModal } from '@modules/authentication/components/DobDatePickerModal/DobDatePickerModal'
 import {
   type NoticeFormData,
   ASSESSMENT_YEAR_OPTIONS,
@@ -29,8 +27,6 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
 }) => {
   const [touched, setTouched] = useState<Record<string, boolean>>({})
   const [noticeTypeOpen, setNoticeTypeOpen] = useState(false)
-  const [isNoticeDateOpen, setIsNoticeDateOpen] = useState(false)
-  const [isDueDateOpen, setIsDueDateOpen] = useState(false)
   const noticeTypeRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -295,14 +291,10 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
           <label htmlFor="notice-date" className="notice-field__label">
             Notice Date <span className="notice-field__required">*</span>
           </label>
-          <div
-            className="notice-field__date-wrapper"
-            style={{ position: 'relative' }}
-          >
+          <div className="notice-field__date-wrapper">
             <input
               id="notice-date"
-              type="text"
-              placeholder="YYYY-MM-DD"
+              type="date"
               className={`notice-field__input notice-field__input--date ${
                 !formData.noticeDate ? 'notice-field__input--date-empty' : ''
               } ${
@@ -310,29 +302,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
               }`}
               value={formData.noticeDate}
               onChange={(e) => onChange({ noticeDate: e.target.value })}
-              onClick={() => setIsNoticeDateOpen(true)}
               onBlur={() => handleBlur('noticeDate')}
-            />
-            <button
-              type="button"
-              className="notice-field__clear-cross-btn"
-              onClick={() => setIsNoticeDateOpen(true)}
-              aria-label="Open Notice Date Calendar"
-              style={{ right: '0.85rem' }}
-            >
-              <Calendar size={18} />
-            </button>
-            <DobDatePickerModal
-              isOpen={isNoticeDateOpen}
-              title="Select Notice Date"
-              format="YYYY-MM-DD"
-              value={formData.noticeDate}
-              maxDate={new Date()}
-              onApply={(val) => {
-                onChange({ noticeDate: val })
-                handleBlur('noticeDate')
-              }}
-              onClose={() => setIsNoticeDateOpen(false)}
             />
           </div>
           {touched.noticeDate && !hasNoticeDate && (
@@ -370,14 +340,10 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
           <label htmlFor="notice-due-date" className="notice-field__label">
             Response Due Date <span className="notice-field__required">*</span>
           </label>
-          <div
-            className="notice-field__date-wrapper"
-            style={{ position: 'relative' }}
-          >
+          <div className="notice-field__date-wrapper">
             <input
               id="notice-due-date"
-              type="text"
-              placeholder="YYYY-MM-DD"
+              type="date"
               className={`notice-field__input notice-field__input--date ${
                 !formData.responseDueDate ? 'notice-field__input--date-empty' : ''
               } ${
@@ -385,29 +351,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
               }`}
               value={formData.responseDueDate}
               onChange={(e) => onChange({ responseDueDate: e.target.value })}
-              onClick={() => setIsDueDateOpen(true)}
               onBlur={() => handleBlur('responseDueDate')}
-            />
-            <button
-              type="button"
-              className="notice-field__clear-cross-btn"
-              onClick={() => setIsDueDateOpen(true)}
-              aria-label="Open Response Due Date Calendar"
-              style={{ right: '0.85rem' }}
-            >
-              <Calendar size={18} />
-            </button>
-            <DobDatePickerModal
-              isOpen={isDueDateOpen}
-              title="Select Response Due Date"
-              format="YYYY-MM-DD"
-              value={formData.responseDueDate}
-              minDate={new Date()}
-              onApply={(val) => {
-                onChange({ responseDueDate: val })
-                handleBlur('responseDueDate')
-              }}
-              onClose={() => setIsDueDateOpen(false)}
             />
           </div>
           {touched.responseDueDate && !hasDueDate && (

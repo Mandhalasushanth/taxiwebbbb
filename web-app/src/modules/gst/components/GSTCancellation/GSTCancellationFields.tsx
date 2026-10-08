@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React, { useRef } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
-import { DobDatePickerModal } from '@modules/authentication/components/DobDatePickerModal/DobDatePickerModal'
 
 interface GSTCancellationFieldsProps {
   gstin: string
@@ -33,10 +32,16 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
   pendingLiabilities, setPendingLiabilities, lastGstr3bFiled, setLastGstr3bFiled,
   closingStockDetails, setClosingStockDetails, errors, clearError,
 }) => {
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false)
+  const dateInputRef = useRef<HTMLInputElement>(null)
 
   const handleCalendarClick = () => {
-    setIsCalendarOpen((prev) => !prev)
+    if (dateInputRef.current) {
+      try {
+        dateInputRef.current.showPicker?.()
+      } catch {
+        dateInputRef.current.focus()
+      }
+    }
   }
 
   return (
@@ -80,43 +85,15 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
           <label htmlFor="gst-canc-date-input" className="gst-canc-label">
             Date Cancellation Is Sought <span className="gst-canc-star">*</span>
           </label>
-          <div
-            className="gst-canc-date-wrapper"
-            onClick={handleCalendarClick}
-            style={{ position: 'relative', cursor: 'pointer' }}
-          >
+          <div className="gst-canc-date-wrapper" onClick={handleCalendarClick}>
             <input
-              id="gst-canc-date-input"
-              type="text"
-              readOnly
-              placeholder="DD-MM-YYYY"
-              value={cancellationDate ? cancellationDate.split('-').reverse().join('-') : ''}
+              id="gst-canc-date-input" ref={dateInputRef} type="date" value={cancellationDate}
+              onChange={(e) => { setCancellationDate(e.target.value); clearError('cancellationDate') }}
               className={`gst-canc-date-input ${errors.cancellationDate ? 'has-error' : ''}`}
             />
-            <button
-              type="button"
-              className="gst-canc-calendar-btn"
-              onClick={(e) => { e.stopPropagation(); handleCalendarClick() }}
-              aria-label="Open calendar"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
+            <button type="button" className="gst-canc-calendar-btn" onClick={(e) => { e.stopPropagation(); handleCalendarClick() }} aria-label="Open calendar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
             </button>
-            <DobDatePickerModal
-              isOpen={isCalendarOpen}
-              value={cancellationDate}
-              title="Date Cancellation Is Sought"
-              format="YYYY-MM-DD"
-              onApply={(val) => {
-                setCancellationDate(val)
-                clearError('cancellationDate')
-              }}
-              onClose={() => setIsCalendarOpen(false)}
-            />
           </div>
           {errors.cancellationDate && <span className="gst-canc-error-msg">{errors.cancellationDate}</span>}
         </div>

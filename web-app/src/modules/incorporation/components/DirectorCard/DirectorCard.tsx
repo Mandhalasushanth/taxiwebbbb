@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import type { DirectorDetails } from '../../types/incorporation.types'
 import { filterDigits, filterMobile, filterPan } from '../../utils/validation'
-import { DobDatePickerModal } from '@modules/authentication/components/DobDatePickerModal/DobDatePickerModal'
 import './DirectorCard.css'
 
 interface FormFieldProps {
@@ -22,54 +21,21 @@ const DirectorFormField: React.FC<FormFieldProps> = ({
   type = 'text',
   placeholder = '',
   error,
-}) => {
-  const [isPickerOpen, setIsPickerOpen] = useState(false)
-
-  if (type === 'date') {
-    return (
-      <div className="director-group" style={{ position: 'relative' }}>
-        <label className="director-label">
-          {label}{required && <span className="director-required"> *</span>}
-        </label>
-        <input
-          type="text"
-          readOnly
-          style={{ cursor: 'pointer' }}
-          className={`director-input ${error ? 'director-input--error' : ''}`}
-          value={value ? value.split('-').reverse().join('-') : ''}
-          onClick={() => setIsPickerOpen((prev) => !prev)}
-          placeholder="DD-MM-YYYY"
-        />
-        <DobDatePickerModal
-          isOpen={isPickerOpen}
-          title={label}
-          format="YYYY-MM-DD"
-          value={value}
-          maxDate={new Date()}
-          onApply={(val) => onChange(val)}
-          onClose={() => setIsPickerOpen(false)}
-        />
-        {error && <span className="director-field-error">{error}</span>}
-      </div>
-    )
-  }
-
-  return (
-    <div className="director-group">
-      <label className="director-label">
-        {label}{required && <span className="director-required"> *</span>}
-      </label>
-      <input
-        type={type}
-        className={`director-input ${error ? 'director-input--error' : ''}`}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-      />
-      {error && <span className="director-field-error">{error}</span>}
-    </div>
-  )
-}
+}) => (
+  <div className="director-group">
+    <label className="director-label">
+      {label}{required && <span className="director-required"> *</span>}
+    </label>
+    <input
+      type={type}
+      className={`director-input ${error ? 'director-input--error' : ''}`}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+    />
+    {error && <span className="director-field-error">{error}</span>}
+  </div>
+)
 
 export interface DirectorCardProps {
   director: DirectorDetails

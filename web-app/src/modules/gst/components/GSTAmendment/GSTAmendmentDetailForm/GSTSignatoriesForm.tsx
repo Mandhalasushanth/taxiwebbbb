@@ -2,11 +2,10 @@ import { SaveDraftButton } from '@shared/saveDraft'
 import { UpdateAndReviewButton } from '@shared/edit'
 import { GST_FILE_MESSAGES } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
-import React, { useState, useEffect, type FormEvent } from 'react'
+import React, { useState, useEffect, useRef, type FormEvent } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
 import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
-import { DobDatePickerModal } from '@modules/authentication/components/DobDatePickerModal/DobDatePickerModal'
 import './GSTSignatoriesForm.css'
 
 interface GSTSignatoriesFormProps {
@@ -90,7 +89,7 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
 
   const effectiveFileName = !removedInitialFile ? (selectedFile?.name || initialFileName) : selectedFile?.name
 
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false)
+  const dateRef = useRef<HTMLInputElement>(null)
 
   // Type, size and content are already checked by the shared upload rule
   const handleFileChange = (file: File) => {
@@ -100,7 +99,10 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
   }
 
   const handleCalendarClick = () => {
-    setIsCalendarOpen((prev) => !prev)
+    if (dateRef.current) {
+      if (typeof dateRef.current.showPicker === 'function') dateRef.current.showPicker()
+      else dateRef.current.focus()
+    }
   }
 
   const handleSubmitForm = (e: FormEvent) => {
@@ -239,22 +241,21 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
                   <label htmlFor="sig-dob-input" className="gst-amend-field-label">
                     Date of Birth <span className="gst-amend-star">*</span>
                   </label>
-                  <div
-                    className="gst-sig-dob-wrapper"
-                    onClick={handleCalendarClick}
-                    style={{ position: 'relative', cursor: 'pointer' }}
-                  >
+                  <div className="gst-sig-dob-wrapper">
                     <input
+                      ref={dateRef}
                       id="sig-dob-input"
-                      type="text"
-                      readOnly
-                      placeholder="DD-MM-YYYY"
-                      value={dob ? dob.split('-').reverse().join('-') : ''}
+                      type="date"
+                      value={dob}
+                      onChange={(e) => {
+                        setDob(e.target.value)
+                        if (errors.dob) setErrors((prev) => ({ ...prev, dob: '' }))
+                      }}
                       className={`gst-amend-text-input gst-sig-date-input ${errors.dob ? 'has-error' : ''}`}
                     />
                     <button
                       type="button"
-                      onClick={(e) => { e.stopPropagation(); handleCalendarClick() }}
+                      onClick={handleCalendarClick}
                       className="gst-sig-calendar-btn"
                       aria-label="Open calendar"
                     >
@@ -265,18 +266,6 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
                         <line x1="3" y1="10" x2="21" y2="10" />
                       </svg>
                     </button>
-                    <DobDatePickerModal
-                      isOpen={isCalendarOpen}
-                      value={dob}
-                      title="Date of Birth"
-                      format="YYYY-MM-DD"
-                      maxDate={new Date()}
-                      onApply={(val) => {
-                        setDob(val)
-                        if (errors.dob) setErrors((prev) => ({ ...prev, dob: '' }))
-                      }}
-                      onClose={() => setIsCalendarOpen(false)}
-                    />
                   </div>
                   {errors.dob && <span className="gst-amend-error-msg">{errors.dob}</span>}
                 </div>
