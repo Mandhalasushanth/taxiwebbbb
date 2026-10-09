@@ -91,7 +91,7 @@ export const ApplicationTracking: React.FC = () => {
     <div className="app-track-page">
       {/* Top Progress Tracker */}
       <div className="app-track-stepbar">
-        <span className="app-track-stepbar__badge">Step 10 of 11</span>
+        <span className="app-track-stepbar__badge">Step 9 of 10</span>
         <span className="app-track-stepbar__text">Application Tracking</span>
         <div className="app-track-stepbar__line">
           <div className="app-track-stepbar__line-fill" />
@@ -113,50 +113,59 @@ export const ApplicationTracking: React.FC = () => {
         <div className="app-track-summary-card__meta">{`Type: ${entityStructure} · Date: ${dateStr}`}</div>
       </section>
 
-      {/* Stepper Timeline */}
-      <div className="app-track-timeline">
-        {stepsData.map((step, idx) => (
-          <div key={step.id} className="timeline-step">
-            <div className="timeline-step__indicator">
-              <div className={`timeline-step__node timeline-step__node--${step.status}`}>
-                {step.status === 'completed' && (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                )}
-                {step.status === 'active' && (
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <circle cx="12" cy="12" r="9" />
-                    <polyline points="12 7 12 12 15 14" />
-                  </svg>
-                )}
-              </div>
-              {idx < stepsData.length - 1 && (
-                <div
-                  className={`timeline-step__line ${
-                    step.status === 'completed' ? 'timeline-step__line--completed' : ''
-                  }`}
-                />
-              )}
-            </div>
+      {/* Stepper Timeline Card */}
+      <section className="app-track-timeline-card">
+        <div className="app-track-card__header">
+          <h2 className="app-track-card__title">Incorporation Milestone Tracker</h2>
+          <p className="app-track-card__subtitle">
+            Live lifecycle stages and MCA verification workflow for your company incorporation.
+          </p>
+        </div>
 
-            <div className={`timeline-step__card ${step.status === 'active' ? 'timeline-step__card--active' : ''}`}>
-              <div className="timeline-step__header">
-                <h3 className="timeline-step__title">{step.title}</h3>
-                <span className="timeline-step__desc">{step.desc}</span>
+        <div className="app-track-timeline">
+          {stepsData.map((step, idx) => (
+            <div key={step.id} className="timeline-step">
+              <div className="timeline-step__indicator">
+                <div className={`timeline-step__node timeline-step__node--${step.status}`}>
+                  {step.status === 'completed' && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  )}
+                  {step.status === 'active' && (
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <circle cx="12" cy="12" r="9" />
+                      <polyline points="12 7 12 12 15 14" />
+                    </svg>
+                  )}
+                </div>
+                {idx < stepsData.length - 1 && (
+                  <div
+                    className={`timeline-step__line ${
+                      step.status === 'completed' ? 'timeline-step__line--completed' : ''
+                    }`}
+                  />
+                )}
               </div>
-              <div className="timeline-step__footer">
-                <span className="timeline-step__date">{step.dateText}</span>
-                <span className={`timeline-step__status timeline-step__status--${step.status}`}>
-                  {step.status === 'completed' && '✓ '}
-                  {step.status === 'active' && '• '}
-                  {step.statusLabel}
-                </span>
+
+              <div className={`timeline-step__card ${step.status === 'active' ? 'timeline-step__card--active' : ''}`}>
+                <div className="timeline-step__header">
+                  <h3 className="timeline-step__title">{step.title}</h3>
+                  <span className="timeline-step__desc">{step.desc}</span>
+                </div>
+                <div className="timeline-step__footer">
+                  <span className="timeline-step__date">{step.dateText}</span>
+                  <span className={`timeline-step__status timeline-step__status--${step.status}`}>
+                    {step.status === 'completed' && '✓ '}
+                    {step.status === 'active' && '• '}
+                    {step.statusLabel}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </section>
 
       {/* Bottom Action Buttons */}
       <div className="app-track-actions">

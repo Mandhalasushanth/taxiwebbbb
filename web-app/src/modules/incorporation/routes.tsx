@@ -1,8 +1,8 @@
 import { lazy } from 'react'
+import { Navigate } from 'react-router-dom'
 import type { RouteObject } from 'react-router-dom'
 import { routePaths } from '@core/config'
 
-const CompanyRegistration = lazy(() => import('./components/CompanyRegistration/CompanyRegistration'))
 const SelectCompanyType = lazy(() => import('./components/SelectCompanyType/SelectCompanyType'))
 const CompanyDetails = lazy(() => import('./components/CompanyDetails/CompanyDetails'))
 const RegisteredOffice = lazy(() => import('./components/RegisteredOffice/RegisteredOffice'))
@@ -22,7 +22,7 @@ import { IncorporationWizardLayout } from './components'
 export const incorporationRoutes: RouteObject[] = [
   {
     path: routePaths.incorporation.root,
-    element: <CompanyRegistration />,
+    element: <Navigate to={routePaths.incorporation.selectType} replace />,
   },
   {
     element: <IncorporationWizardLayout />,

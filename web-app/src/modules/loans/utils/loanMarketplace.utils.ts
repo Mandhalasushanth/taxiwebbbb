@@ -42,14 +42,16 @@ export function isValidLoanMarketplaceItem(item: unknown): item is LoanMarketpla
     candidate &&
       typeof candidate.id === 'string' &&
       typeof candidate.title === 'string' &&
-      typeof candidate.applyPath === 'string' &&
-      typeof candidate.rate === 'string'
+      typeof candidate.applyPath === 'string'
   )
 }
 
 /**
  * Generates an accessible ARIA label for screen readers.
  */
-export function buildLoanCardAriaLabel(title: string, rate: string, desc: string): string {
-  return `${title}, starting from ${rate}. ${desc}`
+export function buildLoanCardAriaLabel(title: string, rate?: string, desc?: string): string {
+  if (rate) {
+    return `${title}, starting from ${rate}. ${desc || ''}`.trim()
+  }
+  return `${title}. ${desc || ''}`.trim()
 }

@@ -107,17 +107,26 @@ export const CompanyDetails: React.FC = () => {
     <div className="company-details-page">
       {/* Step Progress Bar */}
       <div className="company-details-stepbar">
-        <span className="company-details-stepbar__badge">Step 2 of 11</span>
+        <span className="company-details-stepbar__badge">Step 1 of 10</span>
+        <span className="company-details-stepbar__text">Company Details</span>
         <div className="company-details-stepbar__line">
           <div className="company-details-stepbar__line-fill" />
         </div>
       </div>
 
-      {/* Section 1: Company Classification */}
-      <section className="company-details-section">
-        <div className="company-details-section__header">
-          <h1 className="company-details-section__title">Company Classification</h1>
-          <p className="company-details-section__subtitle">
+      {/* Page Header */}
+      <header className="company-details-header">
+        <h1 className="company-details-header__title">Company Details</h1>
+        <p className="company-details-header__subtitle">
+          Define MCA statutory classification, principal business activities, and proposed company names.
+        </p>
+      </header>
+
+      {/* Card 1: Company Classification */}
+      <section className="company-details-card">
+        <div className="company-details-card__header">
+          <h2 className="company-details-card__title">Company Classification</h2>
+          <p className="company-details-card__subtitle">
             Specify MCA statutory classification details for incorporation filing.
           </p>
         </div>
@@ -137,11 +146,11 @@ export const CompanyDetails: React.FC = () => {
         </div>
       </section>
 
-      {/* Section 2: Business Activity / NIC */}
-      <section className="company-details-section">
-        <div className="company-details-section__header">
-          <h2 className="company-details-section__title">Business Activity / NIC</h2>
-          <p className="company-details-section__subtitle">
+      {/* Card 2: Business Activity / NIC */}
+      <section className="company-details-card">
+        <div className="company-details-card__header">
+          <h2 className="company-details-card__title">Business Activity / NIC</h2>
+          <p className="company-details-card__subtitle">
             Define the main objective and National Industrial Classification code of your company.
           </p>
         </div>
@@ -190,11 +199,11 @@ export const CompanyDetails: React.FC = () => {
         </div>
       </section>
 
-      {/* Section 3: Proposed Company Names */}
-      <section className="company-details-section">
-        <div className="company-details-section__header">
-          <h2 className="company-details-section__title">Proposed Company Names</h2>
-          <p className="company-details-section__subtitle">
+      {/* Card 3: Proposed Company Names */}
+      <section className="company-details-card">
+        <div className="company-details-card__header">
+          <h2 className="company-details-card__title">Proposed Company Names</h2>
+          <p className="company-details-card__subtitle">
             Provide up to 2 preferred names for SPICe+ Part A name reservation / incorporation.
           </p>
         </div>

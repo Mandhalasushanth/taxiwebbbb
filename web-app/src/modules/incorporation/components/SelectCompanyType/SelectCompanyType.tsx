@@ -1,24 +1,39 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
-import { companyTypeOptions } from '../../data/companyRegistrationData'
-import { StepActionBar } from '@shared/components'
+import { buildProfileCompletionPath } from '@core/auth'
+import { useAuthStore } from '@store/index'
+import { CompleteProfileModal } from '@shared/components'
+import { companyTypeOptions, companyRegistrationData } from '../../data/companyRegistrationData'
+import type { CompanyEntityType } from '../../types/incorporation.types'
 import { useIncorporationFlow } from '../../hooks'
 import './SelectCompanyType.css'
 
 export const SelectCompanyType: React.FC = () => {
-  const { formData, updateFormData, draft, reviewEdit, goToStep } = useIncorporationFlow()
-  const selectedType = formData.companyType
-  const [error, setError] = useState<string>('')
+  const navigate = useNavigate()
+  const user = useAuthStore((state) => state.user)
+  const { updateFormData, goToStep } = useIncorporationFlow()
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
 
-  const handleContinue = () => {
-    if (!selectedType) {
-      setError('Please select a company type before proceeding.')
+  const handleStart = (typeId: CompanyEntityType) => {
+    updateFormData({ companyType: typeId })
+
+    if (!user?.isProfileComplete) {
+      setIsProfileModalOpen(true)
       return
     }
+
     goToStep(routePaths.incorporation.companyDetails)
   }
 
-  const renderIcon = (icon: string) => {
+  const handleConfirmProfile = () => {
+    setIsProfileModalOpen(false)
+    navigate(buildProfileCompletionPath(routePaths.incorporation.companyDetails), {
+      state: { returnTo: routePaths.incorporation.companyDetails, mobile: user?.mobile },
+    })
+  }
+
+  const renderFallbackIcon = (icon: string) => {
     switch (icon) {
       case 'building':
         return (
@@ -59,82 +74,100 @@ export const SelectCompanyType: React.FC = () => {
     }
   }
 
+  const CompanyTypeIconItem: React.FC<{
+    image?: string
+    title: string
+    fallbackIcon: string
+  }> = ({ image, title, fallbackIcon }) => {
+    const [imgError, setImgError] = useState(false)
+
+    if (image && !imgError) {
+      return (
+        <img
+          src={image}
+          alt={title}
+          className="select-type-card__icon-img"
+          width={54}
+          height={54}
+          loading="lazy"
+          onError={() => setImgError(true)}
+        />
+      )
+    }
+
+    return renderFallbackIcon(fallbackIcon)
+  }
+
   return (
     <div className="select-type-page">
-      {/* Step Progress Bar */}
-      <div className="select-type-stepbar">
-        <span className="select-type-stepbar__badge">Step 1 of 11</span>
-        <div className="select-type-stepbar__line">
-          <div className="select-type-stepbar__line-fill" />
+      {/* Top Hero Banner */}
+      <section className="select-type-banner" aria-labelledby="incorporation-banner-title">
+        <div className="select-type-banner__content">
+          <h1 id="incorporation-banner-title" className="select-type-banner__title">
+            {companyRegistrationData.title}
+          </h1>
+          <p className="select-type-banner__subtitle">
+            {companyRegistrationData.description}
+          </p>
         </div>
-      </div>
-
-      {/* Page Header */}
-      <header className="select-type-header">
-        <h1 className="select-type-header__title">Select Company Type</h1>
-        <p className="select-type-header__subtitle">
-          Choose the corporate legal entity structure for your incorporation.
-        </p>
-      </header>
+      </section>
 
       {/* Entity Selection Cards Grid */}
-      <main className="select-type-grid">
-        {companyTypeOptions.map((opt) => {
-          const isSelected = selectedType === opt.id
-          return (
-            <div
-              key={opt.id}
-              className={`select-type-card ${isSelected ? 'select-type-card--selected' : ''}`}
-              onClick={() => {
-                updateFormData({ companyType: opt.id })
-                setError('')
-              }}
-              role="radio"
-              aria-checked={isSelected}
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  updateFormData({ companyType: opt.id })
-                  setError('')
-                }
-              }}
-            >
+      <main className="select-type-grid" aria-label="Company Type Options">
+        {companyTypeOptions.map((opt) => (
+          <div
+            key={opt.id}
+            className="select-type-card"
+            onClick={() => handleStart(opt.id)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                handleStart(opt.id)
+              }
+            }}
+          >
               <div className="select-type-card__top">
-                <div className="select-type-card__left">
-                  <div className="select-type-card__icon-box">
-                    {renderIcon(opt.icon)}
-                  </div>
-                  <h2 className="select-type-card__title">{opt.title}</h2>
-                </div>
-                <div className="select-type-card__radio">
-                  {isSelected && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" width="13" height="13">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  )}
+                <div className={`select-type-card__icon-tile select-type-card__icon-tile--${opt.id}`}>
+                  <CompanyTypeIconItem
+                    image={opt.image}
+                    title={opt.title}
+                    fallbackIcon={opt.icon}
+                  />
                 </div>
               </div>
 
-              <p className="select-type-card__desc">{opt.description}</p>
-              <span className="select-type-card__badge">{opt.badge}</span>
+              <div className="select-type-card__body">
+                <h2 className="select-type-card__title">{opt.title}</h2>
+                <p className="select-type-card__desc">{opt.description}</p>
+              </div>
+
+              <div className="select-type-card__footer">
+                <span className="select-type-card__badge">{opt.badge}</span>
+                <span className="select-type-card__action-btn">
+                  <span>Start</span>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="select-type-card__arrow"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </span>
+              </div>
             </div>
-          )
-        })}
+          ))}
       </main>
-
-      {error && (
-        <div className="select-type-error-alert" role="alert">
-          {error}
-        </div>
-      )}
-
-      {/* Footer Navigation */}
-      <StepActionBar
-        onBack={() => goToStep(routePaths.incorporation.root)}
-        onNext={handleContinue}
-        isEditMode={reviewEdit.isEditMode}
-        onSaveDraft={draft.openDraftModal}
-        nextLabel="Continue"
+      <CompleteProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        onCompleteProfile={handleConfirmProfile}
       />
     </div>
   )

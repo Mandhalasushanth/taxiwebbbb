@@ -150,11 +150,15 @@ export const DocumentsKyc: React.FC = () => {
 
   const renderDocSection = (
     title: string,
+    subtitle: string,
     section: 'promoter' | 'office' | 'statutory',
     docs: KycDocumentItem[]
   ) => (
-    <section className="docs-kyc-section">
-      <h2 className="docs-kyc-section__title">{title}</h2>
+    <section className="docs-kyc-card">
+      <div className="docs-kyc-card__header">
+        <h2 className="docs-kyc-card__title">{title}</h2>
+        <p className="docs-kyc-card__subtitle">{subtitle}</p>
+      </div>
       <div className="docs-kyc-section__list">
         {docs.map((doc) => (
           <div key={doc.id} className="doc-item-wrapper">
@@ -165,11 +169,11 @@ export const DocumentsKyc: React.FC = () => {
               isRequired={doc.isRequired}
               isUploaded={doc.isUploaded}
               fileName={doc.fileName}
-              className={errors[doc.id] ? 'doc-card--error' : ''}
+              className={errors[doc.id] && !doc.isUploaded ? 'doc-card--error' : ''}
               onUpload={(_, file) => handleUpload(section, doc.id, file)}
               onRemove={() => handleRemove(section, doc.id)}
             />
-            {errors[doc.id] && <span className="docs-field-error">{errors[doc.id]}</span>}
+            {errors[doc.id] && !doc.isUploaded && <span className="docs-field-error">{errors[doc.id]}</span>}
           </div>
         ))}
       </div>
@@ -180,7 +184,7 @@ export const DocumentsKyc: React.FC = () => {
     <div className="docs-kyc-page">
       {/* Progress Header */}
       <div className="docs-kyc-stepbar">
-        <span className="docs-kyc-stepbar__badge">Step 6 of 11</span>
+        <span className="docs-kyc-stepbar__badge">Step 5 of 10</span>
         <span className="docs-kyc-stepbar__text">Documents & KYC Checklist</span>
         <div className="docs-kyc-stepbar__line">
           <div className="docs-kyc-stepbar__line-fill" />
@@ -199,9 +203,9 @@ export const DocumentsKyc: React.FC = () => {
         totalCount={[...promoterDocs, ...officeDocs, ...statutoryDocs].length}
       />
 
-      {renderDocSection('PROMOTER / DIRECTOR KYC', 'promoter', promoterDocs)}
-      {renderDocSection('REGISTERED OFFICE', 'office', officeDocs)}
-      {renderDocSection('STATUTORY DOCUMENTS', 'statutory', statutoryDocs)}
+      {renderDocSection('Promoter & Director KYC', 'Identity and address proof documents for each director / subscriber.', 'promoter', promoterDocs)}
+      {renderDocSection('Registered Office Proofs', 'Premises ownership proof, utility bills, and NOC certificates.', 'office', officeDocs)}
+      {renderDocSection('Statutory Documents', 'e-MoA, e-AoA and SPICe+ declaration drafts.', 'statutory', statutoryDocs)}
 
       {/* Footer Navigation */}
       <StepActionBar

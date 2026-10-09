@@ -12,6 +12,7 @@ const PROFILE_FREE_EXACT_PATHS: readonly string[] = [
   routePaths.loans,
   routePaths.insurance,
   routePaths.incorporation.root,
+  routePaths.incorporation.selectType,
   routePaths.business.root,
   routePaths.services,
   routePaths.allServices,

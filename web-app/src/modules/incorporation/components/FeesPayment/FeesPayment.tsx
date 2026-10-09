@@ -113,7 +113,7 @@ export const FeesPayment: React.FC = () => {
     <div className="fees-pay-page">
       {/* Progress Tracker */}
       <div className="fees-pay-stepbar">
-        <span className="fees-pay-stepbar__badge">Step 9 of 11</span>
+        <span className="fees-pay-stepbar__badge">Step 8 of 10</span>
         <span className="fees-pay-stepbar__text">Fees & Payment Breakdown</span>
         <div className="fees-pay-stepbar__line">
           <div className="fees-pay-stepbar__line-fill" />
@@ -130,6 +130,13 @@ export const FeesPayment: React.FC = () => {
 
       {/* Fees Breakdown Card */}
       <section className="fees-breakdown-card">
+        <div className="fees-card__header">
+          <h2 className="fees-card__title">Fee Breakdown</h2>
+          <p className="fees-card__subtitle">
+            Itemized overview of professional charges and estimated statutory filing costs.
+          </p>
+        </div>
+
         <div className="fees-breakdown-row">
           <span className="fees-breakdown-row__label">TaxEdge Professional Fee</span>
           <span className="fees-breakdown-row__value">₹4,999</span>
@@ -156,9 +163,14 @@ export const FeesPayment: React.FC = () => {
         * ₹1,500 represents estimated / applicable MCA government filing fee and stamp duty charges.
       </p>
 
-      {/* Select Payment Method */}
-      <section className="fees-payment-methods">
-        <h2 className="fees-payment-methods__title">Select Payment Method</h2>
+      {/* Select Payment Method Card */}
+      <section className="fees-payment-card">
+        <div className="fees-card__header">
+          <h2 className="fees-card__title">Select Payment Method</h2>
+          <p className="fees-card__subtitle">
+            Choose your preferred secure payment method to complete filing.
+          </p>
+        </div>
         <div className={`fees-methods-list ${paymentError ? 'fees-methods-list--error' : ''}`}>
           {paymentMethods.map((m) => (
             <div

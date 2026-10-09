@@ -40,26 +40,25 @@ describe('LoanMarketplace Module', () => {
     expect(LOAN_MARKETPLACE_ITEMS).toHaveLength(9)
 
     const expectedOrder = [
-      { id: 'business-loan', title: 'Business Loan', rate: 'From 12% p.a.' },
-      { id: 'personal-loan', title: 'Personal Loan', rate: 'From 10.5% p.a.' },
-      { id: 'home-loan', title: 'Home Loan', rate: 'From 8.4% p.a.' },
-      { id: 'property-loan', title: 'Property Loan', rate: 'From 9.5% p.a.' },
-      { id: 'vehicle-loan', title: 'Vehicle Loan', rate: 'From 8.75% p.a.' },
-      { id: 'working-capital', title: 'Working Capital', rate: 'From 10.0% p.a.' },
-      { id: 'machinery-loan', title: 'Machinery Loan', rate: 'From 11.0% p.a.' },
-      { id: 'project-finance', title: 'Project Finance', rate: 'Custom Pricing' },
-      { id: 'msme-loan', title: 'MSME Loan', rate: 'From 7.5% p.a.' },
+      { id: 'business-loan', title: 'Business Loan' },
+      { id: 'personal-loan', title: 'Personal Loan' },
+      { id: 'home-loan', title: 'Home Loan' },
+      { id: 'property-loan', title: 'Property Loan' },
+      { id: 'vehicle-loan', title: 'Vehicle Loan' },
+      { id: 'working-capital', title: 'Working Capital' },
+      { id: 'machinery-loan', title: 'Machinery Loan' },
+      { id: 'project-finance', title: 'Project Finance' },
+      { id: 'msme-loan', title: 'MSME Loan' },
     ]
 
     expectedOrder.forEach((expected, index) => {
       const item = LOAN_MARKETPLACE_ITEMS[index]
       expect(item.id).toBe(expected.id)
       expect(item.title).toBe(expected.title)
-      expect(item.rate).toBe(expected.rate)
     })
   })
 
-  it('renders all 9 loan cards and header inside LoanMarketplace', () => {
+  it('renders all 9 loan cards and header inside LoanMarketplace without rate badges', () => {
     render(
       <MemoryRouter>
         <LoanMarketplace />
@@ -80,11 +79,11 @@ describe('LoanMarketplace Module', () => {
     expect(screen.getByText('Project Finance')).toBeInTheDocument()
     expect(screen.getByText('MSME Loan')).toBeInTheDocument()
 
-    // Verify rates are displayed
-    expect(screen.getByText('From 12% p.a.')).toBeInTheDocument()
-    expect(screen.getByText('From 10.5% p.a.')).toBeInTheDocument()
-    expect(screen.getByText('Custom Pricing')).toBeInTheDocument()
-    expect(screen.getByText('From 7.5% p.a.')).toBeInTheDocument()
+    // Verify rate badges are removed
+    expect(screen.queryByText('From 12% p.a.')).not.toBeInTheDocument()
+    expect(screen.queryByText('From 10.5% p.a.')).not.toBeInTheDocument()
+    expect(screen.queryByText('Custom Pricing')).not.toBeInTheDocument()
+    expect(screen.queryByText('From 7.5% p.a.')).not.toBeInTheDocument()
   })
 
   it('opens CompleteProfileModal when user profile is incomplete on loan click', () => {
