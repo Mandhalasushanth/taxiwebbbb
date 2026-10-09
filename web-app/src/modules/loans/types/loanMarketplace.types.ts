@@ -7,7 +7,7 @@ export interface LoanMarketplaceItem {
   id: string
   title: string
   desc: string
-  rate: string
+  rate?: string
   applyPath: string
   tileBg: string
   tileBorder: string

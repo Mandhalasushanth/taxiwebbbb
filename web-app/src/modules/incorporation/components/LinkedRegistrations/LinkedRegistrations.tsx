@@ -90,7 +90,7 @@ export const LinkedRegistrations: React.FC = () => {
     <div className="linked-reg-page">
       {/* Step Bar */}
       <div className="linked-reg-stepbar">
-        <span className="linked-reg-stepbar__badge">Step 7 of 11</span>
+        <span className="linked-reg-stepbar__badge">Step 6 of 10</span>
         <span className="linked-reg-stepbar__text">Linked Mandatory & Optional Registrations</span>
         <div className="linked-reg-stepbar__line">
           <div className="linked-reg-stepbar__line-fill" />
@@ -105,47 +105,56 @@ export const LinkedRegistrations: React.FC = () => {
         </p>
       </div>
 
-      {/* List */}
-      <div className="linked-reg-list">
-        {registrations.map((item) => (
-          <div key={item.id} className="linked-reg-item-wrap">
-            <div
-              className={`linked-reg-item ${item.checked ? 'linked-reg-item--checked' : ''} ${errors[item.id] ? 'linked-reg-item--error' : ''}`}
-              onClick={() => toggleRegistration(item.id)}
-              role="checkbox"
-              aria-checked={item.checked}
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  toggleRegistration(item.id)
-                }
-              }}
-            >
-              <div className="linked-reg-item__content">
-                <span className="linked-reg-item__title">{item.title}</span>
-                <span className="linked-reg-item__desc">{item.description}</span>
+      {/* Card: Linked Registrations */}
+      <section className="linked-reg-card">
+        <div className="linked-reg-card__header">
+          <h2 className="linked-reg-card__title">Available Statutory Registrations</h2>
+          <p className="linked-reg-card__subtitle">
+            Select mandatory tax and banking linkages to bundle with your SPICe+ filing.
+          </p>
+        </div>
+
+        <div className="linked-reg-list">
+          {registrations.map((item) => (
+            <div key={item.id} className="linked-reg-item-wrap">
+              <div
+                className={`linked-reg-item ${item.checked ? 'linked-reg-item--checked' : ''} ${errors[item.id] ? 'linked-reg-item--error' : ''}`}
+                onClick={() => toggleRegistration(item.id)}
+                role="checkbox"
+                aria-checked={item.checked}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    toggleRegistration(item.id)
+                  }
+                }}
+              >
+                <div className="linked-reg-item__content">
+                  <span className="linked-reg-item__title">{item.title}</span>
+                  <span className="linked-reg-item__desc">{item.description}</span>
+                </div>
+                <div className="linked-reg-item__checkbox">
+                  {item.checked && (
+                    <svg
+                      className="linked-reg-item__check-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  )}
+                </div>
               </div>
-              <div className="linked-reg-item__checkbox">
-                {item.checked && (
-                  <svg
-                    className="linked-reg-item__check-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                )}
-              </div>
+              {errors[item.id] && <span className="linked-reg-field-error">{errors[item.id]}</span>}
             </div>
-            {errors[item.id] && <span className="linked-reg-field-error">{errors[item.id]}</span>}
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </section>
 
       {/* Footer Actions */}
       <StepActionBar

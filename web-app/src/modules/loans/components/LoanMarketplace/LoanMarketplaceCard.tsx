@@ -59,7 +59,6 @@ export const LoanMarketplaceCard: React.FC<LoanMarketplaceCardProps> = ({ item, 
             item.icon
           )}
         </div>
-        <span className="loan-item-card__rate">{item.rate}</span>
       </div>
 
       <div className="loan-item-card__body">

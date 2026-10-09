@@ -36,18 +36,61 @@
   overflow: hidden;
 }
 .reg-office-stepbar__line-fill {
-  width: 27.27%;
+  width: 20%;
   height: 100%;
   background: var(--palette-orange-500-f25a22);
   border-radius: 9999px;
 }
 
-/* Header & Section */
+/* Header */
 .reg-office-header { display: flex; flex-direction: column; gap: 0.25rem; }
-.reg-office-header__title { margin: 0; font-size: 1.45rem; font-weight: 800; color: var(--palette-slate-900); letter-spacing: -0.01em; }
-.reg-office-header__subtitle { margin: 0; font-size: 0.88rem; color: var(--secondary-text); line-height: 1.45; }
-.reg-office-section { display: flex; flex-direction: column; gap: 1.25rem; }
-.reg-office-section__title { margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--palette-slate-900); letter-spacing: -0.01em; }
+.reg-office-header__title { margin: 0; font-size: 1.75rem; font-weight: 800; color: var(--palette-slate-900); letter-spacing: -0.02em; }
+.reg-office-header__subtitle { margin: 0; font-size: 0.95rem; color: var(--secondary-text); line-height: 1.5; }
+
+/* Cards */
+.reg-office-card,
+.reg-office-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reg-office-card:hover,
+.reg-office-section:hover {
+  border-color: var(--grey-300, #cbd5e1);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.reg-office-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--subtle-border);
+  padding-bottom: 0.85rem;
+}
+
+.reg-office-card__title,
+.reg-office-section__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--palette-slate-900);
+  letter-spacing: -0.01em;
+}
+
+.reg-office-card__subtitle {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--secondary-text);
+  line-height: 1.45;
+}
 
 /* Form Groups & Layout */
 .reg-office-group { display: flex; flex-direction: column; gap: 0.45rem; }
@@ -195,6 +238,12 @@
 }
 
 @media (max-width: 640px) {
+  .reg-office-card,
+  .reg-office-section {
+    padding: 1.25rem 1.15rem;
+    border-radius: 12px;
+    gap: 1.25rem;
+  }
   .reg-office-row-2 {
     grid-template-columns: 1fr;
   }

@@ -27,7 +27,7 @@ afterEach(() => {
 })
 
 describe('Incorporation Required Fields Validation on Continue', () => {
-  it('SelectCompanyType displays red warning when clicking continue without selecting entity type', () => {
+  it('SelectCompanyType renders company type cards with Start action without bottom continue button', () => {
     render(
       <MemoryRouter>
         <IncorporationProvider>
@@ -36,12 +36,13 @@ describe('Incorporation Required Fields Validation on Continue', () => {
       </MemoryRouter>
     )
 
-    const continueBtn = screen.getByRole('button', { name: /Continue/i })
-    fireEvent.click(continueBtn)
-
-    const alert = screen.getByRole('alert')
-    expect(alert).toBeInTheDocument()
-    expect(alert).toHaveTextContent(/Please select a company type before proceeding/i)
+    expect(screen.getByRole('heading', { level: 1, name: 'Company Registration' })).toBeInTheDocument()
+    expect(screen.getByText(/Incorporate your Private Limited/i)).toBeInTheDocument()
+    expect(screen.getByText('Private Limited Company (Pvt Ltd)')).toBeInTheDocument()
+    expect(screen.getByText('One Person Company (OPC)')).toBeInTheDocument()
+    expect(screen.getAllByText('Start').length).toBe(4)
+    expect(screen.queryByRole('button', { name: /Continue/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Save Draft/i })).not.toBeInTheDocument()
   })
 
   it('CompanyDetails displays red warnings under required fields when clicking continue with empty fields', () => {

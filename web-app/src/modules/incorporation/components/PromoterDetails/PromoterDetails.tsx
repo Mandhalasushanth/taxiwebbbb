@@ -169,7 +169,7 @@ export const PromoterDetails: React.FC = () => {
     <div className="promoter-details-page">
       {/* Step Progress Tracker */}
       <div className="promoter-details-stepbar">
-        <span className="promoter-details-stepbar__badge">Step 4 of 11</span>
+        <span className="promoter-details-stepbar__badge">Step 3 of 10</span>
         <span className="promoter-details-stepbar__text">Promoter / Director Details</span>
         <div className="promoter-details-stepbar__line">
           <div className="promoter-details-stepbar__line-fill" />

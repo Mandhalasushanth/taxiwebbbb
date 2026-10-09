@@ -1,7 +1,12 @@
 export { incorporationRoutes } from './routes'
 export { DirectorCard, IncorporationWizardLayout } from './components'
 
-export { companyRegistrationData, companyTypeOptions, defaultDirectors } from './data/companyRegistrationData'
+export {
+  companyRegistrationData,
+  companyTypeOptions,
+  COMPANY_TYPE_ICON_IMAGE_MAP,
+  defaultDirectors,
+} from './data/companyRegistrationData'
 export {
   ENTITY_TYPE_LABEL_MAP,
   getEntityStructureLabel,

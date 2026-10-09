@@ -8,6 +8,7 @@ export interface CompanyTypeOption {
   description: string
   badge: string
   icon: 'building' | 'user' | 'trending' | 'briefcase'
+  image?: string
 }
 
 export interface CompanyRegistrationDetails {

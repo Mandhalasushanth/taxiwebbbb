@@ -33,7 +33,7 @@ export const ApplicationReceipt: React.FC = () => {
     <div className="app-receipt-page">
       {/* Top Progress Tracker */}
       <div className="app-receipt-stepbar">
-        <span className="app-receipt-stepbar__badge">Step 11 of 11</span>
+        <span className="app-receipt-stepbar__badge">Step 10 of 10</span>
         <span className="app-receipt-stepbar__text">Application Receipt</span>
         <div className="app-receipt-stepbar__line">
           <div className="app-receipt-stepbar__line-fill" />

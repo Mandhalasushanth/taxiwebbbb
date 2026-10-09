@@ -39,6 +39,14 @@ export const companyRegistrationData: CompanyRegistrationDetails = {
   },
 }
 
+/** 3D icon image paths stored in public/assets/icons/incorporation/ */
+export const COMPANY_TYPE_ICON_IMAGE_MAP: Record<CompanyTypeOption['id'], string> = {
+  pvt_ltd: '/assets/icons/incorporation/pvt-ltd.png',
+  opc: '/assets/icons/incorporation/opc.png',
+  section_8: '/assets/icons/incorporation/section-8.png',
+  public_ltd: '/assets/icons/incorporation/public-ltd.png',
+}
+
 export const companyTypeOptions: CompanyTypeOption[] = [
   {
     id: 'pvt_ltd',
@@ -46,6 +54,7 @@ export const companyTypeOptions: CompanyTypeOption[] = [
     description: 'Suitable for startups and growing businesses. Limited liability & easy funding.',
     badge: 'Min 2 Directors',
     icon: 'building',
+    image: COMPANY_TYPE_ICON_IMAGE_MAP.pvt_ltd,
   },
   {
     id: 'opc',
@@ -53,6 +62,7 @@ export const companyTypeOptions: CompanyTypeOption[] = [
     description: 'Ideal for solo entrepreneurs who want corporate identity with 100% ownership control.',
     badge: '1 Founder + 1 Nominee',
     icon: 'user',
+    image: COMPANY_TYPE_ICON_IMAGE_MAP.opc,
   },
   {
     id: 'section_8',
@@ -60,6 +70,7 @@ export const companyTypeOptions: CompanyTypeOption[] = [
     description: 'Formed for promoting commerce, art, science, sports, education, research, or charity.',
     badge: 'Min 2 Members',
     icon: 'trending',
+    image: COMPANY_TYPE_ICON_IMAGE_MAP.section_8,
   },
   {
     id: 'public_ltd',
@@ -67,6 +78,7 @@ export const companyTypeOptions: CompanyTypeOption[] = [
     description: 'Suitable for large scale enterprises planning to list shares or issue public capital.',
     badge: 'Min 3 Directors',
     icon: 'briefcase',
+    image: COMPANY_TYPE_ICON_IMAGE_MAP.public_ltd,
   },
 ]
 

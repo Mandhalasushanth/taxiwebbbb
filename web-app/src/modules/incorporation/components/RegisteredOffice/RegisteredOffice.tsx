@@ -68,7 +68,12 @@ export const RegisteredOffice: React.FC = () => {
   }
 
   const handleUploadDoc = (id: string, file: File) => {
-    setErrors((prev) => ({ ...prev, docs: '' }))
+    setErrors((prev) => {
+      const next = { ...prev }
+      delete next[id]
+      delete next.docs
+      return next
+    })
     const newDocs = docs.map((d: OfficeDocItem) => (d.id === id ? { ...d, isUploaded: true, fileName: file.name } : d))
     updateFormData({
       registeredOffice: { ...formData.registeredOffice, addressData, docs: newDocs }
@@ -145,7 +150,7 @@ export const RegisteredOffice: React.FC = () => {
     <div className="reg-office-page">
       {/* Step Progress Tracker */}
       <div className="reg-office-stepbar">
-        <span className="reg-office-stepbar__badge">Step 3 of 11</span>
+        <span className="reg-office-stepbar__badge">Step 2 of 10</span>
         <div className="reg-office-stepbar__line">
           <div className="reg-office-stepbar__line-fill" />
         </div>
@@ -159,8 +164,15 @@ export const RegisteredOffice: React.FC = () => {
         </p>
       </header>
 
-      {/* Address Form Section */}
-      <section className="reg-office-section">
+      {/* Address Form Card */}
+      <section className="reg-office-card">
+        <div className="reg-office-card__header">
+          <h2 className="reg-office-card__title">Registered Office Address</h2>
+          <p className="reg-office-card__subtitle">
+            Enter physical address, premises ownership status, and official statutory contact details.
+          </p>
+        </div>
+
         {renderInput('Building / Premises Address Line', 'addressLine1', 'Enter building / premises address')}
 
         <div className="reg-office-row-2">
@@ -207,9 +219,14 @@ export const RegisteredOffice: React.FC = () => {
         </div>
       </section>
 
-      {/* Section: Mandatory Documents */}
-      <section className="reg-office-section">
-        <h2 className="reg-office-section__title">Mandatory Documents</h2>
+      {/* Section: Mandatory Documents Card */}
+      <section className="reg-office-card">
+        <div className="reg-office-card__header">
+          <h2 className="reg-office-card__title">Mandatory Documents</h2>
+          <p className="reg-office-card__subtitle">
+            Upload valid address proof and NOC required for MCA registered office verification.
+          </p>
+        </div>
 
         <div className="reg-office-docs-list">
           {docs.map((doc: OfficeDocItem) => (
@@ -221,15 +238,17 @@ export const RegisteredOffice: React.FC = () => {
                 isRequired={doc.isRequired}
                 isUploaded={doc.isUploaded}
                 fileName={doc.fileName}
-                className={errors[doc.id] ? 'loan-doc-item--error doc-card--error' : ''}
+                className={errors[doc.id] && !doc.isUploaded ? 'loan-doc-item--error doc-card--error' : ''}
                 onUpload={(_, file) => handleUploadDoc(doc.id, file)}
                 onRemove={() => handleRemoveDoc(doc.id)}
               />
-              {errors[doc.id] && <span className="reg-office-field-error">{errors[doc.id]}</span>}
+              {errors[doc.id] && !doc.isUploaded && <span className="reg-office-field-error">{errors[doc.id]}</span>}
             </div>
           ))}
         </div>
-        {errors.docs && <span className="reg-office-field-error reg-office-field-error--spaced">{errors.docs}</span>}
+        {errors.docs && docs.some((d) => d.isRequired && !d.isUploaded) && (
+          <span className="reg-office-field-error reg-office-field-error--spaced">{errors.docs}</span>
+        )}
       </section>
 
       {/* Footer Navigation */}

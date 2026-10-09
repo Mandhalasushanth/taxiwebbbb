@@ -41,7 +41,7 @@
   overflow: hidden;
 }
 .app-track-stepbar__line-fill {
-  width: 100%;
+  width: 90%;
   height: 100%;
   background: var(--palette-orange-500-f25a22);
   border-radius: 9999px;
@@ -91,6 +91,48 @@
 .app-track-summary-card__meta {
   font-size: 0.85rem;
   color: var(--muted-text);
+}
+
+/* Timeline Card */
+.app-track-timeline-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.app-track-timeline-card:hover {
+  border-color: var(--grey-300, #cbd5e1);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.app-track-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--subtle-border);
+  padding-bottom: 0.85rem;
+}
+
+.app-track-card__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--palette-slate-900);
+  letter-spacing: -0.01em;
+}
+
+.app-track-card__subtitle {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--secondary-text);
+  line-height: 1.45;
 }
 
 /* Timeline Container */
@@ -254,4 +296,19 @@
 .app-track-btn-receipt:hover {
   background: var(--palette-sky-800-143560);
   transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+  .app-track-timeline-card {
+    padding: 1.25rem 1.15rem;
+    border-radius: 12px;
+  }
+  .app-track-actions {
+    flex-direction: column-reverse;
+  }
+  .app-track-btn-back,
+  .app-track-btn-receipt {
+    width: 100%;
+    text-align: center;
+  }
 }

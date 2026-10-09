@@ -97,7 +97,7 @@ export const ReviewApplication: React.FC = () => {
     <div className="review-app-page">
       {/* Progress Tracker */}
       <div className="review-app-stepbar">
-        <span className="review-app-stepbar__badge">Step 8 of 11</span>
+        <span className="review-app-stepbar__badge">Step 7 of 10</span>
         <span className="review-app-stepbar__text">Review Application</span>
         <div className="review-app-stepbar__line">
           <div className="review-app-stepbar__line-fill" />

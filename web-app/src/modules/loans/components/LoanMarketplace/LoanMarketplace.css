@@ -230,17 +230,7 @@
 .loan-item-card__icon-tile--project-finance .loan-item-card__icon-svg { color: var(--palette-violet-600); }
 .loan-item-card__icon-tile--msme-loan .loan-item-card__icon-svg { color: var(--palette-yellow-600); }
 
-.loan-item-card__rate {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--palette-blue-700, #1d4ed8);
-  background: var(--palette-blue-50, #eff6ff);
-  border: 1px solid var(--palette-blue-100, #dbeafe);
-  padding: 0.25rem 0.65rem;
-  border-radius: 20px;
-  white-space: nowrap;
-  letter-spacing: 0.01em;
-}
+
 
 .loan-item-card__body {
   display: flex;
@@ -333,9 +323,6 @@
     width: 30px;
     height: 30px;
   }
-  .loan-item-card__rate {
-    font-size: 0.78rem;
-    padding: 0.2rem 0.55rem;
-  }
+
 }
 

@@ -74,7 +74,7 @@ export const CapitalDetails: React.FC = () => {
     <div className="capital-details-page">
       {/* Step Progress Bar */}
       <div className="capital-details-stepbar">
-        <span className="capital-details-stepbar__badge">Step 5 of 11</span>
+        <span className="capital-details-stepbar__badge">Step 4 of 10</span>
         <span className="capital-details-stepbar__text">Shareholding & Capital</span>
         <div className="capital-details-stepbar__line">
           <div className="capital-details-stepbar__line-fill" />
