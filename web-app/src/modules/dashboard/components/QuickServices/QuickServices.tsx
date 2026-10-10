@@ -1,5 +1,5 @@
-import type { MouseEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, type MouseEvent } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import './QuickServices.css'
 
@@ -76,18 +76,27 @@ export interface QuickServicesProps {
 
 export const QuickServices = ({ services = QUICK_SERVICE_LIST }: QuickServicesProps) => {
   const navigate = useNavigate()
+  const { hash } = useLocation()
+
+  const scrollToServices = () =>
+    document.getElementById(routePaths.dashboardServicesAnchor)?.scrollIntoView({ behavior: 'smooth' })
+
+  // Arriving via /dashboard#quick-services (sidebar "Projects", "Browse Services") lands on this grid
+  useEffect(() => {
+    if (hash === `#${routePaths.dashboardServicesAnchor}`) scrollToServices()
+  }, [hash])
 
   const handleServiceClick = (e: MouseEvent, targetUrl: string) => {
     e.preventDefault()
     if (targetUrl.startsWith('#')) {
-      document.getElementById('quick-services')?.scrollIntoView({ behavior: 'smooth' })
+      scrollToServices()
       return
     }
     navigate(targetUrl)
   }
 
   return (
-    <section className="quick-services" id="quick-services">
+    <section className="quick-services" id={routePaths.dashboardServicesAnchor}>
       {/* Section Header */}
       <div className="quick-services__header">
         <div className="quick-services__header-left">

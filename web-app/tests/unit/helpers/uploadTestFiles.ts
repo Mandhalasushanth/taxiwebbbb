@@ -10,7 +10,6 @@ const KINDS: Record<string, { type: string; signature: number[] }> = {
   xlsx: { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', signature: [0x50, 0x4b, 0x03, 0x04] },
   xls: { type: 'application/vnd.ms-excel', signature: [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1] },
 }
-
 /** A valid upload named `name` (its type is taken from the extension) */
 export const uploadTestFile = (name: string, body = 'test document'): File => {
   const kind = KINDS[name.split('.').pop()?.toLowerCase() ?? '']

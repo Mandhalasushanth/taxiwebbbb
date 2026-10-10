@@ -5,6 +5,7 @@ import {
   isValidPan as sharedIsValidPan,
   isValidAadhaar as sharedIsValidAadhaar,
   isValidGstin as sharedIsValidGstin,
+  validateMobileNumber,
 } from '@shared/utils/validationUtils'
 import { REGEX } from '@shared/constants'
 
@@ -42,8 +43,8 @@ export const commonLoanValidation = {
   },
 
   isValidAadhaar: (aadhaar: string): boolean => {
-    const cleaned = aadhaar.replace(/\s+/g, '')
-    return sharedIsValidAadhaar(cleaned) || /^\d{12}$/.test(cleaned)
+    // Checksum-verified only: any 12 digits (e.g. 000000000000) must not pass
+    return sharedIsValidAadhaar(aadhaar.replace(/\s+/g, ''))
   },
 
   isValidGst: (gst: string): boolean => {
@@ -51,10 +52,9 @@ export const commonLoanValidation = {
   },
 
   validatePhone: (phone: string): { isValid: boolean; message?: string } => {
-    const cleaned = phone.replace(/\D/g, '')
-    if (!cleaned) return { isValid: false, message: 'Mobile number is required' }
-    if (cleaned.length !== 10) return { isValid: false, message: 'Mobile number must be 10 digits' }
-    return { isValid: true }
+    // Shared rule: strips +91, needs a 6-9 start and rejects repeated-digit dummies
+    const message = validateMobileNumber(phone)
+    return message ? { isValid: false, message } : { isValid: true }
   },
 
   validatePan: (pan: string): { isValid: boolean; message?: string } => {

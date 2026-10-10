@@ -17,6 +17,9 @@ const IconShield = ({ color = '#f59e0b' }) => <svg width="20" height="20" viewBo
 const IconChat = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
 const IconStar = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
 
+/** Sticky app header + section nav height, used to offset scroll-spy and jump-to-section. */
+export const PROFILE_NAV_SCROLL_OFFSET = 136
+
 export interface ProfileSectionData {
   title: string
   items: {

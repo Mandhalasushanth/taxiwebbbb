@@ -26,7 +26,7 @@ import {
   Award,
   Wallet,
 } from 'lucide-react'
-import type { TdsProfile, TdsBankDetails, TdsIncomeTaxData } from '../types/tdsRefund.types'
+import type { TdsProfile, TdsBankDetails, TdsBusinessDetails, TdsIncomeTaxData } from '../types/tdsRefund.types'
 import { errorTracker } from '@core/errors'
 
 const createCustomSvgIcon =
@@ -104,6 +104,13 @@ export const EMPTY_BANK: TdsBankDetails = {
   bankName: '',
   branch: '',
   accountType: null,
+}
+
+export const EMPTY_BUSINESS: TdsBusinessDetails = {
+  legalName: '',
+  pan: '',
+  aadhaar: '',
+  mobile: '',
 }
 
 export const EMPTY_TAX: TdsIncomeTaxData = {

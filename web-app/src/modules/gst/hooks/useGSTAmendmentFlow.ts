@@ -199,7 +199,7 @@ export const useGSTAmendmentFlow = () => {
             statusTone: 'info',
             progress: 25,
             icon: '📝',
-            to: `/applications/track/${record.reference}`,
+            to: routePaths.applicationTrack(record.reference),
           })
         }
       } catch {

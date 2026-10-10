@@ -12,9 +12,8 @@ import {
 } from '../itrFiling.constants'
 
 export const AY_OPTIONS: { ay: AssessmentYearOption; fy: string }[] = [
-  { ay: 'AY 2026-27', fy: 'FY 2025-2026' },
-  { ay: 'AY 2027-28', fy: 'FY 2026-2027' },
   { ay: 'AY 2025-26', fy: 'FY 2024-2025' },
+  { ay: 'AY 2026-27', fy: 'FY 2025-2026' },
 ]
 
 export const RESIDENTIAL_OPTIONS: {

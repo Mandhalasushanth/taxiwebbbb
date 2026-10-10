@@ -185,7 +185,7 @@ export const useGstRegistrationState = () => {
       statusTone: 'info',
       progress: 25,
       icon: '📄',
-      to: `/applications/track/${appCode}`,
+      to: routePaths.applicationTrack(appCode),
     })
   }
 

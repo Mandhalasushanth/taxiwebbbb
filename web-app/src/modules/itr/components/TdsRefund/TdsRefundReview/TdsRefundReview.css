@@ -431,3 +431,15 @@
     text-align: left;
   }
 }
+
+/* Additional tax payable instead of a refund */
+.tds-refund-box--payable {
+  background: var(--palette-red-50);
+  border-color: var(--palette-red-200);
+}
+.tds-refund-box--payable .tds-refund-box-label {
+  color: var(--palette-red-700);
+}
+.tds-refund-box--payable .tds-refund-box-amount {
+  color: var(--palette-red-700);
+}

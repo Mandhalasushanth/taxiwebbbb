@@ -1,33 +1,11 @@
 import React from "react";
 import { TdsIcons } from "@modules/itr/utils/tdsRefund.constants";
 
-/** Estimated-refund banner and progress sidebar shown beside the TDS Refund steps */
-export interface TdsRefundPrelimBannerProps {
-  assessmentYear?: string;
-  refundAmount: string;
-}
-
-export const TdsRefundPrelimBanner: React.FC<TdsRefundPrelimBannerProps> = ({
-  assessmentYear = "AY 2026-27",
-  refundAmount,
-}) => (
-  <section className="tds-prelim-card">
-    <div className="tds-prelim-left">
-      <div className="tds-prelim-tag-row">
-        <span className="tds-prelim-tag">PRELIMINARY ESTIMATED REFUND</span>
-        <span className="tds-prelim-ay">{assessmentYear}</span>
-      </div>
-      <div className="tds-prelim-amount" data-testid="prelim-refund-amount">
-        {refundAmount}
-      </div>
-    </div>
-  </section>
-);
-
+/** Progress sidebar shown beside the TDS Refund steps */
 const PROGRESSION_CHECKLIST = [
   "Pre-filled from ITD Portal",
   "Bank verified for direct credit",
-  "Next: Upload Form 16 / AIS / Bank Stmt",
+  "Next: Review & Estimate",
 ];
 
 export const TdsRefundProgressionSidebar: React.FC = () => (

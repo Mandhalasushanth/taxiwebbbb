@@ -2,11 +2,7 @@
  * Public surface of the GST module. Other modules import from here only.
  */
 export { gstRoutes } from './routes'
-export {
-  GSTAmendmentHeader,
-  GSTAmendmentForm,
-  GSTAmendmentSubmitted,
-} from './components/GSTAmendment'
+export { GSTAmendmentSubmitted } from './components/GSTAmendment'
 export {
   GSTCertificateForm,
   GSTCertificateSubmitted,

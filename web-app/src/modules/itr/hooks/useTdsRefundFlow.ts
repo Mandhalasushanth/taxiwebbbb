@@ -4,25 +4,24 @@ import { useAuthStore } from '@store/index'
 import { userStorage } from '@core/storage/userStorage'
 import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '@shared/saveDraft'
 import { authStorage } from '@core/auth'
-import { EMPTY_PROFILE, EMPTY_BANK, EMPTY_TAX, syncProfileWithAuthUser } from '../utils/tdsRefund.constants'
-import type { TdsProfile, TdsBankDetails, TdsIncomeTaxData, UploadedFileMeta } from '../types/tdsRefund.types'
+import { EMPTY_PROFILE, EMPTY_BANK, EMPTY_BUSINESS, EMPTY_TAX, syncProfileWithAuthUser } from '../utils/tdsRefund.constants'
+import type { TdsProfile, TdsBankDetails, TdsBusinessDetails, TdsIncomeTaxData } from '../types/tdsRefund.types'
 
 const SERVICE_ID = 'tds-refund'
-const TOTAL_STEPS = 4
-const SUCCESS_STEP = 5
+const TOTAL_STEPS = 3
+const SUCCESS_STEP = 4
 
 const STEP_LABELS: Record<number, string> = {
-  1: 'Customer & Income',
-  2: 'Upload Documents',
-  3: 'Review',
-  4: 'Payment',
+  1: 'Application Details',
+  2: 'Review',
+  3: 'Payment',
 }
 
 interface TdsRefundDraft {
   profile: TdsProfile
   bankDetails: TdsBankDetails
+  businessDetails: TdsBusinessDetails
   taxData: TdsIncomeTaxData
-  uploads: Record<string, UploadedFileMeta>
 }
 
 export const useTdsRefundFlow = () => {
@@ -75,11 +74,13 @@ export const useTdsRefundFlow = () => {
     }
   }, [user])
 
+  const [businessDetails, setBusinessDetails] = useState<TdsBusinessDetails>(() => ({
+    ...EMPTY_BUSINESS,
+    ...draft?.formData?.businessDetails,
+  }))
+
   const [taxData, setTaxData] = useState<TdsIncomeTaxData>(
     () => draft?.formData?.taxData || { ...EMPTY_TAX }
-  )
-  const [uploads, setUploads] = useState<Record<string, UploadedFileMeta>>(
-    () => draft?.formData?.uploads || {}
   )
 
   const isDirty = Boolean(
@@ -92,6 +93,10 @@ export const useTdsRefundFlow = () => {
         profile.dob.trim() !== '' ||
         bankDetails.accountNumber.trim() !== '' ||
         bankDetails.ifsc.trim() !== '' ||
+        businessDetails.legalName.trim() !== '' ||
+        businessDetails.pan.trim() !== '' ||
+        businessDetails.aadhaar.trim() !== '' ||
+        businessDetails.mobile.trim() !== '' ||
         taxData.salaryIncome !== '' ||
         taxData.otherIncome !== '' ||
         taxData.interestIncome !== '' ||
@@ -101,8 +106,7 @@ export const useTdsRefundFlow = () => {
         taxData.capitalGains === 'yes' ||
         taxData.businessIncome === 'yes' ||
         taxData.homeLoanInterest === 'yes' ||
-        taxData.taxDeductions === 'yes' ||
-        Object.keys(uploads).length > 0)
+        taxData.taxDeductions === 'yes')
   )
 
   // Same draft behaviour as loans and GST: auto-save, save / discard dialog, browser Back prompt
@@ -114,7 +118,7 @@ export const useTdsRefundFlow = () => {
     stepLabel: STEP_LABELS[currentStep] || STEP_LABELS[1],
     resumeRoute: routePaths.itr.tdsRefund,
     exitRoute: routePaths.itr.root,
-    formData: { profile, bankDetails, taxData, uploads },
+    formData: { profile, bankDetails, businessDetails, taxData },
     hasEnteredData: isDirty,
     isComplete: currentStep >= SUCCESS_STEP,
     storageNamespace: DRAFT_NAMESPACES.itr,
@@ -136,12 +140,12 @@ export const useTdsRefundFlow = () => {
         statusTone: 'info',
         progress: 25,
         icon: '💰',
-        to: `/applications/track/${tdsRef}`,
+        to: routePaths.applicationTrack(tdsRef),
       })
       setProfile({ ...EMPTY_PROFILE })
       setBankDetails({ ...EMPTY_BANK })
+      setBusinessDetails({ ...EMPTY_BUSINESS })
       setTaxData({ ...EMPTY_TAX })
-      setUploads({})
       setCurrentStep(SUCCESS_STEP)
     } catch {
       setCurrentStep(SUCCESS_STEP)
@@ -157,10 +161,10 @@ export const useTdsRefundFlow = () => {
     setProfile,
     bankDetails,
     setBankDetails,
+    businessDetails,
+    setBusinessDetails,
     taxData,
     setTaxData,
-    uploads,
-    setUploads,
     isModalOpen: serviceDraft.isDraftModalOpen,
     openModal: serviceDraft.openDraftModal,
     handleSaveAndExit: serviceDraft.handleSaveAndExit,

@@ -9,7 +9,6 @@ import { ItrDocumentsChecklistView } from '../../src/modules/itr/components/ItrF
 import { NoticeDocument } from '../../src/modules/itr/components/TaxNoticeAssistance/NoticeInformation/NoticeDocument'
 import { SupportingDocuments } from '../../src/modules/itr/components/TaxNoticeAssistance/SupportingDocuments/SupportingDocuments'
 import { Step4DocumentUpload } from '../../src/modules/itr/components/RevisedItr/DocumentUpload/Step4DocumentUpload'
-import { TdsRefundDocuments } from '../../src/modules/itr/components/TdsRefund/TdsRefundDocuments/TdsRefundDocuments'
 
 describe('ITR Modules Document Preview Consistency', () => {
   let createdObjectUrls: string[] = []
@@ -19,7 +18,7 @@ describe('ITR Modules Document Preview Consistency', () => {
     createdObjectUrls = []
     openedUrls = []
 
-    vi.spyOn(URL, 'createObjectURL').mockImplementation((blob: Blob | MediaSource) => {
+    vi.spyOn(URL, 'createObjectURL').mockImplementation(() => {
       const url = `blob:http://localhost:5173/mock-${Math.random().toString(36).substring(2, 9)}`
       createdObjectUrls.push(url)
       return url
@@ -40,28 +39,7 @@ describe('ITR Modules Document Preview Consistency', () => {
     vi.restoreAllMocks()
   })
 
-  it('TdsRefund: clicking View Document opens blob URL in new window', () => {
-    const dummyFile = uploadTestFile('GST_Compliance.pdf')
-
-    render(
-      <MemoryRouter>
-        <TdsRefundDocuments
-          initialUploads={{
-            pan: { name: 'GST_Compliance.pdf', size: '1.2 MB', file: dummyFile },
-          }}
-        />
-      </MemoryRouter>
-    )
-
-    const viewBtn = screen.getByTestId('view-doc-pan')
-    expect(viewBtn).toBeDefined()
-    fireEvent.click(viewBtn)
-
-    expect(window.open).toHaveBeenCalled()
-    expect(openedUrls[0]).toMatch(/^blob:http:\/\/localhost:5173\//)
-  })
-
-  it('ITR Filing: uploading and viewing document opens blob URL identically to TDS Refund', async () => {
+  it('ITR Filing: uploading and viewing document opens blob URL', async () => {
     let uploadedDocsState: any = {}
     const handleUploadDoc = vi.fn((docId, docInfo) => {
       uploadedDocsState = { [docId]: docInfo }

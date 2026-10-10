@@ -113,7 +113,7 @@ export const GSTFilingSuccess: React.FC<GSTFilingSuccessProps> = ({
           statusTone: 'warning',
           progress: 30,
           icon: '📊',
-          to: `/applications/track/${displayAppId}`,
+          to: routePaths.applicationTrack(displayAppId),
         })
       }
     } catch {

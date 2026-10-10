@@ -166,35 +166,7 @@
   display: block;
 }
 
-.reg-office-field-error--spaced {
-  margin-top: 0.5rem;
-}
 
-
-/* Info Box */
-.reg-office-info-box {
-  background: var(--palette-sky-50-f0f7ff);
-  border: 1px solid var(--palette-blue-100-d0e3ff);
-  border-radius: 12px;
-  padding: 0.85rem 1.15rem;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  font-size: 0.85rem;
-  color: var(--palette-blue-900-1e3a8a);
-  line-height: 1.45;
-}
-.reg-office-info-box svg {
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-/* Mandatory Documents */
-.reg-office-docs-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
 
 /* Footer Navigation */
 .reg-office-footer {

@@ -1,5 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { authService, buildProfileCompletionPath, resolvePostLoginPath } from '@core/auth'
+import { routePaths } from '@core/config'
+import { useSafeBack } from '@shared/hooks'
 import { useAuthStore } from '@store/index'
 
 import { BrandPanel } from '../BrandPanel/BrandPanel'
@@ -15,10 +17,8 @@ export const CustomerTypePage = () => {
   const location = useLocation()
   const { selectedId, setSelectedId } = useCustomerType(null)
   const user = useAuthStore((state) => state.user)
-
-  const handleBack = () => {
-    navigate(-1)
-  }
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  const handleBack = useSafeBack(isAuthenticated ? routePaths.dashboard : routePaths.auth.login)
 
   const handleProceed = () => {
     if (!selectedId) return

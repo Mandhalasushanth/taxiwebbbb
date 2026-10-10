@@ -3,13 +3,13 @@ import { routePaths } from '@core/config'
 import { DirectorCard } from '../../components'
 import { defaultDirectors } from '../../data/companyRegistrationData'
 import { StepActionBar } from '@shared/components'
+import { useAppStore } from '@store/index'
 import { useIncorporationFlow } from '../../hooks'
 import {
   isValidPan,
   isValidDin,
   isValidEmail,
   isValidMobile,
-  isValidPincode,
   isValidName,
 } from '../../utils/validation'
 import { validateDobSignatory } from '@shared/utils/validationUtils'
@@ -20,9 +20,10 @@ export const PromoterDetails: React.FC = () => {
   const { formData, updateFormData, draft, reviewEdit, goToStep } = useIncorporationFlow()
   const companyType = formData.companyType || 'pvt_ltd'
   const isOpc = companyType === 'opc'
-  const minDirectors = isOpc ? 1 : companyType === 'public_ltd' ? 3 : 2
+  const minDirectors = isOpc ? 1 : 2
 
   const directors: DirectorDetails[] = (formData.promoters && formData.promoters.length > 0) ? formData.promoters : defaultDirectors
+  const pushToast = useAppStore((state) => state.pushToast)
   const [error, setError] = useState<string>('')
   const [directorErrors, setDirectorErrors] = useState<Record<number, Record<string, string>>>({})
 
@@ -48,7 +49,7 @@ export const PromoterDetails: React.FC = () => {
       fatherName: '',
       gender: '',
       nationality: 'Indian',
-      designation: 'Director',
+      designation: '',
       category: 'Director',
       email: '',
       mobile: '',
@@ -69,7 +70,7 @@ export const PromoterDetails: React.FC = () => {
 
   const handleSaveDirector = (id: number) => {
     const director = directors.find((d) => d.id === id)
-    alert(`Changes saved for ${director?.fullName || `Director #${id}`}!`)
+    pushToast(`Changes saved for ${director?.fullName || `Director #${id}`}`, 'success')
   }
 
   const handleCancelDirector = (id: number) => {
@@ -90,7 +91,9 @@ export const PromoterDetails: React.FC = () => {
     if (directors.length < minDirectors) {
       minDirectorsError =
         companyType === 'public_ltd'
-          ? 'Public Limited Company requires at least 3 directors.'
+          ? 'Public Limited Company requires at least 2 directors.'
+          : companyType === 'llp'
+          ? 'An LLP requires at least 2 designated partners.'
           : isOpc
           ? 'One Person Company requires at least 1 director.'
           : 'A minimum of 2 directors/partners are required.'
@@ -116,15 +119,11 @@ export const PromoterDetails: React.FC = () => {
         const dobError = validateDobSignatory(d.dob)
         if (dobError) dErrors.dob = dobError
       }
-      if (!(d.fatherName || '').trim()) {
-        dErrors.fatherName = "Father's name is required"
-      } else if (!isValidName(d.fatherName)) {
-        dErrors.fatherName = "Enter a valid name (letters only)"
+      if (!(d.designation || '').trim()) {
+        dErrors.designation = 'Designation is required'
+      } else if (!isValidName(d.designation)) {
+        dErrors.designation = 'Enter a valid designation (letters only)'
       }
-      if (!d.gender) dErrors.gender = 'Gender is required'
-      if (!(d.nationality || '').trim()) dErrors.nationality = 'Nationality is required'
-      if (!(d.designation || '').trim()) dErrors.designation = 'Designation is required'
-      if (!(d.category || '').trim()) dErrors.category = 'Category is required'
       if (!(d.email || '').trim()) {
         dErrors.email = 'Email address is required'
       } else if (!isValidEmail(d.email)) {
@@ -135,17 +134,6 @@ export const PromoterDetails: React.FC = () => {
       } else if (!isValidMobile(d.mobile)) {
         dErrors.mobile = 'Enter a valid 10-digit Indian mobile number'
       }
-      if (!(d.addressLine1 || '').trim()) dErrors.addressLine1 = 'Address line 1 is required'
-      if (!(d.city || '').trim()) dErrors.city = 'City is required'
-      if (!(d.district || '').trim()) dErrors.district = 'District is required'
-      if (!(d.state || '').trim()) dErrors.state = 'State is required'
-      if (!(d.pincode || '').trim()) {
-        dErrors.pincode = 'PIN code is required'
-      } else if (!isValidPincode(d.pincode)) {
-        dErrors.pincode = 'Enter a valid 6-digit PIN code'
-      }
-      if (!d.equityShares || Number(d.equityShares) <= 0) dErrors.equityShares = 'Number of equity shares is required'
-      if (!d.equityAmount || Number(d.equityAmount) <= 0) dErrors.equityAmount = 'Amount of equity shares is required'
 
       if (Object.keys(dErrors).length > 0) {
         acc[d.id] = dErrors

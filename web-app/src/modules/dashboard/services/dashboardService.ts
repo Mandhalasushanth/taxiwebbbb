@@ -47,7 +47,7 @@ export const quickServices: QuickService[] = [
     id: 'company',
     label: 'Company',
     description: 'Private limited, LLP, OPC incorporation, MSME Udyam, trademark and compliance.',
-    to: routePaths.services,
+    to: routePaths.incorporation.root,
     icon: '🏢',
     price: '₹4,999',
     priceUnit: 'from',

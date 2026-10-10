@@ -1,32 +1,48 @@
 .cs-quick-prompts {
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1.25rem 0.25rem;
   background-color: var(--surface);
+  border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
 }
 
+/* One swipeable row: keeps the chat area tall on small screens */
 .cs-quick-prompts__list {
   display: flex;
-  flex-wrap: wrap;
   gap: 0.5rem;
   padding-bottom: 0.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.cs-quick-prompts__list::-webkit-scrollbar {
+  display: none;
 }
 
 .cs-quick-prompts__chip {
+  flex-shrink: 0;
   white-space: nowrap;
-  background-color: transparent;
-  border: 1.5px solid var(--palette-violet-500);
+  background-color: var(--palette-sky-50-f0f9ff);
+  border: 1px solid var(--palette-sky-100-e0f2fe);
   border-radius: 9999px;
-  padding: 0.4rem 1rem;
+  padding: 0.45rem 1rem;
   font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--palette-violet-500);
+  font-weight: 600;
+  color: var(--palette-blue-800-0f284c);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .cs-quick-prompts__chip:hover {
-  background-color: var(--palette-purple-100);
+  background-color: var(--palette-blue-800-0f284c);
+  border-color: var(--palette-blue-800-0f284c);
+  color: var(--surface);
+  box-shadow: 0 6px 14px rgba(15, 40, 76, 0.2);
   transform: translateY(-1px);
+}
+
+.cs-quick-prompts__chip:focus-visible {
+  outline: 3px solid var(--palette-sky-400);
+  outline-offset: 2px;
 }

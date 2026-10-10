@@ -134,7 +134,7 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
 
   return (
     <div className="itr-filing-step itr-step-review">
-      <ItrFilingHeaderStepper currentStepId={5} />
+      <ItrFilingHeaderStepper currentStepId={4} />
       <div className="itr-rv2-grid">
         <ItrReviewLeftColumn
           profile={profile}

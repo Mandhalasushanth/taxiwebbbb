@@ -25,6 +25,16 @@ export interface TdsBankDetails {
   accountType: 'savings' | 'current' | null
 }
 
+/** Business identity entered on the TDS Refund customer step */
+export interface TdsBusinessDetails {
+  legalName: string
+  pan: string
+  aadhaar: string
+  mobile: string
+  panDoc?: UploadedFileMeta
+  aadhaarDoc?: UploadedFileMeta
+}
+
 export interface TdsIncomeTaxData {
   taxRegime: 'old' | 'new' | null
   salaryIncome: string

@@ -8,6 +8,7 @@ import { LoanMarketplaceCard } from './LoanMarketplaceCard'
 import { LOAN_MARKETPLACE_ITEMS } from '@modules/loans/constants/loanMarketplace.constants'
 import { safeNavigateTo, isValidLoanMarketplaceItem } from '@modules/loans/utils/loanMarketplace.utils'
 import type { LoanMarketplaceItem } from '@modules/loans/types/loanMarketplace.types'
+import { routePaths } from '@core/config'
 import './LoanMarketplace.css'
 
 /**
@@ -48,7 +49,7 @@ export const LoanMarketplace: React.FC = () => {
         setSelectedTarget(item.applyPath)
         setIsProfileModalOpen(true)
       } else {
-        safeNavigateTo(navigate, item.applyPath, '/loans')
+        safeNavigateTo(navigate, item.applyPath, routePaths.loans)
       }
     },
     [navigate, user?.isProfileComplete]

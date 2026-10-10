@@ -30,9 +30,9 @@ const CATEGORY_ICON_MAP: Record<string, React.FC<{ size?: number; className?: st
 const renderCategoryIcon = (name: string): React.ReactNode => {
   try {
     const IconComponent = CATEGORY_ICON_MAP[name] || UserCategoryIcon
-    return <IconComponent size={22} />
+    return <IconComponent size={19} />
   } catch {
-    return <UserCategoryIcon size={22} />
+    return <UserCategoryIcon size={19} />
   }
 }
 
@@ -40,7 +40,7 @@ export const ItrCategoryBanner: React.FC = () => (
   <div className="itr-cat-banner">
     <div className="itr-cat-banner__top">
       <div className="itr-cat-banner__icon-box" aria-hidden="true">
-        <CalculatorIcon size={24} className="itr-cat-banner__calc-svg" />
+        <CalculatorIcon size={20} className="itr-cat-banner__calc-svg" />
       </div>
       <div className="itr-cat-banner__text-group">
         <div className="itr-cat-banner__title-line">
@@ -87,7 +87,7 @@ export const ItrCategoryCard: React.FC<ItrCategoryCardProps> = ({ item, isSelect
           {renderCategoryIcon(item.iconName)}
         </div>
         <div className="itr-cat-card__radio-badge" aria-hidden="true">
-          {isSelected && <CheckIcon size={14} className="itr-cat-card__check-icon" />}
+          {isSelected && <CheckIcon size={12} className="itr-cat-card__check-icon" />}
         </div>
       </div>
       <div className="itr-cat-card__body">

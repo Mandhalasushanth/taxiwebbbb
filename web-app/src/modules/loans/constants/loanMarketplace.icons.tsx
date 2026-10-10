@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  ArrowRight,
   Cog,
   Store,
   Home,
@@ -10,7 +11,6 @@ import {
   FolderGit2,
   Award,
   Wallet,
-  ArrowRight,
 } from 'lucide-react'
 
 /**
@@ -84,8 +84,8 @@ export const WalletIcon: React.FC = () => (
 )
 
 /**
- * Right Navigation Chevron Icon
+ * Arrow after the "Apply Now" action (matches the GST "Start" arrow)
  */
-export const RightChevronIcon: React.FC = () => (
-  <ArrowRight size={16} className="loan-item-card__chevron" aria-hidden="true" />
+export const ApplyArrowIcon: React.FC = () => (
+  <ArrowRight size={16} strokeWidth={2.5} className="loan-item-card__arrow" aria-hidden="true" />
 )

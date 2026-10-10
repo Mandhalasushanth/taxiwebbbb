@@ -257,7 +257,7 @@ export const useRevisedItr = () => {
       userStorage.saveUserApplication({
         id: `app-rev-itr-${Date.now()}`, code: finalAppId, title: 'Revised ITR Filing',
         meta: `${returnDetails?.personalInfo?.fullName || 'Taxpayer'} · ${selectedAy || 'AY 2025-26'}`,
-        statusLabel: 'Under Verification', statusTone: 'info', progress: 30, icon: '📄', to: `/applications/track/${finalAppId}`,
+        statusLabel: 'Under Verification', statusTone: 'info', progress: 30, icon: '📄', to: routePaths.applicationTrack(finalAppId),
       })
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch {

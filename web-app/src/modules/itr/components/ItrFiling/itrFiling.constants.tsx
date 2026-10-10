@@ -58,7 +58,7 @@ export interface TaxpayerProfile {
   registeredAddress: string
 }
 
-export type AssessmentYearOption = 'AY 2026-27' | 'AY 2027-28' | 'AY 2025-26' | ''
+export type AssessmentYearOption = 'AY 2025-26' | 'AY 2026-27' | ''
 export type ResidentialStatusOption = 'resident' | 'nri' | 'rnor' | ''
 export type FilingTypeOption = 'original' | 'belated' | 'revised' | 'updated' | ''
 
@@ -176,7 +176,7 @@ export const RECOMMENDED_DOCS: ChecklistDocConfig[] = [
   { id: 'form26as', title: 'Form 26AS Tax Credit Statement', desc: 'Helps CA reconcile TDS credits and advance tax payments', Icon: IconFileText },
   { id: 'ais_tis', title: 'AIS / TIS Statement', desc: 'Annual Information Statement for interest, dividends & trades', Icon: IconPaperclip },
   { id: 'bank_statement', title: 'Bank Account Statement', desc: 'Recent statement for savings or current account', Icon: IconWallet },
-  { id: 'salary_payslips', title: 'Salary Payslips', desc: 'Recent salary slips to verify allowances and deductions', Icon: IconPayslip },
+  { id: 'salary_payslips', title: 'Salary Payslips (Optional)', desc: 'Recent salary slips to verify allowances and deductions', Icon: IconPayslip },
 ]
 
 export const ALL_DOCS = [...REQUIRED_DOCS, ...RECOMMENDED_DOCS]
@@ -184,15 +184,14 @@ export const ALL_DOCS = [...REQUIRED_DOCS, ...RECOMMENDED_DOCS]
 export const ITR_STEPS = [
   { id: 1, label: 'Personal & Filing' },
   { id: 2, label: 'Income Sources' },
-  { id: 3, label: 'Regime & Deductions' },
-  { id: 4, label: 'Document Checklist' },
-  { id: 5, label: 'Review & File' },
+  { id: 3, label: 'Document Checklist' },
+  { id: 4, label: 'Review & File' },
 ]
 
 /** Step each review section's "Edit" opens */
-export const ITR_REVIEW_EDIT_STEPS = { taxpayer: 1, documents: 4 } as const
+export const ITR_REVIEW_EDIT_STEPS = { taxpayer: 1, documents: 3 } as const
 
-export const ITR_STEP_LABELS = ['Personal & Filing Info', 'Income Sources', 'Regime & Deductions', 'Document Checklist', 'Review & File']
+export const ITR_STEP_LABELS = ['Personal & Filing Info', 'Income Sources', 'Document Checklist', 'Review & File']
 
 export const getStoredTaxpayerProfile = (overrideUser?: AuthUser | null): TaxpayerProfile => {
   try {

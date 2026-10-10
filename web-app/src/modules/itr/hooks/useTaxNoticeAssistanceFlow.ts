@@ -166,7 +166,7 @@ export const useTaxNoticeAssistanceFlow = () => {
         statusTone: 'success',
         progress: 100,
         icon: 'document',
-        to: `/applications/track/${applicationCode}`,
+        to: routePaths.applicationTrack(applicationCode),
       })
 
       clearDraft()

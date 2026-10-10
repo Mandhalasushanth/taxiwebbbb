@@ -40,7 +40,8 @@ export const companyRegistrationData: CompanyRegistrationDetails = {
 }
 
 /** 3D icon image paths stored in public/assets/icons/incorporation/ */
-export const COMPANY_TYPE_ICON_IMAGE_MAP: Record<CompanyTypeOption['id'], string> = {
+/** Types without a 3D image fall back to their inline line icon */
+export const COMPANY_TYPE_ICON_IMAGE_MAP: Partial<Record<CompanyTypeOption['id'], string>> = {
   pvt_ltd: '/assets/icons/incorporation/pvt-ltd.png',
   opc: '/assets/icons/incorporation/opc.png',
   section_8: '/assets/icons/incorporation/section-8.png',
@@ -55,6 +56,13 @@ export const companyTypeOptions: CompanyTypeOption[] = [
     badge: 'Min 2 Directors',
     icon: 'building',
     image: COMPANY_TYPE_ICON_IMAGE_MAP.pvt_ltd,
+  },
+  {
+    id: 'llp',
+    title: 'Limited Liability Partnership (LLP)',
+    description: 'Best for partners and professional firms. Limited liability with low compliance overhead.',
+    badge: 'Min 2 Designated Partners',
+    icon: 'partners',
   },
   {
     id: 'opc',
@@ -76,7 +84,7 @@ export const companyTypeOptions: CompanyTypeOption[] = [
     id: 'public_ltd',
     title: 'Public Limited Company',
     description: 'Suitable for large scale enterprises planning to list shares or issue public capital.',
-    badge: 'Min 3 Directors',
+    badge: 'Min 2 Directors',
     icon: 'briefcase',
     image: COMPANY_TYPE_ICON_IMAGE_MAP.public_ltd,
   },
@@ -105,7 +113,7 @@ export const defaultDirectors: DirectorDetails[] = [
     fatherName: '',
     gender: '',
     nationality: 'Indian',
-    designation: 'Director',
+    designation: '',
     category: 'Promoter Director',
     email: '',
     mobile: '',

@@ -6,21 +6,48 @@
 }
 
 .profile-section__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 13px;
-  font-weight: 700;
-  color: var(--palette-gray-500);
+  font-weight: 800;
+  color: var(--palette-blue-800-0f284c);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   margin: 0;
   padding: 0 4px;
+}
+
+/* Brand accent bar before each section title */
+.profile-section__title::before {
+  content: '';
+  width: 4px;
+  height: 16px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--palette-sky-400) 0%, var(--palette-sky-700) 100%);
 }
 
 .profile-section__card {
   background-color: var(--surface);
   border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 2px rgba(15, 40, 76, 0.04), 0 12px 32px rgba(15, 40, 76, 0.06);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--palette-gray-100);
+  transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+
+.profile-section__card:hover {
+  border-color: var(--palette-sky-100-e0f2fe);
+  box-shadow: 0 1px 2px rgba(15, 40, 76, 0.04), 0 18px 44px rgba(15, 40, 76, 0.1);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-section__card,
+  .profile-section__card:hover {
+    transition: none;
+    transform: none;
+  }
 }

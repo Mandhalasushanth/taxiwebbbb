@@ -50,7 +50,7 @@ describe('ITR Module - Save Draft Confirmations', () => {
       const startBtn = screen.getByTestId('tds-start-refund-btn')
       fireEvent.click(startBtn)
 
-      // Now on Step 1 Customer & Income - enter bank account number
+      // Now on Step 1 Application Details - enter bank account number
       const accInputs = screen.getAllByPlaceholderText(/enter your bank account number/i)
       fireEvent.change(accInputs[0], { target: { value: '123456789012' } })
 

@@ -160,12 +160,13 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
           ? 'ITR Filing'
             : path === routePaths.itr.tdsRefund
               ? 'TDS Refund'
-              : path === routePaths.itr.previousYearItr
-                ? 'Previous Year ITR'
-                : path === routePaths.itr.revisedItr
+              // Disabled services: Previous Year ITR / Tax Notice Assistance
+              // : path === routePaths.itr.previousYearItr
+              //   ? 'Previous Year ITR'
+              : path === routePaths.itr.revisedItr
                   ? 'Revised ITR'
-                  : path === routePaths.itr.taxNoticeAssistance
-                    ? 'Notice Assistance'
+                  // : path === routePaths.itr.taxNoticeAssistance
+                  //   ? 'Notice Assistance'
                     : path === routePaths.itr.tdsRefundEstimator
                       ? 'TDS Refund Estimator'
                       : path === routePaths.itr.taxComputation

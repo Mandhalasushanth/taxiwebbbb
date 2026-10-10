@@ -115,18 +115,63 @@
   text-align: right;
 }
 
+/* Assessment Year choices: two equal buttons, stacked on phones */
+.itr-ay-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
 .itr-ay-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.35rem;
+  padding: 0.85rem 0.5rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
   font: 800 1rem inherit;
   color: var(--primary-navy);
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.itr-ay-btn:hover {
+  border-color: var(--grey-300);
+  background: var(--palette-slate-50);
+}
+
+.itr-ay-btn--active,
+.itr-ay-btn--active:hover {
+  background: var(--palette-orange-50-fffaf5);
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 1px var(--primary-orange);
+}
+
+.itr-ay-main {
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.itr-ay-btn--active .itr-ay-main {
+  color: var(--primary-orange);
 }
 
 .itr-ay-sub {
   font-size: 0.76rem;
   color: var(--secondary-text);
+}
+
+.itr-ay-btn--active .itr-ay-sub {
+  color: var(--palette-orange-700);
+}
+
+@media (max-width: 480px) {
+  .itr-ay-buttons-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .itr-status-btn {

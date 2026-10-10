@@ -191,6 +191,12 @@
   color: var(--palette-blue-600, #2563eb);
 }
 
+.select-type-card__icon-tile--llp {
+  background-color: var(--palette-sky-50-f0f9ff);
+  border-color: var(--palette-sky-100-e0f2fe);
+  color: var(--palette-sky-700);
+}
+
 .select-type-card__icon-tile--opc {
   background-color: var(--palette-amber-50, #fef6ee);
   border-color: var(--warning-light, #fed7aa);

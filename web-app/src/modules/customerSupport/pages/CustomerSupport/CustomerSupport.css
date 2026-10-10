@@ -1,15 +1,37 @@
+/* Edge-to-edge: cancels .shell__content padding so the chat meets every corner below the app header */
 .cs-mobile-view {
+  --cs-header-height: 64px;
+  --cs-bleed-y: 1.5rem;
+  --cs-bleed-x: 2rem;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 100%; /* Fill the entire width */
-  margin: 0;
-  height: calc(100vh - 80px); /* 80px for top navbar */
-  padding: 0; /* Remove padding to eliminate empty space */
+  width: calc(100% + 2 * var(--cs-bleed-x));
+  max-width: none;
+  margin: calc(-1 * var(--cs-bleed-y)) calc(-1 * var(--cs-bleed-x));
+  height: calc(100dvh - var(--cs-header-height));
+  min-height: 420px;
+  padding: 0;
+}
+
+@media (max-width: 1024px) {
+  .cs-mobile-view {
+    --cs-bleed-y: 1.35rem;
+    --cs-bleed-x: 1.25rem;
+  }
 }
 
 @media (max-width: 768px) {
   .cs-mobile-view {
-    height: calc(100vh - 60px);
+    --cs-header-height: 58px;
+    --cs-bleed-y: 1.15rem;
+    --cs-bleed-x: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cs-mobile-view {
+    --cs-header-height: 56px;
+    --cs-bleed-y: 1rem;
+    --cs-bleed-x: 0.75rem;
   }
 }

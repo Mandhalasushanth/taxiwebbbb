@@ -1,4 +1,4 @@
-import { env } from '@core/config'
+import { env, routePaths } from '@core/config'
 import { userStorage } from '@core/storage/userStorage'
 import { applicationsApi } from '../api/applicationsApi'
 import type { ApplicationsFilters, ApplicationsItem } from '../types/applications.types'
@@ -25,7 +25,7 @@ export const applicationsService = {
           status: (a.statusLabel.toUpperCase().replace(/\s+/g, '_')) || 'UNDER_VERIFICATION',
           statusLabel: a.statusLabel || 'Under Verification',
           date: 'Today',
-          to: a.code ? `/applications/track/${a.code}` : (a.to || '/gst/registration?step=status'),
+          to: a.code ? routePaths.applicationTrack(a.code) : (a.to || `${routePaths.gst.registration}?step=status`),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         }

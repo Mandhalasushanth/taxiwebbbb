@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { RightChevronIcon } from '@modules/loans/constants/loanMarketplace.icons'
+import { ApplyArrowIcon } from '@modules/loans/constants/loanMarketplace.icons'
 import { LOAN_SERVICE_ICON_IMAGE_MAP } from '@modules/loans/constants/loanMarketplace.constants'
 import { safeNavigateTo, buildLoanCardAriaLabel } from '@modules/loans/utils/loanMarketplace.utils'
 import type { LoanMarketplaceCardProps } from '@modules/loans/types/loanMarketplace.types'
@@ -67,8 +67,10 @@ export const LoanMarketplaceCard: React.FC<LoanMarketplaceCardProps> = ({ item, 
       </div>
 
       <div className="loan-item-card__footer">
-        <span className="loan-item-card__action-text">Apply Now</span>
-        <RightChevronIcon />
+        <span className="loan-item-card__action-text">
+          <span>Apply Now</span>
+          <ApplyArrowIcon />
+        </span>
       </div>
     </a>
   )
