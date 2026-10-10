@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { EmptyState, Loader } from '@shared/components'
+import { useSafeBack } from '@shared/hooks'
 import { useAppStore } from '@store/index'
 import { receiptService } from '../../services/receiptService'
 import type { TaxReceipt } from '../../types/payments.types'
@@ -12,7 +13,6 @@ import './Receipt.css'
 export const Receipt = () => {
   const { id } = useParams<{ id: string }>()
   const [searchParams] = useSearchParams()
-  const navigate = useNavigate()
   const pushToast = useAppStore((state) => state.pushToast)
 
   const [receipt, setReceipt] = useState<TaxReceipt | null>(null)
@@ -43,9 +43,7 @@ export const Receipt = () => {
     }
   }, [receiptRef])
 
-  const handleBack = () => {
-    navigate(-1)
-  }
+  const handleBack = useSafeBack(routePaths.payments)
 
   const handleDownloadPdf = () => {
     pushToast('Preparing Tax Invoice PDF for download...', 'info')

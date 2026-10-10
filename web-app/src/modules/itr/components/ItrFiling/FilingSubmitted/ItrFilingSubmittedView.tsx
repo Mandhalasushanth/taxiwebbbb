@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import {
+  ALL_DOCS,
   PROGRESS_STAGES,
   CheckIcon,
   LockIcon,
@@ -71,7 +72,7 @@ export const ItrFilingSubmittedView: React.FC<ItrFilingSubmittedViewProps> = ({
         `Return Form      : ${successApplicableForm}`,
         `Income Sources   : ${successIncomeLabel}`,
         `Tax Regime       : ${selectedRegime === 'new' ? 'New Tax Regime' : 'Old Tax Regime'}`,
-        `Documents        : ${docCount} of 5`,
+        `Documents        : ${docCount} of ${ALL_DOCS.length}`,
         `Submitted On     : ${new Date().toLocaleString('en-IN')}`,
         '─────────────────────────────',
         'TaxEdge — Trusted Tax Filing',
@@ -97,7 +98,7 @@ export const ItrFilingSubmittedView: React.FC<ItrFilingSubmittedViewProps> = ({
       label: 'Tax Regime',
       value: selectedRegime === 'new' ? 'New Tax Regime' : 'Old Tax Regime',
     },
-    { label: 'Documents', value: `${docCount} of 5 received` },
+    { label: 'Documents', value: `${docCount} of ${ALL_DOCS.length} received` },
     { label: 'Refund Bank', value: bankLabel },
   ]
 
@@ -105,7 +106,7 @@ export const ItrFilingSubmittedView: React.FC<ItrFilingSubmittedViewProps> = ({
     <div className="itr-success-hero">
       <div className="itr-success-ring">
         <div className="itr-success-circle">
-          <CheckIcon size={36} />
+          <CheckIcon size={30} />
         </div>
       </div>
       <h1 className="itr-success-title">Your application has been received!</h1>
@@ -192,7 +193,7 @@ export const ItrFilingSubmittedView: React.FC<ItrFilingSubmittedViewProps> = ({
   const renderActions = () => (
     <div className="itr-success-actions">
       <Link
-        to={submittedRef ? `/applications/track/${submittedRef}` : routePaths.applications}
+        to={submittedRef ? routePaths.applicationTrack(submittedRef) : routePaths.applications}
         className="itr-success-btn-primary"
       >
         Track My Application &nbsp;→

@@ -1,3 +1,4 @@
+import { routePaths } from '@core/config'
 import type { NavigateFunction } from 'react-router-dom'
 import type { LoanMarketplaceItem } from '@modules/loans/types/loanMarketplace.types'
 
@@ -7,7 +8,7 @@ import type { LoanMarketplaceItem } from '@modules/loans/types/loanMarketplace.t
 export function safeNavigateTo(
   navigate: NavigateFunction,
   destination: string | number,
-  fallback: string = '/loans'
+  fallback: string = routePaths.loans
 ): void {
   if (typeof destination === 'number') {
     try {

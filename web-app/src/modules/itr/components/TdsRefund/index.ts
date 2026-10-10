@@ -1,6 +1,5 @@
 export { TdsRefund, default } from './TdsRefund'
 export * from './TdsRefundOverview'
 export * from './TdsRefundCustomerIncome'
-export * from './TdsRefundDocuments'
 export * from './TdsRefundReview'
 export * from './TdsRefundStatus'

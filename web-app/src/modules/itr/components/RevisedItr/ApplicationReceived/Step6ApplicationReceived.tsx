@@ -35,7 +35,7 @@ export const Step6ApplicationReceived: React.FC<Step6ApplicationReceivedProps> =
 
   const handleTrackApplication = () => {
     if (applicationId) {
-      navigate(`/applications/track/${applicationId}`)
+      navigate(routePaths.applicationTrack(applicationId))
     } else {
       navigate(routePaths.applications)
     }

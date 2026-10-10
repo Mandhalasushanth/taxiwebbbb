@@ -155,7 +155,7 @@ export const TdsRefundStatus: React.FC<TdsRefundStatusProps> = ({
   return (
     <div className="tds-status-page" data-testid="tds-refund-status-page">
       <div className="tds-status-stepper-wrap">
-        <TdsRefundProgressTracker currentStep={5} />
+        <TdsRefundProgressTracker currentStep={4} />
       </div>
       <div className="tds-status-layout">
         <main className="tds-status-main">

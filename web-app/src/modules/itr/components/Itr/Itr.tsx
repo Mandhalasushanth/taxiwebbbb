@@ -16,14 +16,15 @@ import {
 } from "lucide-react";
 import "./Itr.css";
 
-const VIEW_ROUTE_MAP: Record<ItrViewKey, string> = {
+// Partial: disabled services have no route (falls back to the ITR dashboard)
+const VIEW_ROUTE_MAP: Partial<Record<ItrViewKey, string>> = {
   overview: routePaths.itr.root,
   "track-my-return": routePaths.itr.root,
   "itr-filing": routePaths.itr.itrFiling,
   "tds-refund": routePaths.itr.tdsRefund,
-  "previous-year-itr": routePaths.itr.previousYearItr,
+  // "previous-year-itr": routePaths.itr.previousYearItr,
   "revised-itr": routePaths.itr.revisedItr,
-  "tax-notice-assistance": routePaths.itr.taxNoticeAssistance,
+  // "tax-notice-assistance": routePaths.itr.taxNoticeAssistance,
 };
 
 const SERVICE_ICON_MAP: Record<ItrServiceCard["icon"], FC<IconProps>> = {
@@ -37,9 +38,9 @@ const SERVICE_ICON_MAP: Record<ItrServiceCard["icon"], FC<IconProps>> = {
 const SERVICE_ICON_IMAGE_MAP: Partial<Record<ItrViewKey, string>> = {
   "itr-filing": "/assets/icons/itr/itr-filing.png",
   "tds-refund": "/assets/icons/itr/tds-refund.png",
-  "previous-year-itr": "/assets/icons/itr/previous-year-itr.png",
+  // "previous-year-itr": "/assets/icons/itr/previous-year-itr.png",
   "revised-itr": "/assets/icons/itr/revised-itr.png",
-  "tax-notice-assistance": "/assets/icons/itr/tax-notice-assistance.png",
+  // "tax-notice-assistance": "/assets/icons/itr/tax-notice-assistance.png",
 };
 
 export const renderServiceIcon = (iconType: ItrServiceCard["icon"]) => {

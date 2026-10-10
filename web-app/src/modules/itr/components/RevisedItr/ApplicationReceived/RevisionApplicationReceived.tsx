@@ -124,7 +124,7 @@ export const RevisionApplicationReceived: React.FC<RevisionApplicationReceivedPr
   const handleTrackApplication = () => {
     try {
       if (applicationId) {
-        navigate(`/applications/track/${applicationId}`)
+        navigate(routePaths.applicationTrack(applicationId))
       } else {
         navigate(routePaths.applications)
       }

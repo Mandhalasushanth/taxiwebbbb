@@ -52,7 +52,7 @@ const resolveSubmittedSourceLabel = (
 };
 
 const SERVICE_ID = "itr-filing";
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = ITR_STEP_LABELS.length;
 
 export function useItrFilingState() {
   const [existingDraft] = useState(() =>
@@ -63,7 +63,8 @@ export function useItrFilingState() {
     Boolean(existingDraft),
   );
   const [currentStep, setCurrentStep] = useState<number>(
-    () => existingDraft?.currentStep || 1,
+    // Clamp: drafts saved before the Regime & Deductions step was removed may hold step 5
+    () => Math.min(existingDraft?.currentStep || 1, TOTAL_STEPS),
   );
   const [selectedCategoryId, setSelectedCategoryId] =
     useState<ItrCategoryId | null>(
@@ -261,7 +262,7 @@ export function useItrFilingState() {
             statusTone: "info",
             progress: 25,
             icon: "📄",
-            to: `/applications/track/${generatedRef}`,
+            to: routePaths.applicationTrack(generatedRef),
           });
 
           serviceDraft.clearDraft();

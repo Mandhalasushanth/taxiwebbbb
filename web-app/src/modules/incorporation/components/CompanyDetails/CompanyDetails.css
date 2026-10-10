@@ -335,3 +335,10 @@
     text-align: center;
   }
 }
+
+.company-details-textarea {
+  min-height: 110px;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
+}

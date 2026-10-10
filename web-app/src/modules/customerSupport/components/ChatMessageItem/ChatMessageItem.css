@@ -1,8 +1,8 @@
 .cs-msg-item {
   display: flex;
   width: 100%;
-  margin-bottom: 0.85rem;
-  animation: cs-msg-fadeIn 0.2s ease-out;
+  margin-bottom: 1rem;
+  animation: cs-msg-fadeIn 0.25s ease-out;
 }
 
 @keyframes cs-msg-fadeIn {
@@ -25,35 +25,38 @@
 }
 
 .cs-msg-item__bubble {
-  max-width: 76%;
-  padding: 0.85rem 1.15rem 0.65rem 1.15rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: 65%;
+  padding: 0.85rem 1.15rem 0.6rem;
+  box-shadow: 0 1px 2px rgba(15, 40, 76, 0.04), 0 6px 18px rgba(15, 40, 76, 0.07);
   word-break: break-word;
   line-height: 1.5;
   font-size: 0.94rem;
 }
 
-/* User Bubble: Premium Emerald/Deep Blue */
+/* User Bubble: TaxEdge navy, matching the send button */
 .cs-msg-item--user .cs-msg-item__bubble {
-  background: linear-gradient(135deg, var(--feature-success) 0%, var(--palette-emerald-700) 100%);
+  background: linear-gradient(135deg, var(--palette-blue-800-17325c) 0%, var(--palette-blue-800-0f284c) 100%);
   color: var(--surface);
-  border-radius: 18px 18px 4px 18px;
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 20px 20px 6px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 20px rgba(15, 40, 76, 0.2);
 }
 
 /* Executive Bubble: Crisp Card with Distinct Header */
 .cs-msg-item--executive .cs-msg-item__bubble {
   background: var(--surface);
   color: var(--palette-slate-900);
-  border-radius: 18px 18px 18px 4px;
-  border: 1px solid var(--border);
+  border-radius: 20px 20px 20px 6px;
+  border: 1px solid var(--palette-gray-100);
+  border-left: 3px solid var(--palette-sky-600);
 }
 
 .cs-msg-item__sender-name {
   font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--palette-blue-800-032b69);
-  margin-bottom: 0.25rem;
+  font-weight: 800;
+  color: var(--palette-sky-700);
+  letter-spacing: 0.01em;
+  margin-bottom: 0.3rem;
 }
 
 .cs-msg-item__text {
@@ -72,7 +75,7 @@
 
 .cs-msg-item--user .cs-msg-item__meta {
   justify-content: flex-end;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--palette-sky-200);
 }
 
 .cs-msg-item--executive .cs-msg-item__meta {
@@ -101,8 +104,9 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.45rem 0.75rem;
-  background-color: rgba(0, 0, 0, 0.06);
-  border-radius: 8px;
+  background-color: rgba(15, 40, 76, 0.06);
+  border: 1px solid rgba(15, 40, 76, 0.06);
+  border-radius: 10px;
   font-size: 0.82rem;
 }
 
@@ -118,4 +122,21 @@
 .cs-msg-item__attachment-size {
   opacity: 0.75;
   font-size: 0.75rem;
+}
+
+.cs-msg-item--user .cs-msg-item__attachment-file {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+@media (max-width: 768px) {
+  .cs-msg-item__bubble {
+    max-width: 86%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-msg-item {
+    animation: none;
+  }
 }

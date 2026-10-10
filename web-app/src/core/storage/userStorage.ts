@@ -108,7 +108,7 @@ export const userStorage = {
     const all = localStore.get<ApplicationDraft[]>(APPLICATION_DRAFTS_KEY) || []
     const user = authStorage.getUser()
     if (!user) return []
-    return all.filter((d) => d.userId === user.id || !d.userId)
+    return all.filter((d) => d.userId === user.id)
   },
 
   getActiveDraft(): ApplicationDraft | null {
@@ -131,7 +131,7 @@ export const userStorage = {
     if (!user) return
     const draftWithUser = { ...draft, userId: user.id }
     
-    const index = all.findIndex((d) => d.serviceId === draft.serviceId && (d.userId === user.id || !d.userId))
+    const index = all.findIndex((d) => d.serviceId === draft.serviceId && d.userId === user.id)
     if (index >= 0) {
       all[index] = draftWithUser
     } else {
@@ -144,7 +144,7 @@ export const userStorage = {
     const all = localStore.get<ApplicationDraft[]>(APPLICATION_DRAFTS_KEY) || []
     const user = authStorage.getUser()
     if (!user) return
-    const filtered = all.filter((d) => !(d.serviceId === serviceId && (d.userId === user.id || !d.userId)))
+    const filtered = all.filter((d) => !(d.serviceId === serviceId && d.userId === user.id))
     localStore.set(APPLICATION_DRAFTS_KEY, filtered)
   },
 

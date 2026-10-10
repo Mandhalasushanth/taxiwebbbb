@@ -1,3 +1,4 @@
+import { routePaths } from '@core/config'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { ApplicationsItem } from '../types/applications.types'
@@ -13,7 +14,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({ item }) => {
   const handleClick = () => {
     const targetId = item.reference || item.id
     if (targetId) {
-      navigate(`/applications/track/${encodeURIComponent(targetId)}`)
+      navigate(routePaths.applicationTrack(encodeURIComponent(targetId)))
     } else if (item.to) {
       navigate(item.to)
     }

@@ -12,6 +12,8 @@ export const routePaths = {
     customerType: '/auth/customer-type',
   },
   dashboard: '/dashboard',
+  /** Element id of the dashboard's services grid; used as a URL hash (/dashboard#quick-services). */
+  dashboardServicesAnchor: 'quick-services',
   gst: {
     root: '/gst',
     registration: '/gst/registration',
@@ -79,6 +81,7 @@ export const routePaths = {
   paymentReceiptDirect: '/payments/receipt',
   documents: '/documents',
   applications: '/applications',
+  applicationTrack: (id = ':id') => `/applications/track/${id}`,
   services: '/services',
   allServices: '/all-services',
   profile: '/profile',

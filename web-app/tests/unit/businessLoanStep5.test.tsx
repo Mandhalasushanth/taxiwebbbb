@@ -16,7 +16,7 @@ import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/re
 import { MemoryRouter } from 'react-router-dom'
 import { ReviewAndSubmit } from '../../src/modules/loans/components/BusinessLoan/steps/ReviewAndSubmit'
 import { BusinessLoan } from '../../src/modules/loans/components/BusinessLoan/BusinessLoan'
-import { loanApplicationService } from '../../src/modules/loans/services/loanApplicationService'
+import { loanApplicationService, loanStorageKey } from '../../src/modules/loans/services/loanApplicationService'
 import type { BusinessLoanFormData, ApplicantIdentityProfile } from '../../src/modules/loans/types/businessLoan.types'
 
 afterEach(() => {
@@ -246,7 +246,7 @@ describe('BusinessLoan Step 5 (Review & Submit)', () => {
   it('renders correctly and submits application with service integration in BusinessLoan', async () => {
     // Seed draft with complete data through step 4 in localStorage
     localStorage.setItem(
-      'taxedge_loan_app_business_loan',
+      loanStorageKey('business_loan'),
       JSON.stringify(mockFormData)
     )
 

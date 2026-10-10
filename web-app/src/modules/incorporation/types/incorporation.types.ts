@@ -1,13 +1,13 @@
 export type CompanyRegistrationTab = 'overview' | 'documents' | 'benefits'
 
-export type CompanyEntityType = 'pvt_ltd' | 'opc' | 'section_8' | 'public_ltd'
+export type CompanyEntityType = 'pvt_ltd' | 'llp' | 'opc' | 'section_8' | 'public_ltd'
 
 export interface CompanyTypeOption {
   id: CompanyEntityType
   title: string
   description: string
   badge: string
-  icon: 'building' | 'user' | 'trending' | 'briefcase'
+  icon: 'building' | 'partners' | 'user' | 'trending' | 'briefcase'
   image?: string
 }
 
@@ -170,7 +170,9 @@ export const getProposedCompanyName = (
   const defaultName =
     companyType === 'opc'
       ? 'TaxEdge Tech (OPC) Private Limited'
-      : 'TaxEdge Tech Private Limited'
+      : companyType === 'llp'
+        ? 'TaxEdge Tech LLP'
+        : 'TaxEdge Tech Private Limited'
   return (firstPreferredName && firstPreferredName.trim()) || defaultName
 }
 

@@ -1,4 +1,4 @@
-import { env } from '@core/config'
+import { env, routePaths } from '@core/config'
 import { AppError } from '@core/errors'
 import { authStorage } from '@core/auth'
 import { userStorage } from '@core/storage/userStorage'
@@ -105,7 +105,7 @@ export const gstService = {
         statusTone: 'info',
         progress: 25,
         icon: '📄',
-        to: `/applications/track/${ref}`,
+        to: routePaths.applicationTrack(ref),
       })
       return newApp
     }

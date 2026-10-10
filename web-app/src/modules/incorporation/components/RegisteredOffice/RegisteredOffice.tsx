@@ -1,145 +1,110 @@
 import React, { useState } from 'react'
 import { routePaths } from '@core/config'
-import { DocumentCard, StepActionBar } from '@shared/components'
+import { StepActionBar } from '@shared/components'
+import { getStatesForPincode } from '@shared/utils/pincodeState'
 import { filterDigits, filterMobile, isValidMobile, isValidPincode, isValidEmail } from '../../utils/validation'
+import type { RegisteredOfficeAddressData } from '../../types/incorporation.types'
 import { useIncorporationFlow } from '../../hooks'
 import './RegisteredOffice.css'
 
-interface OfficeDocItem {
-  id: string
-  title: string
-  subtitle?: string
-  isRequired: boolean
-  isUploaded: boolean
-  fileName?: string
+type AddressField = keyof RegisteredOfficeAddressData & string
+
+const EMPTY_ADDRESS: RegisteredOfficeAddressData = {
+  addressLine1: '',
+  city: '',
+  district: '',
+  state: '',
+  pincode: '',
+  ownershipStatus: '',
+  email: '',
+  mobile: '',
+}
+
+const OWNERSHIP_OPTIONS = ['Rented', 'Owned', 'Leased'] as const
+const PIN_LENGTH = 6
+const PLACE_NAME_PATTERN = /^[A-Za-z][A-Za-z\s.'-]{1,59}$/
+const ADDRESS_MIN_LENGTH = 5
+
+/** PIN must belong to the typed state (compared without case, e.g. "telangana" = "Telangana"). */
+const pinStateError = (pin: string, state: string): string => {
+  const states = getStatesForPincode(pin)
+  if (states.length === 0) return `PIN code ${pin} is not a valid business address PIN`
+  const typed = state.trim().toLowerCase()
+  return states.some((s) => s.toLowerCase() === typed) ? '' : `PIN code ${pin} belongs to ${states.join(' / ')}, not ${state.trim()}`
+}
+
+const requiredError = (value: string | undefined, message: string): string => ((value || '').trim() ? '' : message)
+
+const placeError = (value: string | undefined, label: string): string => {
+  const trimmed = (value || '').trim()
+  if (!trimmed) return `${label} is required`
+  return PLACE_NAME_PATTERN.test(trimmed) ? '' : `Enter a valid ${label.toLowerCase()} (letters only)`
+}
+
+/** All field errors for the Registered Office step, keyed by field. */
+const getAddressErrors = (address: RegisteredOfficeAddressData): Record<string, string> => {
+  const line = (address.addressLine1 || '').trim()
+  const pin = (address.pincode || '').trim()
+  const email = (address.email || '').trim()
+  const mobile = (address.mobile || '').trim()
+  const pinError = !pin
+    ? 'PIN code is required'
+    : !isValidPincode(pin)
+      ? 'Enter a valid 6-digit PIN code'
+      : (address.state || '').trim()
+        ? pinStateError(pin, address.state)
+        : ''
+
+  const errors: Record<string, string> = {
+    addressLine1: !line ? 'Building / premises address is required' : line.length < ADDRESS_MIN_LENGTH ? 'Enter the full building / premises address' : '',
+    city: placeError(address.city, 'City'),
+    district: placeError(address.district, 'District'),
+    state: placeError(address.state, 'State'),
+    pincode: pinError,
+    ownershipStatus: requiredError(address.ownershipStatus, 'Premises ownership status is required'),
+    email: !email ? 'Email address is required' : isValidEmail(email) ? '' : 'Enter a valid email address',
+    mobile: !mobile ? 'Mobile number is required' : isValidMobile(mobile) ? '' : 'Enter a valid 10-digit Indian mobile number',
+  }
+  return Object.fromEntries(Object.entries(errors).filter(([, message]) => Boolean(message)))
 }
 
 export const RegisteredOffice: React.FC = () => {
   const { formData, updateFormData, draft, reviewEdit, goToStep } = useIncorporationFlow()
-
-  const addressData = formData.registeredOffice?.addressData || {
-    addressLine1: '',
-    city: '',
-    district: '',
-    state: '',
-    pincode: '',
-    ownershipStatus: '',
-    email: '',
-    mobile: '',
-  }
-
-  const docs = formData.registeredOffice?.docs || [
-    {
-      id: 'doc-1',
-      title: 'Office Address Proof / Utility Bill',
-      subtitle: 'Utility bill should be recent (not older than 2 months).',
-      isRequired: true,
-      isUploaded: false,
-    },
-    {
-      id: 'doc-2',
-      title: 'Ownership / Rent / Lease Document',
-      subtitle: 'Rent agreement or ownership deed.',
-      isRequired: true,
-      isUploaded: false,
-    },
-    {
-      id: 'doc-3',
-      title: 'Owner NOC',
-      subtitle: 'Required only for rented/leased/third-party premises.',
-      isRequired: true,
-      isUploaded: false,
-    },
-  ]
-
+  const addressData: RegisteredOfficeAddressData = { ...EMPTY_ADDRESS, ...formData.registeredOffice?.addressData }
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const ownershipOptions = ['Rented', 'Owned', 'Leased']
-
-  const handleInputChange = (field: string, val: string) => {
+  const handleInputChange = (field: AddressField, val: string) => {
     setErrors((prev) => ({ ...prev, [field]: '' }))
-    let finalVal = val
-    if (field === 'pincode') finalVal = filterDigits(val, 6)
-    if (field === 'mobile') finalVal = filterMobile(val)
-    
+    const finalVal = field === 'pincode' ? filterDigits(val, PIN_LENGTH) : field === 'mobile' ? filterMobile(val) : val
     updateFormData({
-      registeredOffice: { ...formData.registeredOffice, docs, addressData: { ...addressData, [field]: finalVal } }
-    })
-  }
-
-  const handleUploadDoc = (id: string, file: File) => {
-    setErrors((prev) => {
-      const next = { ...prev }
-      delete next[id]
-      delete next.docs
-      return next
-    })
-    const newDocs = docs.map((d: OfficeDocItem) => (d.id === id ? { ...d, isUploaded: true, fileName: file.name } : d))
-    updateFormData({
-      registeredOffice: { ...formData.registeredOffice, addressData, docs: newDocs }
-    })
-  }
-
-  const handleRemoveDoc = (id: string) => {
-    const newDocs = docs.map((d: OfficeDocItem) => (d.id === id ? { ...d, isUploaded: false, fileName: undefined } : d))
-    updateFormData({
-      registeredOffice: { ...formData.registeredOffice, addressData, docs: newDocs }
+      registeredOffice: { ...formData.registeredOffice, addressData: { ...addressData, [field]: finalVal } },
     })
   }
 
   const handleContinue = () => {
-    const newErrors: Record<string, string> = {}
-    if (!(addressData.addressLine1 || '').trim()) newErrors.addressLine1 = 'Building / premises address is required'
-    if (!(addressData.city || '').trim()) newErrors.city = 'City is required'
-    if (!(addressData.district || '').trim()) newErrors.district = 'District is required'
-    if (!(addressData.state || '').trim()) newErrors.state = 'State is required'
-    if (!(addressData.pincode || '').trim()) {
-      newErrors.pincode = 'PIN code is required'
-    } else if (!isValidPincode(addressData.pincode)) {
-      newErrors.pincode = 'Enter a valid 6-digit PIN code'
-    }
-    if (!addressData.ownershipStatus) newErrors.ownershipStatus = 'Premises ownership status is required'
-    if (!(addressData.email || '').trim()) {
-      newErrors.email = 'Email address is required'
-    } else if (!isValidEmail(addressData.email)) {
-      newErrors.email = 'Enter a valid email address'
-    }
-    if (!(addressData.mobile || '').trim()) {
-      newErrors.mobile = 'Mobile number is required'
-    } else if (!isValidMobile(addressData.mobile)) {
-      newErrors.mobile = 'Enter a valid 10-digit Indian mobile number'
-    }
-    docs.forEach((d: OfficeDocItem) => {
-      if (d.isRequired && !d.isUploaded) {
-        newErrors[d.id] = `${d.title} is required`
-      }
-    })
-    const unuploadedDoc = docs.find((d: OfficeDocItem) => d.isRequired && !d.isUploaded)
-    if (unuploadedDoc) {
-      newErrors.docs = `Please upload mandatory document: ${unuploadedDoc.title}`
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
-    }
-    setErrors({})
+    const newErrors = getAddressErrors(addressData)
+    setErrors(newErrors)
+    if (Object.keys(newErrors).length > 0) return
     goToStep(routePaths.incorporation.promoterDetails)
   }
 
   const renderInput = (
     label: string,
-    field: keyof typeof addressData & string,
+    field: AddressField,
     placeholder: string,
-    type = 'text'
+    inputProps: React.InputHTMLAttributes<HTMLInputElement> = {},
   ) => (
     <div className="reg-office-group">
-      <label className="reg-office-label">{label}<span className="reg-office-required"> *</span></label>
+      <label htmlFor={`reg-office-${field}`} className="reg-office-label">
+        {label}<span className="reg-office-required"> *</span>
+      </label>
       <input
-        type={type}
+        id={`reg-office-${field}`}
+        type="text"
+        {...inputProps}
         className={`reg-office-input ${errors[field] ? 'reg-office-input--error' : ''}`}
         placeholder={placeholder}
-        value={addressData[field]}
+        value={addressData[field] || ''}
         onChange={(e) => handleInputChange(field, e.target.value)}
       />
       {errors[field] && <span className="reg-office-field-error">{errors[field]}</span>}
@@ -159,41 +124,50 @@ export const RegisteredOffice: React.FC = () => {
       {/* Page Header */}
       <header className="reg-office-header">
         <h1 className="reg-office-header__title">Registered Office Details</h1>
-        <p className="reg-office-header__subtitle">
-          Provide official communication address for MCA, ROC, and statutory authorities.
-        </p>
       </header>
 
-      {/* Address Form Card */}
+      {/* Card 1: Building / Address */}
       <section className="reg-office-card">
         <div className="reg-office-card__header">
-          <h2 className="reg-office-card__title">Registered Office Address</h2>
+          <h2 className="reg-office-card__title">Building / Address</h2>
           <p className="reg-office-card__subtitle">
-            Enter physical address, premises ownership status, and official statutory contact details.
+            Provide official communication address for MCA, ROC, and statutory authorities.
           </p>
         </div>
 
-        {renderInput('Building / Premises Address Line', 'addressLine1', 'Enter building / premises address')}
+        {renderInput('Building / Premises Address Line', 'addressLine1', 'Enter registered address', { maxLength: 200 })}
 
         <div className="reg-office-row-2">
-          {renderInput('City', 'city', 'Enter city')}
-          {renderInput('District', 'district', 'Enter district')}
+          {renderInput('City', 'city', 'Enter city', { maxLength: 60 })}
+          {renderInput('District', 'district', 'Enter district', { maxLength: 60 })}
         </div>
 
         <div className="reg-office-row-2">
-          {renderInput('State', 'state', 'Enter state')}
-          {renderInput('PIN Code', 'pincode', 'Enter 6-digit PIN code')}
+          {renderInput('State', 'state', 'Enter state', { maxLength: 60 })}
+          {renderInput('PIN Code', 'pincode', 'Enter 6-digit PIN code', { inputMode: 'numeric', maxLength: PIN_LENGTH })}
         </div>
+      </section>
 
+      {/* Card 2: Premises Ownership */}
+      <section className="reg-office-card">
+        <div className="reg-office-card__header">
+          <h2 className="reg-office-card__title">Premises Ownership</h2>
+        </div>
         <div className="reg-office-group">
-          <label className="reg-office-label">
+          <span className="reg-office-label" id="reg-office-ownership-label">
             Premises Ownership Status<span className="reg-office-required"> *</span>
-          </label>
-          <div className={`reg-office-chips ${errors.ownershipStatus ? 'reg-office-chips--error' : ''}`}>
-            {ownershipOptions.map((opt) => (
+          </span>
+          <div
+            className={`reg-office-chips ${errors.ownershipStatus ? 'reg-office-chips--error' : ''}`}
+            role="radiogroup"
+            aria-labelledby="reg-office-ownership-label"
+          >
+            {OWNERSHIP_OPTIONS.map((opt) => (
               <button
                 key={opt}
                 type="button"
+                role="radio"
+                aria-checked={addressData.ownershipStatus === opt}
                 className={`reg-office-chip ${addressData.ownershipStatus === opt ? 'reg-office-chip--active' : ''}`}
                 onClick={() => handleInputChange('ownershipStatus', opt)}
               >
@@ -203,52 +177,17 @@ export const RegisteredOffice: React.FC = () => {
           </div>
           {errors.ownershipStatus && <span className="reg-office-field-error">{errors.ownershipStatus}</span>}
         </div>
-
-        <div className="reg-office-info-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
-            <circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" />
-          </svg>
-          <span>
-            Proof of address (Electricity Bill / Rent Agreement) is mandatory. If premises are rented, leased, or owned by a Director or third party, a No Objection Certificate (NOC) from the owner is strictly required.
-          </span>
-        </div>
-
-        <div className="reg-office-row-2">
-          {renderInput('Company Email', 'email', 'Enter company email address', 'email')}
-          {renderInput('Mobile', 'mobile', 'Enter 10-digit mobile number', 'tel')}
-        </div>
       </section>
 
-      {/* Section: Mandatory Documents Card */}
+      {/* Card 3: Contact Details */}
       <section className="reg-office-card">
         <div className="reg-office-card__header">
-          <h2 className="reg-office-card__title">Mandatory Documents</h2>
-          <p className="reg-office-card__subtitle">
-            Upload valid address proof and NOC required for MCA registered office verification.
-          </p>
+          <h2 className="reg-office-card__title">Contact Details</h2>
         </div>
-
-        <div className="reg-office-docs-list">
-          {docs.map((doc: OfficeDocItem) => (
-            <div key={doc.id} className="reg-office-doc-item-wrapper">
-              <DocumentCard
-                id={doc.id}
-                title={doc.title}
-                subtitle={doc.subtitle}
-                isRequired={doc.isRequired}
-                isUploaded={doc.isUploaded}
-                fileName={doc.fileName}
-                className={errors[doc.id] && !doc.isUploaded ? 'loan-doc-item--error doc-card--error' : ''}
-                onUpload={(_, file) => handleUploadDoc(doc.id, file)}
-                onRemove={() => handleRemoveDoc(doc.id)}
-              />
-              {errors[doc.id] && !doc.isUploaded && <span className="reg-office-field-error">{errors[doc.id]}</span>}
-            </div>
-          ))}
+        <div className="reg-office-row-2">
+          {renderInput('Company Email', 'email', 'Enter company email', { type: 'email', maxLength: 254, autoComplete: 'email' })}
+          {renderInput('Mobile', 'mobile', 'Enter 10-digit mobile', { type: 'tel', inputMode: 'numeric', autoComplete: 'tel' })}
         </div>
-        {errors.docs && docs.some((d) => d.isRequired && !d.isUploaded) && (
-          <span className="reg-office-field-error reg-office-field-error--spaced">{errors.docs}</span>
-        )}
       </section>
 
       {/* Footer Navigation */}

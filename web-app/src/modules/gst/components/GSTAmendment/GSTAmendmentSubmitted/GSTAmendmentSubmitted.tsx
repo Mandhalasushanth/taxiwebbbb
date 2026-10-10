@@ -60,7 +60,7 @@ export const GSTAmendmentSubmitted: React.FC<GSTAmendmentSubmittedProps> = ({
           statusTone: 'info',
           progress: 25,
           icon: '📝',
-          to: `/applications/track/${arnNumber}`,
+          to: routePaths.applicationTrack(arnNumber),
         })
       }
     } catch {

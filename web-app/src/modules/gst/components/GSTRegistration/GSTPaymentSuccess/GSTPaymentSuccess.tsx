@@ -42,7 +42,7 @@ export const GSTPaymentSuccess: React.FC<GSTPaymentSuccessProps> = ({
           statusTone: 'info',
           progress: 25,
           icon: '📄',
-          to: `/applications/track/${appRef}`,
+          to: routePaths.applicationTrack(appRef),
         })
       }
     } catch {

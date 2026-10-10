@@ -1,6 +1,8 @@
+import { routePaths } from '@core/config'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
+import { useSafeBack } from '@shared/hooks'
 import './LoanPageNavigation.css'
 
 export interface LoanPageNavigationProps {
@@ -17,12 +19,13 @@ export const LoanPageNavigation: React.FC<LoanPageNavigationProps> = ({
   title,
   subtitle,
   category,
-  backTo = '/loans',
+  backTo = routePaths.loans,
   onBack,
   showBack = false,
   extraRight,
 }) => {
   const navigate = useNavigate()
+  const goBack = useSafeBack(routePaths.loans)
 
   const handleBack = () => {
     if (onBack) {
@@ -30,7 +33,7 @@ export const LoanPageNavigation: React.FC<LoanPageNavigationProps> = ({
     } else if (backTo) {
       navigate(backTo)
     } else {
-      navigate(-1)
+      goBack()
     }
   }
 

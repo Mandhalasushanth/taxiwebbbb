@@ -1,17 +1,14 @@
 import React, { useState } from 'react'
+import { ArrowRight, Info, PlusCircle } from 'lucide-react'
+import { TdsIcons } from '@modules/itr/utils/tdsRefund.constants'
 import {
-  FileText,
-  Upload,
-  UserRound,
-  Landmark,
-  TrendingUp,
-  PlusCircle,
-  Info,
-} from 'lucide-react'
-import {
-  ADDITIONAL_DOCUMENTS,
-  TdsIcons,
-} from '@modules/itr/utils/tdsRefund.constants'
+  TDS_MORE_DOCS,
+  TDS_OVERVIEW_CONTENT as COPY,
+  TDS_OVERVIEW_FEATURES,
+  TDS_PRIMARY_DOCS,
+  type TdsOverviewDoc,
+  type TdsOverviewFeature,
+} from './tdsOverview.config'
 import './TdsRefundOverview.css'
 
 export interface TdsRefundProgressTrackerProps {
@@ -19,11 +16,10 @@ export interface TdsRefundProgressTrackerProps {
 }
 
 const PROGRESS_STAGES = [
-  { num: 1, label: 'Customer & Income' },
-  { num: 2, label: 'Upload Documents' },
-  { num: 3, label: 'Review & Estimate' },
-  { num: 4, label: 'Payment' },
-  { num: 5, label: 'Refund Credited' },
+  { num: 1, label: 'Application Details' },
+  { num: 2, label: 'Review & Estimate' },
+  { num: 3, label: 'Payment' },
+  { num: 4, label: 'Refund Credited' },
 ]
 
 export const TdsRefundProgressTracker: React.FC<TdsRefundProgressTrackerProps> = ({
@@ -92,24 +88,24 @@ export interface TdsRefundOverviewProps {
   onStart: () => void
 }
 
-const HOW_IT_WORKS_STEPS = [
-  { stepNumber: 1, label: 'Submit\nDetails', icon: FileText },
-  { stepNumber: 2, label: 'Upload\nDocuments', icon: Upload },
-  { stepNumber: 3, label: 'Executive\nVerification', icon: UserRound },
-  { stepNumber: 4, label: 'Payment', icon: FileText },
-  { stepNumber: 5, label: 'Refund\nCredited', icon: Landmark },
-]
+const renderFeatureCard = ({ id, title, desc, icon: Icon }: TdsOverviewFeature) => (
+  <div key={id} className="tds-feature-card">
+    <div className="tds-feature-icon" aria-hidden="true">
+      <Icon size={22} strokeWidth={2} />
+    </div>
+    <h3 className="tds-feature-title">{title}</h3>
+    <p className="tds-feature-desc">{desc}</p>
+  </div>
+)
 
-const REQUIRED_DOCS = [
-  { id: 'pan', label: 'PAN Card', icon: FileText },
-  { id: 'aadhaar', label: 'Aadhaar Card', icon: UserRound },
-  { id: 'form16', label: 'Form 16 /\nForm 16A', icon: FileText },
-  { id: 'ais', label: 'AIS Statement', icon: TrendingUp },
-  { id: 'tis', label: 'TIS Statement', icon: FileText },
-  { id: 'bank', label: 'Bank Statement', icon: Landmark },
-  { id: 'salary', label: 'Salary Slip\n(if applicable)', icon: FileText },
-  { id: 'more', label: 'More', icon: PlusCircle, isMoreBtn: true },
-]
+const renderDocCard = ({ id, label, icon: Icon }: TdsOverviewDoc) => (
+  <div key={id} className="tds-doc-card">
+    <div className="tds-doc-card-icon" aria-hidden="true">
+      <Icon size={20} strokeWidth={2} />
+    </div>
+    <span className="tds-doc-card-label">{label}</span>
+  </div>
+)
 
 export const TdsRefundOverview: React.FC<TdsRefundOverviewProps> = ({
   onStart,
@@ -118,102 +114,69 @@ export const TdsRefundOverview: React.FC<TdsRefundOverviewProps> = ({
 
   return (
     <div className="tds-web-page" data-testid="tds-refund-overview-page">
-      {/* 1. Full-width Navy Hero Banner */}
+      {/* 1. Hero */}
       <section className="tds-hero-banner" data-testid="tds-hero-banner">
         <div className="tds-hero-left">
-          <span className="tds-hero-tag">AY 2026-27</span>
-          <h1 className="tds-hero-title">TDS Refund</h1>
-          <p className="tds-hero-desc">
-            Claim excess TDS deducted from your salary, investments, or payments with certified CA verification and live status tracking.
-          </p>
-          <button
-            type="button"
-            className="tds-hero-start-btn"
-            onClick={onStart}
-            data-testid="tds-start-refund-btn"
-          >
-            <span>Start TDS Refund</span>
-            <span className="tds-hero-arrow" aria-hidden="true">→</span>
-          </button>
+          <span className="tds-hero-tag">{COPY.heroTag}</span>
+          <h1 className="tds-hero-title">{COPY.title}</h1>
+          <p className="tds-hero-desc">{COPY.description}</p>
         </div>
         <div className="tds-hero-right" aria-hidden="true">
           <div className="tds-hero-illustration-glow" />
           <TdsIcons.HeroIllustration
-            width={220}
-            height={150}
+            width={176}
+            height={120}
             className="tds-hero-illustration-img"
           />
         </div>
       </section>
 
-      {/* 2. How it works Section */}
-      <section className="tds-card-section" data-testid="tds-how-it-works-section">
-        <h2 className="tds-card-section-title">How it works</h2>
-        <div className="tds-how-it-works-track">
-          <div className="tds-how-connector-line" aria-hidden="true" />
-          {HOW_IT_WORKS_STEPS.map((step) => {
-            const StepIcon = step.icon
-            return (
-              <div key={step.stepNumber} className="tds-how-step-node">
-                <div className="tds-how-node-top">
-                  <div className="tds-how-badge-number">{step.stepNumber}</div>
-                  <div className="tds-how-icon-circle">
-                    <StepIcon size={22} strokeWidth={2} />
-                  </div>
-                </div>
-                <span className="tds-how-node-label">{step.label}</span>
-              </div>
-            )
-          })}
-        </div>
+      {/* 2. Why choose TaxEdge */}
+      <section className="tds-plain-section" aria-labelledby="tds-features-title">
+        <h2 id="tds-features-title" className="tds-plain-section-title">{COPY.featuresTitle}</h2>
+        <div className="tds-features-grid">{TDS_OVERVIEW_FEATURES.map(renderFeatureCard)}</div>
       </section>
 
-      {/* 3. Documents Required Section */}
+      {/* 3. Documents Required */}
       <section
-        className="tds-card-section"
+        className="tds-plain-section"
+        aria-labelledby="tds-docs-title"
         data-testid="tds-documents-required-section"
       >
-        <h2 className="tds-card-section-title">Documents Required</h2>
+        <h2 id="tds-docs-title" className="tds-plain-section-title">{COPY.documentsTitle}</h2>
         <div className="tds-docs-grid">
-          {REQUIRED_DOCS.map((doc) => {
-            const DocIcon = doc.icon
-            if (doc.isMoreBtn) {
-              return (
-                <button
-                  key={doc.id}
-                  type="button"
-                  className="tds-doc-card tds-doc-card--more"
-                  onClick={() => setShowMoreModal(true)}
-                  aria-label="View more required documents"
-                >
-                  <div className="tds-doc-card-icon" aria-hidden="true">
-                    <DocIcon size={20} strokeWidth={2} />
-                  </div>
-                  <span className="tds-doc-card-label">{doc.label}</span>
-                </button>
-              )
-            }
-            return (
-              <div key={doc.id} className="tds-doc-card">
-                <div className="tds-doc-card-icon" aria-hidden="true">
-                  <DocIcon size={20} strokeWidth={2} />
-                </div>
-                <span className="tds-doc-card-label">{doc.label}</span>
-              </div>
-            )
-          })}
+          {TDS_PRIMARY_DOCS.map(renderDocCard)}
+          <button
+            type="button"
+            className="tds-doc-card tds-doc-card--more"
+            onClick={() => setShowMoreModal(true)}
+            aria-label="View more required documents"
+          >
+            <PlusCircle size={20} strokeWidth={2} aria-hidden="true" />
+            <span className="tds-doc-card-label">{COPY.moreLabel}</span>
+          </button>
         </div>
 
-        {/* Compact Information Message Banner */}
         <div className="tds-info-banner" role="note">
           <div className="tds-info-banner-icon" aria-hidden="true">
             <Info size={18} strokeWidth={2.2} />
           </div>
-          <p className="tds-info-banner-text">
-            Only the documents relevant to your refund claim will be requested in the next steps.
-          </p>
+          <p className="tds-info-banner-text">{COPY.infoNote}</p>
         </div>
       </section>
+
+      {/* 4. Primary action: inline on desktop, pinned to the bottom on mobile */}
+      <div className="tds-start-bar">
+        <button
+          type="button"
+          className="tds-hero-start-btn"
+          onClick={onStart}
+          data-testid="tds-start-refund-btn"
+        >
+          <span>{COPY.startLabel}</span>
+          <ArrowRight size={20} strokeWidth={2.4} className="tds-hero-arrow" aria-hidden="true" />
+        </button>
+      </div>
 
       {/* Additional Documents Modal */}
       {showMoreModal && (
@@ -223,10 +186,13 @@ export const TdsRefundOverview: React.FC<TdsRefundOverviewProps> = ({
         >
           <div
             className="tds-modal-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="tds-more-docs-title"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="tds-modal-header">
-              <h3 className="tds-modal-title">Additional Documents</h3>
+              <h3 id="tds-more-docs-title" className="tds-modal-title">{COPY.moreModalTitle}</h3>
               <button
                 type="button"
                 className="tds-modal-close-btn"
@@ -237,7 +203,7 @@ export const TdsRefundOverview: React.FC<TdsRefundOverviewProps> = ({
               </button>
             </div>
             <div className="tds-modal-list">
-              {ADDITIONAL_DOCUMENTS.map((doc) => (
+              {TDS_MORE_DOCS.map((doc) => (
                 <div key={doc.name} className="tds-modal-item">
                   <div className="tds-modal-item-name">{doc.name}</div>
                   <div className="tds-modal-item-desc">{doc.desc}</div>

@@ -40,21 +40,11 @@ export const ReviewApplication: React.FC = () => {
   const entityTypeLabel = getEntityStructureLabel(companyType, { full: true })
 
 
-  const classCategory =
-    formData.companyDetails?.classOfCompany && formData.companyDetails?.categoryOfCompany
-      ? `${formData.companyDetails.classOfCompany} · ${formData.companyDetails.categoryOfCompany}`
-      : 'Not specified'
-
-  const primaryActivity =
-    formData.companyDetails?.primaryBusinessActivity || 'Not specified'
-
+  const categoryLabel = formData.companyDetails?.categoryOfCompany || 'Not specified'
+  const proposedName = formData.companyDetails?.firstPreferredName || 'Not specified'
+  const primaryActivity = formData.companyDetails?.primaryBusinessActivity || 'Not specified'
   const nicCode = formData.companyDetails?.nicCode || 'Not specified'
-
-  const firstPreferredName =
-    formData.companyDetails?.firstPreferredName || 'Not specified'
-
-  const secondPreferredName =
-    formData.companyDetails?.secondPreferredName || 'Not specified'
+  const secondaryActivity = formData.companyDetails?.secondaryBusinessActivity || 'Not specified'
 
   const addressData = formData.registeredOffice?.addressData
 
@@ -116,17 +106,17 @@ export const ReviewApplication: React.FC = () => {
       <div className="review-app-list">
         <ReviewSection title="Company Type & Classification" onEdit={() => editStep(routePaths.incorporation.selectType)}>
           <ReviewRow label="Entity Type" value={entityTypeLabel} />
-          <ReviewRow label="Class / Category" value={classCategory} />
+          <ReviewRow label="Category" value={categoryLabel} />
+        </ReviewSection>
+
+        <ReviewSection title="Proposed Company Name" onEdit={() => editStep(routePaths.incorporation.companyDetails)}>
+          <ReviewRow label="Proposed Name" value={proposedName} />
         </ReviewSection>
 
         <ReviewSection title="Business Activity & NIC" onEdit={() => editStep(routePaths.incorporation.companyDetails)}>
           <ReviewRow label="Primary Activity" value={primaryActivity} />
           <ReviewRow label="NIC Code" value={nicCode} />
-        </ReviewSection>
-
-        <ReviewSection title="Proposed Company Names" onEdit={() => editStep(routePaths.incorporation.companyDetails)}>
-          <ReviewRow label="1st Preference" value={firstPreferredName} />
-          <ReviewRow label="2nd Preference" value={secondPreferredName} />
+          <ReviewRow label="Secondary Activity" value={secondaryActivity} />
         </ReviewSection>
 
         <ReviewSection title="Registered Office" onEdit={() => editStep(routePaths.incorporation.registeredOffice)}>

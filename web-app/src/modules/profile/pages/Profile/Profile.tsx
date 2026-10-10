@@ -8,7 +8,7 @@ import { ProfileMenuItem } from '../../components/ProfileMenuItem/ProfileMenuIte
 import { LogoutButton } from '../../components/LogoutButton/LogoutButton'
 import { LogoutConfirmModal } from '@shared/components'
 import { useLogoutConfirm } from '@modules/authentication'
-import { profileSectionsConfig } from './profileConfig'
+import { profileSectionsConfig, PROFILE_NAV_SCROLL_OFFSET } from './profileConfig'
 import './Profile.css'
 
 export const Profile = () => {
@@ -32,7 +32,7 @@ export const Profile = () => {
         }
       },
       {
-        rootMargin: '-250px 0px -50% 0px', // Offset for the fixed header
+        rootMargin: `-${PROFILE_NAV_SCROLL_OFFSET}px 0px -50% 0px`, // Offset for the sticky header + nav
         threshold: 0.1,
       }
     )
@@ -56,40 +56,40 @@ export const Profile = () => {
 
   return (
     <div className="profile-page-view">
-      <div className="profile-page-view__header-wrapper">
-        <ProfileHeader
-          user={user}
-          activeAppsCount={activeAppsCount}
-          completedAppsCount={completedAppsCount}
-          totalPaidAmount={totalPaidAmount}
-          onEditAvatar={handleEditAvatar}
-        />
+      <ProfileHeader
+        user={user}
+        activeAppsCount={activeAppsCount}
+        completedAppsCount={completedAppsCount}
+        totalPaidAmount={totalPaidAmount}
+        onEditAvatar={handleEditAvatar}
+      />
 
-        <div className="profile-page-view__sticky-nav">
-          <div className="profile-page-view__sticky-nav-container">
-            {profileSectionsConfig.map((section) => {
-              const id = section.title.toLowerCase()
-              return (
-                <button
-                  key={id}
-                  className={`profile-page-view__nav-btn ${activeSection === id ? 'profile-page-view__nav-btn--active' : ''}`}
-                  onClick={() => {
-                    setActiveSection(id)
-                    const el = document.getElementById(id)
-                    if (el) {
-                      const y = el.getBoundingClientRect().top + window.scrollY - 280
-                      window.scrollTo({ top: y, behavior: 'smooth' })
-                    }
-                  }}
-                >
-                  {section.title}
-                </button>
-              )
-            })}
-          </div>
+      <nav className="profile-page-view__sticky-nav" aria-label="Profile sections">
+        <div className="profile-page-view__sticky-nav-container">
+          {profileSectionsConfig.map((section) => {
+            const id = section.title.toLowerCase()
+            return (
+              <button
+                key={id}
+                type="button"
+                aria-current={activeSection === id ? 'true' : undefined}
+                className={`profile-page-view__nav-btn ${activeSection === id ? 'profile-page-view__nav-btn--active' : ''}`}
+                onClick={() => {
+                  setActiveSection(id)
+                  const el = document.getElementById(id)
+                  if (el) {
+                    const y = el.getBoundingClientRect().top + window.scrollY - PROFILE_NAV_SCROLL_OFFSET
+                    window.scrollTo({ top: y, behavior: 'smooth' })
+                  }
+                }}
+              >
+                {section.title}
+              </button>
+            )
+          })}
         </div>
-      </div>
-      
+      </nav>
+
       <div className="profile-page-view__content">
         {profileSectionsConfig.map((section) => {
           const id = section.title.toLowerCase()

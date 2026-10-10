@@ -142,11 +142,14 @@ export const DashboardLayout = () => {
                     href={item.to}
                     className="shell__nav-link"
                     onClick={(e) => {
+                      e.preventDefault()
                       setIsMobileNavOpen(false)
                       if (location.pathname === routePaths.dashboard) {
-                        e.preventDefault()
-                        document.getElementById('quick-services')?.scrollIntoView({ behavior: 'smooth' })
+                        document.getElementById(routePaths.dashboardServicesAnchor)?.scrollIntoView({ behavior: 'smooth' })
+                        return
                       }
+                      // From any other page, open the dashboard at its services grid
+                      navigate({ pathname: routePaths.dashboard, hash: routePaths.dashboardServicesAnchor })
                     }}
                   >
                     <span className="shell__nav-icon" aria-hidden="true">{item.icon}</span>

@@ -40,7 +40,8 @@ describe('Incorporation Required Fields Validation on Continue', () => {
     expect(screen.getByText(/Incorporate your Private Limited/i)).toBeInTheDocument()
     expect(screen.getByText('Private Limited Company (Pvt Ltd)')).toBeInTheDocument()
     expect(screen.getByText('One Person Company (OPC)')).toBeInTheDocument()
-    expect(screen.getAllByText('Start').length).toBe(4)
+    expect(screen.getByText('Limited Liability Partnership (LLP)')).toBeInTheDocument()
+    expect(screen.getAllByText('Start').length).toBe(5)
     expect(screen.queryByRole('button', { name: /Continue/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Save Draft/i })).not.toBeInTheDocument()
   })
@@ -58,9 +59,17 @@ describe('Incorporation Required Fields Validation on Continue', () => {
     fireEvent.click(continueBtn)
 
     // Red warning texts
-    expect(screen.getByText(/Primary business activity is required/i)).toBeInTheDocument()
-    expect(screen.getByText(/First preferred name is required/i)).toBeInTheDocument()
-    expect(screen.getByText(/Second preferred name is required/i)).toBeInTheDocument()
+    expect(screen.getByText('Category of company is required')).toBeInTheDocument()
+    expect(screen.getByText(/Sub-category of company is required/i)).toBeInTheDocument()
+    expect(screen.queryByText(/Class of company/i)).not.toBeInTheDocument()
+    expect(screen.getByText('Proposed company name is required')).toBeInTheDocument()
+    expect(screen.getByText('Primary business activity is required')).toBeInTheDocument()
+    expect(screen.getByText('NIC 5-digit code is required')).toBeInTheDocument()
+
+    // NIC accepts digits only, max 5
+    const nicInput = screen.getByPlaceholderText('Enter 5-digit NIC Code') as HTMLInputElement
+    fireEvent.change(nicInput, { target: { value: '62a0119' } })
+    expect(nicInput.value).toBe('62011')
   })
 
   it('RegisteredOffice displays red warnings under all required address fields when clicking continue empty', () => {
@@ -117,6 +126,10 @@ describe('Incorporation Required Fields Validation on Continue', () => {
 
     expect(screen.getAllByText(/Name is required/i).length).toBeGreaterThan(0)
     expect(screen.getAllByText(/PAN is required/i).length).toBeGreaterThan(0)
+    expect(screen.getByText('Designation is required')).toBeInTheDocument()
+    expect(screen.getByText('Mobile number is required')).toBeInTheDocument()
+    expect(screen.queryByText(/Father's name is required/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/equity shares is required/i)).not.toBeInTheDocument()
   })
 
   it('DocumentsKyc displays red warnings under mandatory unuploaded documents when clicking continue', () => {

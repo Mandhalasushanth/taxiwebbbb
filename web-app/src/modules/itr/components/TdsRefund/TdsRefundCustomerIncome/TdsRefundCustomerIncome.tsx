@@ -13,27 +13,28 @@ import {
 } from "@shared/utils/validationUtils";
 import {
   EMPTY_BANK,
-  EMPTY_TAX,
+  EMPTY_BUSINESS,
   syncProfileWithAuthUser,
   type TdsTaxpayerProfile,
 } from "@modules/itr/utils/tdsRefund.constants";
 import type {
   TdsBankDetails,
+  TdsBusinessDetails,
   TdsIncomeTaxData,
 } from "@modules/itr/types/tdsRefund.types";
 import { TdsRefundProgressTracker } from "../TdsRefundOverview";
-import { TdsRefundPrelimBanner } from "./TdsRefundSidePanels";
-import { getResolvedProfile, parseAmount } from "./tdsCustomerIncome.helpers";
+import { getResolvedProfile } from "./tdsCustomerIncome.helpers";
 import { TdsPersonalDetailsCard } from "./TdsPersonalDetailsCard";
 import { TdsBankDetailsCard } from "./TdsBankDetailsCard";
-import { TdsIncomeCards } from "./TdsIncomeCards";
+import { TdsBusinessDetailsCard } from "./TdsBusinessDetailsCard";
+import { getBusinessDetailsErrors, isBusinessDetailsValid } from "./tdsBusinessValidation";
 import "./TdsRefundCustomerIncome.css";
 import "./TdsRefundCustomerIncome.part2.css";
 import "./TdsRefundFieldError.css";
 import { errorTracker } from '@core/errors'
 
 export type { TdsBankDetails, TdsIncomeTaxData };
-export { TdsRefundPrelimBanner, TdsRefundProgressionSidebar } from "./TdsRefundSidePanels";
+export { TdsRefundProgressionSidebar } from "./TdsRefundSidePanels";
 
 export interface TdsRefundCustomerIncomeProps {
   onBack: () => void;
@@ -46,6 +47,8 @@ export interface TdsRefundCustomerIncomeProps {
   onProfileChange?: (profile: TdsTaxpayerProfile) => void;
   initialBankDetails?: TdsBankDetails;
   onBankChange?: (details: TdsBankDetails) => void;
+  initialBusinessDetails?: TdsBusinessDetails;
+  onBusinessChange?: (details: TdsBusinessDetails) => void;
   initialTaxData?: TdsIncomeTaxData;
   onTaxChange?: (data: TdsIncomeTaxData) => void;
 }
@@ -64,8 +67,8 @@ export const TdsRefundCustomerIncome: React.FC<
   onProfileChange,
   initialBankDetails,
   onBankChange,
-  initialTaxData,
-  onTaxChange,
+  initialBusinessDetails,
+  onBusinessChange,
 }) => {
   const authUser = useAuthStore((state) => state.user) || authStorage.getUser();
   const [profile, setProfile] = useState<TdsTaxpayerProfile>(() =>
@@ -78,9 +81,11 @@ export const TdsRefundCustomerIncome: React.FC<
   const [bankDetails, setBankDetails] = useState<TdsBankDetails>(
     initialBankDetails || { ...EMPTY_BANK },
   );
-  const [taxData, setTaxData] = useState<TdsIncomeTaxData>(
-    initialTaxData || { ...EMPTY_TAX },
+  const [businessDetails, setBusinessDetails] = useState<TdsBusinessDetails>(
+    initialBusinessDetails || { ...EMPTY_BUSINESS },
   );
+  // Kept apart from fieldErrors: business PAN / mobile would otherwise share keys with the personal ones
+  const [businessErrors, setBusinessErrors] = useState<Record<string, string>>({});
 
   // Auto-fetch and sync personal details if authUser is loaded or updated
   useEffect(() => {
@@ -143,21 +148,22 @@ export const TdsRefundCustomerIncome: React.FC<
     }
   };
 
+  const handleBusinessChange = (updated: Partial<TdsBusinessDetails>) => {
+    if (error) setError(null);
+    const next = { ...businessDetails, ...updated };
+    setBusinessDetails(next);
+    onBusinessChange?.(next);
+    const changedKey = Object.keys(updated)[0];
+    if (changedKey && businessErrors[changedKey]) {
+      setBusinessErrors((prev) => ({ ...prev, [changedKey]: "" }));
+    }
+  };
+
   const handleBankChange = (updated: Partial<TdsBankDetails>) => {
     if (error) setError(null);
     const next = { ...bankDetails, ...updated };
     setBankDetails(next);
     onBankChange?.(next);
-    const changedKey = Object.keys(updated)[0];
-    if (changedKey && fieldErrors[changedKey]) {
-      setFieldErrors((prev) => ({ ...prev, [changedKey]: "" }));
-    }
-  };
-
-  const handleTaxChange = (updated: Partial<TdsIncomeTaxData>) => {
-    const next = { ...taxData, ...updated };
-    setTaxData(next);
-    onTaxChange?.(next);
     const changedKey = Object.keys(updated)[0];
     if (changedKey && fieldErrors[changedKey]) {
       setFieldErrors((prev) => ({ ...prev, [changedKey]: "" }));
@@ -261,17 +267,12 @@ export const TdsRefundCustomerIncome: React.FC<
         if (err) errs.ifsc = err;
       }
 
-      if (!taxData.salaryIncome?.trim() || parseAmount(taxData.salaryIncome) <= 0) {
-        errs.salaryIncome = "Salaried Gross Income is required";
-      }
+      const bizErrs = getBusinessDetailsErrors(businessDetails);
+      setBusinessErrors(bizErrs);
 
-      if (parseAmount(taxData.totalTdsDeducted) <= 0) {
-        errs.totalTdsDeducted = "Total TDS Deducted is required";
-      }
-
-      if (Object.keys(errs).length > 0) {
+      if (Object.keys(errs).length > 0 || Object.keys(bizErrs).length > 0) {
         setFieldErrors(errs);
-        setError(Object.values(errs)[0]);
+        setError(Object.values(errs)[0] || Object.values(bizErrs)[0]);
         if (errs.fullName || errs.pan) {
           setIsEditingPersonal(true);
         }
@@ -285,16 +286,6 @@ export const TdsRefundCustomerIncome: React.FC<
     }
   };
 
-  const totalTaxCredits =
-    parseAmount(taxData.totalTdsDeducted) +
-    parseAmount(taxData.tcsAmount) +
-    parseAmount(taxData.advanceTax) +
-    parseAmount(taxData.selfAssessmentTax);
-  const computedRefundTotal =
-    totalTaxCredits > 0
-      ? `₹${totalTaxCredits.toLocaleString("en-IN")}`
-      : profile.preliminaryRefund || "₹0";
-
   const isProfileValid = Boolean(
     profile.fullName?.trim() &&
     profile.pan?.trim() &&
@@ -302,6 +293,7 @@ export const TdsRefundCustomerIncome: React.FC<
   );
   const isFormValid = Boolean(
     isProfileValid &&
+    isBusinessDetailsValid(businessDetails) &&
     bankDetails.accountHolder?.trim() &&
     bankDetails.accountNumber?.trim() &&
     bankDetails.accountNumber.trim().length >= 10 &&
@@ -309,10 +301,7 @@ export const TdsRefundCustomerIncome: React.FC<
     bankDetails.confirmAccountNumber?.trim() &&
     bankDetails.accountNumber.trim() ===
       bankDetails.confirmAccountNumber.trim() &&
-    bankDetails.ifsc?.trim().length === 11 &&
-    taxData.salaryIncome?.trim() &&
-    parseAmount(taxData.salaryIncome) > 0 &&
-    parseAmount(taxData.totalTdsDeducted) > 0,
+    bankDetails.ifsc?.trim().length === 11,
   );
 
   const handleContinueRef = React.useRef(handleContinue);
@@ -335,10 +324,6 @@ export const TdsRefundCustomerIncome: React.FC<
   return (
     <div className="tds-step1-page">
       <TdsRefundProgressTracker currentStep={currentStep} />
-      <TdsRefundPrelimBanner
-        assessmentYear={profile.assessmentYear || "AY 2026-27"}
-        refundAmount={computedRefundTotal}
-      />
       <div className="tds-step1-layout">
         <form className="tds-step1-main" onSubmit={handleContinue}>
           <TdsPersonalDetailsCard
@@ -349,18 +334,18 @@ export const TdsRefundCustomerIncome: React.FC<
             handleProfileChange={handleProfileChange}
           />
 
+          <TdsBusinessDetailsCard
+            businessDetails={businessDetails}
+            fieldErrors={businessErrors}
+            handleBusinessChange={handleBusinessChange}
+          />
+
           <TdsBankDetailsCard
             bankDetails={bankDetails}
             fieldErrors={fieldErrors}
             isFetchingIfsc={isFetchingIfsc}
             handleBankChange={handleBankChange}
             handleIfscChange={handleIfscChange}
-          />
-
-          <TdsIncomeCards
-            taxData={taxData}
-            fieldErrors={fieldErrors}
-            handleTaxChange={handleTaxChange}
           />
         </form>
       </div>

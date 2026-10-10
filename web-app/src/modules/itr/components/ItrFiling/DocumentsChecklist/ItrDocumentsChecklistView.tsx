@@ -7,10 +7,8 @@ import {
   type ChecklistDocConfig,
   REQUIRED_DOCS,
   RECOMMENDED_DOCS,
-  ALL_DOCS,
   ItrFilingHeaderStepper,
 } from '../itrFiling.constants'
-import './ItrDocumentsChecklistView.css'
 
 export type { UploadedDocInfo }
 
@@ -34,10 +32,6 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
   onUploadDoc,
   onRemoveDoc,
 }) => {
-  const totalPossible = ALL_DOCS.length
-  const uploadedCount = Object.keys(uploadedDocs).length
-  const readyPercent = Math.round((uploadedCount / totalPossible) * 100)
-
   const handleFileUpload = (docId: string, file: File) => {
     try {
       onUploadDoc(docId, {
@@ -84,31 +78,9 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
     )
   }
 
-  const renderStatusAndShieldCard = () => (
-    <div className="itr-step-card">
-      <div className="itr-docs-status-bar">
-        <span className="itr-docs-count-text">
-          Documents Uploaded: {uploadedCount} of {totalPossible}
-        </span>
-        <span className="itr-badge-ready">{readyPercent}% Ready</span>
-      </div>
-
-      <div className="itr-docs-shield-card">
-        <div className="itr-docs-shield-icon" aria-hidden="true">🛡️</div>
-        <div className="itr-docs-shield-content">
-          <h3 className="itr-docs-shield-title">Document Checklist</h3>
-          <p className="itr-docs-shield-sub">
-            Upload applicable documents for CA review. PAN and Aadhaar identity are pre-verified from your profile.
-          </p>
-        </div>
-      </div>
-    </div>
-  )
-
   return (
-    <div className="itr-step-view-container">
-      <ItrFilingHeaderStepper currentStepId={4} />
-      {renderStatusAndShieldCard()}
+    <div className="itr-step-view-container itr-docs-step">
+      <ItrFilingHeaderStepper currentStepId={3} />
       <DocumentSection
         title="Required Documents"
         badgeLabel={`Mandatory (${REQUIRED_DOCS.length})`}

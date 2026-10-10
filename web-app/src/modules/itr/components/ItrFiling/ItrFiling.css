@@ -266,3 +266,14 @@
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
+/* Document Checklist step: tighter rhythm between the document sections and the action bar */
+.itr-docs-step {
+  gap: 1rem;
+}
+.itr-docs-step > .taxedge-doc-section--card {
+  margin-bottom: 0;
+}
+.itr-docs-step > .step-action-bar {
+  margin-top: 0.25rem;
+}

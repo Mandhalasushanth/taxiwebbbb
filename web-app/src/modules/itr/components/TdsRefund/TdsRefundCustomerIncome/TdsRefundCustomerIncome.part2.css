@@ -260,6 +260,4 @@
 @media (max-width: 768px) {
   .tds-personal-grid, .tds-form-grid-2, .tds-form-grid-3, .tds-regime-grid,
   .tds-taxRegime-grid, .tds-toggle-subfields.tds-form-grid-2 { grid-template-columns: 1fr; }
-  .tds-prelim-card { flex-direction: column; text-align: center; }
-  .tds-prelim-tag-row { justify-content: center; }
 }

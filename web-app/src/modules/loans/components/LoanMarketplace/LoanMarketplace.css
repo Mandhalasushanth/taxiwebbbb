@@ -258,33 +258,33 @@
 .loan-item-card__footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding-top: 0.85rem;
   border-top: 1px solid var(--palette-sky-50-f0f5fa);
   margin-top: auto;
 }
 
 .loan-item-card__action-text {
-  font-size: 0.86rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.875rem;
   font-weight: 700;
-  color: var(--palette-blue-600);
-  transition: color 0.2s ease;
+  color: var(--primary-navy); /* same as the GST "Start" action */
+  transition: color 0.15s ease, transform 0.15s ease;
 }
 
 .loan-item-card:hover .loan-item-card__action-text {
   color: var(--feature-orange);
+  transform: translateX(2px);
 }
 
-.loan-item-card__chevron {
-  width: 18px;
-  height: 18px;
-  color: var(--muted-text);
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.loan-item-card:hover .loan-item-card__chevron {
-  transform: translateX(4px);
-  color: var(--feature-orange);
+.loan-item-card__arrow {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 /* Responsive adjustments for static header and cards */

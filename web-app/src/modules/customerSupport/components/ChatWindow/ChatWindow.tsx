@@ -45,7 +45,7 @@ export const ChatWindow = ({
       <header className="cs-window__mobile-header">
         <div className="cs-window__mobile-header-left">
           <div className="cs-window__header-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
               <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
             </svg>
@@ -58,7 +58,7 @@ export const ChatWindow = ({
         </div>
 
         <div className="cs-window__mobile-header-right">
-          <span className="cs-window__status-dot"></span>
+          <span className="cs-window__status-dot" role="img" aria-label="Online"></span>
         </div>
       </header>
 
@@ -66,7 +66,7 @@ export const ChatWindow = ({
       <div className="cs-window__body">
         {/* Security Banner inside chat */}
         <div className="cs-window__security-banner">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="cs-window__security-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" className="cs-window__security-icon" aria-hidden="true">
             <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
           </svg>
           <span>This chat is encrypted and monitored for service quality.</span>

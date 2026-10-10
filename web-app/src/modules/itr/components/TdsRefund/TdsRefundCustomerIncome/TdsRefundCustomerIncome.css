@@ -20,48 +20,6 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Preliminary Estimated Refund Banner */
-.tds-prelim-card {
-  background: linear-gradient(135deg, var(--palette-sky-900) 0%, var(--palette-sky-800-063160) 55%, var(--palette-sky-700-0a4382) 100%);
-  border-radius: 18px;
-  padding: 1.85rem 2.25rem;
-  color: var(--surface);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  box-shadow: 0 10px 25px -5px rgba(2, 33, 69, 0.25);
-  box-sizing: border-box;
-  width: 100%;
-}
-.tds-prelim-left { flex: 1; }
-.tds-prelim-tag-row { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.4rem; }
-.tds-prelim-tag { font-size: 0.74rem; font-weight: 800; letter-spacing: 0.06em; color: var(--muted-text); }
-.tds-prelim-ay {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.15rem 0.55rem;
-  border-radius: 6px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--orange-200);
-}
-.tds-prelim-amount { font-size: 2.35rem; font-weight: 900; color: var(--primary-orange); letter-spacing: -0.025em; line-height: 1.2; }
-.tds-prelim-desc { font-size: 0.85rem; color: var(--grey-300); margin: 0.4rem 0 0 0; }
-.tds-prelim-badge-box { display: flex; flex-direction: column; gap: 0.6rem; }
-.tds-prelim-badge-item {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--palette-slate-50);
-  background: rgba(255, 255, 255, 0.08);
-  padding: 0.45rem 0.85rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
 /* Full Width Responsive Layout: Main Form expands across the screen */
 .tds-step1-layout {
   display: flex;

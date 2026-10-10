@@ -61,7 +61,7 @@ export const GSTSuccessView: React.FC<GSTSuccessViewProps> = ({
           statusTone: 'info',
           progress: 25,
           icon: '📄',
-          to: `/applications/track/${refId}`,
+          to: routePaths.applicationTrack(refId),
         })
       }
     } catch {
@@ -77,7 +77,7 @@ export const GSTSuccessView: React.FC<GSTSuccessViewProps> = ({
   }
 
   const handleTrackRequest = () => {
-    navigate(`/applications/track/${refId}`)
+    navigate(routePaths.applicationTrack(refId))
   }
 
   const handleDashboard = () => {

@@ -4,14 +4,13 @@ import { useReviewEdit } from "@shared/edit"
 import { ItrCategorySelectionView } from "./CategorySelection";
 import { ItrPersonalInfoView } from "./PersonalInfo";
 import { ItrIncomeSourcesView } from "./IncomeSources";
-import { ItrRegimeDeductionsView } from "./RegimeDeductions";
 import { ItrDocumentsChecklistView } from "./DocumentsChecklist";
 import { ItrReviewSubmissionView } from "./ReviewSubmission";
 import { ItrFilingSubmittedView } from "./FilingSubmitted";
 import { useItrFilingState } from "./useItrFilingState";
 import "./ItrFiling.css";
 
-const REVIEW_STEP = 5;
+const REVIEW_STEP = 4;
 
 export const ItrFiling: React.FC = () => {
   const flow = useItrFilingState()
@@ -48,9 +47,7 @@ export const ItrFiling: React.FC = () => {
     otherSourcesDetails,
     setOtherSourcesDetails,
     selectedRegime,
-    setSelectedRegime,
     deductions,
-    setDeductions,
     uploadedDocs,
     handleUploadDoc,
     handleRemoveDoc,
@@ -71,7 +68,7 @@ export const ItrFiling: React.FC = () => {
     }
   };
 
-  // "Edit" from the review (step 5): the step shows "Update & Review" and Continue / Back return to the review
+  // "Edit" from the review (step 4): the step shows "Update & Review" and Continue / Back return to the review
   const reviewEdit = useReviewEdit(() => navigateToStep(REVIEW_STEP));
   const { isEditMode, nextOrReview, backOrReview } = reviewEdit;
 
@@ -124,26 +121,8 @@ export const ItrFiling: React.FC = () => {
       />
     ),
     3: () => (
-      <ItrRegimeDeductionsView
-        onBack={backOrReview(() => navigateToStep(2))}
-        onNext={nextOrReview(() => navigateToStep(4))}
-        isEditMode={isEditMode}
-        onSaveDraft={openModal}
-        selectedSources={selectedSources}
-        salaryDetails={salaryDetails}
-        housePropertyDetails={housePropertyDetails}
-        businessDetails={businessDetails}
-        capitalGainsDetails={capitalGainsDetails}
-        otherSourcesDetails={otherSourcesDetails}
-        selectedRegime={selectedRegime}
-        onRegimeChange={setSelectedRegime}
-        deductions={deductions}
-        onDeductionsChange={setDeductions}
-      />
-    ),
-    4: () => (
       <ItrDocumentsChecklistView
-        onBack={backOrReview(() => navigateToStep(3))}
+        onBack={backOrReview(() => navigateToStep(2))}
         onNext={nextOrReview(() => navigateToStep(REVIEW_STEP))}
         isEditMode={isEditMode}
         onSaveDraft={openModal}
@@ -152,9 +131,9 @@ export const ItrFiling: React.FC = () => {
         onRemoveDoc={handleRemoveDoc}
       />
     ),
-    5: () => (
+    4: () => (
       <ItrReviewSubmissionView
-        onBack={() => navigateToStep(4)}
+        onBack={() => navigateToStep(3)}
         onEditStep={(step) => reviewEdit.startEdit(() => navigateToStep(step))}
         onSubmit={handleFinalSubmit}
         onSaveDraft={openModal}

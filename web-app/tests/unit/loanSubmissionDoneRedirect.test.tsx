@@ -18,6 +18,7 @@ import { afterEach } from 'vitest'
 import { ProjectFinanceSubmitModal } from '../../src/modules/loans/components/ProjectFinance/steps/ReviewAndSubmit/ProjectFinanceSubmitModal'
 import { LoanSubmitSuccessModal } from '../../src/modules/loans/shared/LoanSubmitSuccessModal/LoanSubmitSuccessModal'
 import { useLoanApplication } from '../../src/modules/loans/hooks/useLoanApplication'
+import { loanStorageKey } from '../../src/modules/loans/services/loanApplicationService'
 import { safeNavigateTo } from '../../src/modules/loans/utils/loanMarketplace.utils'
 import { localStore } from '@core/storage/localStorage'
 
@@ -77,7 +78,7 @@ describe('Loan Submission Done Button Redirection', () => {
   })
 
   it('useLoanApplication provides markSubmitted which sets isSubmitted to true and clears saved step and draft', () => {
-    localStore.set('taxedge_loan_step_test_loan', 7)
+    localStore.set(loanStorageKey('step_test_loan'), 7)
 
     const { result } = renderHook(() =>
       useLoanApplication('test_loan', { foo: 'bar' }, { serviceTitle: 'Test Loan' }),
@@ -91,6 +92,6 @@ describe('Loan Submission Done Button Redirection', () => {
     })
 
     expect(result.current.isSubmitted).toBe(true)
-    expect(localStore.get('taxedge_loan_step_test_loan')).toBeNull()
+    expect(localStore.get(loanStorageKey('step_test_loan'))).toBeNull()
   })
 })

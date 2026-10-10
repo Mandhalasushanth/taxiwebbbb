@@ -7,6 +7,7 @@ import { loanApplicationService } from '@modules/loans/services/loanApplicationS
 import { safeNavigateTo } from '@modules/loans/utils/loanMarketplace.utils'
 import type { LoanApplicationBase } from '@modules/loans/types/loanApplication.types'
 import type { LoanStepValidator } from '@modules/loans/validation/commonLoanValidation'
+import { routePaths } from '@core/config'
 
 export interface LoanSubmissionPayload {
   title: string
@@ -50,7 +51,7 @@ export function useLoanStepFlow<T extends object>(config: UseLoanStepFlowConfig<
     relatedErrorKeys,
     firstStepBack = 'exit',
     loanTitle,
-    exitRoute = '/loans',
+    exitRoute = routePaths.loans,
   } = config
 
   const navigate = useNavigate()
@@ -178,7 +179,7 @@ export function useLoanStepFlow<T extends object>(config: UseLoanStepFlowConfig<
   }, [navigate, exitRoute])
 
   const handleTrackStatus = useCallback(() => {
-    navigate(`/loans/status/${referenceNumber}`, {
+    navigate(routePaths.loansStatus(referenceNumber), {
       state: { application: submittedApp, formData, refNumber: referenceNumber, loanTitle },
     })
   }, [navigate, referenceNumber, submittedApp, formData, loanTitle])

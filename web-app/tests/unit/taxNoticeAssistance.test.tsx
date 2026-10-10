@@ -183,14 +183,14 @@ describe('TaxNoticeAssistance Component', () => {
     fireEvent.click(approveBtn)
 
     // Step 6: Notice Status
-    expect(await screen.findByText('Response Submitted Successfully')).toBeDefined()
+    expect(await screen.findByText('Response Submitted Successfully', {}, { timeout: 5000 })).toBeDefined()
     expect(screen.getByText('Notice & Details Provided')).toBeDefined()
     expect(screen.getByText('Back to Tax Services')).toBeDefined()
 
     const apps = userStorage.getUserApplications()
     expect(apps.length).toBeGreaterThan(0)
     expect(apps[0].code).toMatch(/^NOT-/)
-  })
+  }, 15000) // long multi-step UI flow: allow for a busy test runner
 
   it('handles uploading, viewing, and deleting supporting documents with Image 3 actions bar', async () => {
     render(

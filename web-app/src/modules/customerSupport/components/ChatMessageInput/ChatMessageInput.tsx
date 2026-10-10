@@ -1,6 +1,7 @@
 import { useState, useRef, type KeyboardEvent } from 'react'
 import { FileInput, formatUploadSize } from '@shared/upload'
 import type { SupportAttachment } from '../../types/customerSupport.types'
+import { SUPPORT_MESSAGE_MAX_LENGTH } from '../../constants/customerSupport.constants'
 import './ChatMessageInput.css'
 
 interface ChatMessageInputProps {
@@ -21,7 +22,7 @@ export const ChatMessageInput = ({
   const handleSend = () => {
     if ((!text.trim() && attachments.length === 0) || disabled) return
     onSendMessage(
-      text,
+      text.trim(),
       attachments.length > 0 ? attachments : undefined
     )
     setText('')
@@ -118,6 +119,7 @@ export const ChatMessageInput = ({
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
+            maxLength={SUPPORT_MESSAGE_MAX_LENGTH}
             placeholder={placeholder}
             disabled={disabled}
             aria-label="Write a message"

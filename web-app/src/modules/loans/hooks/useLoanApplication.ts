@@ -4,6 +4,7 @@ import { localStore } from '@core/storage/localStorage'
 import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '@shared/saveDraft'
 import { useAuthStore } from '@store/index'
 import { loanApplicationService, loanStorageKey } from '@modules/loans/services/loanApplicationService'
+import { routePaths } from '@core/config'
 
 export interface UseLoanApplicationOptions {
   serviceTitle?: string
@@ -12,7 +13,7 @@ export interface UseLoanApplicationOptions {
   resumeRoute?: string
 }
 
-const LOANS_ROUTE = '/loans'
+const LOANS_ROUTE = routePaths.loans
 const DEFAULT_TOTAL_STEPS = 4
 
 /** Resume routes for loans that do not pass one (kept for drafts listed before resumeRoute existed) */
@@ -84,10 +85,7 @@ function withoutUnsavedFiles<T extends object>(data: T): T {
 }
 
 /** Storage keys used before loans moved to the shared draft (read once, then cleared) */
-const legacyStepKeys = (loanType: string): string[] => [
-  loanStorageKey(`step_${loanType}`),
-  `taxedge_loan_step_${loanType}`,
-]
+const legacyStepKeys = (loanType: string): string[] => [loanStorageKey(`step_${loanType}`)]
 
 const readLegacyStep = (loanType: string): number | null =>
   legacyStepKeys(loanType).reduce<number | null>(

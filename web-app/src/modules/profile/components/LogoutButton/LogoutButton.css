@@ -5,24 +5,49 @@
   gap: 12px;
   width: 100%;
   padding: 16px;
-  background-color: transparent;
-  border: 1.5px solid var(--error); /* Red border */
-  border-radius: 12px;
+  background-color: var(--palette-red-50-fff5f5);
+  border: 1.5px solid var(--palette-red-200);
+  border-radius: 16px;
   color: var(--error);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 24px;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  margin-top: 8px;
 }
 
-.profile-logout-btn:hover,
+.profile-logout-btn:hover {
+  background-color: var(--error);
+  border-color: var(--error);
+  color: var(--surface);
+  box-shadow: 0 10px 24px rgba(220, 38, 38, 0.25);
+  transform: translateY(-1px);
+}
+
 .profile-logout-btn:active {
-  background-color: rgba(220, 38, 38, 0.05);
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.profile-logout-btn:focus-visible {
+  outline: 3px solid var(--palette-red-300);
+  outline-offset: 2px;
 }
 
 .profile-logout-btn__icon {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.profile-logout-btn:hover .profile-logout-btn__icon {
+  transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-logout-btn,
+  .profile-logout-btn__icon {
+    transition: none;
+  }
 }

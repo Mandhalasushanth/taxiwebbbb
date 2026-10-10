@@ -1,0 +1,90 @@
+/* Input with an inline Upload button (Business PAN / Aadhaar) */
+.tds-upload-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.tds-upload-field__input {
+  padding-right: 7.25rem;
+}
+
+.tds-upload-field__btn {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 32px;
+  padding: 0 0.85rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--palette-blue-50);
+  color: var(--primary-navy);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.tds-upload-field__btn:hover {
+  background: var(--primary-navy);
+  color: var(--surface);
+}
+
+.tds-upload-field__btn:focus-visible {
+  outline: 3px solid var(--palette-sky-400);
+  outline-offset: 2px;
+}
+
+.tds-upload-field__file {
+  display: none;
+}
+
+.tds-upload-field__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 100%;
+  margin-top: 0.4rem;
+  padding: 0.3rem 0.4rem 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: var(--palette-emerald-50);
+  border: 1px solid var(--palette-emerald-200);
+  font-size: 0.78rem;
+  color: var(--palette-emerald-700);
+  align-self: flex-start;
+}
+
+.tds-upload-field__chip-name {
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tds-upload-field__chip-size {
+  opacity: 0.75;
+  flex-shrink: 0;
+}
+
+.tds-upload-field__chip-remove {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.tds-upload-field__chip-remove:hover {
+  background: var(--palette-red-100-fee2e2);
+  color: var(--palette-red-500);
+}

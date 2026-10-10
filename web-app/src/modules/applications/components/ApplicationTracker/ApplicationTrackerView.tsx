@@ -51,7 +51,7 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
               <button
                 type="button"
                 className="app-tracker-empty-btn app-tracker-empty-btn--secondary"
-                onClick={() => navigate(routePaths.services)}
+                onClick={() => navigate({ pathname: routePaths.dashboard, hash: routePaths.dashboardServicesAnchor })}
               >
                 Browse Services
               </button>

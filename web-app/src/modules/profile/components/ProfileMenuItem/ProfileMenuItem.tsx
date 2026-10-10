@@ -12,7 +12,7 @@ export interface ProfileMenuItemProps {
 }
 
 const ChevronRight = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" aria-hidden="true" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="9 18 15 12 9 6"></polyline>
   </svg>
 )

@@ -1,3 +1,4 @@
+import { routePaths } from '@core/config'
 import React, { useState, useCallback, useMemo } from 'react'
 import { useParams, useLocation, useNavigate } from 'react-router-dom'
 import { LoanSummaryCard } from './LoanSummaryCard'
@@ -299,7 +300,7 @@ Thank you for applying with TaxEdge Fin Solutions.
           <button
             type="button"
             className="loan-status-back-btn"
-            onClick={() => navigate('/loans')}
+            onClick={() => navigate(routePaths.loans)}
             aria-label="Back to Loans"
           >
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
