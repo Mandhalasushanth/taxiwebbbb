@@ -1,0 +1,58 @@
+.mk-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.mk-brand:focus-visible {
+  outline: 3px solid var(--color-primary-glow);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.mk-brand__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  object-fit: contain;
+  box-shadow: var(--shadow-sm);
+}
+
+.mk-brand__text {
+  display: flex;
+  flex-direction: column;
+}
+
+.mk-brand__name {
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.mk-brand__lead {
+  color: var(--color-primary-navy);
+}
+
+.mk-brand__accent {
+  color: var(--color-primary);
+}
+
+.mk-brand__sub {
+  margin-top: 1px;
+  font-size: 0.6rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+.mk-brand--dark .mk-brand__lead {
+  color: var(--surface);
+}
+
+.mk-brand--dark .mk-brand__sub {
+  color: var(--grey-400);
+}

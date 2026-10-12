@@ -1,0 +1,23 @@
+.mk-page-hero {
+  position: relative;
+  padding-block: var(--space-8) calc(var(--space-8) + var(--space-4));
+  background:
+    radial-gradient(circle at 15% 25%, rgb(14 55 120 / 45%) 0%, transparent 45%),
+    radial-gradient(ellipse at 90% 110%, rgb(249 115 22 / 22%) 0%, transparent 55%),
+    var(--brand-gradient);
+  overflow: hidden;
+}
+
+.mk-page-hero .mk-heading {
+  margin-bottom: 0;
+}
+
+.mk-page-hero .mk-heading__title {
+  font-size: clamp(1.9rem, 4.5vw, 3rem);
+}
+
+@media (max-width: 640px) {
+  .mk-page-hero {
+    padding-block: var(--space-7) calc(var(--space-7) + var(--space-3));
+  }
+}

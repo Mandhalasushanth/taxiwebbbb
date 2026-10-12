@@ -1,0 +1,18 @@
+.mk-faq-section {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  align-items: start;
+  gap: var(--space-7);
+}
+
+/* Heading scrolls with the page so nothing slides under the sticky header */
+.mk-faq-section > .mk-heading {
+  margin-bottom: 0;
+}
+
+@media (max-width: 959px) {
+  .mk-faq-section {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+}

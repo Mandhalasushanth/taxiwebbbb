@@ -1,0 +1,119 @@
+.mk-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.mk-cta:focus-visible {
+  outline: 3px solid var(--color-primary-glow);
+  outline-offset: 2px;
+}
+
+.mk-cta:hover {
+  transform: translateY(-1px);
+}
+
+.mk-cta__icon {
+  display: inline-flex;
+  transition: transform var(--transition-fast);
+}
+
+.mk-cta:hover .mk-cta__icon {
+  transform: translateX(3px);
+}
+
+.mk-cta__icon svg {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+/* Sizes */
+.mk-cta--sm {
+  padding: 0.55rem 1rem;
+  font-size: var(--font-size-sm);
+}
+
+.mk-cta--md {
+  padding: 0.75rem 1.35rem;
+  font-size: var(--font-size-sm);
+}
+
+.mk-cta--lg {
+  padding: 0.95rem 1.75rem;
+  font-size: var(--font-size-md);
+}
+
+.mk-cta--block {
+  width: 100%;
+}
+
+/* Variants */
+.mk-cta--primary {
+  background: linear-gradient(100deg, var(--orange-400) 0%, var(--color-primary) 55%, var(--color-accent) 100%);
+  color: var(--color-on-primary);
+  box-shadow: 0 8px 22px var(--color-primary-glow);
+}
+
+.mk-cta--primary:hover {
+  box-shadow: 0 12px 28px rgb(249 115 22 / 32%);
+}
+
+.mk-cta--outline {
+  background: var(--color-surface);
+  border-color: var(--color-primary-navy);
+  color: var(--color-primary-navy);
+}
+
+.mk-cta--outline:hover {
+  background: var(--color-primary-navy);
+  color: var(--surface);
+}
+
+.mk-cta--ghost {
+  background: transparent;
+  color: var(--color-primary-navy);
+}
+
+.mk-cta--ghost:hover {
+  background: var(--color-info-soft);
+}
+
+/* For dark (navy) backgrounds */
+.mk-cta--light {
+  background: rgb(255 255 255 / 8%);
+  border-color: rgb(255 255 255 / 35%);
+  color: var(--surface);
+  backdrop-filter: blur(6px);
+}
+
+.mk-cta--light:hover {
+  background: var(--surface);
+  color: var(--color-primary-navy);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-cta,
+  .mk-cta__icon {
+    transition: none;
+  }
+
+  .mk-cta:hover,
+  .mk-cta:hover .mk-cta__icon {
+    transform: none;
+  }
+}

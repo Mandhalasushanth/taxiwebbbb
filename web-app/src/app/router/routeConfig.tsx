@@ -20,6 +20,7 @@ import { legalRoutes } from '@modules/legal/routes'
 import { itrRoutes } from '@modules/itr/routes'
 // Import the routes file directly: the loans barrel also exports every loan page, which would defeat lazy loading
 import { loansRoutes } from '@modules/loans/routes'
+import { marketingRoutes } from '@modules/marketing/routes'
 import { paymentsRoutes } from '@modules/payments/routes'
 import { profileRoutes } from '@modules/profile/routes'
 import { notificationsRoutes } from '@modules/notifications'
@@ -38,10 +39,8 @@ const authLayoutRoutes = authenticationRoutes.filter(
  * this file only decides which layout and guard wraps each group.
  */
 export const routeConfig: RouteObject[] = [
-  {
-    path: routePaths.root,
-    element: <Navigate to={routePaths.auth.login} replace />,
-  },
+  // Public marketing site ("/", /pricing, /about, /contact); must stay first so "/" resolves here
+  ...marketingRoutes,
   {
     path: routePaths.registration,
     element: <Navigate to={routePaths.auth.register} replace />,
