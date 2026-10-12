@@ -25,7 +25,7 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--palette-sky-800-0b2546);
+  background: var(--palette-orange-500-f25a22);
   color: var(--surface);
   font-size: 0.85rem;
   font-weight: 700;
@@ -43,12 +43,12 @@
 .director-card__btn-collapse,
 .director-card__btn-edit {
   background: var(--surface);
-  border: 1px solid var(--grey-300);
+  border: 1.5px solid #ffd8bf;
   border-radius: 8px;
   padding: 0.45rem 1rem;
   font-size: 0.84rem;
   font-weight: 600;
-  color: var(--grey-700);
+  color: var(--palette-orange-500-f25a22);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -57,9 +57,9 @@
 }
 .director-card__btn-collapse:hover,
 .director-card__btn-edit:hover {
-  background: var(--subtle-border);
-  border-color: var(--muted-text);
-  color: var(--palette-sky-800-0b2546);
+  background: #fff9f5;
+  border-color: var(--palette-orange-500-f25a22);
+  color: var(--palette-orange-500-e04b15);
 }
 
 /* Collapsed Summary View */
@@ -276,7 +276,7 @@ select.director-input {
 .director-btn-cancel:hover { background: var(--palette-slate-50); }
 
 .director-btn-save {
-  background: var(--palette-sky-800-0b2546);
+  background: var(--palette-orange-500-f25a22);
   color: var(--surface);
   border: none;
   border-radius: 10px;
@@ -289,7 +289,7 @@ select.director-input {
   gap: 0.5rem;
   transition: all 0.15s ease;
 }
-.director-btn-save:hover { background: var(--palette-sky-800-143560); }
+.director-btn-save:hover { background: var(--palette-orange-500-e04b15); }
 
 @media (max-width: 768px) {
   .director-grid-2, .director-grid-4 { grid-template-columns: 1fr; }

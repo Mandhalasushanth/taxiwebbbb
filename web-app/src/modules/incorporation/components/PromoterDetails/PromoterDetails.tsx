@@ -13,7 +13,7 @@ import {
   isValidName,
 } from '../../utils/validation'
 import { validateDobSignatory } from '@shared/utils/validationUtils'
-import type { DirectorDetails } from '../../types/incorporation.types'
+import { getEntityStructureLabel, type DirectorDetails } from '../../types/incorporation.types'
 import './PromoterDetails.css'
 
 export const PromoterDetails: React.FC = () => {
@@ -170,6 +170,11 @@ export const PromoterDetails: React.FC = () => {
         <p className="promoter-details-header__subtitle">
           Enter essential details of all promoters/directors for CA processing.
         </p>
+        {directors.length < minDirectors && (
+          <p className="promoter-details-min-warning">
+            At least {minDirectors} promoter/director(s) required for {getEntityStructureLabel(companyType)}.
+          </p>
+        )}
       </header>
 
       {/* Directors List */}
