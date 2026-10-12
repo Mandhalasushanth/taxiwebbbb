@@ -43,6 +43,7 @@ export const companyRegistrationData: CompanyRegistrationDetails = {
 /** Types without a 3D image fall back to their inline line icon */
 export const COMPANY_TYPE_ICON_IMAGE_MAP: Partial<Record<CompanyTypeOption['id'], string>> = {
   pvt_ltd: '/assets/icons/incorporation/pvt-ltd.png',
+  llp: '/assets/icons/incorporation/llp.png',
   opc: '/assets/icons/incorporation/opc.png',
   section_8: '/assets/icons/incorporation/section-8.png',
   public_ltd: '/assets/icons/incorporation/public-ltd.png',
@@ -63,6 +64,7 @@ export const companyTypeOptions: CompanyTypeOption[] = [
     description: 'Best for partners and professional firms. Limited liability with low compliance overhead.',
     badge: 'Min 2 Designated Partners',
     icon: 'partners',
+    image: COMPANY_TYPE_ICON_IMAGE_MAP.llp,
   },
   {
     id: 'opc',

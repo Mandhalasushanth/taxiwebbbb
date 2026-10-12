@@ -82,13 +82,13 @@
 
 /* Add Director Button */
 .promoter-details-btn-add {
-  background: var(--palette-slate-50);
-  border: 1.5px dashed var(--grey-300);
+  background: #fff9f5;
+  border: 1.5px solid #ffd8bf;
   border-radius: 14px;
-  padding: 1.25rem;
+  padding: 1.15rem;
   font-size: 0.98rem;
   font-weight: 700;
-  color: var(--palette-sky-800-0b2546);
+  color: var(--palette-orange-500-f25a22);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -98,9 +98,16 @@
 }
 
 .promoter-details-btn-add:hover {
-  background: var(--palette-sky-50-f0f7ff);
-  border-color: var(--palette-sky-800-0b2546);
-  color: var(--palette-sky-800-0b2546);
+  background: #fff1e8;
+  border-color: var(--palette-orange-500-f25a22);
+  color: var(--palette-orange-500-e04b15);
+}
+
+.promoter-details-min-warning {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--palette-red-500);
 }
 
 .promoter-details-error-alert {

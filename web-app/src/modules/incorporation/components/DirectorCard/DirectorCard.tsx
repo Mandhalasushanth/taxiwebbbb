@@ -134,8 +134,8 @@ export const DirectorCard: React.FC<DirectorCardProps> = ({
               <span className="director-card__summary-val">{director.pan || '—'}</span>
             </span>
             <span className="director-card__summary-item">
-              <span className="director-card__summary-label">Designation:</span>
-              <span className="director-card__summary-val">{director.designation || '—'}</span>
+              <span className="director-card__summary-label">Email:</span>
+              <span className="director-card__summary-val">{director.email || '—'}</span>
             </span>
           </div>
 
@@ -145,8 +145,8 @@ export const DirectorCard: React.FC<DirectorCardProps> = ({
               <span className="director-card__summary-val">{director.mobile || '—'}</span>
             </span>
             <span className="director-card__summary-item">
-              <span className="director-card__summary-label">Email:</span>
-              <span className="director-card__summary-val">{director.email || '—'}</span>
+              <span className="director-card__summary-label">Shareholding:</span>
+              <span className="director-card__summary-val">{director.shareholdingPercent ? `${director.shareholdingPercent}%` : '0%'}</span>
             </span>
           </div>
         </div>
