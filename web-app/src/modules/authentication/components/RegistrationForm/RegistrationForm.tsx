@@ -13,11 +13,9 @@ import {
 } from '../../services/identityRegistry'
 import { RegistrationPersonalFields } from '../RegistrationPersonalFields/RegistrationPersonalFields'
 import { RegistrationIdentityFields } from '../RegistrationIdentityFields/RegistrationIdentityFields'
-import { RegistrationEntityFields } from '../RegistrationEntityFields/RegistrationEntityFields'
 import { RegistrationResidentialFields } from '../RegistrationResidentialFields/RegistrationResidentialFields'
 import { RegistrationSecurityFields } from '../RegistrationSecurityFields/RegistrationSecurityFields'
 import type { CustomerTypeId } from '@modules/customerType/types/customerType.types'
-import { getEntityFormConfig } from '../../constants/profileFormConfig'
 import { buildRegisteredUser, formatRegistrationField } from '../../utils/registrationFormatters'
 import {
   checkIsFormValid,
@@ -83,7 +81,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
   const isFormValid = checkIsFormValid(values)
-  const entityConfig = getEntityFormConfig(values.customerType)
 
   // Persist every change so going back to "Customer Type" and continuing keeps the data
   useEffect(() => {
@@ -254,34 +251,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     </>
   )
 
-  const renderEntityFields = () =>
-    entityConfig && (
-      <RegistrationEntityFields
-        config={entityConfig}
-        values={{
-          entityName: values.entityName,
-          registrationNumber: values.registrationNumber,
-          incorporationDate: values.incorporationDate,
-          pan: values.pan,
-          fullName: values.fullName,
-          email: values.email,
-          mobile: values.mobile,
-        }}
-        errors={{
-          entityName: visibleError('entityName'),
-          registrationNumber: visibleError('registrationNumber'),
-          incorporationDate: visibleError('incorporationDate'),
-          pan: visibleError('pan'),
-          fullName: visibleError('fullName'),
-          email: visibleError('email'),
-          mobile: visibleError('mobile'),
-        }}
-        isMobileVerified={isMobileVerified}
-        onChange={handleChange}
-        onBlur={handleBlur}
-      />
-    )
-
   return (
     <form className="reg-form" ref={formRef} onSubmit={handleSubmit} noValidate>
       {errors.form && (
@@ -290,7 +259,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         </div>
       )}
 
-      {entityConfig ? renderEntityFields() : renderIndividualFields()}
+      {renderIndividualFields()}
 
       <RegistrationResidentialFields
         values={{

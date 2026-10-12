@@ -4,14 +4,8 @@ import {
   validateAadhaar,
   validateIndividualPan,
   validateMobileNumber,
+  validatePan,
 } from '@shared/utils'
-
-import { getProfileKind } from '../constants/profileFormConfig'
-import {
-  validateEntityName,
-  validateEntityPan,
-  validateRegistrationNumber,
-} from './entityProfileValidation'
 
 export interface RegistrationFormState {
   /** Selected customer type; decides individual vs business-entity fields */
@@ -132,20 +126,17 @@ export const isRepeatingPatternPasscode = (str: string): boolean => {
   return false
 }
 
-/** Fields that only exist on one of the two profile forms */
-const INDIVIDUAL_ONLY_FIELDS: Array<keyof RegistrationFormState> = ['gender', 'dob', 'fatherSpouseName', 'aadhaar']
-const ENTITY_ONLY_FIELDS: Array<keyof RegistrationFormState> = ['entityName', 'registrationNumber', 'incorporationDate']
+/** Legacy entity fields that are no longer part of the unified individual registration form */
+const UNUSED_ENTITY_FIELDS: Array<keyof RegistrationFormState> = ['entityName', 'registrationNumber', 'incorporationDate']
 
-const isFieldHidden = (name: keyof RegistrationFormState, values: RegistrationFormState): boolean =>
-  getProfileKind(values.customerType) === 'entity'
-    ? INDIVIDUAL_ONLY_FIELDS.includes(name)
-    : ENTITY_ONLY_FIELDS.includes(name)
+const isFieldHidden = (name: keyof RegistrationFormState): boolean =>
+  UNUSED_ENTITY_FIELDS.includes(name)
 
 export const validateField = (
   name: keyof RegistrationFormState,
   values: RegistrationFormState
 ): string | undefined => {
-  if (isFieldHidden(name, values)) return undefined
+  if (isFieldHidden(name)) return undefined
   const val = values[name]
 
   switch (name) {
@@ -201,23 +192,11 @@ export const validateField = (
     }
 
     case 'pan': {
-      if (getProfileKind(values.customerType) === 'entity') {
-        return validateEntityPan(String(val ?? ''), values.customerType)
+      const panStr = String(val ?? '').trim().toUpperCase()
+      if (['partnership', 'llp', 'private_limited', 'company'].includes(values.customerType)) {
+        return validatePan(panStr) || undefined
       }
-      return validateIndividualPan(String(val ?? '')) || undefined
-    }
-
-    case 'entityName':
-      return validateEntityName(String(val ?? ''), values.customerType)
-
-    case 'registrationNumber':
-      return validateRegistrationNumber(String(val ?? ''), values.customerType)
-
-    case 'incorporationDate': {
-      const str = String(val ?? '').trim()
-      if (!str) return 'Incorporation Date is required'
-      if (!isValidDateString(str)) return 'Enter a valid past date in DD-MM-YYYY format'
-      return undefined
+      return validateIndividualPan(panStr) || undefined
     }
 
     case 'aadhaar': {
@@ -338,9 +317,6 @@ const MANDATORY_FIELDS: Array<keyof RegistrationFormState> = [
   'pan',
   'aadhaar',
   'mobile',
-  'entityName',
-  'registrationNumber',
-  'incorporationDate',
   'addressLine1',
   'city',
   'district',
