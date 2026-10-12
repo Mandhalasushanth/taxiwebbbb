@@ -1,6 +1,5 @@
 import type { AuthUser } from '@core/auth'
 
-import { getEntityFormConfig, getProfileKind } from '../constants/profileFormConfig'
 import { formatDOB, type RegistrationFormState } from '../validation/registrationValidation'
 
 type FieldFormatter = (value: string, previous: string, values: RegistrationFormState) => string
@@ -19,12 +18,6 @@ const FIELD_FORMATTERS: Partial<Record<keyof RegistrationFormState, FieldFormatt
   password: digitsOnly(6),
   confirmPassword: digitsOnly(6),
   dob: datePart,
-  incorporationDate: datePart,
-  entityName: (value) => value.replace(/[^A-Za-z0-9 .&'(),/-]/g, '').replace(/\s{2,}/g, ' ').slice(0, 150),
-  registrationNumber: (value, _previous, values) => {
-    const maxLength = getEntityFormConfig(values.customerType)?.registrationMaxLength ?? 30
-    return value.toUpperCase().replace(/[^A-Z0-9/-]/g, '').slice(0, maxLength)
-  },
 }
 
 /** Input filter applied as the user types, so each field only accepts what its placeholder asks for. */
@@ -53,40 +46,26 @@ export const buildRegisteredUser = (
   values: RegistrationFormState,
   verifiedMobile: string,
   existingUser: AuthUser | null,
-): AuthUser => {
-  const isEntity = getProfileKind(values.customerType) === 'entity'
-  const common: AuthUser = {
-    id: existingUser?.id || `usr_${verifiedMobile || Date.now().toString(36)}`,
-    fullName: values.fullName.trim(),
-    email: values.email.trim(),
-    mobile: verifiedMobile,
-    role: 'CUSTOMER',
-    permissions: [],
-    isProfileComplete: true,
-    customerType: values.customerType,
-    pan: values.pan.trim(),
-    addressLine1: values.addressLine1.trim(),
-    addressLine2: '',
-    areaLocality: values.areaLocality.trim(),
-    city: values.city.trim(),
-    district: values.district.trim(),
-    pincode: values.pincode.trim(),
-    state: values.state.trim(),
-    address: buildAddress(values),
-  }
-
-  return isEntity
-    ? {
-        ...common,
-        businessName: values.entityName.trim(),
-        registrationNumber: values.registrationNumber.trim(),
-        incorporationDate: values.incorporationDate.trim(),
-      }
-    : {
-        ...common,
-        gender: values.gender,
-        dob: values.dob,
-        fatherSpouseName: values.fatherSpouseName.trim(),
-        aadhaar: values.aadhaar.trim(),
-      }
-}
+): AuthUser => ({
+  id: existingUser?.id || `usr_${verifiedMobile || Date.now().toString(36)}`,
+  fullName: values.fullName.trim(),
+  email: values.email.trim(),
+  mobile: verifiedMobile,
+  role: 'CUSTOMER',
+  permissions: [],
+  isProfileComplete: true,
+  customerType: values.customerType,
+  pan: values.pan.trim(),
+  addressLine1: values.addressLine1.trim(),
+  addressLine2: '',
+  areaLocality: values.areaLocality.trim(),
+  city: values.city.trim(),
+  district: values.district.trim(),
+  pincode: values.pincode.trim(),
+  state: values.state.trim(),
+  address: buildAddress(values),
+  gender: values.gender,
+  dob: values.dob,
+  fatherSpouseName: values.fatherSpouseName.trim(),
+  aadhaar: values.aadhaar.trim(),
+})

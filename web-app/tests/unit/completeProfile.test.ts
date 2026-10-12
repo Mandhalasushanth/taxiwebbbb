@@ -46,32 +46,32 @@ describe('BUG-CP-001: profile gate on direct URLs', () => {
   })
 })
 
-describe('BUG-CP-002: entity-specific profile form', () => {
+describe('BUG-CP-002: unified profile form for all roles', () => {
   const companyForm: RegistrationFormState = {
     ...baseForm,
     customerType: 'private_limited',
-    entityName: 'Tanvox Technologies Pvt Ltd',
-    registrationNumber: 'U72900TG2021PTC123456',
-    incorporationDate: '12-04-2021',
+    gender: 'Male',
+    dob: '15-08-1995',
     pan: 'AAACT1234A',
+    aadhaar: '234567890124',
   }
 
-  it('accepts a company profile without gender, DOB, father name or Aadhaar', () => {
+  it('requires individual fields (gender, DOB, Aadhaar) for company roles too', () => {
     expect(checkIsFormValid(companyForm)).toBe(true)
-    expect(validateField('gender', companyForm)).toBeUndefined()
-    expect(validateField('aadhaar', companyForm)).toBeUndefined()
+    expect(validateField('gender', { ...companyForm, gender: '' })).toBe('Please select your gender')
+    expect(validateField('aadhaar', { ...companyForm, aadhaar: '' })).toBeTruthy()
+    expect(validateField('dob', { ...companyForm, dob: '' })).toBe('Date of Birth is required')
   })
 
-  it('requires company fields and validates CIN / company PAN', () => {
-    expect(validateField('entityName', { ...companyForm, entityName: '' })).toBe('Company Name is required')
-    expect(validateField('registrationNumber', { ...companyForm, registrationNumber: 'U123' })).toBeTruthy()
-    expect(validateField('pan', { ...companyForm, pan: 'ABCPE1234F' })).toContain('4th character')
-    expect(validateField('incorporationDate', { ...companyForm, incorporationDate: '' })).toBeTruthy()
+  it('does not require legacy entity-only fields', () => {
+    expect(validateField('entityName', companyForm)).toBeUndefined()
+    expect(validateField('registrationNumber', companyForm)).toBeUndefined()
+    expect(validateField('incorporationDate', companyForm)).toBeUndefined()
   })
 
-  it('still requires personal fields for individuals', () => {
-    expect(validateField('gender', baseForm)).toBe('Please select your gender')
-    expect(validateField('entityName', baseForm)).toBeUndefined()
+  it('validates PAN for company roles', () => {
+    expect(validateField('pan', companyForm)).toBeUndefined()
+    expect(validateField('pan', { ...companyForm, pan: 'INVALID' })).toBeTruthy()
   })
 })
 
