@@ -1,0 +1,148 @@
+/* ===================================================
+   Marketing site base: shared layout primitives.
+   Colours come only from the app theme tokens
+   (shared/theme) so the site matches the web app.
+=================================================== */
+
+.mk-site {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+}
+
+.mk-main {
+  flex: 1;
+  scroll-margin-top: 80px;
+}
+
+.mk-container {
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin-inline: auto;
+  padding-inline: var(--space-5);
+}
+
+/* Section rhythm */
+.mk-section {
+  padding-block: var(--space-8);
+  scroll-margin-top: 72px;
+}
+
+.mk-section--surface {
+  background: var(--color-surface);
+}
+
+.mk-section--navy {
+  position: relative;
+  background: var(--brand-gradient);
+  color: var(--surface);
+  overflow: hidden;
+}
+
+.mk-section--navy::before {
+  content: '';
+  position: absolute;
+  inset: auto -120px -160px auto;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(249 115 22 / 22%) 0%, transparent 70%);
+  filter: blur(30px);
+  pointer-events: none;
+}
+
+.mk-section--navy > .mk-container {
+  position: relative;
+}
+
+/* Responsive card grids */
+.mk-grid {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.mk-grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mk-grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.mk-grid--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* Reveal on scroll (toggled by useInView) */
+.mk-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 600ms ease,
+    transform 600ms ease;
+}
+
+.mk-reveal--visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Accessibility */
+.mk-skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--space-4);
+  z-index: calc(var(--z-header) + 1);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+}
+
+.mk-skip-link:focus {
+  top: var(--space-2);
+}
+
+@media (max-width: 1023px) {
+  .mk-grid--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mk-grid--3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .mk-container {
+    padding-inline: var(--space-4);
+  }
+
+  .mk-section {
+    padding-block: var(--space-7);
+  }
+
+  .mk-grid--2,
+  .mk-grid--3,
+  .mk-grid--4 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mk-grid {
+    gap: var(--space-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

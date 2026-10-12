@@ -1,0 +1,107 @@
+.mk-feature {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.mk-feature:hover {
+  transform: translateY(-4px);
+  border-color: var(--orange-200);
+  box-shadow: var(--shadow-md);
+}
+
+.mk-feature__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mk-feature__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: var(--color-info-soft);
+  color: var(--color-primary-navy);
+}
+
+.mk-feature__icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.mk-feature:hover .mk-feature__icon {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.mk-feature__step {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--grey-200);
+}
+
+.mk-feature__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-navy);
+}
+
+.mk-feature__description {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-muted);
+}
+
+/* On navy sections */
+.mk-feature--dark {
+  border-color: var(--color-navy-border);
+  background: var(--color-navy-panel);
+  box-shadow: none;
+}
+
+.mk-feature--dark:hover {
+  border-color: rgb(249 115 22 / 45%);
+  box-shadow: 0 16px 40px rgb(2 12 32 / 45%);
+}
+
+.mk-feature--dark .mk-feature__icon {
+  background: rgb(249 115 22 / 14%);
+  color: var(--orange-300);
+}
+
+.mk-feature--dark .mk-feature__title {
+  color: var(--surface);
+}
+
+.mk-feature--dark .mk-feature__description {
+  color: var(--grey-300);
+}
+
+.mk-feature--dark .mk-feature__step {
+  color: rgb(255 255 255 / 12%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-feature,
+  .mk-feature:hover {
+    transition: none;
+    transform: none;
+  }
+}

@@ -57,6 +57,9 @@ export const apiEndpoints = {
     update: '/profile',
     changePasscode: '/profile/passcode',
   },
+  marketing: {
+    enquiries: '/public/enquiries',
+  },
   chat: {
     threads: '/chat/threads',
     messages: (threadId: string) => `/chat/threads/${threadId}/messages`,

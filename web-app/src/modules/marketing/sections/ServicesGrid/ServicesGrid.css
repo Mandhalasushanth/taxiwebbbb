@@ -1,0 +1,163 @@
+.mk-services__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--space-5);
+}
+
+.mk-services__grid > .mk-reveal {
+  height: 100%;
+}
+
+.mk-service {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+  color: inherit;
+  text-decoration: none;
+  overflow: hidden;
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+}
+
+/* Orange accent bar that grows on hover */
+.mk-service::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-base);
+}
+
+.mk-service:hover,
+.mk-service:focus-visible {
+  transform: translateY(-6px);
+  border-color: var(--orange-200);
+  box-shadow: var(--shadow-lg);
+}
+
+.mk-service:hover::before,
+.mk-service:focus-visible::before {
+  transform: scaleX(1);
+}
+
+/* Soft orange spotlight that follows the cursor (position set by trackPointer) */
+.mk-service::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    320px circle at var(--mk-pointer-x, 50%) var(--mk-pointer-y, 0%),
+    rgb(249 115 22 / 10%),
+    transparent 60%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-base);
+}
+
+.mk-service:hover::after {
+  opacity: 1;
+}
+
+.mk-service > * {
+  position: relative;
+  z-index: 1;
+}
+
+.mk-service:hover .mk-service__icon {
+  transform: scale(1.08) rotate(-4deg);
+}
+
+.mk-service:focus-visible {
+  outline: 3px solid var(--color-primary-glow);
+  outline-offset: 2px;
+}
+
+.mk-service__icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: contain;
+  transition: transform var(--transition-base);
+}
+
+.mk-service__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-navy);
+}
+
+.mk-service__description {
+  margin: 0;
+  flex: 1;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-muted);
+}
+
+.mk-service__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mk-service__tag {
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-info-soft);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-blue);
+}
+
+.mk-service__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.mk-service__cta svg {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--transition-fast);
+}
+
+.mk-service:hover .mk-service__cta svg {
+  transform: translateX(4px);
+}
+
+@media (max-width: 560px) {
+  .mk-services__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-service,
+  .mk-service:hover,
+  .mk-service:focus-visible {
+    transition: none;
+    transform: none;
+  }
+}

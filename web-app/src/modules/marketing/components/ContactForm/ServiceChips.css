@@ -1,0 +1,95 @@
+.mk-chips {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.mk-chips__legend {
+  margin-bottom: var(--space-2);
+  padding: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-navy);
+}
+
+.mk-chips__legend span {
+  color: var(--color-primary);
+}
+
+.mk-chips__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.mk-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-4);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.mk-chip:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary-navy);
+}
+
+/* Visually hidden but focusable radio */
+.mk-chip__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mk-chip:has(.mk-chip__input:focus-visible) {
+  outline: 3px solid var(--color-primary-glow);
+  outline-offset: 2px;
+}
+
+.mk-chip--selected,
+.mk-chip--selected:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.mk-chip__tick {
+  width: 14px;
+  height: 14px;
+}
+
+.mk-chips--invalid .mk-chip {
+  border-color: rgb(220 38 38 / 45%);
+}
+
+.mk-chips__error {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-chip {
+    transition: none;
+  }
+}

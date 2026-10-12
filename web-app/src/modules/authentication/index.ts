@@ -4,6 +4,7 @@
  */
 export { authenticationRoutes } from './routes'
 export { useLogoutConfirm } from './hooks/useLogoutConfirm'
+export { BackNavigationLogoutGuard } from './components/BackNavigationLogoutGuard/BackNavigationLogoutGuard'
 export { authFlowService } from './services/authFlowService'
 export type {
   LoginPayload,

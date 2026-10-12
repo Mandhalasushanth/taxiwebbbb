@@ -1,6 +1,16 @@
 /** Single source of truth for URLs. Never hard-code a path in a component. */
 export const routePaths = {
   root: '/',
+  /** Public marketing site shown before sign-in */
+  marketing: {
+    home: '/',
+    pricing: '/pricing',
+    about: '/about',
+    contact: '/contact',
+    /** Element id of the home page services section; used as a URL hash (/#services). */
+    servicesAnchor: 'services',
+    faqAnchor: 'faq',
+  },
   registration: '/registration',
   customerType: '/customer-type',
   auth: {

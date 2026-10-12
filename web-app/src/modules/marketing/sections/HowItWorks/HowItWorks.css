@@ -1,0 +1,42 @@
+.mk-how__list {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Dashed connector line behind the step cards (desktop only) */
+.mk-how__list::before {
+  content: '';
+  position: absolute;
+  top: 50px;
+  left: 6%;
+  right: 6%;
+  border-top: 2px dashed rgb(249 115 22 / 35%);
+}
+
+.mk-how__item,
+.mk-how__reveal {
+  position: relative;
+  height: 100%;
+}
+
+@media (max-width: 1023px) {
+  .mk-how__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mk-how__list::before {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .mk-how__list {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}

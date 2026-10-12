@@ -1,0 +1,105 @@
+/* Cards sit fully below the banner: no overlap, no sticky columns */
+.mk-contact__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: var(--space-6);
+}
+
+.mk-contact__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: var(--color-deep-navy);
+  color: var(--surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.mk-contact__info-title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+}
+
+.mk-contact__info-text {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--grey-300);
+}
+
+.mk-contact__channels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mk-contact__channel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.mk-contact__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: rgb(249 115 22 / 15%);
+  color: var(--orange-300);
+}
+
+.mk-contact__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.mk-contact__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mk-contact__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--grey-400);
+}
+
+.mk-contact__value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--surface);
+  overflow-wrap: anywhere;
+}
+
+.mk-contact__value--link {
+  text-decoration: none;
+}
+
+.mk-contact__value--link:hover,
+.mk-contact__value--link:focus-visible {
+  color: var(--orange-300);
+}
+
+@media (max-width: 959px) {
+  .mk-contact__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .mk-contact__info {
+    padding: var(--space-5) var(--space-4);
+  }
+}

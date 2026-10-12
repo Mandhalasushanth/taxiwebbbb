@@ -4,7 +4,7 @@ import { routePaths } from '@core/config'
 import { buildProfileCompletionPath } from '@core/auth'
 import { initialsOf } from '@shared/utils'
 import { CompleteProfileModal, LogoutConfirmModal, LogoutIcon } from '@shared/components'
-import { useLogoutConfirm } from '@modules/authentication'
+import { BackNavigationLogoutGuard, useLogoutConfirm } from '@modules/authentication'
 import { useAuthStore, useNotificationStore } from '@store/index'
 import { navSections } from './navigation'
 import { useDashboardSummary } from '@modules/dashboard'
@@ -244,6 +244,10 @@ export const DashboardLayout = () => {
         onConfirm={logout.confirmLogout}
         onCancel={logout.cancelLogout}
       />
+
+      {/* Back from the dashboard to the marketing site / login asks to log out first.
+          Dashboard only: service pages own the router's single blocker for their draft prompt. */}
+      {location.pathname === routePaths.dashboard && <BackNavigationLogoutGuard />}
 
       <CompleteProfileModal
         isOpen={isProfileModalOpen}
