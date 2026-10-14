@@ -8,7 +8,7 @@ import { RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { authStorage } from '../../src/core/auth'
 import { localStore } from '../../src/core/storage/localStorage'
 import { userStorage } from '../../src/core/storage/userStorage'
-import { IncorporationWizardLayout } from '../../src/modules/incorporation/components/IncorporationWizardLayout/IncorporationWizardLayout'
+import { IncorporationFlowSteps as IncorporationWizardLayout } from '../../src/modules/incorporation/components/IncorporationFlowSteps/IncorporationFlowSteps'
 import { useIncorporationFlow } from '../../src/modules/incorporation/hooks'
 import { deleteServiceDraft } from '../../src/shared/saveDraft'
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { routePaths } from '@core/config'
-import { DocumentCard, DocumentTracker, StepActionBar } from '@shared/components'
+import { DocumentCard, StepActionBar } from '@shared/components'
 import { useIncorporationFlow } from '../../hooks'
 import './DocumentsKyc.css'
 
@@ -145,7 +145,7 @@ export const DocumentsKyc: React.FC = () => {
       }
     })
 
-    goToStep(routePaths.incorporation.linkedRegistrations)
+    goToStep(routePaths.incorporation.reviewApplication)
   }
 
   const renderDocSection = (
@@ -182,27 +182,6 @@ export const DocumentsKyc: React.FC = () => {
 
   return (
     <div className="docs-kyc-page">
-      {/* Progress Header */}
-      <div className="docs-kyc-stepbar">
-        <span className="docs-kyc-stepbar__badge">Step 5 of 10</span>
-        <span className="docs-kyc-stepbar__text">Documents & KYC Checklist</span>
-        <div className="docs-kyc-stepbar__line">
-          <div className="docs-kyc-stepbar__line-fill" />
-        </div>
-      </div>
-
-      <div className="docs-kyc-header">
-        <h1 className="docs-kyc-header__title">Documents & KYC Checklist</h1>
-        <p className="docs-kyc-header__subtitle">
-          Upload digital copies of promoter identity, office proofs, and statutory e-MoA/e-AoA drafts.
-        </p>
-      </div>
-
-      <DocumentTracker
-        uploadedCount={[...promoterDocs, ...officeDocs, ...statutoryDocs].filter((d) => d.isUploaded).length}
-        totalCount={[...promoterDocs, ...officeDocs, ...statutoryDocs].length}
-      />
-
       {renderDocSection('Promoter & Director KYC', 'Identity and address proof documents for each director / subscriber.', 'promoter', promoterDocs)}
       {renderDocSection('Registered Office Proofs', 'Premises ownership proof, utility bills, and NOC certificates.', 'office', officeDocs)}
       {renderDocSection('Statutory Documents', 'e-MoA, e-AoA and SPICe+ declaration drafts.', 'statutory', statutoryDocs)}

@@ -107,9 +107,39 @@ describe('Incorporation Required Fields Validation on Continue', () => {
     fireEvent.click(continueBtn)
 
     expect(screen.getByText(/Authorised capital is required/i)).toBeInTheDocument()
-    expect(screen.getByText(/Subscribed capital is required/i)).toBeInTheDocument()
-    expect(screen.getByText(/Total number of shares is required/i)).toBeInTheDocument()
     expect(screen.getByText(/Face value per share is required/i)).toBeInTheDocument()
+  })
+
+  it('CapitalDetails dynamically recalculates Authorised Shares and handles fractional shares', () => {
+    render(
+      <MemoryRouter>
+        <IncorporationProvider>
+          <CapitalDetails />
+        </IncorporationProvider>
+      </MemoryRouter>
+    )
+
+    const authCapInput = screen.getByPlaceholderText('e.g. 100000')
+    const faceValueInput = screen.getByPlaceholderText('e.g. 10')
+
+    // Initial state: -- shares (not misleading 0 shares)
+    expect(screen.getByText('-- shares')).toBeInTheDocument()
+
+    // Enter 100,000 and 10 -> 10,000 shares
+    fireEvent.change(authCapInput, { target: { value: '100000' } })
+    fireEvent.change(faceValueInput, { target: { value: '10' } })
+    expect(screen.getByText('10,000 shares')).toBeInTheDocument()
+
+    // Change face value to 100 -> dynamically recalculates to 1,000 shares
+    fireEvent.change(faceValueInput, { target: { value: '100' } })
+    expect(screen.getByText('1,000 shares')).toBeInTheDocument()
+
+    // Test indivisible / fractional shares validation
+    fireEvent.change(authCapInput, { target: { value: '100005' } })
+    fireEvent.change(faceValueInput, { target: { value: '10' } })
+    const continueBtn = screen.getByRole('button', { name: /Continue/i })
+    fireEvent.click(continueBtn)
+    expect(screen.getByText('Authorised capital must be a multiple of face value per share')).toBeInTheDocument()
   })
 
   it('PromoterDetails displays red warnings for required director fields when clicking continue empty', () => {
@@ -122,6 +152,16 @@ describe('Incorporation Required Fields Validation on Continue', () => {
     )
 
     const continueBtn = screen.getByRole('button', { name: /Continue/i })
+    fireEvent.click(continueBtn)
+
+    // With 0 directors, clicking continue displays the minimum directors warning
+    expect(screen.getByText(/At least 2 promoter\/director\(s\) required for Private Limited\./i)).toBeInTheDocument()
+
+    // Add Director #1
+    const addBtn = screen.getByRole('button', { name: /\+ Add Promoter \/ Director/i })
+    fireEvent.click(addBtn)
+
+    // Now clicking continue validates Director #1 required fields
     fireEvent.click(continueBtn)
 
     expect(screen.getAllByText(/Name is required/i).length).toBeGreaterThan(0)
@@ -145,6 +185,110 @@ describe('Incorporation Required Fields Validation on Continue', () => {
     fireEvent.click(continueBtn)
 
     expect(screen.getByText(/PAN Card is required/i)).toBeInTheDocument()
+  })
+
+  it('PromoterDetails requires adding Director #1, shows red warning for min 2 directors on continue, then succeeds with Director #2', () => {
+    render(
+      <MemoryRouter>
+        <IncorporationProvider>
+          <PromoterDetails />
+        </IncorporationProvider>
+      </MemoryRouter>
+    )
+
+    // 1. Initial state: No directors, no warnings, only + Add Promoter / Director button
+    expect(screen.queryByText(/Director #1/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/At least 2 promoter\/director/i)).not.toBeInTheDocument()
+    const addBtn = screen.getByRole('button', { name: /\+ Add Promoter \/ Director/i })
+    expect(addBtn).toBeInTheDocument()
+
+    // 2. Click + Add Promoter / Director -> Director #1 appears
+    fireEvent.click(addBtn)
+    expect(screen.getByText('Director #1')).toBeInTheDocument()
+
+    // Fill Director #1 fields
+    const nameInputs = screen.getAllByPlaceholderText('Full Legal Name')
+    fireEvent.change(nameInputs[0], { target: { value: 'Sagarika Sen' } })
+
+    const panInputs = screen.getAllByPlaceholderText('10-character PAN')
+    fireEvent.change(panInputs[0], { target: { value: 'GHFTJ5678G' } })
+
+    const dobInputs = screen.getAllByPlaceholderText('DD-MM-YYYY')
+    fireEvent.change(dobInputs[0], { target: { value: '1990-05-15' } })
+
+    const desigInputs = screen.getAllByPlaceholderText('e.g. Director')
+    fireEvent.change(desigInputs[0], { target: { value: 'Director' } })
+
+    const emailInputs = screen.getAllByPlaceholderText('Enter Email Address')
+    fireEvent.change(emailInputs[0], { target: { value: 'sagarika@gmail.com' } })
+
+    const mobileInputs = screen.getAllByPlaceholderText('Enter 10-digit Mobile')
+    fireEvent.change(mobileInputs[0], { target: { value: '9876543210' } })
+
+    // Save Director #1
+    const saveBtn = screen.getByRole('button', { name: /✓ Save Changes/i })
+    fireEvent.click(saveBtn)
+
+    // 3. Click Continue with only 1 director -> shows red warning
+    const continueBtn = screen.getByRole('button', { name: /Continue/i })
+    fireEvent.click(continueBtn)
+    expect(screen.getByText('At least 2 promoter/director(s) required for Private Limited.')).toBeInTheDocument()
+
+    // 4. Click + Add Promoter / Director to add Director #2
+    fireEvent.click(screen.getByRole('button', { name: /\+ Add Promoter \/ Director/i }))
+    expect(screen.getByText('Director #2')).toBeInTheDocument()
+
+    // Fill Director #2 fields (Director #1 is collapsed, so only Director #2 form is open)
+    fireEvent.change(screen.getByPlaceholderText('Full Legal Name'), { target: { value: 'Vikram Sen' } })
+    fireEvent.change(screen.getByPlaceholderText('10-character PAN'), { target: { value: 'ABCDE1234F' } })
+    fireEvent.change(screen.getByPlaceholderText('DD-MM-YYYY'), { target: { value: '1988-10-20' } })
+    fireEvent.change(screen.getByPlaceholderText('e.g. Director'), { target: { value: 'Director' } })
+    fireEvent.change(screen.getByPlaceholderText('Enter Email Address'), { target: { value: 'vikram@gmail.com' } })
+    fireEvent.change(screen.getByPlaceholderText('Enter 10-digit Mobile'), { target: { value: '9876543211' } })
+
+    // 5. Click Continue with both directors valid -> warning is cleared and proceeds
+    fireEvent.click(continueBtn)
+    expect(screen.queryByText('At least 2 promoter/director(s) required for Private Limited.')).not.toBeInTheDocument()
+  })
+
+  it('DirectorCard collapses on Save Changes and on Collapse click, and expands on Edit click', () => {
+    render(
+      <MemoryRouter>
+        <IncorporationProvider>
+          <PromoterDetails />
+        </IncorporationProvider>
+      </MemoryRouter>
+    )
+
+    // Add Director #1
+    fireEvent.click(screen.getByRole('button', { name: /\+ Add Promoter \/ Director/i }))
+
+    // Form is open
+    expect(screen.getByPlaceholderText('Full Legal Name')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /⌃ Collapse/i })).toBeInTheDocument()
+
+    // Fill valid data
+    fireEvent.change(screen.getByPlaceholderText('Full Legal Name'), { target: { value: 'Gouri Prasad Parichha' } })
+    fireEvent.change(screen.getByPlaceholderText('10-character PAN'), { target: { value: 'CFADH5467R' } })
+    fireEvent.change(screen.getByPlaceholderText('DD-MM-YYYY'), { target: { value: '1997-12-30' } })
+    fireEvent.change(screen.getByPlaceholderText('e.g. Director'), { target: { value: 'Director' } })
+    fireEvent.change(screen.getByPlaceholderText('Enter Email Address'), { target: { value: 'gouri@gmail.com' } })
+    fireEvent.change(screen.getByPlaceholderText('Enter 10-digit Mobile'), { target: { value: '7654345678' } })
+
+    // Clicking ✓ Save Changes collapses the card
+    fireEvent.click(screen.getByRole('button', { name: /✓ Save Changes/i }))
+    expect(screen.queryByPlaceholderText('Full Legal Name')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Edit/i })).toBeInTheDocument()
+
+    // Clicking Edit expands the card again
+    fireEvent.click(screen.getByRole('button', { name: /Edit/i }))
+    expect(screen.getByPlaceholderText('Full Legal Name')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /⌃ Collapse/i })).toBeInTheDocument()
+
+    // Clicking ⌃ Collapse collapses the card
+    fireEvent.click(screen.getByRole('button', { name: /⌃ Collapse/i }))
+    expect(screen.queryByPlaceholderText('Full Legal Name')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Edit/i })).toBeInTheDocument()
   })
 })
 

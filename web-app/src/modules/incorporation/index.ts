@@ -1,11 +1,10 @@
 export { incorporationRoutes } from './routes'
-export { DirectorCard, IncorporationWizardLayout } from './components'
+export { DirectorCard, IncorporationFlowSteps, IncorporationWizardLayout } from './components'
 
 export {
   companyRegistrationData,
   companyTypeOptions,
   COMPANY_TYPE_ICON_IMAGE_MAP,
-  defaultDirectors,
 } from './data/companyRegistrationData'
 export {
   ENTITY_TYPE_LABEL_MAP,
@@ -24,7 +23,5 @@ export type {
   CapitalDetailsFormData,
   KycDocumentItem,
   DocumentsKycFormData,
-  LinkedRegistrationItem,
-  TrackingStepItem,
 } from './types/incorporation.types'
 

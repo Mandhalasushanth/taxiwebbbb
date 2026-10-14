@@ -11,7 +11,6 @@ import type {
   RegisteredOfficeAddressData,
   CapitalDetailsFormData,
   DocumentsKycFormData,
-  LinkedRegistrationItem,
 } from '../types/incorporation.types'
 import {
   INCORPORATION_SERVICE_ID,
@@ -30,7 +29,6 @@ export interface IncorporationFormData {
   promoterDetails: Record<string, unknown>
   capitalDetails: Partial<CapitalDetailsFormData>
   documentsKyc: Partial<DocumentsKycFormData>
-  linkedRegistrations: LinkedRegistrationItem[]
   promoters?: DirectorDetails[]
   applicationId?: string
   transactionId?: string
@@ -102,10 +100,7 @@ const hasUserEnteredIncorporationData = (
     (kyc.statutoryDocs && kyc.statutoryDocs.some((d) => d.isUploaded))
   )
 
-  const linked = data.linkedRegistrations || []
-  const hasLinked = linked.some((l) => l.checked)
-
-  return hasCompanyDetails || hasAddress || hasPromoters || hasCapital || hasKyc || hasLinked
+  return hasCompanyDetails || hasAddress || hasPromoters || hasCapital || hasKyc
 }
 
 /** What the draft stores: the application plus the step to resume on */
@@ -121,7 +116,6 @@ const DEFAULT_INCORPORATION_DATA: IncorporationFormData = {
   promoterDetails: {},
   capitalDetails: {},
   documentsKyc: {},
-  linkedRegistrations: [],
 }
 
 export interface IncorporationContextValue {
@@ -154,9 +148,11 @@ export const IncorporationProvider: React.FC<{ children: React.ReactNode }> = ({
     setFormData((prev) => ({ ...prev, ...fields }))
   }, [])
 
+  const isSuccess = location.pathname === routePaths.incorporation.submissionSuccess
   const isFormStep = isIncorporationFormRoute(location.pathname)
   const currentStep = incorporationStepFor(location.pathname)
-  const hasEnteredData = isFormStep && hasUserEnteredIncorporationData(formData, location.pathname)
+  const isSubmittedOrComplete = isSuccess || Boolean(formData.paymentCompleted)
+  const hasEnteredData = !isSubmittedOrComplete && isFormStep && hasUserEnteredIncorporationData(formData, location.pathname)
 
   const draft = useServiceDraft<IncorporationDraft>({
     serviceId: INCORPORATION_SERVICE_ID,
@@ -168,8 +164,8 @@ export const IncorporationProvider: React.FC<{ children: React.ReactNode }> = ({
     exitRoute: routePaths.dashboard,
     formData: { applicationData: formData, stepRoute: location.pathname },
     hasEnteredData,
-    // Off the wizard form steps (catalog landing, success, tracking) or paid: nothing to save or block
-    isComplete: !isFormStep || Boolean(formData.paymentCompleted),
+    // Off the wizard form steps (catalog landing, success, tracking) or submitted: nothing to save or block
+    isComplete: isSubmittedOrComplete || !isFormStep,
     isFlowRoute: isIncorporationInternalFlowRoute,
     storageNamespace: DRAFT_NAMESPACES.incorporation,
     onDiscard: () => setFormData(DEFAULT_INCORPORATION_DATA),

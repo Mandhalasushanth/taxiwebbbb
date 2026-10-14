@@ -25,12 +25,14 @@ export interface ItrCapitalGainsCardProps {
   capitalGainsDetails: CapitalGainsDetails
   onCapitalGainsDetailsChange: (details: CapitalGainsDetails) => void
   onToggle: () => void
+  showErrors?: boolean
 }
 
 export const ItrCapitalGainsCard: React.FC<ItrCapitalGainsCardProps> = ({
   capitalGainsDetails,
   onCapitalGainsDetailsChange,
   onToggle,
+  showErrors = false,
 }) => {
   const toggleAssetType = (type: string) => {
     const current = capitalGainsDetails.assetTypes
@@ -69,7 +71,9 @@ export const ItrCapitalGainsCard: React.FC<ItrCapitalGainsCardProps> = ({
       </div>
 
       <div className="itr-form-group">
-        <label className="itr-form-label">Asset Types Traded</label>
+        <label className="itr-form-label">
+          Asset Types Traded <span className="itr-required-star">*</span>
+        </label>
         <div className="itr-asset-pills-row">
           {ASSET_TYPE_OPTIONS.map((type) => {
             const isActive = capitalGainsDetails.assetTypes.includes(type)
@@ -85,12 +89,47 @@ export const ItrCapitalGainsCard: React.FC<ItrCapitalGainsCardProps> = ({
             )
           })}
         </div>
+        {showErrors && capitalGainsDetails.assetTypes.length === 0 && (
+          <span className="itr-field-error-text">Please select at least one asset type</span>
+        )}
       </div>
+
+      {capitalGainsDetails.assetTypes.includes('F&O & Intraday Trading') && (
+        <div className="itr-cg-info-note">
+          <span className="itr-cg-info-note__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="12" height="12">
+              <circle cx="12" cy="12" r="10" fill="#1d4ed8" stroke="none" />
+              <line x1="12" y1="16" x2="12" y2="12" stroke="#fff" strokeWidth="2.5" />
+              <line x1="12" y1="8" x2="12.01" y2="8" stroke="#fff" strokeWidth="3" />
+            </svg>
+          </span>
+          <span className="itr-cg-info-note__text">
+            F&amp;O and Intraday trades are treated as business income under Section 43(5). ITR-3 will apply.
+          </span>
+        </div>
+      )}
+
+      {capitalGainsDetails.assetTypes.includes('Crypto / VDA') && (
+        <div className="itr-cg-warning-note">
+          <span className="itr-cg-warning-note__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="12" height="12">
+              <circle cx="12" cy="12" r="10" fill="#dc2626" stroke="none" />
+              <line x1="12" y1="8" x2="12" y2="12" stroke="#fff" strokeWidth="2.5" />
+              <line x1="12" y1="16" x2="12.01" y2="16" stroke="#fff" strokeWidth="3" />
+            </svg>
+          </span>
+          <span className="itr-cg-warning-note__text">
+            Virtual Digital Assets (VDA) are taxed at 30% u/s 115BBH.
+          </span>
+        </div>
+      )}
 
       <div className="itr-grid-2col">
         <div className="itr-form-group">
-          <label className="itr-form-label" htmlFor="cg-stcg">Short-Term Gains (STCG)</label>
-          <div className="itr-input-currency-wrap">
+          <label className="itr-form-label" htmlFor="cg-stcg">
+            Short-Term Gains (STCG) <span className="itr-required-star">*</span>
+          </label>
+          <div className={`itr-input-currency-wrap ${showErrors && !capitalGainsDetails.stcg?.trim() ? 'itr-input-currency-wrap--error' : ''}`}>
             <span className="itr-currency-prefix">₹</span>
             <input
               id="cg-stcg"
@@ -101,12 +140,18 @@ export const ItrCapitalGainsCard: React.FC<ItrCapitalGainsCardProps> = ({
               placeholder="Enter short-term gains"
               value={capitalGainsDetails.stcg}
               onChange={(e) => handleCapitalGainsChange('stcg', e.target.value.replace(/[^0-9,]/g, ''))}
+              required
             />
           </div>
+          {showErrors && !capitalGainsDetails.stcg?.trim() && (
+            <span className="itr-field-error-text">Short-Term Gains is required</span>
+          )}
         </div>
         <div className="itr-form-group">
-          <label className="itr-form-label" htmlFor="cg-ltcg">Long-Term Gains (LTCG)</label>
-          <div className="itr-input-currency-wrap">
+          <label className="itr-form-label" htmlFor="cg-ltcg">
+            Long-Term Gains (LTCG) <span className="itr-required-star">*</span>
+          </label>
+          <div className={`itr-input-currency-wrap ${showErrors && !capitalGainsDetails.ltcg?.trim() ? 'itr-input-currency-wrap--error' : ''}`}>
             <span className="itr-currency-prefix">₹</span>
             <input
               id="cg-ltcg"
@@ -117,8 +162,12 @@ export const ItrCapitalGainsCard: React.FC<ItrCapitalGainsCardProps> = ({
               placeholder="Enter long-term gains"
               value={capitalGainsDetails.ltcg}
               onChange={(e) => handleCapitalGainsChange('ltcg', e.target.value.replace(/[^0-9,]/g, ''))}
+              required
             />
           </div>
+          {showErrors && !capitalGainsDetails.ltcg?.trim() && (
+            <span className="itr-field-error-text">Long-Term Gains is required</span>
+          )}
         </div>
       </div>
     </div>

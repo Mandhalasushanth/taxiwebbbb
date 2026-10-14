@@ -4,7 +4,9 @@ import {
   ALL_SOURCES,
   CheckIcon,
   ItrFilingHeaderStepper,
+  getDefaultSourcesForCategory,
   type ItrCategoryId,
+  type ResidentialStatusOption,
   type SalaryDetails,
   type HousePropertyDetails,
   type BusinessDetails,
@@ -18,6 +20,7 @@ import {
   ItrCapitalGainsCard,
   ItrOtherSourcesCard,
 } from "./ItrIncomeSourceCards";
+import { ItrApplicableReturnFormCard } from "./ItrApplicableReturnFormCard";
 import "./ItrIncomeSourcesView.css";
 
 export type {
@@ -47,6 +50,7 @@ export interface ItrIncomeSourcesViewProps {
   selectedSources?: string[];
   onSourcesChange?: (sources: string[]) => void;
   selectedCategoryId?: ItrCategoryId | null;
+  residentialStatus?: ResidentialStatusOption;
 }
 
 export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
@@ -66,10 +70,15 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
   onOtherSourcesDetailsChange,
   selectedSources: initialSelectedSources,
   onSourcesChange,
-  selectedCategoryId: _selectedCategoryId,
+  selectedCategoryId,
+  residentialStatus,
 }) => {
-  const [internalSources, setInternalSources] = useState<string[]>(
-    initialSelectedSources ?? ["salary"],
+  const fallbackDefaults = getDefaultSourcesForCategory(selectedCategoryId);
+
+  const [internalSources, setInternalSources] = useState<string[]>(() =>
+    initialSelectedSources !== undefined && initialSelectedSources.length > 0
+      ? initialSelectedSources
+      : fallbackDefaults,
   );
 
   const selectedSources = initialSelectedSources ?? internalSources;
@@ -80,10 +89,9 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
         ? selectedSources.filter((s) => s !== id)
         : [...selectedSources, id];
 
+      setInternalSources(updated);
       if (onSourcesChange) {
         onSourcesChange(updated);
-      } else {
-        setInternalSources(updated);
       }
     } catch {
       // Graceful fallback
@@ -109,9 +117,9 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
         )) &&
       (!selectedSources.includes("capital_gains") ||
         Boolean(
-          capitalGainsDetails.stcg?.trim() ||
-            capitalGainsDetails.ltcg?.trim() ||
-            capitalGainsDetails.assetTypes.length > 0,
+          capitalGainsDetails.assetTypes.length > 0 &&
+            capitalGainsDetails.stcg?.trim() &&
+            capitalGainsDetails.ltcg?.trim(),
         )) &&
       (!selectedSources.includes("other_sources") ||
         Boolean(
@@ -182,6 +190,7 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
             capitalGainsDetails={capitalGainsDetails}
             onCapitalGainsDetailsChange={onCapitalGainsDetailsChange}
             onToggle={() => toggleSource("capital_gains")}
+            showErrors={showErrors}
           />
         );
       case "other_sources":
@@ -201,6 +210,17 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
   return (
     <div className="itr-step-view-container">
       <ItrFilingHeaderStepper currentStepId={2} />
+
+      <ItrApplicableReturnFormCard
+        selectedSources={selectedSources}
+        selectedCategoryId={selectedCategoryId}
+        salaryDetails={salaryDetails}
+        housePropertyDetails={housePropertyDetails}
+        businessDetails={businessDetails}
+        capitalGainsDetails={capitalGainsDetails}
+        otherSourcesDetails={otherSourcesDetails}
+        residentialStatus={residentialStatus}
+      />
 
       <div className="itr-step-card">
         <div className="itr-sources-header">

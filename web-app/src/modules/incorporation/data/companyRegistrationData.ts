@@ -2,7 +2,6 @@ import type {
   CompanyRegistrationDetails,
   CompanyTypeOption,
   CompanyDetailsFormData,
-  DirectorDetails,
 } from '../types/incorporation.types'
 
 export const companyRegistrationData: CompanyRegistrationDetails = {
@@ -104,31 +103,3 @@ export const defaultCompanyDetails: CompanyDetailsFormData = {
   secondPreferredName: '',
   mandatorySuffix: '',
 }
-
-export const defaultDirectors: DirectorDetails[] = [
-  {
-    id: 1,
-    fullName: '',
-    pan: '',
-    din: '',
-    dob: '',
-    fatherName: '',
-    gender: '',
-    nationality: 'Indian',
-    designation: '',
-    category: 'Promoter Director',
-    email: '',
-    mobile: '',
-    isResident: true,
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    district: '',
-    state: '',
-    pincode: '',
-    isSameAddress: true,
-    equityShares: '',
-    equityAmount: '',
-    shareholdingPercent: '',
-  },
-]

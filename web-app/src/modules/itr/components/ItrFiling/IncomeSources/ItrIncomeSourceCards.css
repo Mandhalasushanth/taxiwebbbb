@@ -319,3 +319,102 @@
   color: var(--palette-orange-600);
   font-weight: 700;
 }
+
+/* --------------------------------------------------------------------------
+   Field Headings (Dark) & Placeholder (Light & Smaller)
+   -------------------------------------------------------------------------- */
+.itr-form-label,
+.itr-salary-card label,
+.itr-salary-card .itr-form-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0f172a !important; /* Crisp, dark heading */
+  letter-spacing: -0.01em;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.itr-salary-card input::placeholder,
+.itr-salary-card .itr-input-text::placeholder,
+.itr-salary-card .itr-input-currency::placeholder {
+  color: #94a3b8 !important; /* Lighter soft grey */
+  font-size: 0.83rem !important; /* Smaller size */
+  font-weight: 400 !important;
+  opacity: 1 !important;
+}
+
+.itr-salary-card input::-webkit-input-placeholder,
+.itr-salary-card .itr-input-text::-webkit-input-placeholder,
+.itr-salary-card .itr-input-currency::-webkit-input-placeholder {
+  color: #94a3b8 !important;
+  font-size: 0.83rem !important;
+  font-weight: 400 !important;
+  opacity: 1 !important;
+}
+
+.itr-salary-card input::-moz-placeholder,
+.itr-salary-card .itr-input-text::-moz-placeholder,
+.itr-salary-card .itr-input-currency::-moz-placeholder {
+  color: #94a3b8 !important;
+  font-size: 0.83rem !important;
+  font-weight: 400 !important;
+  opacity: 1 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Capital Gains Asset Notices (F&O Section 43(5) & Crypto Section 115BBH)
+   -------------------------------------------------------------------------- */
+.itr-cg-info-note,
+.itr-cg-warning-note {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  margin-top: -0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.itr-cg-info-note {
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  color: #1e40af;
+  font-weight: 500;
+}
+
+.itr-cg-warning-note {
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.itr-cg-info-note__icon,
+.itr-cg-warning-note__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Mandatory field indicators and error styling */
+.itr-required-star {
+  color: #ef4444 !important;
+  font-weight: 700;
+  margin-left: 0.2rem;
+}
+
+.itr-input-currency-wrap--error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px #ef4444, 0 2px 6px rgba(239, 68, 68, 0.1) !important;
+}
+
+.itr-field-error-text {
+  color: #ef4444;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+  display: block;
+}

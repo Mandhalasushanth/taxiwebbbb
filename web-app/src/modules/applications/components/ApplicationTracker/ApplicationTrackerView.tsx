@@ -5,13 +5,20 @@ import { getApplicationTrackerData } from '../../data/applicationTrackerData'
 import type { ApplicationTrackerData } from '../../data/applicationTrackerData'
 import './ApplicationTrackerView.css'
 
-export type TrackerTab = 'overview' | 'status' | 'documents' | 'payments'
+export type TrackerTab = 'overview' | 'status' | 'documents' | 'payments' | 'chat'
 
 const CheckSvg = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="app-tracker-check-icon">
     <polyline points="20 6 9 17 4 12" />
   </svg>
 )
+
+interface ChatMessage {
+  id: string
+  sender: 'ca' | 'user' | 'system'
+  text: string
+  timestamp: string
+}
 
 export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ customId }) => {
   const { id: routeId } = useParams<{ id: string }>()
@@ -20,6 +27,23 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
 
   const [activeTab, setActiveTab] = useState<TrackerTab>('overview')
   const [data, setData] = useState<ApplicationTrackerData | null>(() => getApplicationTrackerData(appId))
+
+  // In-app chat messages state
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => [
+    {
+      id: 'm-sys-1',
+      sender: 'system',
+      text: `Application #${data?.appId || 'ITR-2026-91842'} registered on ${data?.appliedDate || '13 Oct 2026'}. Documents received for verification.`,
+      timestamp: 'Today, 10:15 AM',
+    },
+    {
+      id: 'm-ca-1',
+      sender: 'ca',
+      text: `Hello ${data?.customerEntity || 'Sagarika'}! Welcome to TaxEdge. We have received your ITR submission and uploaded certificates. Our tax executive team is currently verifying your documents and Form 26AS/AIS. If you have any questions or additional files, please message us here anytime!`,
+      timestamp: 'Today, 10:16 AM',
+    },
+  ])
+  const [chatInput, setChatInput] = useState('')
 
   if (!data) {
     return (
@@ -62,8 +86,33 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
     )
   }
 
-  const handleOpenSupport = () => {
-    navigate(`${routePaths.support}?appId=${encodeURIComponent(data.appId)}&service=${encodeURIComponent(data.title)}`)
+  const handleSendMessage = (e?: React.FormEvent) => {
+    if (e) e.preventDefault()
+    if (!chatInput.trim()) return
+
+    const userMsg: ChatMessage = {
+      id: `m-u-${Date.now()}`,
+      sender: 'user',
+      text: chatInput.trim(),
+      timestamp: 'Just now',
+    }
+    setChatMessages((prev) => [...prev, userMsg])
+    setChatInput('')
+
+    // Auto simulated executive reply
+    setTimeout(() => {
+      const replyMsg: ChatMessage = {
+        id: `m-ca-${Date.now()}`,
+        sender: 'ca',
+        text: 'Thank you for your message. Our CA team has noted your query and will update you shortly.',
+        timestamp: 'Just now',
+      }
+      setChatMessages((prev) => [...prev, replyMsg])
+    }, 1200)
+  }
+
+  const handleQuickQuestion = (question: string) => {
+    setChatInput(question)
   }
 
   const handleUploadClick = (docId: string) => {
@@ -82,14 +131,35 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
     })
   }
 
-  const tabTitles: Record<TrackerTab, [string, string]> = {
-    overview: [data.title, `${data.customerEntity} · ${data.appliedDate}`],
-    status: [data.currentStageTitle, data.currentStageSubtitle],
-    documents: ['Document Uploads', `${data.documentsUploadedCount} of ${data.totalDocumentsCount} documents uploaded`],
-    payments: ['Invoice & Fees', `Total: ${data.paymentSummary.totalAmount} · Status: ${data.paymentSummary.paymentStatus}`],
+  const tabTitles: Record<TrackerTab, { pageHeader: string; title: string; subtitle: string }> = {
+    overview: {
+      pageHeader: 'Application Details',
+      title: data.title,
+      subtitle: `${data.customerEntity} · ${data.appliedDate}`,
+    },
+    status: {
+      pageHeader: 'Application Status',
+      title: data.currentStageTitle,
+      subtitle: `Assigned CA: ${data.assignedCA} · Target: ${data.expectedCompletion}`,
+    },
+    documents: {
+      pageHeader: 'Required Documents',
+      title: 'Document Uploads',
+      subtitle: `${data.documentsUploadedCount} of ${data.totalDocumentsCount} documents uploaded`,
+    },
+    payments: {
+      pageHeader: 'Payment Details',
+      title: 'Invoice & Fees',
+      subtitle: `Total: ${data.paymentSummary.totalAmount} · Status: ${data.paymentSummary.paymentStatus}`,
+    },
+    chat: {
+      pageHeader: 'Support & Advisory',
+      title: 'Chat with CA',
+      subtitle: `Assigned CA: ${data.assignedCA} · Support Hours: Mon-Sat 9am-6pm`,
+    },
   }
 
-  const [bannerTitle, bannerSubtitle] = tabTitles[activeTab]
+  const { pageHeader, title: bannerTitle, subtitle: bannerSubtitle } = tabTitles[activeTab]
 
   return (
     <div className="app-tracker-web-page">
@@ -116,23 +186,29 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
               <span className="app-tracker-web-service-tag">{data.category} Service</span>
             </div>
 
-            <button type="button" className="app-tracker-web-support-btn" onClick={handleOpenSupport} title="Get help">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="app-tracker-headphone-icon">
-                <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
-                <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+            <button
+              type="button"
+              className="app-tracker-web-header-chat-btn"
+              onClick={() => setActiveTab('chat')}
+              title="Chat with CA"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
               </svg>
-              <span>Need Help? Support</span>
+              <span>Chat with CA</span>
             </button>
           </div>
 
           <div className="app-tracker-web-header__headline-row">
             <div>
+              <span className="app-tracker-web-category-header">{pageHeader}</span>
               <h1 className="app-tracker-web-title">{bannerTitle}</h1>
               <p className="app-tracker-web-subtitle">{bannerSubtitle}</p>
             </div>
             <div className="app-tracker-web-stage-pill">
               <span className="app-tracker-web-stage-pill__label">Current Stage</span>
               <span className="app-tracker-web-stage-pill__val">{data.currentStageTitle}</span>
+              <span className="app-tracker-web-stage-pill__target">Target: {data.expectedCompletion}</span>
             </div>
           </div>
         </div>
@@ -141,65 +217,220 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
       {/* 2. NAVIGATION TABS */}
       <div className="app-tracker-web-container">
         <nav className="app-tracker-web-tabs" aria-label="Tracker Navigation Tabs">
-          <button type="button" className={`app-tracker-web-tab ${activeTab === 'overview' ? 'app-tracker-web-tab--active' : ''}`} onClick={() => setActiveTab('overview')}>
-            <span>📋 Overview</span>
+          <button
+            type="button"
+            className={`app-tracker-web-tab ${activeTab === 'overview' ? 'app-tracker-web-tab--active' : ''}`}
+            onClick={() => setActiveTab('overview')}
+          >
+            <span>Overview</span>
           </button>
-          <button type="button" className={`app-tracker-web-tab ${activeTab === 'status' ? 'app-tracker-web-tab--active' : ''}`} onClick={() => setActiveTab('status')}>
-            <span>🔀 Status</span>
-            <span className="app-tracker-web-tab__badge">Step {data.timelineSteps.findIndex((s) => s.status === 'current') + 1 || 1}/{data.timelineSteps.length}</span>
+          <button
+            type="button"
+            className={`app-tracker-web-tab ${activeTab === 'status' ? 'app-tracker-web-tab--active' : ''}`}
+            onClick={() => setActiveTab('status')}
+          >
+            <span>Status</span>
+            <span className="app-tracker-web-tab__badge">Step 2/8</span>
           </button>
-          <button type="button" className={`app-tracker-web-tab ${activeTab === 'documents' ? 'app-tracker-web-tab--active' : ''}`} onClick={() => setActiveTab('documents')}>
-            <span>📁 Documents</span>
+          <button
+            type="button"
+            className={`app-tracker-web-tab ${activeTab === 'documents' ? 'app-tracker-web-tab--active' : ''}`}
+            onClick={() => setActiveTab('documents')}
+          >
+            <span>Documents</span>
             <span className="app-tracker-web-tab__badge">{data.documentsUploadedCount}/{data.totalDocumentsCount}</span>
           </button>
-          <button type="button" className={`app-tracker-web-tab ${activeTab === 'payments' ? 'app-tracker-web-tab--active' : ''}`} onClick={() => setActiveTab('payments')}>
-            <span>💳 Payments</span>
-            <span className="app-tracker-web-tab__badge app-tracker-web-tab__badge--green">{data.paymentSummary.paymentStatus}</span>
+          <button
+            type="button"
+            className={`app-tracker-web-tab ${activeTab === 'payments' ? 'app-tracker-web-tab--active' : ''}`}
+            onClick={() => setActiveTab('payments')}
+          >
+            <span>Payments</span>
+            <span className="app-tracker-web-tab__badge app-tracker-web-tab__badge--pending">{data.paymentSummary.paymentStatus}</span>
+          </button>
+          <button
+            type="button"
+            className={`app-tracker-web-tab ${activeTab === 'chat' ? 'app-tracker-web-tab--active' : ''}`}
+            onClick={() => setActiveTab('chat')}
+          >
+            <span>Chat with CA</span>
+            <span className="app-tracker-web-tab__dot" title="Online" />
           </button>
         </nav>
 
         {/* 3. TAB CONTENT PANES */}
         <main className="app-tracker-web-content">
+          {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
-            <div className="app-tracker-web-overview-grid">
-              <section className="app-tracker-card" aria-label="Application Info">
-                <div className="app-tracker-card__header">
-                  <span className="app-tracker-card__title">ⓘ Application Info</span>
-                </div>
-                <div className="app-tracker-field-list">
-                  {data.infoFields.map((f, i) => (
-                    <div key={i} className="app-tracker-field-row">
-                      <span className="app-tracker-field-label">{f.label}</span>
-                      <span className={`app-tracker-field-value ${f.isHighlight ? 'app-tracker-field-value--highlight' : ''}`}>{f.value}</span>
+            <div className="app-tracker-web-overview-layout">
+              {/* Left Column: Application Info & Assigned Executive */}
+              <div className="app-tracker-overview-left">
+                {/* 1. Application Info Card */}
+                <section className="app-tracker-card" aria-label="Application Info">
+                  <div className="app-tracker-card__header">
+                    <div className="app-tracker-card__header-text">
+                      <span className="app-tracker-info-circle-icon">ⓘ</span>
+                      <h3 className="app-tracker-card__title">Application Info</h3>
                     </div>
-                  ))}
-                </div>
-              </section>
+                  </div>
+                  <div className="app-tracker-field-list">
+                    {data.infoFields.map((f, i) => (
+                      <div key={i} className="app-tracker-field-row">
+                        <span className="app-tracker-field-label">{f.label}</span>
+                        <span className={`app-tracker-field-value ${f.isHighlight ? 'app-tracker-field-value--highlight' : ''}`}>
+                          {f.value}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
 
-              <section className="app-tracker-card" aria-label={data.filingFieldsHeader}>
-                <div className="app-tracker-card__header">
-                  <span className="app-tracker-card__title">📄 {data.filingFieldsHeader}</span>
-                </div>
-                <div className="app-tracker-field-list">
-                  {data.filingFields.map((f, i) => (
-                    <div key={i} className="app-tracker-field-row">
-                      <span className="app-tracker-field-label">{f.label}</span>
-                      <span className={`app-tracker-field-value ${f.isHighlight ? 'app-tracker-field-value--orange' : ''}`}>{f.value}</span>
+                {/* 2. Assigned Executive Card */}
+                <section className="app-tracker-card app-tracker-assigned-card" aria-label="Assigned Executive">
+                  <div className="app-tracker-assigned-inner">
+                    <div className="app-tracker-assigned-left">
+                      <div className="app-tracker-assigned-avatar">
+                        <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        </svg>
+                      </div>
+                      <div className="app-tracker-assigned-info">
+                        <span className="app-tracker-assigned-label">ASSIGNED EXECUTIVE</span>
+                        <span className="app-tracker-assigned-name">{data.assignedCA}</span>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </section>
+                    <button
+                      type="button"
+                      className="app-tracker-chat-pill-btn"
+                      onClick={() => setActiveTab('chat')}
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                      </svg>
+                      <span>Chat with CA</span>
+                    </button>
+                  </div>
+                </section>
+              </div>
+
+              {/* Right Column: Contact Support & Quick CTA */}
+              <div className="app-tracker-overview-right">
+                <section className="app-tracker-card app-tracker-support-card" aria-label="Contact Support">
+                  <div className="app-tracker-card__header app-tracker-card__header--support">
+                    <div className="app-tracker-card__header-text">
+                      <span className="app-tracker-support-headphone-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                          <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+                          <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+                        </svg>
+                      </span>
+                      <h3 className="app-tracker-card__title">Contact Support</h3>
+                    </div>
+                  </div>
+                  <p className="app-tracker-support-desc">
+                    Need help with your application? Our CA team is available Mon-Sat 9am-6pm.
+                  </p>
+
+                  <div className="app-tracker-support-channels">
+                    <a href="tel:+918800123456" className="app-tracker-channel-row">
+                      <div className="app-tracker-channel-left">
+                        <div className="app-tracker-channel-icon app-tracker-channel-icon--phone">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                          </svg>
+                        </div>
+                        <div className="app-tracker-channel-info">
+                          <span className="app-tracker-channel-label">Call Us</span>
+                          <span className="app-tracker-channel-val">+91 8800 123 456</span>
+                        </div>
+                      </div>
+                      <span className="app-tracker-channel-chevron">›</span>
+                    </a>
+
+                    <a href="https://wa.me/918800123456" target="_blank" rel="noopener noreferrer" className="app-tracker-channel-row">
+                      <div className="app-tracker-channel-left">
+                        <div className="app-tracker-channel-icon app-tracker-channel-icon--whatsapp">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                          </svg>
+                        </div>
+                        <div className="app-tracker-channel-info">
+                          <span className="app-tracker-channel-label">WhatsApp Support</span>
+                          <span className="app-tracker-channel-val">Chat with a CA Now</span>
+                        </div>
+                      </div>
+                      <span className="app-tracker-channel-chevron">›</span>
+                    </a>
+
+                    <a href="mailto:support@taxedge.in" className="app-tracker-channel-row">
+                      <div className="app-tracker-channel-left">
+                        <div className="app-tracker-channel-icon app-tracker-channel-icon--email">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                            <polyline points="22,6 12,13 2,6" />
+                          </svg>
+                        </div>
+                        <div className="app-tracker-channel-info">
+                          <span className="app-tracker-channel-label">Email Support</span>
+                          <span className="app-tracker-channel-val">support@taxedge.in</span>
+                        </div>
+                      </div>
+                      <span className="app-tracker-channel-chevron">›</span>
+                    </a>
+
+                    <button type="button" className="app-tracker-channel-row app-tracker-channel-row--btn" onClick={() => setActiveTab('chat')}>
+                      <div className="app-tracker-channel-left">
+                        <div className="app-tracker-channel-icon app-tracker-channel-icon--ticket">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                            <line x1="9" y1="9" x2="15" y2="9" />
+                            <line x1="9" y1="13" x2="13" y2="13" />
+                          </svg>
+                        </div>
+                        <div className="app-tracker-channel-info">
+                          <span className="app-tracker-channel-label">In-App Support Ticket</span>
+                          <span className="app-tracker-channel-val">Chat with TaxEdge Support</span>
+                        </div>
+                      </div>
+                      <span className="app-tracker-channel-chevron">›</span>
+                    </button>
+                  </div>
+                </section>
+
+                {/* Prominent Web CTA Button */}
+                <button
+                  type="button"
+                  className="app-tracker-orange-cta-btn"
+                  onClick={() => setActiveTab('chat')}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  <span>Chat with CA</span>
+                </button>
+              </div>
             </div>
           )}
 
+          {/* TAB 2: STATUS */}
           {activeTab === 'status' && (
             <div className="app-tracker-web-status-pane">
               <section className="app-tracker-card" aria-label="Status Timeline">
                 <div className="app-tracker-card__header">
                   <div className="app-tracker-card__header-text">
-                    <h3 className="app-tracker-card__title">🔀 Verification & Filing Progress</h3>
+                    <span className="app-tracker-timeline-header-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                        <line x1="6" y1="3" x2="6" y2="15" />
+                        <circle cx="18" cy="6" r="3" />
+                        <circle cx="6" cy="18" r="3" />
+                        <path d="M18 9a9 9 0 0 1-9 9" />
+                      </svg>
+                    </span>
+                    <h3 className="app-tracker-card__title">Status Timeline</h3>
                   </div>
-                  <div className="app-tracker-card__header-meta">Target Date: <strong>23 Sep 2026</strong></div>
+                  <div className="app-tracker-card__header-meta">
+                    Target Date: <strong>{data.expectedCompletion}</strong>
+                  </div>
                 </div>
 
                 <div className="app-tracker-timeline">
@@ -211,12 +442,16 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
                           <div className={`app-tracker-timeline-circle app-tracker-timeline-circle--${step.status}`}>
                             {step.status === 'completed' ? <CheckSvg /> : <span>{step.stepNumber}</span>}
                           </div>
-                          {!isLast && <div className={`app-tracker-timeline-line ${step.status === 'completed' ? 'app-tracker-timeline-line--completed' : ''}`} />}
+                          {!isLast && (
+                            <div className={`app-tracker-timeline-line ${step.status === 'completed' ? 'app-tracker-timeline-line--completed' : ''}`} />
+                          )}
                         </div>
 
                         <div className="app-tracker-timeline-content">
                           <div className="app-tracker-timeline-text">
-                            <h4 className={`app-tracker-timeline-title app-tracker-timeline-title--${step.status}`}>{step.title}</h4>
+                            <h4 className={`app-tracker-timeline-title app-tracker-timeline-title--${step.status}`}>
+                              {step.title}
+                            </h4>
                             <p className="app-tracker-timeline-desc">{step.description}</p>
                           </div>
                           {step.timestamp && <span className="app-tracker-timeline-time">{step.timestamp}</span>}
@@ -226,15 +461,38 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
                   })}
                 </div>
               </section>
+
+              <div className="app-tracker-status-bottom-bar">
+                <button
+                  type="button"
+                  className="app-tracker-orange-cta-btn"
+                  onClick={() => setActiveTab('chat')}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  <span>Chat with CA</span>
+                </button>
+              </div>
             </div>
           )}
 
+          {/* TAB 3: DOCUMENTS */}
           {activeTab === 'documents' && (
             <div className="app-tracker-web-documents-pane">
               <section className="app-tracker-card" aria-label="Required Documents">
                 <div className="app-tracker-card__header">
-                  <h3 className="app-tracker-card__title">📁 Documents Checklist</h3>
-                  <span className="app-tracker-doc-count-badge">{data.documentsUploadedCount} of {data.totalDocumentsCount} Verified</span>
+                  <div className="app-tracker-card__header-text">
+                    <span className="app-tracker-folder-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                      </svg>
+                    </span>
+                    <h3 className="app-tracker-card__title">Required Documents</h3>
+                  </div>
+                  <span className="app-tracker-doc-count-badge">
+                    {data.documentsUploadedCount} of {data.totalDocumentsCount} uploaded
+                  </span>
                 </div>
 
                 <div className="app-tracker-doc-grid">
@@ -252,9 +510,16 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
 
                       <div className="app-tracker-doc-right">
                         {doc.status === 'uploaded' ? (
-                          <div className="app-tracker-doc-badge-uploaded"><CheckSvg /><span>Uploaded</span></div>
+                          <div className="app-tracker-doc-badge-uploaded">
+                            <CheckSvg />
+                            <span>Uploaded</span>
+                          </div>
                         ) : (
-                          <button type="button" className="app-tracker-doc-btn-upload" onClick={() => handleUploadClick(doc.id)}>
+                          <button
+                            type="button"
+                            className="app-tracker-doc-btn-upload"
+                            onClick={() => handleUploadClick(doc.id)}
+                          >
                             <span>Upload File</span> ☁
                           </button>
                         )}
@@ -263,41 +528,209 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
                   ))}
                 </div>
               </section>
+
+              <div className="app-tracker-status-bottom-bar">
+                <button
+                  type="button"
+                  className="app-tracker-orange-cta-btn"
+                  onClick={() => setActiveTab('chat')}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  <span>Chat with CA</span>
+                </button>
+              </div>
             </div>
           )}
 
+          {/* TAB 4: PAYMENTS */}
           {activeTab === 'payments' && (
             <div className="app-tracker-web-payments-grid">
+              {/* Payment Summary */}
               <section className="app-tracker-card" aria-label="Payment Summary">
                 <div className="app-tracker-card__header">
-                  <h3 className="app-tracker-card__title">💳 Invoice Breakdown</h3>
+                  <div className="app-tracker-card__header-text">
+                    <span className="app-tracker-credit-card-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                        <line x1="1" y1="10" x2="23" y2="10" />
+                      </svg>
+                    </span>
+                    <h3 className="app-tracker-card__title">Payment Summary</h3>
+                  </div>
                 </div>
                 <div className="app-tracker-field-list">
-                  <div className="app-tracker-field-row"><span className="app-tracker-field-label">Service Fee</span><span className="app-tracker-field-value">{data.paymentSummary.serviceFee}</span></div>
-                  <div className="app-tracker-field-row"><span className="app-tracker-field-label">Government Fees</span><span className="app-tracker-field-value">{data.paymentSummary.govFees}</span></div>
-                  <div className="app-tracker-field-row"><span className="app-tracker-field-label">Platform GST (18%)</span><span className="app-tracker-field-value">{data.paymentSummary.gst}</span></div>
+                  <div className="app-tracker-field-row">
+                    <span className="app-tracker-field-label">Service Fee</span>
+                    <span className="app-tracker-field-value">{data.paymentSummary.serviceFee}</span>
+                  </div>
+                  <div className="app-tracker-field-row">
+                    <span className="app-tracker-field-label">Government Fees</span>
+                    <span className="app-tracker-field-value">{data.paymentSummary.govFees}</span>
+                  </div>
+                  <div className="app-tracker-field-row">
+                    <span className="app-tracker-field-label">Platform GST (18%)</span>
+                    <span className="app-tracker-field-value">{data.paymentSummary.gst}</span>
+                  </div>
+                  <div className="app-tracker-field-row">
+                    <span className="app-tracker-field-label">Payment Date</span>
+                    <span className="app-tracker-field-value">{data.paymentSummary.paymentDate}</span>
+                  </div>
                   <div className="app-tracker-field-row app-tracker-field-row--total">
                     <span className="app-tracker-field-label app-tracker-field-label--total">Total Amount</span>
-                    <span className="app-tracker-field-value app-tracker-field-value--total-orange">{data.paymentSummary.totalAmount}</span>
+                    <span className="app-tracker-field-value app-tracker-field-value--total-orange">
+                      {data.paymentSummary.totalAmount}
+                    </span>
+                  </div>
+                  <div className="app-tracker-field-row">
+                    <span className="app-tracker-field-label">Payment Status</span>
+                    <span className="app-tracker-pending-pill">{data.paymentSummary.paymentStatus}</span>
                   </div>
                 </div>
               </section>
 
-              <section className="app-tracker-card" aria-label="Transaction Details">
+              {/* Payment Actions & Verification Policy */}
+              <section className="app-tracker-card app-tracker-payment-action-card" aria-label="Payment Actions">
                 <div className="app-tracker-card__header">
-                  <h3 className="app-tracker-card__title">🧾 Transaction Receipt</h3>
+                  <h3 className="app-tracker-card__title">Invoice & Actions</h3>
                 </div>
-                <div className="app-tracker-field-list">
-                  <div className="app-tracker-field-row"><span className="app-tracker-field-label">Transaction ID</span><span className="app-tracker-field-value app-tracker-field-value--mono">{data.paymentSummary.transactionId}</span></div>
-                  <div className="app-tracker-field-row"><span className="app-tracker-field-label">Payment Method</span><span className="app-tracker-field-value">{data.paymentSummary.paymentMethod}</span></div>
-                  <div className="app-tracker-field-row"><span className="app-tracker-field-label">Payment Date</span><span className="app-tracker-field-value">{data.paymentSummary.paymentDate}</span></div>
-                  <div className="app-tracker-field-row"><span className="app-tracker-field-label">Payment Status</span><span className="app-tracker-paid-pill">{data.paymentSummary.paymentStatus}</span></div>
+                <div className="app-tracker-payment-action-content">
+                  <p className="app-tracker-payment-action-desc">
+                    Your ITR-1 filing and CA verification fee can be paid directly through authorized UPI, NetBanking, or Cards.
+                  </p>
+                  <div className="app-tracker-payment-action-btns">
+                    <button type="button" className="app-tracker-pay-now-btn">
+                      <span>Pay Total ({data.paymentSummary.totalAmount})</span>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </button>
+                    <button type="button" className="app-tracker-download-inv-btn">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                      </svg>
+                      <span>Download Proforma Invoice</span>
+                    </button>
+                  </div>
+                  <div className="app-tracker-payment-secure-badge">
+                    <span>🔒 100% Secure & Compliant Payment Gateway</span>
+                  </div>
                 </div>
+              </section>
+            </div>
+          )}
+
+          {/* TAB 5: CHAT WITH CA */}
+          {activeTab === 'chat' && (
+            <div className="app-tracker-web-chat-pane">
+              <section className="app-tracker-card app-tracker-chat-card" aria-label="Live CA Support Desk">
+                <div className="app-tracker-chat-header">
+                  <div className="app-tracker-chat-header-user">
+                    <div className="app-tracker-chat-avatar">
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                      </svg>
+                      <span className="app-tracker-chat-online-badge" />
+                    </div>
+                    <div>
+                      <h3 className="app-tracker-chat-name">TaxEdge CA Advisory Desk</h3>
+                      <p className="app-tracker-chat-status">
+                        <span>Application #{data.appId}</span> • <span>Assigned: {data.assignedCA}</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="app-tracker-chat-hours">
+                    <span>🕒 Mon-Sat 9am–6pm</span>
+                  </div>
+                </div>
+
+                {/* Messages Feed */}
+                <div className="app-tracker-chat-messages">
+                  {chatMessages.map((msg) => (
+                    <div key={msg.id} className={`app-tracker-chat-msg app-tracker-chat-msg--${msg.sender}`}>
+                      {msg.sender === 'system' ? (
+                        <div className="app-tracker-chat-sys-bubble">
+                          <span>{msg.text}</span>
+                        </div>
+                      ) : (
+                        <div className="app-tracker-chat-bubble">
+                          <p className="app-tracker-chat-msg-text">{msg.text}</p>
+                          <span className="app-tracker-chat-msg-time">{msg.timestamp}</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Quick Prompts */}
+                <div className="app-tracker-chat-quick-chips">
+                  <span className="app-tracker-chat-chip-label">Quick Questions:</span>
+                  <button
+                    type="button"
+                    className="app-tracker-chat-chip"
+                    onClick={() => handleQuickQuestion('When will my ITR filing be completed?')}
+                  >
+                    When will my ITR be filed?
+                  </button>
+                  <button
+                    type="button"
+                    className="app-tracker-chat-chip"
+                    onClick={() => handleQuickQuestion('Do I need to upload Form 16 or any other documents?')}
+                  >
+                    Need any additional documents?
+                  </button>
+                  <button
+                    type="button"
+                    className="app-tracker-chat-chip"
+                    onClick={() => handleQuickQuestion('How do I complete the pending payment?')}
+                  >
+                    Payment assistance
+                  </button>
+                </div>
+
+                {/* Message Input Box */}
+                <form onSubmit={handleSendMessage} className="app-tracker-chat-input-form">
+                  <input
+                    type="text"
+                    className="app-tracker-chat-input"
+                    placeholder="Type your message or inquiry for the CA..."
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                  />
+                  <button
+                    type="submit"
+                    className="app-tracker-chat-send-btn"
+                    disabled={!chatInput.trim()}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                      <line x1="22" y1="2" x2="11" y2="13" />
+                      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>
+                    <span>Send</span>
+                  </button>
+                </form>
               </section>
             </div>
           )}
         </main>
       </div>
+
+      {/* Floating / Sticky Mobile/Tablet Bottom Bar */}
+      <aside className="app-tracker-mobile-footer-bar" aria-label="Quick Actions">
+        <button
+          type="button"
+          className="app-tracker-orange-cta-btn"
+          onClick={() => setActiveTab('chat')}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+          <span>Chat with CA</span>
+        </button>
+      </aside>
     </div>
   )
 }

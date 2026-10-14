@@ -113,19 +113,6 @@ export const RegisteredOffice: React.FC = () => {
 
   return (
     <div className="reg-office-page">
-      {/* Step Progress Tracker */}
-      <div className="reg-office-stepbar">
-        <span className="reg-office-stepbar__badge">Step 2 of 10</span>
-        <div className="reg-office-stepbar__line">
-          <div className="reg-office-stepbar__line-fill" />
-        </div>
-      </div>
-
-      {/* Page Header */}
-      <header className="reg-office-header">
-        <h1 className="reg-office-header__title">Registered Office Details</h1>
-      </header>
-
       {/* Card 1: Building / Address */}
       <section className="reg-office-card">
         <div className="reg-office-card__header">

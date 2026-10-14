@@ -213,7 +213,7 @@ export const ItrFilingSubmittedView: React.FC<ItrFilingSubmittedViewProps> = ({
   )
 
   return (
-    <div className="itr-success-container">
+    <div className="itr-step-view-container itr-success-container">
       {renderHero()}
       <div className="itr-success-content-stack">
         {renderProgressTracker()}

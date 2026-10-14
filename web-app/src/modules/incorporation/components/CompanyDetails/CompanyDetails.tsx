@@ -43,8 +43,8 @@ export const CompanyDetails: React.FC = () => {
     }
   }, [selectedCompanyType, savedCompanyDetails, updateFormData])
 
-  const categoryOptions = selectedCompanyType === 'llp' ? ['Limited Liability Partnership'] : selectedCompanyType === 'opc' ? ['Company limited by Shares'] : selectedCompanyType === 'section_8' ? ['Company limited by Guarantee', 'Company limited by Shares'] : ['Company limited by Shares', 'Company limited by Guarantee', 'Unlimited Company']
-  const subCategoryOptions = selectedCompanyType === 'opc' ? ['Indian Non-Government Company'] : ['Indian Non-Government Company', 'State Government Company', 'Central Government Company']
+  const categoryOptions = ['Company limited by Shares', 'Company limited by Guarantee', 'Unlimited Company']
+  const subCategoryOptions = ['Indian Non-Government Company', 'State Government Company', 'Central Government Company']
 
   const handleInputChange = (field: keyof CompanyDetailsFormData, value: string) => {
     setErrors((prev) => ({ ...prev, [field]: '' }))
@@ -94,23 +94,6 @@ export const CompanyDetails: React.FC = () => {
 
   return (
     <div className="company-details-page">
-      {/* Step Progress Bar */}
-      <div className="company-details-stepbar">
-        <span className="company-details-stepbar__badge">Step 1 of 10</span>
-        <span className="company-details-stepbar__text">Company Details</span>
-        <div className="company-details-stepbar__line">
-          <div className="company-details-stepbar__line-fill" />
-        </div>
-      </div>
-
-      {/* Page Header */}
-      <header className="company-details-header">
-        <h1 className="company-details-header__title">Company Details</h1>
-        <p className="company-details-header__subtitle">
-          Define MCA statutory classification, your proposed company name and business activity.
-        </p>
-      </header>
-
       {/* Card 1: Company Classification */}
       <section className="company-details-card">
         <div className="company-details-card__header">

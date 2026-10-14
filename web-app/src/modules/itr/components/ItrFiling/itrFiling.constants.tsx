@@ -48,6 +48,28 @@ export const ITR_CATEGORIES: ItrCategoryItem[] = [
   { id: 'multiple', title: 'Multiple Sources', subtitle: 'Combination of income sources', formTag: 'ITR-2/3', iconName: 'link' },
 ]
 
+export const getDefaultSourcesForCategory = (
+  categoryId: ItrCategoryId | null | undefined
+): string[] => {
+  switch (categoryId) {
+    case 'salaried':
+      return ['salary']
+    case 'business':
+    case 'professional':
+    case 'freelancer':
+      return ['business']
+    case 'trader':
+    case 'capital_gains':
+      return ['capital_gains']
+    case 'rental':
+      return ['house_property']
+    case 'multiple':
+      return ['salary', 'business']
+    default:
+      return ['salary']
+  }
+}
+
 export interface TaxpayerProfile {
   panNumber: string
   aadhaarNumber: string
@@ -168,30 +190,166 @@ export interface ChecklistDocConfig {
   isMandatory?: boolean
 }
 
-export const REQUIRED_DOCS: ChecklistDocConfig[] = [
-  { id: 'form16', title: 'Form 16 (Part A & B) *', desc: 'Issued by employer showing salary & TDS', Icon: IconBriefcase, isMandatory: true },
-]
+export const DOC_FORM_16: ChecklistDocConfig = {
+  id: 'form16',
+  title: 'Form 16 (Part A & B)',
+  desc: 'Issued by your employer showing salary & TDS',
+  Icon: IconBriefcase,
+  isMandatory: true,
+}
 
+export const DOC_BUSINESS_TURNOVER: ChecklistDocConfig = {
+  id: 'business_turnover',
+  title: 'Business Turnover & GST Filings',
+  desc: 'GSTR filings, sales register, or turnover statement',
+  Icon: StoreCategoryIcon,
+  isMandatory: true,
+}
+
+export const DOC_CAPITAL_GAINS: ChecklistDocConfig = {
+  id: 'capital_gains_statement',
+  title: 'Capital Gains Statement / P&L',
+  desc: 'Consolidated trading statement or broker P&L',
+  Icon: TrendingCategoryIcon,
+  isMandatory: true,
+}
+
+export const DOC_FORM_26AS: ChecklistDocConfig = {
+  id: 'form26as',
+  title: 'Form 26AS Tax Credit Statement',
+  desc: 'Helps your CA reconcile TDS credits and advance tax payments',
+  Icon: IconFileText,
+  isMandatory: false,
+}
+
+export const DOC_AIS_TIS: ChecklistDocConfig = {
+  id: 'ais_tis',
+  title: 'AIS / TIS Statement',
+  desc: 'Annual Information Statement for interest, dividends & trades',
+  Icon: IconPaperclip,
+  isMandatory: false,
+}
+
+export const DOC_BANK_STATEMENT: ChecklistDocConfig = {
+  id: 'bank_statement',
+  title: 'Bank Account Statement',
+  desc: 'Recent statement for savings or current account',
+  Icon: IconWallet,
+  isMandatory: false,
+}
+
+export const DOC_SALARY_PAYSLIPS: ChecklistDocConfig = {
+  id: 'salary_payslips',
+  title: 'Salary Payslips',
+  desc: 'Recent salary slips to verify allowances and deductions',
+  Icon: IconPayslip,
+  isMandatory: false,
+}
+
+export const DOC_HOME_LOAN_INTEREST: ChecklistDocConfig = {
+  id: 'home_loan_interest',
+  title: 'Home Loan Interest Certificate (Sec 24b)',
+  desc: 'Annual interest certificate from your lender',
+  Icon: HomeCategoryIcon,
+  isMandatory: false,
+}
+
+export interface ItrChecklistSections {
+  requiredDocs: ChecklistDocConfig[]
+  recommendedDocs: ChecklistDocConfig[]
+  optionalDocs: ChecklistDocConfig[]
+  totalCount: number
+}
+
+export const getItrChecklistSections = ({
+  selectedSources = [],
+  selectedCategoryId,
+}: {
+  selectedSources?: string[]
+  selectedCategoryId?: ItrCategoryId | null
+}): ItrChecklistSections => {
+  const sources =
+    selectedSources && selectedSources.length > 0
+      ? selectedSources
+      : getDefaultSourcesForCategory(selectedCategoryId)
+
+  const hasSalary = sources.includes('salary')
+  const hasBusiness = sources.includes('business')
+  const hasCapital = sources.includes('capital_gains')
+  const hasHouse = sources.includes('house_property')
+  const hasOther = sources.includes('other_sources')
+
+  // If other_sources or multiple sources (Image 5)
+  const isImage5OtherOrMultiple = hasOther || (hasSalary && hasBusiness)
+
+  const requiredDocs: ChecklistDocConfig[] = []
+  const recommendedDocs: ChecklistDocConfig[] = []
+  const optionalDocs: ChecklistDocConfig[] = []
+
+  // 1. Required Documents (Mandatory with small red star)
+  if (isImage5OtherOrMultiple) {
+    requiredDocs.push(DOC_FORM_16)
+    requiredDocs.push(DOC_BUSINESS_TURNOVER)
+  } else {
+    if (hasSalary) requiredDocs.push(DOC_FORM_16)
+    if (hasBusiness) requiredDocs.push(DOC_BUSINESS_TURNOVER)
+    if (hasCapital) requiredDocs.push(DOC_CAPITAL_GAINS)
+  }
+
+  // 2. Recommended Documents (Common 3 always present in all 5 images)
+  recommendedDocs.push(DOC_FORM_26AS)
+  recommendedDocs.push(DOC_AIS_TIS)
+  recommendedDocs.push(DOC_BANK_STATEMENT)
+
+  if (hasSalary || isImage5OtherOrMultiple) {
+    recommendedDocs.push(DOC_SALARY_PAYSLIPS)
+  }
+
+  // 3. Only If Applicable (Optional)
+  if (hasHouse) {
+    optionalDocs.push(DOC_HOME_LOAN_INTEREST)
+  }
+
+  const totalCount = requiredDocs.length + recommendedDocs.length + optionalDocs.length
+
+  return {
+    requiredDocs,
+    recommendedDocs,
+    optionalDocs,
+    totalCount,
+  }
+}
+
+export const REQUIRED_DOCS: ChecklistDocConfig[] = [DOC_FORM_16]
 export const RECOMMENDED_DOCS: ChecklistDocConfig[] = [
-  { id: 'form26as', title: 'Form 26AS Tax Credit Statement', desc: 'Helps CA reconcile TDS credits and advance tax payments', Icon: IconFileText },
-  { id: 'ais_tis', title: 'AIS / TIS Statement', desc: 'Annual Information Statement for interest, dividends & trades', Icon: IconPaperclip },
-  { id: 'bank_statement', title: 'Bank Account Statement', desc: 'Recent statement for savings or current account', Icon: IconWallet },
-  { id: 'salary_payslips', title: 'Salary Payslips (Optional)', desc: 'Recent salary slips to verify allowances and deductions', Icon: IconPayslip },
+  DOC_FORM_26AS,
+  DOC_AIS_TIS,
+  DOC_BANK_STATEMENT,
+  DOC_SALARY_PAYSLIPS,
 ]
 
-export const ALL_DOCS = [...REQUIRED_DOCS, ...RECOMMENDED_DOCS]
+export const ALL_DOCS = [
+  DOC_FORM_16,
+  DOC_BUSINESS_TURNOVER,
+  DOC_CAPITAL_GAINS,
+  DOC_FORM_26AS,
+  DOC_AIS_TIS,
+  DOC_BANK_STATEMENT,
+  DOC_SALARY_PAYSLIPS,
+  DOC_HOME_LOAN_INTEREST,
+]
 
 export const ITR_STEPS = [
   { id: 1, label: 'Personal & Filing' },
   { id: 2, label: 'Income Sources' },
   { id: 3, label: 'Document Checklist' },
-  { id: 4, label: 'Review & File' },
+  { id: 4, label: 'Tax Summary & Review' },
 ]
 
 /** Step each review section's "Edit" opens */
-export const ITR_REVIEW_EDIT_STEPS = { taxpayer: 1, documents: 3 } as const
+export const ITR_REVIEW_EDIT_STEPS = { taxpayer: 1, income: 2, documents: 3 } as const
 
-export const ITR_STEP_LABELS = ['Personal & Filing Info', 'Income Sources', 'Document Checklist', 'Review & File']
+export const ITR_STEP_LABELS = ['Personal & Filing Info', 'Income Sources', 'Document Checklist', 'Tax Summary & Review']
 
 export const getStoredTaxpayerProfile = (overrideUser?: AuthUser | null): TaxpayerProfile => {
   try {

@@ -12,6 +12,7 @@ import {
   DEFAULT_OTHER_SOURCES_DETAILS,
   DEFAULT_DEDUCTIONS,
   ITR_STEP_LABELS,
+  getDefaultSourcesForCategory,
   type ItrCategoryId,
   type AssessmentYearOption,
   type ResidentialStatusOption,
@@ -26,12 +27,35 @@ import {
   type DeductionsData,
   type UploadedDocInfo,
 } from "./itrFiling.constants";
+import { determineApplicableItrForm } from "./IncomeSources/ItrApplicableReturnFormCard";
 
-const resolveSubmittedFormType = (selectedSources: string[]): string => {
+const resolveSubmittedFormType = ({
+  selectedSources,
+  selectedCategoryId,
+  salaryDetails,
+  housePropertyDetails,
+  businessDetails,
+  capitalGainsDetails,
+  residentialStatus,
+}: {
+  selectedSources: string[]
+  selectedCategoryId?: ItrCategoryId | null
+  salaryDetails?: SalaryDetails
+  housePropertyDetails?: HousePropertyDetails
+  businessDetails?: BusinessDetails
+  capitalGainsDetails?: CapitalGainsDetails
+  residentialStatus?: ResidentialStatusOption
+}): string => {
   try {
-    if (selectedSources.includes("business")) return "ITR-3";
-    if (selectedSources.includes("capital_gains")) return "ITR-2";
-    return "ITR-1";
+    return determineApplicableItrForm({
+      selectedSources,
+      selectedCategoryId,
+      salaryDetails,
+      housePropertyDetails,
+      businessDetails,
+      capitalGainsDetails,
+      residentialStatus,
+    }).form;
   } catch {
     return "ITR-1";
   }
@@ -66,7 +90,7 @@ export function useItrFilingState() {
     // Clamp: drafts saved before the Regime & Deductions step was removed may hold step 5
     () => Math.min(existingDraft?.currentStep || 1, TOTAL_STEPS),
   );
-  const [selectedCategoryId, setSelectedCategoryId] =
+  const [selectedCategoryId, setSelectedCategoryIdState] =
     useState<ItrCategoryId | null>(
       () =>
         (existingDraft?.formData?.selectedCategoryId as ItrCategoryId) || null,
@@ -96,10 +120,26 @@ export function useItrFilingState() {
       DEFAULT_PREVIOUS_ITR,
   );
 
-  const [selectedSources, setSelectedSources] = useState<string[]>(
-    () =>
-      (existingDraft?.formData?.selectedSources as string[]) || [],
-  );
+  const [selectedSources, setSelectedSources] = useState<string[]>(() => {
+    if (
+      existingDraft?.formData?.selectedSources &&
+      Array.isArray(existingDraft.formData.selectedSources) &&
+      existingDraft.formData.selectedSources.length > 0
+    ) {
+      return existingDraft.formData.selectedSources as string[];
+    }
+    const cat = existingDraft?.formData?.selectedCategoryId as
+      | ItrCategoryId
+      | undefined;
+    return cat ? getDefaultSourcesForCategory(cat) : [];
+  });
+
+  const setSelectedCategoryId = (cat: ItrCategoryId | null) => {
+    setSelectedCategoryIdState(cat);
+    if (cat) {
+      setSelectedSources(getDefaultSourcesForCategory(cat));
+    }
+  };
   const [salaryDetails, setSalaryDetails] = useState<SalaryDetails>(
     () =>
       (existingDraft?.formData?.salaryDetails as SalaryDetails) ||
@@ -247,7 +287,15 @@ export function useItrFilingState() {
             selectedRegime,
             deductions,
           });
-          const formType = resolveSubmittedFormType(selectedSources);
+          const formType = resolveSubmittedFormType({
+            selectedSources,
+            selectedCategoryId,
+            salaryDetails,
+            housePropertyDetails,
+            businessDetails,
+            capitalGainsDetails,
+            residentialStatus,
+          });
           const sourceLabel = resolveSubmittedSourceLabel(
             selectedSources,
             salaryDetails.employerName,

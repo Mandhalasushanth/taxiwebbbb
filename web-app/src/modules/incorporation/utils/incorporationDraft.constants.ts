@@ -10,9 +10,8 @@ export const INCORPORATION_FORM_ROUTES: readonly string[] = [
   routePaths.incorporation.promoterDetails,
   routePaths.incorporation.capitalDetails,
   routePaths.incorporation.documentsKyc,
-  routePaths.incorporation.linkedRegistrations,
   routePaths.incorporation.reviewApplication,
-  routePaths.incorporation.feesPayment,
+  routePaths.incorporation.submissionSuccess,
 ]
 
 /** Full wizard routes list including the initial selection screen */
@@ -21,12 +20,8 @@ export const INCORPORATION_WIZARD_ROUTES: readonly string[] = [
   ...INCORPORATION_FORM_ROUTES,
 ]
 
-/** Pages after payment that still belong to the flow */
-const INCORPORATION_DONE_ROUTES: readonly string[] = [
-  routePaths.incorporation.submissionSuccess,
-  routePaths.incorporation.applicationTracking,
-  routePaths.incorporation.receipt,
-]
+/** Deprecated done routes (empty as submission success is now Step 7) */
+const INCORPORATION_DONE_ROUTES: readonly string[] = []
 
 export const INCORPORATION_STEP_LABELS: readonly string[] = [
   'Company Details',
@@ -34,9 +29,8 @@ export const INCORPORATION_STEP_LABELS: readonly string[] = [
   'Promoter Details',
   'Capital Details',
   'Documents & KYC',
-  'Linked Registrations',
   'Review Application',
-  'Fees Payment',
+  'Submission Success',
 ]
 
 /** True when the pathname is an active form step where fields are entered */

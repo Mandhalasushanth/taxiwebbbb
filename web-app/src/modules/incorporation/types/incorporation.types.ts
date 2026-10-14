@@ -124,22 +124,6 @@ export interface DocumentsKycFormData {
   statutoryDocs: KycDocumentItem[]
 }
 
-export interface LinkedRegistrationItem {
-  id: string
-  title: string
-  description: string
-  checked: boolean
-}
-
-export interface TrackingStepItem {
-  id: number
-  title: string
-  desc: string
-  dateText?: string
-  status: 'completed' | 'active' | 'upcoming'
-  statusLabel: string
-}
-
 export const ENTITY_TYPE_LABEL_MAP: Record<string, string> = {
   opc: 'One Person Company (OPC)',
   pvt_ltd: 'Private Limited',
@@ -164,15 +148,9 @@ export const getEntityStructureLabel = (
 }
 
 export const getProposedCompanyName = (
-  companyType?: string | null,
+  _companyType?: string | null,
   firstPreferredName?: string | null
 ): string => {
-  const defaultName =
-    companyType === 'opc'
-      ? 'TaxEdge Tech (OPC) Private Limited'
-      : companyType === 'llp'
-        ? 'TaxEdge Tech LLP'
-        : 'TaxEdge Tech Private Limited'
-  return (firstPreferredName && firstPreferredName.trim()) || defaultName
+  return (firstPreferredName && firstPreferredName.trim()) || ''
 }
 
