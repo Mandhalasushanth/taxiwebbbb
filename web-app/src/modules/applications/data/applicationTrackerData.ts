@@ -1,5 +1,6 @@
 import { userStorage } from '@core/storage/userStorage'
 import { authStorage } from '@core/auth'
+import type { RecentApplication, FinalizedCharges } from '@modules/dashboard/types/dashboard.types'
 
 export interface ApplicationInfoField {
   label: string
@@ -51,6 +52,9 @@ export interface ApplicationTrackerData {
   documentsUploadedCount: number
   totalDocumentsCount: number
   paymentSummary: PaymentSummaryData
+  chargesFinalized?: boolean
+  finalizedCharges?: FinalizedCharges
+  rawApplication?: RecentApplication
 }
 
 interface TrackerConfig {
@@ -63,8 +67,13 @@ interface TrackerConfig {
   docs: Array<[string, string, 'uploaded' | 'pending', string?]>
   payment: [string, string, string, string] // serviceFee, govFees, gst, total
   paymentStatus?: string
+  paymentDate?: string
+  transactionId?: string
   assignedCA?: string
   expectedCompletion?: string
+  chargesFinalized?: boolean
+  finalizedCharges?: FinalizedCharges
+  rawApplication?: RecentApplication
 }
 
 function buildTracker(
@@ -116,14 +125,17 @@ function buildTracker(
     documents,
     documentsUploadedCount: documents.filter((d) => d.status === 'uploaded').length,
     totalDocumentsCount: documents.length,
+    chargesFinalized: cfg.chargesFinalized,
+    finalizedCharges: cfg.finalizedCharges,
+    rawApplication: cfg.rawApplication,
     paymentSummary: {
       serviceFee: cfg.payment[0],
       govFees: cfg.payment[1],
       gst: cfg.payment[2],
       totalAmount: cfg.payment[3],
-      transactionId: `TXN-${appId.replace(/\D/g, '').slice(-6) || '91842'}`,
+      transactionId: cfg.transactionId || `TXN-${appId.replace(/\D/g, '').slice(-6) || '91842'}`,
       paymentMethod: 'Online Payment / Pre-authorized',
-      paymentDate: date,
+      paymentDate: cfg.paymentDate || date,
       paymentStatus,
     },
   }
@@ -133,14 +145,16 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
   const userApps = userStorage.getUserApplications()
   const cleanId = (id || '').trim().toLowerCase()
 
-  // Match application by exact id, code, or digits, or fall back to the latest user app if no specific ID provided
-  const matched = userApps.find((a) => {
-    const aId = (a.id || '').toLowerCase()
-    const aCode = (a.code || '').toLowerCase()
-    const aDigits = aCode.replace(/\D/g, '')
-    const cleanDigits = cleanId.replace(/\D/g, '')
-    return aId === cleanId || aCode === cleanId || (cleanDigits && aDigits === cleanDigits)
-  }) || (cleanId ? null : userApps[0] || null)
+  // Match application by exact id or code first, then digits, or fall back to the latest user app if no specific ID provided
+  const matched =
+    userApps.find((a) => (a.id || '').toLowerCase() === cleanId || (a.code || '').toLowerCase() === cleanId) ||
+    userApps.find((a) => {
+      const aCode = (a.code || '').toLowerCase()
+      const aDigits = aCode.replace(/\D/g, '')
+      const cleanDigits = cleanId.replace(/\D/g, '')
+      return Boolean(cleanDigits && cleanDigits.length >= 4 && aDigits === cleanDigits)
+    }) ||
+    (cleanId ? null : userApps[0] || null)
 
   const currentUser = authStorage.getUser()
 
@@ -294,31 +308,104 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
   // 3. TDS Refund
   if (key.includes('tds') || key.includes('refund')) {
     const refundClaim = metaParts.find((p) => p.includes('₹')) || 'As Declared'
+    const isChargesFinalized = Boolean(matched.chargesFinalized && matched.finalizedCharges)
+    const ch = matched.finalizedCharges
+    const currentPaymentStatus = matched.paymentStatus || (isChargesFinalized ? 'Pending' : 'Charges Pending')
+
+    const assignedCA = 'Sneha Kulkarni (Senior CA)'
+    const expectedCompletion = '18 Oct 2026'
+
+    let paymentValues: [string, string, string, string]
+    let paymentDate = date
+    const paymentStatus = currentPaymentStatus
+
+    if (isChargesFinalized && ch) {
+      paymentValues = [
+        `₹${ch.serviceFee.toLocaleString('en-IN')}`,
+        ch.govFees > 0 ? `₹${ch.govFees.toLocaleString('en-IN')}` : '₹0 (Included)',
+        `₹${ch.gst.toLocaleString('en-IN')}`,
+        `₹${ch.total.toLocaleString('en-IN')}`,
+      ]
+      if (ch.finalizedAt) {
+        try {
+          const d = new Date(ch.finalizedAt)
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+          paymentDate = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
+        } catch {
+          paymentDate = date
+        }
+      }
+    } else {
+      paymentValues = [
+        'Pending CA Review',
+        'Pending confirmation',
+        'Calculated upon finalization',
+        'Charges Pending',
+      ]
+    }
+
+    let steps: Array<[string, string, 'completed' | 'current' | 'pending', string?]>
+    if (currentPaymentStatus === 'Paid') {
+      steps = [
+        ['Application Submitted', 'TDS refund details & documents received', 'completed', 'Today'],
+        ['CA Verification', 'Senior CA verified Form 26AS & AIS deductions', 'completed', 'Today'],
+        ['Manager Charge Finalization', `Charges finalized (${ch?.finalizedBy || 'Manager'})`, 'completed', 'Today'],
+        ['Fee Payment Confirmed', `Paid ₹${ch?.total?.toLocaleString('en-IN') || ''} via Online Gateway`, 'completed', 'Today'],
+        ['CPC Return Filing', 'Uploading verified claim to IT Department CPC', 'current', 'Today'],
+        ['Direct Bank Credit', 'Direct credit to pre-validated bank account', 'pending'],
+      ]
+    } else if (isChargesFinalized) {
+      steps = [
+        ['Application Submitted', 'TDS refund details & documents received', 'completed', 'Today'],
+        ['CA Verification', 'Senior CA verified Form 26AS & AIS deductions', 'completed', 'Today'],
+        ['Manager Charge Finalization', `Charges finalized (${ch?.finalizedBy || 'Manager'})`, 'completed', 'Today'],
+        ['Payment Due', `Payable balance: ₹${ch?.total?.toLocaleString('en-IN') || ''}`, 'current', 'Today'],
+        ['CPC Return Filing', 'Uploading verified claim to IT Department CPC', 'pending'],
+        ['Direct Bank Credit', 'Direct credit to pre-validated bank account', 'pending'],
+      ]
+    } else {
+      steps = [
+        ['Application Submitted', 'TDS refund details & documents received', 'completed', 'Today'],
+        ['CA Verification', 'Senior CA cross-examining 26AS, AIS & deduction proof', 'current', 'Today'],
+        ['Manager Charge Finalization', 'Assessing service charges based on return complexity', 'pending'],
+        ['Fee Payment', 'Payment of finalized charges in Payment tab', 'pending'],
+        ['CPC Return Filing', 'Uploading verified claim to IT Department CPC', 'pending'],
+        ['Direct Bank Credit', 'Direct credit to pre-validated bank account', 'pending'],
+      ]
+    }
+
+    const stageTitle = isChargesFinalized
+      ? (currentPaymentStatus === 'Paid' ? 'Processing with Income Tax Dept' : 'Charges Finalized — Payment Due')
+      : (matched.statusLabel || 'Under CA Review & Assessment')
+
     return buildTracker(appId, entity, date, {
       title: matched.title,
       category: 'ITR',
-      stageTitle: matched.statusLabel || 'TDS Reconciliation in Progress',
+      stageTitle,
       filingHeader: 'TDS Refund Details',
+      assignedCA,
+      expectedCompletion,
+      paymentStatus,
+      paymentDate,
+      transactionId: matched.transactionId,
+      chargesFinalized: isChargesFinalized,
+      finalizedCharges: ch,
+      rawApplication: matched,
       filingFields: [
         { label: 'Taxpayer Name', value: entity },
         { label: 'PAN', value: pan, isHighlight: true },
         { label: 'Application Ref', value: appId },
         { label: 'Estimated Refund Claim', value: refundClaim, isHighlight: true },
-        { label: 'Current Status', value: matched.statusLabel || 'Submitted' },
+        { label: 'Review Stage', value: isChargesFinalized ? (currentPaymentStatus === 'Paid' ? 'Filing with CPC' : 'Payment Due') : 'Under CA Review' },
+        { label: 'Payment Status', value: paymentStatus, isHighlight: true },
       ],
-      steps: [
-        ['Refund Assessment', 'TDS claim registered in portal', 'completed', 'Today'],
-        ['26AS Reconciliation', 'Matching deductions with ITD records', 'current', 'Today'],
-        ['Rectification Drafting', 'Preparing revised refund filing', 'pending'],
-        ['ITD Submission', 'Uploading verified claim to CPC', 'pending'],
-        ['Direct Bank Credit', 'Direct bank deposit by Income Tax Dept', 'pending'],
-      ],
+      steps,
       docs: [
         ['d1', 'Form 26AS Tax Credit Statement', 'uploaded'],
         ['d2', 'Pre-Validated Refund Bank Details', 'uploaded'],
-        ['d3', 'Salary / Deduction Certificates', 'pending'],
+        ['d3', 'Salary / Deduction Certificates', 'uploaded'],
       ],
-      payment: ['Paid with Application', '₹0', 'Included', 'Paid'],
+      payment: paymentValues,
     })
   }
 

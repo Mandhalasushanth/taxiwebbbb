@@ -23,6 +23,16 @@ export interface QuickService {
   priceUnit?: string
 }
 
+export interface FinalizedCharges {
+  serviceFee: number
+  govFees: number
+  gst: number
+  otherCharges?: number
+  total: number
+  finalizedAt: string
+  finalizedBy: string
+}
+
 export interface RecentApplication {
   id: string
   code: string
@@ -34,6 +44,11 @@ export interface RecentApplication {
   icon: string
   to: string
   userId?: string
+  chargesFinalized?: boolean
+  finalizedCharges?: FinalizedCharges
+  paymentStatus?: 'Charges Pending' | 'Pending' | 'Paid' | 'Failed'
+  paidAt?: string
+  transactionId?: string
 }
 
 export interface PendingTask {

@@ -4,7 +4,7 @@ import { userStorage } from '@core/storage/userStorage'
 import { formatCurrency } from '@shared/utils'
 
 import { dashboardApi } from '../api/dashboardApi'
-import type { DashboardSummary, QuickService, RecentApplication } from '../types/dashboard.types'
+import type { DashboardSummary, QuickService, RecentApplication, PendingTask } from '../types/dashboard.types'
 
 export const quickServices: QuickService[] = [
   {
@@ -54,7 +54,7 @@ export const quickServices: QuickService[] = [
   },
 ]
 
-const buildUserDashboardSummary = (): DashboardSummary => {
+export const buildUserDashboardSummary = (): DashboardSummary => {
   const user = authStorage.getUser()
   const applications = userStorage.getUserApplications()
   const drafts = userStorage.getAllDrafts()
@@ -83,6 +83,32 @@ const buildUserDashboardSummary = (): DashboardSummary => {
   const activeApps = applications.filter((a) => a.statusLabel !== 'Completed')
   const completedApps = applications.filter((a) => a.statusLabel === 'Completed')
 
+  // Dynamic payment due calculation
+  // For TDS refund: include only when charges are finalized and paymentStatus is 'Pending'
+  const pendingPaymentApps = applications.filter((app) => {
+    const isTds = (app.title || '').toLowerCase().includes('tds') || (app.code || '').startsWith('TDS-')
+    if (isTds) {
+      return Boolean(app.chargesFinalized && app.paymentStatus === 'Pending' && app.finalizedCharges?.total)
+    }
+    return app.paymentStatus === 'Pending' && Boolean(app.finalizedCharges?.total)
+  })
+
+  const totalPaymentDue = pendingPaymentApps.reduce((sum, app) => {
+    return sum + (app.finalizedCharges?.total || 0)
+  }, 0)
+
+  const pendingPaymentTasks: PendingTask[] = pendingPaymentApps.map((app) => ({
+    id: `pay-${app.code || app.id}`,
+    title: `Payment Due: ${app.title}`,
+    meta: `${app.code || app.id} · Due amount: ${formatCurrency(app.finalizedCharges?.total || 0)}`,
+    statusLabel: 'Payment Due',
+    statusTone: 'danger',
+    actionLabel: 'Pay Now',
+    actionTo: `${routePaths.applicationTrack(app.code || app.id)}?tab=payments`,
+    icon: '💳',
+    iconTone: 'danger',
+  }))
+
   const dateLabel = new Intl.DateTimeFormat('en-IN', {
     weekday: 'short',
     day: 'numeric',
@@ -102,7 +128,7 @@ const buildUserDashboardSummary = (): DashboardSummary => {
       dateLabel,
       message,
       activeApplications: activeApps.length,
-      paymentDue: formatCurrency(0),
+      paymentDue: formatCurrency(totalPaymentDue),
     },
     deadline: null,
     stats: [
@@ -125,9 +151,9 @@ const buildUserDashboardSummary = (): DashboardSummary => {
       {
         id: 'payment-due',
         label: 'Payment due',
-        value: formatCurrency(0),
-        hint: 'No dues pending',
-        tone: 'success',
+        value: formatCurrency(totalPaymentDue),
+        hint: totalPaymentDue > 0 ? `${pendingPaymentApps.length} payment(s) pending` : 'No dues pending',
+        tone: totalPaymentDue > 0 ? 'danger' : 'success',
         icon: '₹',
       },
       {
@@ -140,7 +166,7 @@ const buildUserDashboardSummary = (): DashboardSummary => {
       },
     ],
     recentApplications: combinedRecentApps,
-    pendingTasks: [],
+    pendingTasks: pendingPaymentTasks,
     upcomingDeadlinesList: userStorage.getUserDeadlines(),
     recentActivity: [],
     upcomingDeadlines: [],

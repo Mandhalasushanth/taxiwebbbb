@@ -1,10 +1,9 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config/routePaths'
-import { PaymentCheckout } from '@shared/components'
 import { ServiceDraftModal } from '@shared/saveDraft'
 import { useReviewEdit } from '@shared/edit'
-import { TdsRefundOverview, TdsRefundProgressTracker } from './TdsRefundOverview'
+import { TdsRefundOverview } from './TdsRefundOverview'
 import { TdsRefundCustomerIncome } from './TdsRefundCustomerIncome'
 import { TdsRefundReview } from './TdsRefundReview'
 import { TdsRefundStatus } from './TdsRefundStatus'
@@ -17,7 +16,6 @@ export const TdsRefund: React.FC = () => {
   const navigate = useNavigate()
   const flow = useTdsRefundFlow()
   const {
-    user,
     tdsRef,
     currentStep,
     setCurrentStep,
@@ -67,7 +65,7 @@ export const TdsRefund: React.FC = () => {
       <TdsRefundReview
         onBack={() => setCurrentStep(1)}
         onEditStep1={() => reviewEdit.startEdit(() => setCurrentStep(1))}
-        onNext={() => setCurrentStep(3)}
+        onNext={handleFinishSubmission}
         onSaveDraft={openModal}
         profile={profile}
         bankDetails={bankDetails}
@@ -76,21 +74,6 @@ export const TdsRefund: React.FC = () => {
       />
     ),
     3: () => (
-      <div className="tds-payment-page" data-testid="tds-refund-payment-page">
-        <div className="tds-payment-stepper-wrap">
-          <TdsRefundProgressTracker currentStep={3} />
-        </div>
-        <PaymentCheckout
-          amount={5899}
-          serviceTitle="TDS Refund CA E-filing"
-          applicationRef={tdsRef}
-          applicantName={profile.fullName || profile.name || user?.fullName || 'Taxpayer'}
-          onBack={() => setCurrentStep(REVIEW_STEP)}
-          onSuccess={handleFinishSubmission}
-        />
-      </div>
-    ),
-    4: () => (
       <TdsRefundStatus
         applicationId={tdsRef}
         appliedDate={new Date().toISOString()}

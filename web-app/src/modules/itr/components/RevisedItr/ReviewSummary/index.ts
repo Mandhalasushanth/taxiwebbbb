@@ -1,2 +1,1 @@
-export { RevisionReviewSummary } from './RevisionReviewSummary'
-export { Step5ReviewBase } from './Step5ReviewBase'
+export { RevisionReviewSummary, RevisionReviewSummary as Step5ReviewBase } from './RevisionReviewSummary'

@@ -8,13 +8,12 @@ import { EMPTY_PROFILE, EMPTY_BANK, EMPTY_BUSINESS, EMPTY_TAX, syncProfileWithAu
 import type { TdsProfile, TdsBankDetails, TdsBusinessDetails, TdsIncomeTaxData } from '../types/tdsRefund.types'
 
 const SERVICE_ID = 'tds-refund'
-const TOTAL_STEPS = 3
-const SUCCESS_STEP = 4
+const TOTAL_STEPS = 2
+const SUCCESS_STEP = 3
 
 const STEP_LABELS: Record<number, string> = {
   1: 'Application Details',
-  2: 'Review',
-  3: 'Payment',
+  2: 'Review & Submit',
 }
 
 interface TdsRefundDraft {
@@ -136,11 +135,13 @@ export const useTdsRefundFlow = () => {
         meta: `${profile.fullName || profile.name || user?.fullName || 'Taxpayer'} · ${
           refundClaim > 0 ? `₹${refundClaim.toLocaleString('en-IN')}` : 'Refund Claim'
         }`,
-        statusLabel: 'Under Review',
+        statusLabel: 'Under CA Review',
         statusTone: 'info',
         progress: 25,
         icon: '💰',
         to: routePaths.applicationTrack(tdsRef),
+        chargesFinalized: false,
+        paymentStatus: 'Charges Pending',
       })
       setProfile({ ...EMPTY_PROFILE })
       setBankDetails({ ...EMPTY_BANK })
