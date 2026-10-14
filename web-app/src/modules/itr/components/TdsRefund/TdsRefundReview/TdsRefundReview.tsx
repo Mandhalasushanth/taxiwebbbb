@@ -10,17 +10,16 @@ import './TdsRefundReview.css'
 
 const REVIEW_SIDEBAR_CHECKLIST = [
   { text: 'Step 1: Application Details', status: 'done', icon: '✓' },
-  { text: 'Step 2: Review & Estimate', status: 'active', icon: '●', isStrong: true },
-  { text: 'Step 3: Payment', status: 'pending', icon: '○' },
-  { text: 'Step 4: Direct Bank Credit', status: 'pending', icon: '○' },
+  { text: 'Step 2: Review & Submit', status: 'active', icon: '●', isStrong: true },
+  { text: 'Step 3: Application Status', status: 'pending', icon: '○' },
 ]
 
 export const TdsRefundReviewSidebar: React.FC = () => (
   <aside className="tds-review-sidebar">
     <div className="tds-sidebar-card">
-      <div className="tds-sidebar-progress-badge">Stage 3 in Progress</div>
-      <h4 className="tds-sidebar-card-title">Review &amp; Estimate</h4>
-      <p className="tds-sidebar-card-desc">Please thoroughly verify all your pre-filled and declared details before advancing to CA verification and refund filing.</p>
+      <div className="tds-sidebar-progress-badge">Review &amp; Submit</div>
+      <h4 className="tds-sidebar-card-title">Review &amp; Submit</h4>
+      <p className="tds-sidebar-card-desc">Please thoroughly verify all your pre-filled and declared details before submitting for CA verification. Service charges will be finalized after review.</p>
       <div className="tds-sidebar-checklist">
         {REVIEW_SIDEBAR_CHECKLIST.map((item) => (
           <div key={item.text} className="tds-sidebar-check-item">
@@ -122,7 +121,7 @@ export const TdsRefundReview: React.FC<TdsRefundReviewProps> = ({
           <TdsEstimatedComputationCard taxData={taxData} />
         </main>
       </div>
-      <StepActionBar onBack={onBack} onNext={onNext} onSaveDraft={onSaveDraft} nextLabel="Proceed to Payment" nextDisabled={!isReviewValid} backTestId="tds-step3-back-btn" nextTestId="tds-proceed-payment-btn" />
+      <StepActionBar onBack={onBack} onNext={onNext} onSaveDraft={onSaveDraft} nextLabel="Submit Application" nextDisabled={!isReviewValid} backTestId="tds-step3-back-btn" nextTestId="tds-submit-application-btn" />
     </div>
   )
 }

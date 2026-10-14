@@ -295,11 +295,11 @@ export const useRevisedItr = () => {
       if (step < 5) {
         setStep((prev) => (prev + 1) as 1 | 2 | 3 | 4 | 5); window.scrollTo({ top: 0, behavior: 'smooth' }); return
       }
-      setShowPayment(true)
+      handlePaymentSuccess()
     } catch {
       setIsLoading(false)
     }
-  }, [step, ackNumber, selectedAy, selectedReason, otherReasonText, incomeCorrections, deductionCorrections, bankCorrections, uploadedDocuments, isReturnFound, isEditMode, reviewEdit])
+  }, [step, ackNumber, selectedAy, selectedReason, otherReasonText, incomeCorrections, deductionCorrections, bankCorrections, uploadedDocuments, isReturnFound, isEditMode, reviewEdit, handlePaymentSuccess])
 
   /** "Edit" on the review summary: opens that stage in edit mode */
   const editStep = useCallback((targetStep: 1 | 2 | 3 | 4 | 5) => {

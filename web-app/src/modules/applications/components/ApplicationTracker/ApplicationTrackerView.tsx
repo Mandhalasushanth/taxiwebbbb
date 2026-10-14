@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { routePaths } from '@core/config'
+import { userStorage } from '@core/storage/userStorage'
+import { authStorage } from '@core/auth'
+import { useAppStore } from '@store/index'
 import { getApplicationTrackerData } from '../../data/applicationTrackerData'
 import type { ApplicationTrackerData } from '../../data/applicationTrackerData'
 import './ApplicationTrackerView.css'
@@ -23,10 +26,41 @@ interface ChatMessage {
 export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ customId }) => {
   const { id: routeId } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const appId = customId || routeId || ''
 
-  const [activeTab, setActiveTab] = useState<TrackerTab>('overview')
+  const initialTab = (searchParams.get('tab') as TrackerTab) || 'overview'
+  const [activeTab, setActiveTab] = useState<TrackerTab>(
+    ['overview', 'status', 'documents', 'payments', 'chat'].includes(initialTab) ? initialTab : 'overview'
+  )
   const [data, setData] = useState<ApplicationTrackerData | null>(() => getApplicationTrackerData(appId))
+  const pushToast = useAppStore((state) => state.pushToast)
+
+  // Sync state if appId changes
+  useEffect(() => {
+    setData(getApplicationTrackerData(appId))
+  }, [appId])
+
+  // Sync tab if URL param changes
+  useEffect(() => {
+    const tabParam = searchParams.get('tab') as TrackerTab
+    if (tabParam && ['overview', 'status', 'documents', 'payments', 'chat'].includes(tabParam)) {
+      setActiveTab(tabParam)
+    }
+  }, [searchParams])
+
+  const currentUser = authStorage.getUser()
+  const isManagerOrAdmin = Boolean(
+    currentUser?.role === 'MANAGER' || currentUser?.role === 'ADMIN' || currentUser?.role === 'SUPER_ADMIN'
+  )
+
+  // Manager charge formulation
+  const [mgrServiceFee, setMgrServiceFee] = useState('847')
+  const [mgrGovFees, setMgrGovFees] = useState('0')
+  const [mgrOtherFees, setMgrOtherFees] = useState('0')
+  const [mgrSuccess, setMgrSuccess] = useState('')
+  const [mgrError, setMgrError] = useState('')
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false)
 
   // In-app chat messages state
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => [
@@ -545,83 +579,397 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
           )}
 
           {/* TAB 4: PAYMENTS */}
-          {activeTab === 'payments' && (
-            <div className="app-tracker-web-payments-grid">
-              {/* Payment Summary */}
-              <section className="app-tracker-card" aria-label="Payment Summary">
-                <div className="app-tracker-card__header">
-                  <div className="app-tracker-card__header-text">
-                    <span className="app-tracker-credit-card-icon">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
-                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-                        <line x1="1" y1="10" x2="23" y2="10" />
-                      </svg>
-                    </span>
-                    <h3 className="app-tracker-card__title">Payment Summary</h3>
-                  </div>
-                </div>
-                <div className="app-tracker-field-list">
-                  <div className="app-tracker-field-row">
-                    <span className="app-tracker-field-label">Service Fee</span>
-                    <span className="app-tracker-field-value">{data.paymentSummary.serviceFee}</span>
-                  </div>
-                  <div className="app-tracker-field-row">
-                    <span className="app-tracker-field-label">Government Fees</span>
-                    <span className="app-tracker-field-value">{data.paymentSummary.govFees}</span>
-                  </div>
-                  <div className="app-tracker-field-row">
-                    <span className="app-tracker-field-label">Platform GST (18%)</span>
-                    <span className="app-tracker-field-value">{data.paymentSummary.gst}</span>
-                  </div>
-                  <div className="app-tracker-field-row">
-                    <span className="app-tracker-field-label">Payment Date</span>
-                    <span className="app-tracker-field-value">{data.paymentSummary.paymentDate}</span>
-                  </div>
-                  <div className="app-tracker-field-row app-tracker-field-row--total">
-                    <span className="app-tracker-field-label app-tracker-field-label--total">Total Amount</span>
-                    <span className="app-tracker-field-value app-tracker-field-value--total-orange">
-                      {data.paymentSummary.totalAmount}
-                    </span>
-                  </div>
-                  <div className="app-tracker-field-row">
-                    <span className="app-tracker-field-label">Payment Status</span>
-                    <span className="app-tracker-pending-pill">{data.paymentSummary.paymentStatus}</span>
-                  </div>
-                </div>
-              </section>
+          {activeTab === 'payments' && (() => {
+            const isTdsApplication = Boolean(
+              data.title.toLowerCase().includes('tds') ||
+              data.appId.startsWith('TDS-') ||
+              (data.category === 'ITR' && data.title.toLowerCase().includes('refund'))
+            )
+            const isChargesPending = isTdsApplication && (data.paymentSummary.paymentStatus === 'Charges Pending' || !data.chargesFinalized)
+            const isPaid = data.paymentSummary.paymentStatus === 'Paid'
+            const computedGst = Math.round(Number(mgrServiceFee || 0) * 0.18)
+            const computedTotal = Number(mgrServiceFee || 0) + Number(mgrGovFees || 0) + computedGst + Number(mgrOtherFees || 0)
 
-              {/* Payment Actions & Verification Policy */}
-              <section className="app-tracker-card app-tracker-payment-action-card" aria-label="Payment Actions">
-                <div className="app-tracker-card__header">
-                  <h3 className="app-tracker-card__title">Invoice & Actions</h3>
-                </div>
-                <div className="app-tracker-payment-action-content">
-                  <p className="app-tracker-payment-action-desc">
-                    Your ITR-1 filing and CA verification fee can be paid directly through authorized UPI, NetBanking, or Cards.
-                  </p>
-                  <div className="app-tracker-payment-action-btns">
-                    <button type="button" className="app-tracker-pay-now-btn">
-                      <span>Pay Total ({data.paymentSummary.totalAmount})</span>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
-                        <polyline points="9 18 15 12 9 6" />
-                      </svg>
-                    </button>
-                    <button type="button" className="app-tracker-download-inv-btn">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="7 10 12 15 17 10" />
-                        <line x1="12" y1="15" x2="12" y2="3" />
-                      </svg>
-                      <span>Download Proforma Invoice</span>
-                    </button>
+            const handleFinalizeCharges = (e: React.FormEvent) => {
+              e.preventDefault()
+              setMgrError('')
+              setMgrSuccess('')
+
+              const sFee = Number(mgrServiceFee)
+              const gFee = Number(mgrGovFees)
+              const oFee = Number(mgrOtherFees || 0)
+
+              if (isNaN(sFee) || sFee < 0) {
+                setMgrError('Please enter a valid positive Service Fee.')
+                return
+              }
+              if (isNaN(gFee) || gFee < 0) {
+                setMgrError('Please enter a valid positive Government Fee.')
+                return
+              }
+
+              const total = sFee + gFee + computedGst + oFee
+              if (total <= 0) {
+                setMgrError('Total payable amount must be greater than ₹0.')
+                return
+              }
+
+              const updated = userStorage.finalizeApplicationCharges(data.appId, {
+                serviceFee: sFee,
+                govFees: gFee,
+                gst: computedGst,
+                otherCharges: oFee,
+                total,
+                finalizedAt: new Date().toISOString(),
+                finalizedBy: currentUser?.fullName ? `${currentUser.fullName} (${currentUser.role})` : 'Priya Nair (Manager)',
+              })
+
+              if (updated) {
+                setData(getApplicationTrackerData(appId))
+                setMgrSuccess(`Charges of ₹${total.toLocaleString('en-IN')} successfully finalized and published.`)
+                pushToast(`Charges of ₹${total.toLocaleString('en-IN')} published for ${data.appId}!`, 'success')
+              } else {
+                setMgrError('Could not update application charges in local storage.')
+              }
+            }
+
+            const handlePayNow = () => {
+              if (isPaid || !data) return
+              setIsProcessingPayment(true)
+
+              setTimeout(() => {
+                const totalAmount = data.finalizedCharges?.total || 999
+                const txnId = `TXN-${Date.now().toString().slice(-6)}`
+
+                userStorage.recordApplicationPayment(data.appId, {
+                  transactionId: txnId,
+                  paidAmount: totalAmount,
+                  paymentMethod: 'UPI / NetBanking',
+                })
+
+                setData(getApplicationTrackerData(appId))
+                setIsProcessingPayment(false)
+                pushToast(`Payment of ₹${totalAmount.toLocaleString('en-IN')} completed successfully!`, 'success')
+              }, 600)
+            }
+
+            return (
+              <div className="app-tracker-web-payments-grid">
+                {/* Payment Summary */}
+                <section className="app-tracker-card" aria-label="Payment Summary">
+                  <div className="app-tracker-card__header">
+                    <div className="app-tracker-card__header-text">
+                      <span className="app-tracker-credit-card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                          <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                          <line x1="1" y1="10" x2="23" y2="10" />
+                        </svg>
+                      </span>
+                      <h3 className="app-tracker-card__title">Payment Summary</h3>
+                    </div>
                   </div>
-                  <div className="app-tracker-payment-secure-badge">
-                    <span>🔒 100% Secure & Compliant Payment Gateway</span>
+
+                  {isChargesPending && (
+                    <div
+                      className="app-tracker-charges-pending-alert"
+                      data-testid="tds-charges-pending-banner"
+                      style={{
+                        background: '#fffbeb',
+                        border: '1px solid #f59e0b',
+                        borderRadius: '8px',
+                        padding: '14px 16px',
+                        margin: '16px 20px',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '10px',
+                        color: '#92400e',
+                        fontSize: '13px',
+                        lineHeight: '1.4',
+                      }}
+                    >
+                      <span style={{ fontSize: '18px', lineHeight: 1 }}>⏳</span>
+                      <div>
+                        <strong style={{ display: 'block', color: '#b45309', marginBottom: '2px' }}>
+                          Charges are being finalized
+                        </strong>
+                        <span>
+                          Charges are being finalized after the review of your application. The payment amount will be available here once confirmed.
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="app-tracker-field-list">
+                    <div className="app-tracker-field-row">
+                      <span className="app-tracker-field-label">Service Fee</span>
+                      <span className="app-tracker-field-value">{data.paymentSummary.serviceFee}</span>
+                    </div>
+                    <div className="app-tracker-field-row">
+                      <span className="app-tracker-field-label">Government Fees</span>
+                      <span className="app-tracker-field-value">{data.paymentSummary.govFees}</span>
+                    </div>
+                    <div className="app-tracker-field-row">
+                      <span className="app-tracker-field-label">Platform GST (18%)</span>
+                      <span className="app-tracker-field-value">{data.paymentSummary.gst}</span>
+                    </div>
+                    <div className="app-tracker-field-row">
+                      <span className="app-tracker-field-label">Payment Date</span>
+                      <span className="app-tracker-field-value">{data.paymentSummary.paymentDate}</span>
+                    </div>
+                    <div className="app-tracker-field-row app-tracker-field-row--total">
+                      <span className="app-tracker-field-label app-tracker-field-label--total">Total Amount</span>
+                      <span className={`app-tracker-field-value ${isChargesPending ? '' : 'app-tracker-field-value--total-orange'}`}>
+                        {data.paymentSummary.totalAmount}
+                      </span>
+                    </div>
+                    <div className="app-tracker-field-row">
+                      <span className="app-tracker-field-label">Payment Status</span>
+                      <span
+                        className={`app-tracker-pending-pill ${
+                          isPaid
+                            ? 'app-tracker-pending-pill--paid'
+                            : isChargesPending
+                            ? 'app-tracker-pending-pill--warning'
+                            : ''
+                        }`}
+                        style={
+                          isPaid
+                            ? { background: '#dcfce7', color: '#15803d' }
+                            : isChargesPending
+                            ? { background: '#fef3c7', color: '#b45309' }
+                            : undefined
+                        }
+                        data-testid="tracker-payment-status"
+                      >
+                        {data.paymentSummary.paymentStatus}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </section>
-            </div>
-          )}
+                </section>
+
+                {/* Payment Actions & Verification Policy */}
+                <section className="app-tracker-card app-tracker-payment-action-card" aria-label="Payment Actions">
+                  <div className="app-tracker-card__header">
+                    <h3 className="app-tracker-card__title">Invoice &amp; Actions</h3>
+                  </div>
+                  <div className="app-tracker-payment-action-content">
+                    {isChargesPending ? (
+                      <>
+                        <p className="app-tracker-payment-action-desc">
+                          Our compliance team and Chartered Accountant are assessing your deductions and documents. Once the manager approves the final service charges, you can pay directly from this tab.
+                        </p>
+                        <div className="app-tracker-payment-action-btns">
+                          <button
+                            type="button"
+                            className="app-tracker-pay-now-btn"
+                            disabled
+                            style={{ opacity: 0.6, cursor: 'not-allowed', background: '#94a3b8' }}
+                            data-testid="tds-pay-now-disabled-btn"
+                          >
+                            <span>Pay Now (Charges Pending)</span>
+                          </button>
+                        </div>
+                      </>
+                    ) : isPaid ? (
+                      <>
+                        <div
+                          style={{
+                            background: '#ecfdf5',
+                            border: '1px solid #10b981',
+                            borderRadius: '8px',
+                            padding: '12px 14px',
+                            marginBottom: '14px',
+                            color: '#065f46',
+                            fontSize: '13px',
+                          }}
+                        >
+                          <strong>Payment Confirmed ✓</strong>
+                          <p style={{ margin: '4px 0 0', fontSize: '12px' }}>
+                            Transaction Reference: {data.paymentSummary.transactionId}
+                          </p>
+                        </div>
+                        <div className="app-tracker-payment-action-btns">
+                          <button
+                            type="button"
+                            className="app-tracker-pay-now-btn"
+                            disabled
+                            style={{ opacity: 0.7, cursor: 'default', background: '#059669' }}
+                            data-testid="tds-paid-complete-btn"
+                          >
+                            <span>Paid ✓ ({data.paymentSummary.totalAmount})</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="app-tracker-download-inv-btn"
+                            onClick={() => pushToast(`Receipt downloaded for ${data.appId}`, 'info')}
+                            data-testid="tds-download-receipt-btn"
+                          >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                              <polyline points="7 10 12 15 17 10" />
+                              <line x1="12" y1="15" x2="12" y2="3" />
+                            </svg>
+                            <span>Download Payment Receipt</span>
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <p className="app-tracker-payment-action-desc">
+                          Your service charges have been finalized by the manager. Complete your payment securely to continue processing.
+                        </p>
+                        <div className="app-tracker-payment-action-btns">
+                          <button
+                            type="button"
+                            className="app-tracker-pay-now-btn"
+                            onClick={handlePayNow}
+                            disabled={isProcessingPayment}
+                            data-testid="tds-pay-now-btn"
+                          >
+                            <span>{isProcessingPayment ? 'Processing Payment...' : `Pay Total (${data.paymentSummary.totalAmount})`}</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                              <polyline points="9 18 15 12 9 6" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            className="app-tracker-download-inv-btn"
+                            onClick={() => pushToast(`Proforma invoice downloaded for ${data.appId}`, 'info')}
+                          >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                              <polyline points="7 10 12 15 17 10" />
+                              <line x1="12" y1="15" x2="12" y2="3" />
+                            </svg>
+                            <span>Download Proforma Invoice</span>
+                          </button>
+                        </div>
+                      </>
+                    )}
+                    <div className="app-tracker-payment-secure-badge">
+                      <span>🔒 100% Secure &amp; Compliant Payment Gateway</span>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Manager Charge Finalization Card (Available for TDS Refund when charges pending or manager review) */}
+                {isTdsApplication && !isPaid && (
+                  <section
+                    className="app-tracker-card app-tracker-manager-charge-card"
+                    aria-label="Manager Charge Determination"
+                    data-testid="manager-charge-finalization-card"
+                    style={{ gridColumn: '1 / -1', border: '1px solid #cbd5e1', background: '#f8fafc' }}
+                  >
+                    <div className="app-tracker-card__header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div className="app-tracker-card__header-text">
+                        <span style={{ fontSize: '18px', marginRight: '8px' }}>⚖️</span>
+                        <h3 className="app-tracker-card__title">Manager Review &amp; Charge Determination</h3>
+                      </div>
+                      <span style={{ fontSize: '12px', background: '#e0e7ff', color: '#3730a3', padding: '4px 10px', borderRadius: '12px', fontWeight: 600 }}>
+                        {isManagerOrAdmin ? 'Authorized Manager Desk' : 'Manager / Staff Desk'}
+                      </span>
+                    </div>
+                    <div style={{ padding: '20px' }}>
+                      <p style={{ margin: '0 0 16px', fontSize: '13px', color: '#475569' }}>
+                        CA review has verified all documentation. As authorized manager, determine the applicable charge components for application <strong>{data.appId}</strong>. Once published, the amount will be immediately payable by the customer.
+                      </p>
+
+                      <form onSubmit={handleFinalizeCharges} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', alignItems: 'end' }}>
+                        <div>
+                          <label htmlFor="mgr-service-fee" style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
+                            Service Fee (₹) *
+                          </label>
+                          <input
+                            id="mgr-service-fee"
+                            type="number"
+                            min="0"
+                            value={mgrServiceFee}
+                            onChange={(e) => setMgrServiceFee(e.target.value)}
+                            style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '14px', background: '#fff' }}
+                            data-testid="mgr-service-fee-input"
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="mgr-gov-fees" style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
+                            Government Fees (₹)
+                          </label>
+                          <input
+                            id="mgr-gov-fees"
+                            type="number"
+                            min="0"
+                            value={mgrGovFees}
+                            onChange={(e) => setMgrGovFees(e.target.value)}
+                            style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '14px', background: '#fff' }}
+                            data-testid="mgr-gov-fees-input"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="mgr-other-fees" style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
+                            Other Charges (₹)
+                          </label>
+                          <input
+                            id="mgr-other-fees"
+                            type="number"
+                            min="0"
+                            value={mgrOtherFees}
+                            onChange={(e) => setMgrOtherFees(e.target.value)}
+                            style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '14px', background: '#fff' }}
+                            data-testid="mgr-other-fees-input"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="mgr-gst" style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
+                            Platform GST (18%)
+                          </label>
+                          <input
+                            id="mgr-gst"
+                            type="text"
+                            readOnly
+                            value={`₹${computedGst}`}
+                            style={{ width: '100%', padding: '8px 12px', background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '6px', fontSize: '14px', color: '#64748b' }}
+                            data-testid="mgr-gst-display"
+                          />
+                        </div>
+
+                        <div>
+                          <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
+                            Calculated Total Payable
+                          </label>
+                          <div style={{ padding: '8px 12px', background: '#fff7ed', border: '1px solid #fdba74', borderRadius: '6px', fontSize: '15px', fontWeight: 700, color: '#c2410c' }} data-testid="mgr-total-display">
+                            ₹{computedTotal.toLocaleString('en-IN')}
+                          </div>
+                        </div>
+
+                        <div style={{ gridColumn: '1 / -1', display: 'flex', gap: '12px', alignItems: 'center', marginTop: '8px' }}>
+                          <button
+                            type="submit"
+                            style={{ background: '#f97316', color: '#fff', border: 'none', padding: '10px 22px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
+                            data-testid="mgr-finalize-charges-btn"
+                          >
+                            Finalize &amp; Publish Charges
+                          </button>
+                          {mgrSuccess && (
+                            <span style={{ fontSize: '13px', color: '#16a34a', fontWeight: 600 }} data-testid="mgr-success-msg">
+                              ✓ {mgrSuccess}
+                            </span>
+                          )}
+                          {mgrError && (
+                            <span style={{ fontSize: '13px', color: '#dc2626', fontWeight: 600 }} data-testid="mgr-error-msg">
+                              ⚠ {mgrError}
+                            </span>
+                          )}
+                        </div>
+                      </form>
+                    </div>
+                  </section>
+                )}
+              </div>
+            )
+          })()}
 
           {/* TAB 5: CHAT WITH CA */}
           {activeTab === 'chat' && (

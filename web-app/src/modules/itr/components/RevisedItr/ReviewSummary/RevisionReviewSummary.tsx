@@ -211,7 +211,7 @@ export const RevisionReviewSummary: React.FC<RevisionReviewSummaryProps> = ({
     <div className="step5-review-revised-itr">
       <div className="step5-title-wrap">
         <h2 className="step5-main-heading">Review Revised ITR</h2>
-        <p className="step5-sub-heading">Review your updated details before proceeding to payment.</p>
+        <p className="step5-sub-heading">Review your updated details before submitting your revised return.</p>
       </div>
       <div className="step5-content-grid">
         <div className="step5-col-left">

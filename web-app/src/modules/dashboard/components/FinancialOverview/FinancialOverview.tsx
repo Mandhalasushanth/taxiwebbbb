@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { routePaths } from '@core/config'
+import { userStorage } from '@core/storage/userStorage'
 import type { DashboardStat } from '../../types/dashboard.types'
 import './FinancialOverview.css'
 
@@ -52,6 +53,15 @@ export const FinancialOverview = ({
   const paymentDueStat = stats.find((s) => s.id === 'payment-due')
   const completedStat = stats.find((s) => s.id === 'completed')
 
+  const pendingPaymentApp = userStorage.getUserApplications().find((a) => {
+    const isTds = (a.title || '').toLowerCase().includes('tds') || (a.code || '').startsWith('TDS-')
+    return isTds && a.chargesFinalized && a.paymentStatus === 'Pending'
+  })
+
+  const paymentDueLink = pendingPaymentApp
+    ? `${routePaths.applicationTrack(pendingPaymentApp.code || pendingPaymentApp.id)}?tab=payments`
+    : routePaths.payments
+
   const items = [
     {
       id: 'active-applications',
@@ -75,7 +85,7 @@ export const FinancialOverview = ({
       value: paymentDue ?? (paymentDueStat?.value?.startsWith('₹') ? paymentDueStat.value : `₹${paymentDueStat?.value ?? '0'}`),
       tone: 'red',
       icon: <CreditCardIcon />,
-      to: routePaths.payments,
+      to: paymentDueLink,
     },
     {
       id: 'completed-services',

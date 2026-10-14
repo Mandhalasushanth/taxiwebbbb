@@ -1,5 +1,5 @@
 import React from 'react'
-import { StepActionBar, PaymentCheckout } from '@shared/components'
+import { StepActionBar } from '@shared/components'
 import { ServiceDraftModal } from '@shared/saveDraft'
 import { useRevisedItr } from '../../hooks/useRevisedItr'
 import { FindOriginalReturn } from './FindOriginalReturn'
@@ -14,7 +14,6 @@ export const RevisedItr: React.FC = () => {
   const flow = useRevisedItr()
   const {
     step,
-    showPayment,
     isSubmitted,
     applicationId,
     ackNumber,
@@ -44,7 +43,6 @@ export const RevisedItr: React.FC = () => {
     handleFileRemove,
     handleBack,
     handleContinue,
-    handlePaymentSuccess,
     handleDownloadReceipt,
     editStep,
     isEditMode,
@@ -130,18 +128,6 @@ export const RevisedItr: React.FC = () => {
 
   const renderActiveContent = () => {
     try {
-      if (showPayment) {
-        return (
-          <PaymentCheckout
-            amount={999}
-            serviceTitle="Revised ITR Filing Assistance"
-            applicationRef={ackNumber || 'REV-ITR-2025'}
-            applicantName={returnDetails?.personalInfo?.fullName || 'Assessee'}
-            onBack={handleBack}
-            onSuccess={handlePaymentSuccess}
-          />
-        )
-      }
       if (isSubmitted) {
         return (
           <RevisionApplicationReceived
@@ -163,7 +149,7 @@ export const RevisedItr: React.FC = () => {
             onNext={handleContinue}
             onSaveDraft={openModal}
             backLabel="Back"
-            nextLabel="Continue"
+            nextLabel={step === 5 ? 'Submit Application' : 'Continue'}
             isEditMode={isEditMode}
             isSubmitting={isLoading}
           />

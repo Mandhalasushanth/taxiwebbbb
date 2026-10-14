@@ -1,6 +1,6 @@
 import { localStore } from './localStorage'
 import { authStorage } from '@core/auth'
-import type { RecentApplication, UpcomingDeadlineItem } from '@modules/dashboard/types/dashboard.types'
+import type { RecentApplication, UpcomingDeadlineItem, FinalizedCharges } from '@modules/dashboard/types/dashboard.types'
 import { useNotificationStore } from '@store/notifications/notificationStore'
 
 const USER_APPLICATIONS_KEY = 'taxedge.userApplications'
@@ -97,6 +97,94 @@ export const userStorage = {
     } catch {
       // Safe fallback if called outside React/store initialization
     }
+  },
+
+  finalizeApplicationCharges(codeOrId: string, charges: FinalizedCharges): RecentApplication | null {
+    const raw = localStore.get<RecentApplication[]>(USER_APPLICATIONS_KEY) || []
+    const cleanId = (codeOrId || '').trim().toLowerCase()
+    let index = raw.findIndex((a) => (a.id || '').toLowerCase() === cleanId || (a.code || '').toLowerCase() === cleanId)
+    if (index < 0) {
+      index = raw.findIndex((a) => {
+        const aDigits = (a.code || '').replace(/\D/g, '')
+        const cleanDigits = cleanId.replace(/\D/g, '')
+        return Boolean(cleanDigits && cleanDigits.length >= 5 && aDigits === cleanDigits)
+      })
+    }
+    if (index < 0) return null
+
+    const computedTotal = (charges.serviceFee || 0) + (charges.govFees || 0) + (charges.gst || 0) + (charges.otherCharges || 0)
+    const validCharges: FinalizedCharges = {
+      ...charges,
+      total: computedTotal > 0 ? computedTotal : charges.total,
+    }
+
+    const updated: RecentApplication = {
+      ...raw[index],
+      chargesFinalized: true,
+      finalizedCharges: validCharges,
+      paymentStatus: 'Pending',
+      statusLabel: 'Payment Due',
+      statusTone: 'warning',
+    }
+
+    raw[index] = updated
+    localStore.set(USER_APPLICATIONS_KEY, raw)
+
+    try {
+      useNotificationStore.getState().addNotification({
+        title: 'Charges Finalized',
+        message: `Service charges of ₹${validCharges.total.toLocaleString('en-IN')} have been finalized for application ${updated.code || updated.id}. Please complete payment.`,
+        timestamp: 'Just now',
+        type: 'application',
+      })
+    } catch {
+      // Safe fallback
+    }
+
+    return updated
+  },
+
+  recordApplicationPayment(
+    codeOrId: string,
+    txnDetails: { transactionId: string; paidAmount: number; paymentMethod?: string }
+  ): RecentApplication | null {
+    const raw = localStore.get<RecentApplication[]>(USER_APPLICATIONS_KEY) || []
+    const cleanId = (codeOrId || '').trim().toLowerCase()
+    let index = raw.findIndex((a) => (a.id || '').toLowerCase() === cleanId || (a.code || '').toLowerCase() === cleanId)
+    if (index < 0) {
+      index = raw.findIndex((a) => {
+        const aDigits = (a.code || '').replace(/\D/g, '')
+        const cleanDigits = cleanId.replace(/\D/g, '')
+        return Boolean(cleanDigits && cleanDigits.length >= 5 && aDigits === cleanDigits)
+      })
+    }
+    if (index < 0) return null
+
+    const updated: RecentApplication = {
+      ...raw[index],
+      paymentStatus: 'Paid',
+      statusLabel: 'Under Processing',
+      statusTone: 'info',
+      progress: Math.max(raw[index].progress || 0, 50),
+      transactionId: txnDetails.transactionId,
+      paidAt: new Date().toISOString(),
+    }
+
+    raw[index] = updated
+    localStore.set(USER_APPLICATIONS_KEY, raw)
+
+    try {
+      useNotificationStore.getState().addNotification({
+        title: 'Payment Confirmed',
+        message: `Payment of ₹${txnDetails.paidAmount.toLocaleString('en-IN')} confirmed for application ${updated.code || updated.id}. Processing continues.`,
+        timestamp: 'Just now',
+        type: 'application',
+      })
+    } catch {
+      // Safe fallback
+    }
+
+    return updated
   },
 
   clearUserApplications(): void {

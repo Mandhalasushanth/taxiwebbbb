@@ -30,7 +30,7 @@ const TIMELINE_STAGES: TimelineStage[] = [
   { num: 6, title: 'ITR Filed', desc: 'Submitted on IT Department portal', status: 'pending' },
   { num: 7, title: 'E-Verification Pending', desc: 'Verify using Aadhaar OTP / DSC', status: 'pending' },
   { num: 8, title: 'Processing by IT Dept.', desc: 'Department processing', status: 'pending' },
-  { num: 9, title: 'Refund / Tax Payable', desc: 'Direct credit to bank account ••••6068', status: 'pending' },
+  { num: 9, title: 'Refund Credited', desc: 'Direct credit to bank account', status: 'pending' },
 ]
 
 export const formatAppliedDate = (dateInput?: string | Date): string => {
@@ -68,6 +68,32 @@ export const TdsRefundStatus: React.FC<TdsRefundStatusProps> = ({
 
   const renderOverviewCard = () => (
     <section className="tds-status-card" data-testid="tds-status-overview">
+      <div
+        className="tds-status-success-banner"
+        data-testid="tds-submission-success-banner"
+        style={{
+          background: '#ecfdf5',
+          border: '1px solid #10b981',
+          borderRadius: '10px',
+          padding: '14px 18px',
+          marginBottom: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          color: '#065f46',
+        }}
+      >
+        <span style={{ fontSize: '20px', fontWeight: 'bold' }}>✓</span>
+        <div>
+          <strong style={{ display: 'block', fontSize: '14px', color: '#047857' }}>
+            Application Submitted Successfully
+          </strong>
+          <span style={{ fontSize: '13px', color: '#065f46' }}>
+            Your TDS Refund application has been submitted successfully. Your charges will be finalized after review.
+          </span>
+        </div>
+      </div>
+
       <div className="tds-status-overview-header">
         <div className="tds-status-header-left">
           <div>
@@ -77,7 +103,7 @@ export const TdsRefundStatus: React.FC<TdsRefundStatusProps> = ({
         </div>
         <span className="tds-status-badge-purple" data-testid="status-badge">
           <span className="tds-status-badge-dot" />
-          Under Verification
+          Under CA Review
         </span>
       </div>
 
@@ -135,6 +161,14 @@ export const TdsRefundStatus: React.FC<TdsRefundStatusProps> = ({
       <button
         type="button"
         className="tds-btn-contact-support"
+        onClick={() => navigate(routePaths.applicationTrack(applicationId))}
+        data-testid="tds-btn-track-app"
+      >
+        Track Application
+      </button>
+      <button
+        type="button"
+        className="tds-btn-contact-support"
         onClick={onContactSupport}
         data-testid="tds-btn-contact-support"
       >
@@ -155,7 +189,7 @@ export const TdsRefundStatus: React.FC<TdsRefundStatusProps> = ({
   return (
     <div className="tds-status-page" data-testid="tds-refund-status-page">
       <div className="tds-status-stepper-wrap">
-        <TdsRefundProgressTracker currentStep={4} />
+        <TdsRefundProgressTracker currentStep={3} />
       </div>
       <div className="tds-status-layout">
         <main className="tds-status-main">

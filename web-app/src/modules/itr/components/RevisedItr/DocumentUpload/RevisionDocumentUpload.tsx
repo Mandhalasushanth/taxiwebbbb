@@ -32,13 +32,6 @@ const SLOT_ICON_MAP: Record<DocumentTypeId, React.FC<{ size?: number }>> = {
   investment_proof: IconBriefcase,
 }
 
-const REQUIRED_DOC_IDS_BY_REASON: Record<RevisionReasonKey, DocumentTypeId[]> = {
-  missed_income: ['pan', 'aadhaar', 'form16', 'ais_tis'],
-  wrong_deduction: ['pan', 'aadhaar', 'investment_proof'],
-  incorrect_bank: ['pan', 'aadhaar', 'bank_statement'],
-  other: ['pan', 'aadhaar'],
-}
-
 const renderSlotIcon = (id: DocumentTypeId) => {
   try {
     const IconComp = SLOT_ICON_MAP[id] || IconFileText
@@ -48,10 +41,8 @@ const renderSlotIcon = (id: DocumentTypeId) => {
   }
 }
 
-const buildDocumentSlots = (selectedReason: RevisionReasonKey | null | undefined, selectedAy: string) => {
+const buildDocumentSlots = (_selectedReason: RevisionReasonKey | null | undefined, selectedAy: string) => {
   const ayLabel = selectedAy ? `(${selectedAy})` : '(AY 2025-26)'
-  const reasonKey: RevisionReasonKey = selectedReason || 'missed_income'
-  const requiredIds = REQUIRED_DOC_IDS_BY_REASON[reasonKey] || REQUIRED_DOC_IDS_BY_REASON.missed_income
 
   const allSlots: Record<DocumentTypeId, Omit<DocumentSlotItem, 'isRequired'>> = {
     pan: { id: 'pan', title: 'PAN Card', subtitle: 'Front copy with clear name & photo', iconBg: '#e0f2fe', iconColor: '#0284c7' },
@@ -61,7 +52,7 @@ const buildDocumentSlots = (selectedReason: RevisionReasonKey | null | undefined
     bank_statement: {
       id: 'bank_statement',
       title: 'Bank Statements',
-      subtitle: reasonKey === 'incorrect_bank' ? 'Cancelled cheque or passbook statement' : 'Last 6-12 months statement',
+      subtitle: 'Last 6-12 months statement',
       iconBg: '#d1fae5',
       iconColor: '#059669',
     },
@@ -69,10 +60,8 @@ const buildDocumentSlots = (selectedReason: RevisionReasonKey | null | undefined
   }
 
   const orderedIds: DocumentTypeId[] = ['pan', 'aadhaar', 'form16', 'ais_tis', 'bank_statement', 'investment_proof']
-  const requiredSlots: DocumentSlotItem[] = requiredIds.map((id) => ({ ...allSlots[id], isRequired: true }))
-  const additionalSlots: DocumentSlotItem[] = orderedIds
-    .filter((id) => !requiredIds.includes(id))
-    .map((id) => ({ ...allSlots[id], isRequired: false }))
+  const requiredSlots: DocumentSlotItem[] = orderedIds.map((id) => ({ ...allSlots[id], isRequired: true }))
+  const additionalSlots: DocumentSlotItem[] = []
 
   return { requiredSlots, additionalSlots }
 }
@@ -156,7 +145,7 @@ export const RevisionDocumentUpload: React.FC<RevisionDocumentUploadProps> = ({
       )}
 
       {renderSlotSection('Required Documents', requiredSlots)}
-      {renderSlotSection('Additional Documents', additionalSlots)}
+      {additionalSlots.length > 0 && renderSlotSection('Additional Documents', additionalSlots)}
     </div>
   )
 }
