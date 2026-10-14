@@ -220,7 +220,7 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
         onBack={onBack}
         onSaveDraft={onSaveDraft}
         onNext={handleProceedClick}
-        nextLabel="Continue"
+        nextLabel="Submit Application"
       />
 
       {/* Document Preview Modal */}

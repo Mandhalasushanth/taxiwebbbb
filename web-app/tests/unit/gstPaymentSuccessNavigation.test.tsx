@@ -39,7 +39,7 @@ describe('GSTPaymentSuccess Action Buttons Navigation', () => {
     )
 
     expect(screen.getByText('Track in My Applications')).toBeDefined()
-    expect(screen.getByText('Go to Home Dashboard')).toBeDefined()
+    expect(screen.getByText('Go to Dashboard')).toBeDefined()
     expect(screen.getByText('Contact Support / CA')).toBeDefined()
   })
 
@@ -55,7 +55,7 @@ describe('GSTPaymentSuccess Action Buttons Navigation', () => {
     expect(onTrack).toHaveBeenCalledTimes(1)
   })
 
-  it('calls onBackToDashboard callback when Go to Home Dashboard is clicked', () => {
+  it('calls onBackToDashboard callback when Go to Dashboard is clicked', () => {
     const onDashboard = vi.fn()
     render(
       <MemoryRouter>
@@ -63,7 +63,7 @@ describe('GSTPaymentSuccess Action Buttons Navigation', () => {
       </MemoryRouter>
     )
 
-    fireEvent.click(screen.getByText('Go to Home Dashboard'))
+    fireEvent.click(screen.getByText('Go to Dashboard'))
     expect(onDashboard).toHaveBeenCalledTimes(1)
   })
 

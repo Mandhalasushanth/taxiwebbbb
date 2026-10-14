@@ -19,10 +19,10 @@ type CurrentUser = ReturnType<typeof useAuthStore.getState>['user']
 
 const SERVICE_ID = 'gst-registration'
 const SERVICE_TITLE = 'GST Registration'
-const TOTAL_STEPS = 4
-const STEP_LABELS = ['Business', 'Documents', 'Review', 'Payment']
-const STEP_NAMES: Record<number, string> = { 1: 'business', 2: 'documents', 3: 'review', 4: 'payment' }
-const STATUS_STEP = 5
+const TOTAL_STEPS = 3
+const STEP_LABELS = ['Business', 'Documents', 'Review']
+const STEP_NAMES: Record<number, string> = { 1: 'business', 2: 'documents', 3: 'review', 4: 'status' }
+const STATUS_STEP = 4
 const REVIEW_STEP = 3
 
 interface RegistrationDraft {
@@ -35,8 +35,7 @@ const registrationStepFromUrl = (stepParam: string | null, pathname: string): nu
   const step = (stepParam || '').toLowerCase()
   if (step === 'documents' || step === '2' || pathname.includes('document')) return 2
   if (step === 'review' || step === '3' || pathname.includes('review')) return 3
-  if (step === 'payment' || step === '4' || pathname.includes('payment')) return 4
-  if (step === 'status' || step === '5' || step === 'success') return 5
+  if (step === 'status' || step === '4' || step === 'success') return 4
   if (step === 'business' || step === '1') return 1
   return null
 }
@@ -95,20 +94,20 @@ export const useGstRegistrationState = () => {
     () => savedDraft?.formData?.documents || INITIAL_DOCUMENTS
   )
 
-  // Set only by a payment the payments service verified; the status step requires it
+  // Set on application submission or verified payment; the status step requires it
   const [paymentResult, setPaymentResult] = useState<PaymentResult | null>(null)
   const [applicationRef] = useState(() => generateGstReference('GST'))
-  const isPaid = Boolean(paymentResult?.verified)
+  const isSubmitted = Boolean(paymentResult)
 
   /** Route guard: a requested step is only shown when every earlier step is complete */
-  const allowedStep = (requested: number, paid = isPaid): number =>
-    clampRegistrationStep(requested, { businessData, documents, isPaid: paid })
+  const allowedStep = (requested: number, submitted = isSubmitted): number =>
+    clampRegistrationStep(requested, { businessData, documents, isSubmitted: submitted, isPaid: submitted })
 
   const [currentStep, setCurrentStep] = useState<number>(() => {
     const urlStep = registrationStepFromUrl(searchParams.get('step'), location.pathname)
     const draftStep = savedDraft?.currentStep ?? 1
     const requested = urlStep ?? (draftStep >= 1 && draftStep <= TOTAL_STEPS ? draftStep : 1)
-    return clampRegistrationStep(requested, { businessData, documents, isPaid: false })
+    return clampRegistrationStep(requested, { businessData, documents, isSubmitted: false, isPaid: false })
   })
 
   const hasEnteredData =
@@ -189,6 +188,29 @@ export const useGstRegistrationState = () => {
     })
   }
 
+  const submitApplication = () => {
+    const result: PaymentResult = {
+      applicationRef,
+      transactionId: applicationRef,
+      receiptNumber: `TE/${new Date().getFullYear()}/REG-${applicationRef.slice(-6)}`,
+      method: 'Direct Submission',
+      dateText: new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
+      amount: 0,
+      verified: true,
+    }
+    setPaymentResult(result)
+    setCurrentStep(STATUS_STEP)
+    setSearchParams({ step: 'status' }, { replace: true })
+    pushToast('GST Application submitted successfully!', 'success')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+
+    // Clear the draft and remember the business details for later GST services
+    draft.clearDraft()
+    gstUploadedFiles.clear()
+    gstProfileService.saveFromRegistration(businessData)
+    recordApplication(applicationRef)
+  }
+
   const handlePaymentSuccess = (result: PaymentResult) => {
     // Only a server-verified gateway payment may submit the application
     if (!result.verified) {
@@ -247,9 +269,10 @@ export const useGstRegistrationState = () => {
     handleStep2Back: reviewEdit.backOrReview(() => goToStep(1)),
     handleStep2Next: reviewEdit.nextOrReview(() => goToStep(REVIEW_STEP)),
     handleStep3Back: () => goToStep(2),
-    handleStep3Proceed: () => goToStep(4),
-    handleStep4Back: () => goToStep(3),
+    handleStep3Proceed: submitApplication,
+    handleStep4Back: () => goToStep(REVIEW_STEP),
     handlePaymentSuccess,
+    submitApplication,
     navigate,
   }
 }

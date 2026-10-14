@@ -26,5 +26,4 @@ export const STEP_LABELS: Record<number, string> = {
   1: 'Period Selection',
   2: 'Upload Documents',
   3: 'Review & Figures',
-  4: 'Payment',
 }

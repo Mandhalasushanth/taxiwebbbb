@@ -4,7 +4,6 @@ import { routePaths } from '@core/config'
 import { userStorage } from '@core/storage/userStorage'
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import { generateGstReference } from '@modules/gst/utils/gstFormat'
-import { GST_FEES, withPlatformGst } from '@modules/gst/constants/gstBusiness.constants'
 import { getDefaultFilingData, STEP_LABELS } from '@modules/gst/utils/gstFiling.constants'
 import { useServiceDraft, readServiceDraft, hasFormChanged, DRAFT_NAMESPACES } from '@shared/saveDraft'
 import { useReviewEdit } from '@shared/edit'
@@ -12,12 +11,13 @@ import type { FilingPeriodData } from '../components/GSTFiling'
 import type { PaymentResult } from '@modules/gst/types/gst.types'
 import type { UploadedFileInfo } from '@modules/gst/utils/gstDocumentsData'
 
-type FilingStep = 1 | 2 | 3 | 4 | 5 | 6
+type FilingStep = 1 | 2 | 3 | 4 | 5
 
 const SERVICE_ID = 'gst-filing'
 const SERVICE_TITLE = 'GST Filing'
-const TOTAL_STEPS = 4
+const TOTAL_STEPS = 3
 const REVIEW_STEP = 3
+const STATUS_STEP = 4
 
 interface FilingDraft {
   filingData: FilingPeriodData
@@ -30,28 +30,27 @@ const FILING_PATH_BY_STEP: Record<FilingStep, string> = {
   1: routePaths.gst.filePeriod,
   2: routePaths.gst.fileUpload,
   3: routePaths.gst.fileReview,
-  4: routePaths.gst.filePayment,
-  5: routePaths.gst.fileSuccess,
-  6: routePaths.gst.fileReceipt,
+  4: routePaths.gst.fileSuccess,
+  5: routePaths.gst.fileReceipt,
 }
 
 /** Filing step for each filing route */
 const FILING_STEP_BY_PATH: Record<string, FilingStep> = {
   [routePaths.gst.filing]: 1,
+  [routePaths.gst.filePayment]: 3,
   ...Object.fromEntries(Object.entries(FILING_PATH_BY_STEP).map(([step, path]) => [path, Number(step) as FilingStep])),
 }
 
 const isFilingRoute = (pathname: string): boolean => pathname in FILING_STEP_BY_PATH
 
 const buildPaymentResult = (applicationRef: string): PaymentResult => ({
-  transactionId: `TXN${Date.now()}`,
-  receiptNumber: `TE/${new Date().getFullYear()}/R-${Math.floor(1000 + Math.random() * 9000)}`,
-  method: 'UPI',
+  transactionId: applicationRef,
+  receiptNumber: `TE/${new Date().getFullYear()}/FIL-${applicationRef.slice(-6)}`,
+  method: 'Direct Submission',
   dateText: new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
   applicationRef,
-  amount: withPlatformGst(GST_FEES.filingCombo).total,
-  // Placeholder until the payments service verifies a real payment
-  verified: false,
+  amount: 0,
+  verified: true,
 })
 
 const withoutKey = <V>(record: Record<string, V>, key: string): Record<string, V> =>
@@ -161,6 +160,24 @@ export const useGSTFilingFlow = () => {
     reviewEdit.nextOrReview(() => goToStep(2))()
   }
 
+  const submitFiling = () => {
+    const res = buildPaymentResult(filingRef)
+    setPaymentResult(res)
+    draft.clearDraft()
+    userStorage.saveUserApplication({
+      id: `app-gst-filing-${Date.now()}`,
+      code: filingRef,
+      title: `GST Filing — ${filingData.selectedMonth || 'Return'}`,
+      meta: `${filingData.businessName || 'Business'} · ${filingData.returnType || 'GSTR-3B'}`,
+      statusLabel: 'Submitted',
+      statusTone: 'info',
+      progress: 25,
+      icon: '📄',
+      to: routePaths.gst.detail(filingRef),
+    })
+    goToStep(STATUS_STEP)
+  }
+
   const handleStep4Success = (res: PaymentResult) => {
     setPaymentResult(res)
     const finalRef = res.applicationRef || filingRef
@@ -176,7 +193,7 @@ export const useGSTFilingFlow = () => {
       icon: '📄',
       to: routePaths.gst.detail(finalRef),
     })
-    goToStep(5)
+    goToStep(STATUS_STEP)
   }
 
   return {
@@ -199,7 +216,7 @@ export const useGSTFilingFlow = () => {
     handleStep1Back,
     handleStep2Back,
     handleStep2Next: reviewEdit.nextOrReview(() => goToStep(REVIEW_STEP)),
-    handleStep3Approve: () => goToStep(4),
+    handleStep3Approve: submitFiling,
     handleStep4Success,
     handleFileUpload,
     handleFileRemove,

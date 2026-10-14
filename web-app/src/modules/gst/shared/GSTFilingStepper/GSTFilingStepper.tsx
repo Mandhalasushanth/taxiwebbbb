@@ -15,8 +15,6 @@ const STEPS: Step[] = [
   { id: 1, label: 'Filing Period' },
   { id: 2, label: 'Documents' },
   { id: 3, label: 'Review' },
-  { id: 4, label: 'Payment' },
-  { id: 5, label: 'Success' },
 ]
 
 export const GSTFilingStepper: React.FC<GSTFilingStepperProps> = ({

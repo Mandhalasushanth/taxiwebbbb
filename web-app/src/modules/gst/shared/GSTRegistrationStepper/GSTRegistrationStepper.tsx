@@ -9,7 +9,6 @@ const REGISTRATION_STEPS: StepItem[] = [
   { id: 1, label: 'Business' },
   { id: 2, label: 'Documents' },
   { id: 3, label: 'Review' },
-  { id: 4, label: 'Payment' },
 ]
 
 interface GSTRegistrationStepperProps {
