@@ -1,38 +1,87 @@
-/* Input with an inline Upload button (Business PAN / Aadhaar) */
+/* Container for Business PAN / Aadhaar with inline upload and action buttons */
 .tds-upload-field {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  min-height: 52px;
+  padding: 0.35rem 0.65rem 0.35rem 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.tds-upload-field:focus-within {
+  border-color: var(--primary-navy);
+  box-shadow: 0 0 0 3px rgba(6, 27, 59, 0.08);
+}
+
+.tds-upload-field.has-error {
+  border-color: var(--palette-red-500);
+}
+
+.tds-upload-field--has-doc {
+  min-height: 62px;
+  padding: 0.35rem 0.75rem 0.45rem 1rem;
+}
+
+.tds-upload-field__input-wrap {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
 }
 
 .tds-upload-field__input {
-  padding-right: 7.25rem;
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0.4rem 0.5rem 0.4rem 0;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--primary-text);
+  letter-spacing: 0.03em;
+  box-sizing: border-box;
 }
 
+.tds-upload-field__input::placeholder {
+  color: var(--muted-text);
+  font-weight: 400;
+  font-size: 0.95rem;
+  letter-spacing: normal;
+}
+
+.tds-upload-field__file {
+  display: none;
+}
+
+/* When no document is uploaded: Upload Pill Button */
 .tds-upload-field__btn {
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  height: 32px;
-  padding: 0 0.85rem;
-  border: none;
+  gap: 0.45rem;
+  height: 36px;
+  padding: 0 1.1rem;
+  border: 1px solid var(--palette-sky-200);
   border-radius: 999px;
   background: var(--palette-blue-50);
   color: var(--primary-navy);
   font-family: inherit;
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
 }
 
 .tds-upload-field__btn:hover {
   background: var(--primary-navy);
   color: var(--surface);
+  border-color: var(--primary-navy);
 }
 
 .tds-upload-field__btn:focus-visible {
@@ -40,51 +89,95 @@
   outline-offset: 2px;
 }
 
-.tds-upload-field__file {
-  display: none;
+/* When document IS uploaded: Right Actions Box */
+.tds-upload-field__actions-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  margin-left: 0.75rem;
 }
 
-.tds-upload-field__chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  max-width: 100%;
-  margin-top: 0.4rem;
-  padding: 0.3rem 0.4rem 0.3rem 0.7rem;
-  border-radius: 999px;
-  background: var(--palette-emerald-50);
-  border: 1px solid var(--palette-emerald-200);
+.tds-upload-field__filename {
   font-size: 0.78rem;
-  color: var(--palette-emerald-700);
-  align-self: flex-start;
-}
-
-.tds-upload-field__chip-name {
-  font-weight: 700;
+  font-weight: 600;
+  color: #059669;
+  max-width: 175px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: right;
+  line-height: 1.25;
+  padding-right: 0.15rem;
 }
 
-.tds-upload-field__chip-size {
-  opacity: 0.75;
-  flex-shrink: 0;
+.tds-upload-field__btn-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
-.tds-upload-field__chip-remove {
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
+.tds-upload-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
   border: none;
-  border-radius: 50%;
-  background: transparent;
-  color: inherit;
   cursor: pointer;
-  flex-shrink: 0;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  padding: 0;
+  outline: none;
 }
 
-.tds-upload-field__chip-remove:hover {
-  background: var(--palette-red-100-fee2e2);
-  color: var(--palette-red-500);
+.tds-upload-action-btn:hover {
+  transform: scale(1.08);
+}
+
+.tds-upload-action-btn:focus-visible {
+  outline: 2px solid var(--primary-navy);
+  outline-offset: 2px;
+}
+
+/* 1. View Button (White circle, navy eye) */
+.tds-upload-action-btn--view {
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #0f284e;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.tds-upload-action-btn--view:hover {
+  background: #f0f7ff;
+  border-color: #93c5fd;
+}
+
+/* 2. Replace Button (Soft orange/cream circle, orange swap arrows) */
+.tds-upload-action-btn--replace {
+  border-radius: 50%;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #ea580c;
+}
+
+.tds-upload-action-btn--replace:hover {
+  background: #ffedd5;
+  color: #c2410c;
+  border-color: #fdba74;
+}
+
+/* 3. Delete Button (Soft pink rounded square, red trash) */
+.tds-upload-action-btn--delete {
+  border-radius: 12px;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #ef4444;
+}
+
+.tds-upload-action-btn--delete:hover {
+  background: #fecdd3;
+  color: #dc2626;
+  border-color: #fda4af;
 }

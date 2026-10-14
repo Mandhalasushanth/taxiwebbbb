@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Briefcase, Upload, X } from "lucide-react";
+import { Briefcase, Upload, Eye, ArrowRightLeft, Trash2 } from "lucide-react";
 import { FileInput, formatUploadSize } from "@shared/upload";
 import { formatAadhaar, formatMobile, formatPan } from "@shared/utils/formatUtils";
 import type { TdsBusinessDetails, UploadedFileMeta } from "@modules/itr/types/tdsRefund.types";
@@ -35,38 +35,102 @@ const toFileMeta = (file: File): UploadedFileMeta => ({
   uploadedAt: new Date().toISOString(),
 });
 
-/** Text input with an inline "Upload" button for the matching document. */
+/** Text input with an inline upload & action controls for the matching document. */
 const UploadField: React.FC<UploadFieldProps> = ({
-  id, label, placeholder, value, error, inputMode, maxLength, isUpper, doc, onValueChange, onDocChange,
+  id,
+  label,
+  placeholder,
+  value,
+  error,
+  inputMode,
+  maxLength,
+  isUpper,
+  doc,
+  onValueChange,
+  onDocChange,
 }) => {
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleViewDoc = () => {
+    if (!doc) return;
+    if (doc.file) {
+      const url = URL.createObjectURL(doc.file);
+      window.open(url, "_blank");
+    } else {
+      const blob = new Blob([`Document Preview: ${doc.name}`], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    }
+  };
+
   return (
     <div className="tds-form-group">
       <label htmlFor={id} className="tds-label">
         {label} <span className="tds-required">*</span>
       </label>
-      <div className="tds-upload-field">
-        <input
-          id={id}
-          type="text"
-          inputMode={inputMode}
-          maxLength={maxLength}
-          className={`tds-input tds-upload-field__input ${isUpper ? "tds-input--upper" : ""} ${error ? "has-error" : ""}`}
-          value={value}
-          onChange={(e) => onValueChange(e.target.value)}
-          placeholder={placeholder}
-          aria-invalid={Boolean(error)}
-          required
-        />
-        <button
-          type="button"
-          className="tds-upload-field__btn"
-          onClick={() => fileRef.current?.click()}
-          aria-label={`Upload ${label}`}
-        >
-          <Upload size={16} strokeWidth={2.4} aria-hidden="true" />
-          <span>{doc ? "Replace" : "Upload"}</span>
-        </button>
+      <div className={`tds-upload-field ${doc ? "tds-upload-field--has-doc" : ""} ${error ? "has-error" : ""}`}>
+        <div className="tds-upload-field__input-wrap">
+          <input
+            id={id}
+            type="text"
+            inputMode={inputMode}
+            maxLength={maxLength}
+            className={`tds-upload-field__input ${isUpper ? "tds-input--upper" : ""}`}
+            value={value}
+            onChange={(e) => onValueChange(e.target.value)}
+            placeholder={placeholder}
+            aria-invalid={Boolean(error)}
+            required
+          />
+        </div>
+
+        {doc ? (
+          <div className="tds-upload-field__actions-box">
+            <span className="tds-upload-field__filename" title={doc.name}>
+              {doc.name}
+            </span>
+            <div className="tds-upload-field__btn-row">
+              <button
+                type="button"
+                className="tds-upload-action-btn tds-upload-action-btn--view"
+                onClick={handleViewDoc}
+                title="View document"
+                aria-label={`View ${label} document`}
+              >
+                <Eye size={18} strokeWidth={2.2} />
+              </button>
+              <button
+                type="button"
+                className="tds-upload-action-btn tds-upload-action-btn--replace"
+                onClick={() => fileRef.current?.click()}
+                title="Replace document"
+                aria-label={`Replace ${label} document`}
+              >
+                <ArrowRightLeft size={16} strokeWidth={2.4} />
+              </button>
+              <button
+                type="button"
+                className="tds-upload-action-btn tds-upload-action-btn--delete"
+                onClick={() => onDocChange(undefined)}
+                title="Delete document"
+                aria-label={`Delete ${label} document`}
+              >
+                <Trash2 size={16} strokeWidth={2.2} />
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="tds-upload-field__btn"
+            onClick={() => fileRef.current?.click()}
+            aria-label={`Upload ${label}`}
+          >
+            <Upload size={16} strokeWidth={2.4} aria-hidden="true" />
+            <span>Upload</span>
+          </button>
+        )}
+
         <FileInput
           ref={fileRef}
           className="tds-upload-field__file"
@@ -74,20 +138,6 @@ const UploadField: React.FC<UploadFieldProps> = ({
         />
       </div>
       {error && <span className="tds-field-error">{error}</span>}
-      {doc && (
-        <span className="tds-upload-field__chip">
-          <span className="tds-upload-field__chip-name">{doc.name}</span>
-          <span className="tds-upload-field__chip-size">{doc.size}</span>
-          <button
-            type="button"
-            className="tds-upload-field__chip-remove"
-            onClick={() => onDocChange(undefined)}
-            aria-label={`Remove ${doc.name}`}
-          >
-            <X size={14} strokeWidth={2.4} aria-hidden="true" />
-          </button>
-        </span>
-      )}
     </div>
   );
 };
