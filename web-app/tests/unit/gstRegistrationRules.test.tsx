@@ -115,6 +115,9 @@ describe('BUG-GST-005: constitution vs PAN type', () => {
   it('accepts matching PAN types', () => {
     expect(validateBusinessPan('AAACT1234A', 'Public Limited Company')).toBeUndefined()
     expect(validateBusinessPan('AAAFT1234A', 'Limited Liability Partnership (LLP)')).toBeUndefined()
+    expect(validateBusinessPan('AAAFT1234A', 'Partnership Firm')).toBeUndefined()
+    expect(validateBusinessPan('AAAHK1234A', 'HUF')).toBeUndefined()
+    expect(validateBusinessPan('AAATA1234A', 'Society / Trust / Club')).toBeUndefined()
     expect(validateBusinessPan('ABCPK1234F', 'Proprietorship')).toBeUndefined()
   })
   it('requires the signatory PAN to be an individual PAN', () => {
@@ -123,7 +126,7 @@ describe('BUG-GST-005: constitution vs PAN type', () => {
 })
 
 describe('BUG-GST-006: Composition Scheme eligibility', () => {
-  it('flags e-commerce, inter-state and export selections when Composition = Yes', () => {
+  it('flags e-commerce, inter-state and export selections when Composition = Yes or Yes - composition scheme', () => {
     const conflicts = getCompositionConflicts({
       compositionScheme: 'Yes',
       natureOfBusiness: 'E-Commerce Operator / Seller',
@@ -131,9 +134,30 @@ describe('BUG-GST-006: Composition Scheme eligibility', () => {
     })
     expect(Object.keys(conflicts).sort()).toEqual(['natureOfBusiness', 'registrationReason'])
     expect(errorsFor({ compositionScheme: 'Yes', natureOfBusiness: 'Export of Goods / Services' }).natureOfBusiness).toMatch(/Composition Scheme/)
+
+    const newConflicts = getCompositionConflicts({
+      compositionScheme: 'Yes - composition scheme',
+      natureOfBusiness: 'Exporter / Importer',
+      registrationReason: 'Inter-state supply',
+    })
+    expect(Object.keys(newConflicts).sort()).toEqual(['natureOfBusiness', 'registrationReason'])
+    expect(
+      errorsFor({
+        compositionScheme: 'Yes - composition scheme',
+        natureOfBusiness: 'Exporter / Importer',
+        registrationReason: 'E-commerce operator / seller',
+      }).natureOfBusiness,
+    ).toMatch(/Composition Scheme/)
   })
-  it('allows those options when Composition = No', () => {
+  it('allows those options when Composition = No or No - regular scheme', () => {
     expect(errorsFor({ natureOfBusiness: 'E-Commerce Operator / Seller', registrationReason: 'Inter-State Supply' })).toEqual({})
+    expect(
+      errorsFor({
+        compositionScheme: 'No - regular scheme',
+        natureOfBusiness: 'Exporter / Importer',
+        registrationReason: 'Inter-state supply',
+      }),
+    ).toEqual({})
   })
 })
 

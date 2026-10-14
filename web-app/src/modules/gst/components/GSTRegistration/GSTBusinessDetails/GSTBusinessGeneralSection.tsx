@@ -12,10 +12,7 @@ import {
   COMPOSITION_SCHEME_OPTIONS,
 } from '@modules/gst/utils/gstBusinessDetails.constants'
 import {
-  COMPOSITION_INELIGIBLE_MESSAGE,
   CONSTITUTION_PAN_TYPES,
-  getCompositionConflicts,
-  isCompositionOpted,
   isOptionBlockedByComposition,
 } from '@modules/gst/validation/gstBusinessRules'
 
@@ -38,9 +35,6 @@ export interface GSTBusinessGeneralSectionProps {
 
 const IDENTITY_FIELDS = ['legalName', 'tradeName', 'constitution', 'businessPan', 'natureOfBusiness', 'commencementDate'] as const
 const SCHEME_FIELDS = ['registrationReason', 'compositionScheme'] as const
-
-const COMPOSITION_ALLOWED_NOTE =
-  'Composition Scheme: e-commerce sales, inter-state supplies and exports are not allowed, so those options are disabled.'
 
 /** Updates a field and clears the errors that the change can resolve */
 const createGeneralFieldUpdater = ({ onChange, onClearError }: GSTBusinessGeneralSectionProps) =>
@@ -148,9 +142,6 @@ export const GSTBusinessIdentitySection: React.FC<GSTBusinessGeneralSectionProps
 export const GSTRegistrationSchemeSection: React.FC<GSTBusinessGeneralSectionProps> = (props) => {
   const { data, errors = {} } = props
   const update = createGeneralFieldUpdater(props)
-  const compositionOpted = isCompositionOpted(data)
-  const hasCompositionConflict = Object.keys(getCompositionConflicts(data)).length > 0
-  const noteClass = `gst-composition-note ${hasCompositionConflict ? 'gst-composition-note--error' : ''}`
 
   return (
     <GSTFormSection
@@ -182,12 +173,6 @@ export const GSTRegistrationSchemeSection: React.FC<GSTBusinessGeneralSectionPro
           onValueChange={(v) => update('compositionScheme', v)}
         />
       </div>
-
-      {compositionOpted && (
-        <p className={noteClass} role={hasCompositionConflict ? 'alert' : 'note'}>
-          {hasCompositionConflict ? COMPOSITION_INELIGIBLE_MESSAGE : COMPOSITION_ALLOWED_NOTE}
-        </p>
-      )}
     </GSTFormSection>
   )
 }

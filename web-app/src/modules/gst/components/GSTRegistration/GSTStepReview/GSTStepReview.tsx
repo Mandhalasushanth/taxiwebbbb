@@ -128,11 +128,11 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
     {
       label: 'Composition Scheme',
       value:
-        businessData.compositionScheme === 'Yes'
+        businessData.compositionScheme?.startsWith('Yes')
           ? 'Yes — composition scheme'
-          : businessData.compositionScheme === 'No'
+          : businessData.compositionScheme?.startsWith('No')
           ? 'No — regular scheme'
-          : '—',
+          : businessData.compositionScheme || '—',
     },
     { label: 'Place of Business', value: businessData.placeOfBusiness || '—' },
     { label: 'Address', value: businessData.businessAddress || '—' },
