@@ -102,7 +102,14 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
       <div className="gst-canc-form-row">
         <div className="gst-canc-field-group">
           <label htmlFor="gst-canc-dues-input" className="gst-canc-label">Pending Dues / Liabilities (Optional)</label>
-          <input id="gst-canc-dues-input" type="text" placeholder="Enter any pending penalty or tax dues, if any" value={pendingLiabilities} onChange={(e) => setPendingLiabilities(e.target.value)} className="gst-canc-input" />
+          <input
+            id="gst-canc-dues-input"
+            type="text"
+            placeholder="Enter amount in ₹ (e.g. 10,000)"
+            value={pendingLiabilities}
+            onChange={(e) => setPendingLiabilities(gstInput.amount(e.target.value))}
+            className="gst-canc-input"
+          />
         </div>
 
         <div className="gst-canc-field-group">
@@ -110,8 +117,12 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
             Last GSTR-3B Filed ARN / Period <span className="gst-canc-star">*</span>
           </label>
           <input
-            id="gst-canc-gstr3b-input" type="text" placeholder="Enter ARN or return period" value={lastGstr3bFiled}
-            onChange={(e) => { setLastGstr3bFiled(gstInput.text(e.target.value, 60)); clearError('lastGstr3bFiled') }}
+            id="gst-canc-gstr3b-input"
+            type="text"
+            maxLength={20}
+            placeholder="e.g. AA270124000123Z or March 2024"
+            value={lastGstr3bFiled}
+            onChange={(e) => { setLastGstr3bFiled(gstInput.reference(e.target.value)); clearError('lastGstr3bFiled') }}
             className={`gst-canc-input ${errors.lastGstr3bFiled ? 'has-error' : ''}`}
           />
           {errors.lastGstr3bFiled && <span className="gst-canc-error-msg">{errors.lastGstr3bFiled}</span>}

@@ -20,6 +20,7 @@ export const GSTCompliance: React.FC = () => {
   const {
     fields,
     setField,
+    validateField,
     purchaseFile,
     setPurchaseFile,
     salesFile,
@@ -113,6 +114,7 @@ export const GSTCompliance: React.FC = () => {
                       placeholder="Enter 15-character GSTIN"
                       value={gstin}
                       onChange={(e) => setField('gstin', gstInput.gstin(e.target.value))}
+                      onBlur={() => validateField('gstin')}
                       maxLength={15}
                     />
                     {errors.gstin && <span className="form-error">{errors.gstin}</span>}
@@ -181,6 +183,7 @@ export const GSTCompliance: React.FC = () => {
                 <GSTNoticeResponseFields
                   values={fields}
                   onChange={setField}
+                  onBlurField={validateField}
                   noticeFile={noticeFile}
                   onNoticeFileChange={setNoticeFile}
                   errors={errors}

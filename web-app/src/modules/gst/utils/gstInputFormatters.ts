@@ -37,8 +37,12 @@ export const gstInput = {
   /** Names, cities, bank names: letters, spaces and . ' - */
   letters: (v: string, max = 100): string =>
     v.replace(/[^A-Za-z .'-]/g, '').replace(/\s{2,}/g, ' ').slice(0, max),
-  /** Notice number / ARN / reference */
-  reference: (v: string): string => v.toUpperCase().replace(/[^A-Z0-9/-]/g, '').slice(0, 35),
+  /** Notice number / RFN / DIN: uppercase letters, numbers, / and -, capped at 20 chars */
+  noticeNumber: (v: string): string => v.toUpperCase().replace(/[^A-Z0-9/-]/g, '').slice(0, 20),
+  /** GST Application Reference Number (ARN): 15 alphanumeric characters */
+  arn: (v: string): string => v.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 15),
+  /** Generic reference (capped at 20 chars) */
+  reference: (v: string): string => v.toUpperCase().replace(/[^A-Z0-9/-]/g, '').slice(0, 20),
   amount: (v: string): string => {
     const digits = v.replace(/\D/g, '').slice(0, 13)
     return digits ? Number(digits).toLocaleString('en-IN') : ''
@@ -57,7 +61,9 @@ export const GST_MAX_LENGTH = {
   hsnSac: 8,
   name: 100,
   email: 100,
-  reference: 35,
+  noticeNumber: 20,
+  arn: 15,
+  reference: 20,
   address: 250,
 } as const
 
@@ -78,5 +84,7 @@ export const gstInputForKind = (kind: string): ((v: string) => string) =>
     designation: gstInput.designation,
     businessName: gstInput.businessName,
     address: gstInput.address,
+    noticeNumber: gstInput.noticeNumber,
+    arn: gstInput.arn,
     reference: gstInput.reference,
   } as Record<string, (v: string) => string>)[kind] ?? ((v: string) => gstInput.text(v))

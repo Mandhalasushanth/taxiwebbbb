@@ -100,12 +100,14 @@ export const GSTReconciliationDocsSection: React.FC<GSTReconciliationDocsSection
 
       {/* GSTR-2B ARN input */}
       <div className="form-group">
+        <label className="form-label">GSTR-2B Reference / ARN (Optional)</label>
         <input
           type="text"
+          maxLength={15}
           className={`form-input ${errors.gstr2bRef ? 'has-error' : ''}`}
-          placeholder="Enter GSTR-2B reference or ARN"
+          placeholder="e.g. AA270124000123Z (15-character ARN)"
           value={gstr2bRef}
-          onChange={(e) => setGstr2bRef(gstInput.reference(e.target.value))}
+          onChange={(e) => setGstr2bRef(gstInput.arn(e.target.value))}
         />
         {errors.gstr2bRef && <span className="form-error">{errors.gstr2bRef}</span>}
       </div>
