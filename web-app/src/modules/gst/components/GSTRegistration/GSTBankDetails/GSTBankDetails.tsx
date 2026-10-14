@@ -90,7 +90,7 @@ export const GSTBankDetails = ({
         placeholder="As per bank records"
         value={data.accountHolderName}
         error={errors.accountHolderName}
-        onValueChange={(v) => update('accountHolderName', gstInput.letters(v))}
+        onValueChange={(v) => update('accountHolderName', gstInput.personName(v))}
       />
 
       <div className="gst-form-row gst-form-row--split">
@@ -110,7 +110,7 @@ export const GSTBankDetails = ({
             className={fieldInputClass(errors.confirmAccountNumber)}
             placeholder="Re-enter account number"
             value={data.confirmAccountNumber}
-            onChange={(v) => update('confirmAccountNumber', v)}
+            onChange={(v) => update('confirmAccountNumber', gstInput.accountNumber(v))}
             hasError={Boolean(errors.confirmAccountNumber)}
             error={errors.confirmAccountNumber}
           />
@@ -145,7 +145,7 @@ export const GSTBankDetails = ({
           placeholder="Branch Name"
           value={data.branch}
           error={errors.branch}
-          onValueChange={(v) => update('branch', gstInput.letters(v))}
+          onValueChange={(v) => update('branch', gstInput.branch(v))}
         />
       </div>
 

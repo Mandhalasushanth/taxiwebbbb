@@ -364,3 +364,79 @@ describe('Edit from Review opens the chosen section and returns with "Update & R
     expect(screen.getByTestId('edit')).toHaveTextContent('normal')
   })
 })
+
+describe('Field-type strict validations & character restrictions', () => {
+  it('enforces numeric-only fields (rejects letters and special characters)', () => {
+    // PIN code
+    expect(errorsFor({ pinCode: '56000A' }).pinCode).toMatch(/digits only|valid 6-digit/)
+    expect(errorsFor({ pinCode: '56000@' }).pinCode).toMatch(/digits only|valid 6-digit/)
+
+    // HSN/SAC code
+    expect(errorsFor({ hsnSacCode: '99831A' }).hsnSacCode).toMatch(/digits only/)
+    expect(errorsFor({ hsnSacCode: '9983-1' }).hsnSacCode).toMatch(/digits only/)
+
+    // Bank Account Number
+    expect(errorsFor({ accountNumber: '12345678ABCD' }).accountNumber).toMatch(/digits only/)
+    expect(errorsFor({ accountNumber: '12345-6789' }).accountNumber).toMatch(/digits only/)
+
+    // Confirm Account Number
+    expect(errorsFor({ confirmAccountNumber: '12345678ABCD' }).confirmAccountNumber).toMatch(/digits only/)
+
+    // Mobile Number
+    expect(errorsFor({ signatoryMobile: '982314567A' }).signatoryMobile).toMatch(/digits only/)
+    expect(errorsFor({ signatoryMobile: '98231@5672' }).signatoryMobile).toMatch(/digits only/)
+  })
+
+  it('enforces text-only fields (rejects numbers and unwanted special characters)', () => {
+    // City
+    expect(errorsFor({ city: 'Bengaluru123' }).city).toMatch(/only letters/)
+    expect(errorsFor({ city: 'Bengaluru@' }).city).toMatch(/only letters/)
+    expect(errorsFor({ city: 'Bengaluru-North' }).city).toBeUndefined()
+
+    // District
+    expect(errorsFor({ district: 'Urban123' }).district).toMatch(/only letters/)
+    expect(errorsFor({ district: 'Urban&Rural' }).district).toMatch(/only letters/)
+    expect(errorsFor({ district: 'Bengaluru Urban' }).district).toBeUndefined()
+
+    // Signatory Name
+    expect(errorsFor({ signatoryName: 'Ravi Kumar 2nd' }).signatoryName).toMatch(/only letters/)
+    expect(errorsFor({ signatoryName: 'Ravi & Co' }).signatoryName).toMatch(/only letters/)
+    expect(errorsFor({ signatoryName: 'Ravi Kumar' }).signatoryName).toBeUndefined()
+
+    // Account Holder Name
+    expect(errorsFor({ accountHolderName: 'Ravi123' }).accountHolderName).toMatch(/only letters/)
+    expect(errorsFor({ accountHolderName: 'Ravi (Director)' }).accountHolderName).toMatch(/only letters/)
+    expect(errorsFor({ accountHolderName: 'Ravi Kumar' }).accountHolderName).toBeUndefined()
+
+    // Designation
+    expect(errorsFor({ designation: 'Director 123' }).designation).toMatch(/only letters/)
+    expect(errorsFor({ designation: 'Director & CEO' }).designation).toMatch(/only letters/)
+    expect(errorsFor({ designation: 'Director / Partner' }).designation).toBeUndefined()
+  })
+
+  it('validates special character allowances for address, email, and business name', () => {
+    // Business address: accepts valid address characters, rejects invalid symbols
+    expect(errorsFor({ businessAddress: '12, MG Road, Ashok Nagar' }).businessAddress).toBeUndefined()
+    expect(errorsFor({ businessAddress: 'Plot #12, 1st Cross, $$Invalid%%' }).businessAddress).toMatch(/invalid special characters/)
+
+    // Business name: letters, numbers, allowed punctuation
+    expect(errorsFor({ legalName: 'Tanvox-Tech (India) Pvt. Ltd.' }).legalName).toBeUndefined()
+    expect(errorsFor({ legalName: 'Tanvox $$$ Technologies' }).legalName).toMatch(/invalid special characters/)
+
+    // Email: valid structure with @ and domain
+    expect(errorsFor({ signatoryEmail: 'ravi@example.com' }).signatoryEmail).toBeUndefined()
+    expect(errorsFor({ signatoryEmail: 'ravi example.com' }).signatoryEmail).toMatch(/valid email/)
+    expect(errorsFor({ signatoryEmail: 'ravi@example' }).signatoryEmail).toMatch(/valid email/)
+  })
+
+  it('sanitizes input typing via gstInput formatters according to field purpose', () => {
+    expect(gstInput.cityDistrict('Bengaluru 123 & (Urban)')).toBe('Bengaluru Urban')
+    expect(gstInput.personName('Ravi 123 @ Kumar')).toBe('Ravi Kumar')
+    expect(gstInput.pinCode('560 001 ABC!')).toBe('560001')
+    expect(gstInput.accountNumber('1234-5678-ABCD')).toBe('12345678')
+    expect(gstInput.hsnSac('9983-13AB')).toBe('998313')
+    expect(gstInput.address('Plot #12, 1st Cross, $$')).toBe('Plot #12, 1st Cross, ')
+    expect(gstInput.email('USER @EXAMPLE.COM!')).toBe('user@example.com')
+    expect(gstInput.designation('Director 123 & CEO')).toBe('Director CEO')
+  })
+})

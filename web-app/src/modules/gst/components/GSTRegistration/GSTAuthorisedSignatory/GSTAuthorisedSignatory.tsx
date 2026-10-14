@@ -52,7 +52,7 @@ export const GSTAuthorisedSignatory = ({
         placeholder="Full name"
         value={data.signatoryName}
         error={errors.signatoryName}
-        onValueChange={(v) => update('signatoryName', gstInput.letters(v))}
+        onValueChange={(v) => update('signatoryName', gstInput.personName(v))}
       />
 
       <div className="gst-form-row gst-form-row--pair">

@@ -82,7 +82,7 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           placeholder="City"
           value={data.city}
           error={errors.city}
-          onValueChange={(v) => update('city', gstInput.letters(v, 50))}
+          onValueChange={(v) => update('city', gstInput.cityDistrict(v, 50))}
         />
         <GSTTextField
           id="district"
@@ -90,7 +90,7 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           placeholder="District"
           value={data.district}
           error={errors.district}
-          onValueChange={(v) => update('district', gstInput.letters(v, 50))}
+          onValueChange={(v) => update('district', gstInput.cityDistrict(v, 50))}
         />
       </div>
 

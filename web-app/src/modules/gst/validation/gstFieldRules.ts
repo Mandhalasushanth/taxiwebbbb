@@ -23,9 +23,13 @@ const fromShared = (msg: string | null): string | undefined => msg || undefined
 
 export const GST_PATTERNS = {
   PERSON_NAME: /^[A-Za-z][A-Za-z .'-]*$/,
-  PLACE_NAME: /^[A-Za-z][A-Za-z .'-]*$/,
+  CITY_DISTRICT: /^[A-Za-z][A-Za-z -]*$/,
+  PLACE_NAME: /^[A-Za-z][A-Za-z -]*$/,
+  BRANCH: /^[A-Za-z0-9][A-Za-z0-9 .'-]*$/,
   BANK_NAME: /^[A-Za-z][A-Za-z .&'()-]*$/,
-  DESIGNATION: /^[A-Za-z][A-Za-z .&/'-]*$/,
+  DESIGNATION: /^[A-Za-z][A-Za-z /'-]*$/,
+  BUSINESS_NAME: /^[A-Za-z0-9][A-Za-z0-9 .&'()/,-]*$/,
+  ADDRESS: /^[A-Za-z0-9\s,./#()&'-]+$/,
   /** GSTN ARN / reference: letters, digits and / - */
   REFERENCE: /^[A-Z0-9/-]{6,35}$/,
 } as const
@@ -47,20 +51,41 @@ export const gstFieldRules = {
 
   pan: (v?: string): string | undefined => fromShared(validatePan(trimmed(v))),
   ifsc: (v?: string): string | undefined => fromShared(validateIfsc(trimmed(v))),
-  pinCode: (v?: string): string | undefined => fromShared(validatePincode(trimmed(v))),
-  email: (v?: string): string | undefined => fromShared(validateEmail(trimmed(v))),
-  mobile: (v?: string): string | undefined => fromShared(validateMobileNumber(trimmed(v).replace(/^\+91\s*/, ''))),
+  pinCode: (v?: string): string | undefined => {
+    const value = trimmed(v)
+    if (!value) return 'PIN code is required'
+    if (!/^\d+$/.test(value)) return 'PIN code must contain digits only'
+    return fromShared(validatePincode(value))
+  },
+  email: (v?: string): string | undefined => {
+    const value = trimmed(v)
+    if (!value) return 'Email is required'
+    const err = fromShared(validateEmail(value))
+    if (err) return err
+    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
+      ? undefined
+      : 'Enter a valid email address'
+  },
+  mobile: (v?: string): string | undefined => {
+    const value = trimmed(v).replace(/^\+91\s*/, '')
+    if (!value) return 'Mobile number is required'
+    if (!/^\d+$/.test(value)) return 'Mobile number must contain digits only'
+    return fromShared(validateMobileNumber(value))
+  },
   signatoryDob: (v?: string): string | undefined => fromShared(validateDobSignatory(trimmed(v))),
 
   accountNumber: (v?: string): string | undefined => {
     const value = trimmed(v)
     if (!value) return 'Bank account number is required'
+    if (!/^\d+$/.test(value)) return 'Bank account number must contain digits only'
     return isValidBankAccNumber(value) ? undefined : 'Enter a valid bank account number (9 to 18 digits)'
   },
 
   confirmAccountNumber: (account?: string, confirm?: string): string | undefined => {
-    if (!trimmed(confirm)) return 'Confirm account number is required'
-    return trimmed(account) === trimmed(confirm) ? undefined : 'Account numbers do not match'
+    const conf = trimmed(confirm)
+    if (!conf) return 'Confirm account number is required'
+    if (!/^\d+$/.test(conf)) return 'Confirm account number must contain digits only'
+    return trimmed(account) === conf ? undefined : 'Account numbers do not match'
   },
 
   hsnSac: (v?: string): string | undefined => {
@@ -73,22 +98,52 @@ export const gstFieldRules = {
   personName: (label: string): Rule => (v) => {
     const value = trimmed(v)
     if (!value) return `${label} is required`
-    if (!GST_PATTERNS.PERSON_NAME.test(value)) return `${label} must contain only letters`
     if (value.length < 2) return `${label} must be at least 2 characters`
-    return value.length > 100 ? `${label} cannot exceed 100 characters` : undefined
+    if (value.length > 100) return `${label} cannot exceed 100 characters`
+    if (!GST_PATTERNS.PERSON_NAME.test(value) || !/[A-Za-z]{2,}/.test(value)) {
+      return `${label} must contain only letters`
+    }
+    return undefined
+  },
+
+  cityDistrict: (label: string): Rule => (v) => {
+    const value = trimmed(v)
+    if (!value) return `${label} is required`
+    if (value.length < 2) return `${label} must be at least 2 characters`
+    if (value.length > 50) return `${label} cannot exceed 50 characters`
+    if (!GST_PATTERNS.CITY_DISTRICT.test(value) || !/[A-Za-z]{2,}/.test(value)) {
+      return `${label} must contain only letters`
+    }
+    return undefined
   },
 
   businessName: (label: string): Rule => (v) => {
     const value = trimmed(v)
     if (!value) return `${label} is required`
     if (value.length < 2) return `${label} must be at least 2 characters`
-    return value.length > 150 ? `${label} cannot exceed 150 characters` : undefined
+    if (value.length > 150) return `${label} cannot exceed 150 characters`
+    if (!/[A-Za-z]/.test(value)) return `${label} must contain letters`
+    if (!GST_PATTERNS.BUSINESS_NAME.test(value)) {
+      return `${label} contains invalid special characters`
+    }
+    return undefined
   },
 
   placeName: (label: string): Rule => (v) => {
     const value = trimmed(v)
     if (!value) return `${label} is required`
+    if (label.toLowerCase().includes('branch')) {
+      return GST_PATTERNS.BRANCH.test(value) ? undefined : `${label} contains invalid characters`
+    }
     return GST_PATTERNS.PLACE_NAME.test(value) ? undefined : `${label} must contain only letters`
+  },
+
+  branch: (v?: string): string | undefined => {
+    const value = trimmed(v)
+    if (!value) return 'Branch is required'
+    if (value.length < 2) return 'Branch must be at least 2 characters'
+    if (value.length > 60) return 'Branch cannot exceed 60 characters'
+    return GST_PATTERNS.BRANCH.test(value) ? undefined : 'Branch contains invalid characters'
   },
 
   bankName: (v?: string): string | undefined => {
@@ -101,6 +156,8 @@ export const gstFieldRules = {
   designation: (v?: string): string | undefined => {
     const value = trimmed(v)
     if (!value) return 'Designation is required'
+    if (value.length < 2) return 'Designation must be at least 2 characters'
+    if (value.length > 60) return 'Designation cannot exceed 60 characters'
     return GST_PATTERNS.DESIGNATION.test(value) ? undefined : 'Designation must contain only letters'
   },
 
@@ -108,7 +165,11 @@ export const gstFieldRules = {
     const value = trimmed(v)
     if (!value) return `${label} is required`
     if (value.length < 10) return `Please enter the complete ${label.toLowerCase()} (at least 10 characters)`
-    return value.length > 250 ? `${label} cannot exceed 250 characters` : undefined
+    if (value.length > 250) return `${label} cannot exceed 250 characters`
+    if (!GST_PATTERNS.ADDRESS.test(value)) {
+      return `${label} contains invalid special characters`
+    }
+    return undefined
   },
 
   /** Notice number / ARN / GSTR-2B reference */
