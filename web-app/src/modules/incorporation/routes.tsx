@@ -9,15 +9,10 @@ const RegisteredOffice = lazy(() => import('./components/RegisteredOffice/Regist
 const PromoterDetails = lazy(() => import('./components/PromoterDetails/PromoterDetails'))
 const CapitalDetails = lazy(() => import('./components/CapitalDetails/CapitalDetails'))
 const DocumentsKyc = lazy(() => import('./components/DocumentsKyc/DocumentsKyc'))
-const LinkedRegistrations = lazy(() => import('./components/LinkedRegistrations/LinkedRegistrations'))
 const ReviewApplication = lazy(() => import('./components/ReviewApplication/ReviewApplication'))
-const FeesPayment = lazy(() => import('./components/FeesPayment/FeesPayment'))
 const SubmissionSuccess = lazy(() => import('./components/SubmissionSuccess/SubmissionSuccess'))
-const ApplicationTracking = lazy(() => import('./components/ApplicationTracking/ApplicationTracking'))
-const ApplicationReceipt = lazy(() => import('./components/ApplicationReceipt/ApplicationReceipt'))
 
-
-import { IncorporationWizardLayout } from './components'
+import { IncorporationFlowSteps } from './components'
 
 export const incorporationRoutes: RouteObject[] = [
   {
@@ -25,12 +20,13 @@ export const incorporationRoutes: RouteObject[] = [
     element: <Navigate to={routePaths.incorporation.selectType} replace />,
   },
   {
-    element: <IncorporationWizardLayout />,
+    element: <IncorporationFlowSteps />,
     children: [
       {
         path: routePaths.incorporation.selectType,
         element: <SelectCompanyType />,
       },
+      // 7 Core Incorporation Steps
       {
         path: routePaths.incorporation.companyDetails,
         element: <CompanyDetails />,
@@ -52,28 +48,29 @@ export const incorporationRoutes: RouteObject[] = [
         element: <DocumentsKyc />,
       },
       {
-        path: routePaths.incorporation.linkedRegistrations,
-        element: <LinkedRegistrations />,
-      },
-      {
         path: routePaths.incorporation.reviewApplication,
         element: <ReviewApplication />,
-      },
-      {
-        path: routePaths.incorporation.feesPayment,
-        element: <FeesPayment />,
       },
       {
         path: routePaths.incorporation.submissionSuccess,
         element: <SubmissionSuccess />,
       },
+      // Safe redirects for deprecated legacy steps
+      {
+        path: routePaths.incorporation.linkedRegistrations,
+        element: <Navigate to={routePaths.incorporation.reviewApplication} replace />,
+      },
+      {
+        path: routePaths.incorporation.feesPayment,
+        element: <Navigate to={routePaths.incorporation.submissionSuccess} replace />,
+      },
       {
         path: routePaths.incorporation.applicationTracking,
-        element: <ApplicationTracking />,
+        element: <Navigate to={routePaths.applications} replace />,
       },
       {
         path: routePaths.incorporation.receipt,
-        element: <ApplicationReceipt />,
+        element: <Navigate to={routePaths.incorporation.submissionSuccess} replace />,
       },
     ],
   },

@@ -41,7 +41,7 @@
   overflow: hidden;
 }
 .review-app-stepbar__line-fill {
-  width: 70%;
+  width: 67%;
   height: 100%;
   background: var(--palette-orange-500-f25a22);
   border-radius: 9999px;
@@ -129,6 +129,15 @@
   flex-direction: column;
   gap: 0.65rem;
 }
+.review-director-subheading {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--palette-sky-800-0b2546);
+  padding: 0.5rem 0 0.25rem 0;
+  border-bottom: 1px dashed var(--border);
+  margin-bottom: 0.35rem;
+}
+
 .review-row {
   display: flex;
   justify-content: space-between;

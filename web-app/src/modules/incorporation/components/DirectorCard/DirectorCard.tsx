@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import type { DirectorDetails } from '../../types/incorporation.types'
 import { filterDigits, filterMobile, filterPan } from '../../utils/validation'
 import './DirectorCard.css'
@@ -57,9 +57,14 @@ export const DirectorCard: React.FC<DirectorCardProps> = ({
   onCancel,
   errors = {},
 }) => {
-  const hasErrors = Object.keys(errors).length > 0
-  const [isCollapsed, setIsCollapsed] = useState(Boolean(director.fullName.trim()) && !hasErrors)
-  const displayedCollapsed = !hasErrors && isCollapsed
+  const hasErrors = Boolean(errors && Object.values(errors).some((msg) => Boolean(msg && msg.trim())))
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(Boolean(director.fullName.trim()) && !hasErrors)
+
+  useEffect(() => {
+    if (hasErrors) {
+      setIsCollapsed(false)
+    }
+  }, [hasErrors])
 
   const handleFieldChange = (field: keyof DirectorDetails, val: string | boolean) => {
     if (field === 'pan') {
@@ -102,7 +107,7 @@ export const DirectorCard: React.FC<DirectorCardProps> = ({
           </div>
         </div>
 
-        {displayedCollapsed ? (
+        {isCollapsed ? (
           <button
             type="button"
             className="director-card__btn-edit"
@@ -126,7 +131,7 @@ export const DirectorCard: React.FC<DirectorCardProps> = ({
       </div>
 
       {/* Collapsed Summary View */}
-      {displayedCollapsed && (
+      {isCollapsed && (
         <div className="director-card__collapsed-summary">
           <div className="director-card__summary-col">
             <span className="director-card__summary-item">
@@ -153,7 +158,7 @@ export const DirectorCard: React.FC<DirectorCardProps> = ({
       )}
 
       {/* Expanded Form View */}
-      {!displayedCollapsed && (
+      {!isCollapsed && (
         <div className="director-card__body">
           <div className="director-grid-2">
             <DirectorFormField label="Full Name (as in PAN)" value={director.fullName} onChange={(val) => handleFieldChange('fullName', val)} placeholder="Full Legal Name" required error={errors.fullName} inputProps={{ maxLength: 100, autoComplete: 'name' }} />

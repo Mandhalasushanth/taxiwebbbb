@@ -66,6 +66,40 @@
   box-shadow: 0 0 0 1px var(--primary-orange);
 }
 
+.itr-info-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.itr-info-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.itr-badge-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--palette-emerald-700);
+  background: var(--palette-emerald-50);
+  border: 1px solid var(--palette-emerald-200);
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+.itr-card-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .itr-info-card__icon-wrap {
   width: 38px;
   height: 38px;
@@ -96,8 +130,19 @@
   line-height: 1.5;
 }
 
+.itr-taxpayer-details-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
 .itr-detail-row {
-  padding: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.65rem 0;
 }
 
 .itr-detail-row:not(:last-child) {
@@ -105,14 +150,22 @@
 }
 
 .itr-detail-label {
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   color: var(--secondary-text);
+  font-weight: 500;
+  flex-shrink: 0;
 }
 
 .itr-detail-val {
-  font: 700 0.92rem inherit;
+  font: 700 0.95rem inherit;
   color: var(--primary-navy);
   text-align: right;
+  word-break: break-word;
+}
+
+.itr-detail-val--mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.04em;
 }
 
 /* Assessment Year choices: two equal buttons, stacked on phones */
@@ -174,29 +227,116 @@
   }
 }
 
-.itr-status-btn {
-  font: 700 0.9rem inherit;
-  color: var(--palette-slate-600);
+/* Residential Status buttons */
+.itr-status-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+  margin-top: 0.25rem;
 }
 
-.itr-status-btn--active {
+.itr-status-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .itr-status-buttons {
+    grid-template-columns: 1fr;
+  }
+}
+
+.itr-status-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  font: 700 0.92rem inherit;
+  color: var(--primary-navy);
+  text-align: center;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+  min-height: 48px;
+}
+
+.itr-status-btn:hover {
+  border-color: var(--grey-300);
+  background: var(--palette-slate-50);
+}
+
+.itr-status-btn--active,
+.itr-status-btn--active:hover {
+  background: var(--palette-orange-50-fffaf5);
+  border-color: var(--primary-orange);
   color: var(--primary-orange);
+  font-weight: 800;
+  box-shadow: 0 0 0 1px var(--primary-orange);
 }
 
 .itr-info-callout {
-  margin-top: 1.25rem;
-  font-size: 0.88rem;
-  color: var(--grey-700);
+  padding: 0.75rem 1rem;
+  background: var(--palette-slate-50);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.86rem;
+  color: var(--secondary-text);
+  line-height: 1.45;
 }
 
 .itr-info-callout strong {
   color: var(--primary-navy);
 }
 
+.itr-info-callout__text--italic {
+  font-style: italic;
+  color: var(--muted-text);
+}
+
+/* Filing Type Option Cards */
+.itr-filing-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.itr-filing-option-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.itr-filing-option-card:hover {
+  border-color: var(--grey-300);
+  background: var(--palette-slate-50);
+}
+
+.itr-filing-option-card--active,
+.itr-filing-option-card--active:hover {
+  background: var(--palette-orange-50-fffaf5);
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 1px var(--primary-orange);
+}
+
 .itr-filing-option-text {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.25rem;
   text-align: left;
 }
 
@@ -205,17 +345,53 @@
   color: var(--primary-navy);
 }
 
+.itr-filing-option-card--active .itr-filing-option-title {
+  color: var(--primary-orange);
+}
+
 .itr-filing-option-desc {
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   color: var(--secondary-text);
   line-height: 1.4;
 }
 
-.itr-filing-option-card--active .itr-filing-option-title {
-  color: var(--palette-orange-600);
+.itr-radio-outer {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--grey-300);
+  border-radius: 50%;
+  background: var(--surface);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: border-color 0.2s ease;
 }
 
-.itr-radio-outer,
+.itr-filing-option-card--active .itr-radio-outer {
+  border-color: var(--primary-orange);
+}
+
+.itr-custom-radio {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.itr-custom-radio--checked {
+  background: var(--primary-orange);
+}
+
+.itr-filing-radio-input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  cursor: pointer;
+}
+
 .itr-prev-custom-checkbox {
   width: 20px;
   height: 20px;
@@ -224,14 +400,6 @@
   display: grid;
   place-items: center;
   flex-shrink: 0;
-}
-
-.itr-radio-outer {
-  position: relative;
-  border-radius: 50%;
-}
-
-.itr-prev-custom-checkbox {
   border-radius: 6px;
   color: var(--surface);
 }
@@ -243,15 +411,7 @@
   background: var(--primary-orange);
 }
 
-.itr-filing-radio-input {
-  position: absolute;
-  opacity: 0;
-  inset: 0;
-  cursor: pointer;
-}
-
-.itr-radio-outer--checked,
-.itr-filing-option-card--active .itr-radio-outer {
+.itr-radio-outer--checked {
   border-color: var(--primary-orange);
 }
 
@@ -314,4 +474,37 @@
 @keyframes itrErrorFadeIn {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* --------------------------------------------------------------------------
+   Field Headings (Dark) & Placeholder (Light & Smaller)
+   -------------------------------------------------------------------------- */
+.itr-step-personal-info label,
+.itr-step-personal-info .itr-form-label,
+.itr-step-personal-info .itr-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.itr-step-personal-info input::placeholder {
+  color: #94a3b8 !important;
+  font-size: 0.83rem !important;
+  font-weight: 400 !important;
+  opacity: 1 !important;
+}
+
+.itr-step-personal-info input::-webkit-input-placeholder {
+  color: #94a3b8 !important;
+  font-size: 0.83rem !important;
+  font-weight: 400 !important;
+  opacity: 1 !important;
+}
+
+.itr-step-personal-info input::-moz-placeholder {
+  color: #94a3b8 !important;
+  font-size: 0.83rem !important;
+  font-weight: 400 !important;
+  opacity: 1 !important;
 }

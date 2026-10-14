@@ -118,6 +118,7 @@ export const ItrFiling: React.FC = () => {
         selectedSources={selectedSources}
         onSourcesChange={setSelectedSources}
         selectedCategoryId={selectedCategoryId}
+        residentialStatus={residentialStatus}
       />
     ),
     3: () => (
@@ -129,6 +130,8 @@ export const ItrFiling: React.FC = () => {
         uploadedDocs={uploadedDocs}
         onUploadDoc={handleUploadDoc}
         onRemoveDoc={handleRemoveDoc}
+        selectedSources={selectedSources}
+        selectedCategoryId={selectedCategoryId}
       />
     ),
     4: () => (

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { routePaths } from '@core/config'
 import { DirectorCard } from '../../components'
-import { defaultDirectors } from '../../data/companyRegistrationData'
 import { StepActionBar } from '@shared/components'
 import { useAppStore } from '@store/index'
 import { useIncorporationFlow } from '../../hooks'
@@ -19,26 +18,26 @@ import './PromoterDetails.css'
 export const PromoterDetails: React.FC = () => {
   const { formData, updateFormData, draft, reviewEdit, goToStep } = useIncorporationFlow()
   const companyType = formData.companyType || 'pvt_ltd'
-  const isOpc = companyType === 'opc'
-  const minDirectors = isOpc ? 1 : 2
+  const minDirectors = 2
 
-  const directors: DirectorDetails[] = (formData.promoters && formData.promoters.length > 0) ? formData.promoters : defaultDirectors
+  const directors: DirectorDetails[] = formData.promoters || []
   const pushToast = useAppStore((state) => state.pushToast)
-  const [error, setError] = useState<string>('')
+  const [minDirectorsWarning, setMinDirectorsWarning] = useState<string>('')
   const [directorErrors, setDirectorErrors] = useState<Record<number, Record<string, string>>>({})
 
   const handleDirectorChange = (id: number, field: keyof DirectorDetails, value: DirectorDetails[keyof DirectorDetails]) => {
-    setError('')
-    setDirectorErrors((prev) => ({
-      ...prev,
-      [id]: { ...(prev[id] || {}), [field]: '' },
-    }))
+    setDirectorErrors((prev) => {
+      const cur = prev[id]
+      if (!cur || !cur[field]) return prev
+      const copy = { ...cur }
+      delete copy[field]
+      return { ...prev, [id]: copy }
+    })
     const updated = directors.map((d: DirectorDetails) => (d.id === id ? { ...d, [field]: value } : d))
     updateFormData({ promoters: updated })
   }
 
   const handleAddDirector = () => {
-    setError('')
     const nextId = directors.length > 0 ? Math.max(...directors.map((d) => d.id)) + 1 : 1
     const newDirector: DirectorDetails = {
       id: nextId,
@@ -65,40 +64,39 @@ export const PromoterDetails: React.FC = () => {
       equityAmount: '',
       shareholdingPercent: '',
     }
-    updateFormData({ promoters: [...directors, newDirector] })
+    const updated = [...directors, newDirector]
+    updateFormData({ promoters: updated })
+    if (updated.length >= minDirectors) {
+      setMinDirectorsWarning('')
+    }
   }
 
   const handleSaveDirector = (id: number) => {
+    setDirectorErrors((prev) => {
+      const copy = { ...prev }
+      delete copy[id]
+      return copy
+    })
     const director = directors.find((d) => d.id === id)
     pushToast(`Changes saved for ${director?.fullName || `Director #${id}`}`, 'success')
   }
 
   const handleCancelDirector = (id: number) => {
-    if (directors.length > 1) {
-      setError('')
-      setDirectorErrors((prev) => {
-        const copy = { ...prev }
-        delete copy[id]
-        return copy
-      })
-      const updated = directors.filter((d: DirectorDetails) => d.id !== id)
-      updateFormData({ promoters: updated })
-    }
+    setDirectorErrors((prev) => {
+      const copy = { ...prev }
+      delete copy[id]
+      return copy
+    })
+    const updated = directors.filter((d: DirectorDetails) => d.id !== id)
+    updateFormData({ promoters: updated })
   }
 
   const handleContinue = () => {
-    let minDirectorsError = ''
+    let minWarning = ''
     if (directors.length < minDirectors) {
-      minDirectorsError =
-        companyType === 'public_ltd'
-          ? 'Public Limited Company requires at least 2 directors.'
-          : companyType === 'llp'
-          ? 'An LLP requires at least 2 designated partners.'
-          : isOpc
-          ? 'One Person Company requires at least 1 director.'
-          : 'A minimum of 2 directors/partners are required.'
+      minWarning = `At least ${minDirectors} promoter/director(s) required for ${getEntityStructureLabel(companyType)}.`
     }
-    setError(minDirectorsError)
+    setMinDirectorsWarning(minWarning)
 
     const allErrors = directors.reduce<Record<number, Record<string, string>>>((acc, d) => {
       const dErrors: Record<string, string> = {}
@@ -144,38 +142,22 @@ export const PromoterDetails: React.FC = () => {
     const hasAnyError = Object.keys(allErrors).length > 0
     setDirectorErrors(allErrors)
 
-    if (minDirectorsError || hasAnyError) {
+    if (minWarning || hasAnyError) {
       return
     }
 
-    setError('')
+    setMinDirectorsWarning('')
     setDirectorErrors({})
     goToStep(routePaths.incorporation.capitalDetails)
   }
 
   return (
     <div className="promoter-details-page">
-      {/* Step Progress Tracker */}
-      <div className="promoter-details-stepbar">
-        <span className="promoter-details-stepbar__badge">Step 3 of 10</span>
-        <span className="promoter-details-stepbar__text">Promoter / Director Details</span>
-        <div className="promoter-details-stepbar__line">
-          <div className="promoter-details-stepbar__line-fill" />
-        </div>
-      </div>
-
-      {/* Page Header */}
-      <header className="promoter-details-header">
-        <h1 className="promoter-details-header__title">Promoter / Director Details</h1>
-        <p className="promoter-details-header__subtitle">
-          Enter essential details of all promoters/directors for CA processing.
+      {minDirectorsWarning && (
+        <p className="promoter-details-min-warning">
+          {minDirectorsWarning}
         </p>
-        {directors.length < minDirectors && (
-          <p className="promoter-details-min-warning">
-            At least {minDirectors} promoter/director(s) required for {getEntityStructureLabel(companyType)}.
-          </p>
-        )}
-      </header>
+      )}
 
       {/* Directors List */}
       <main className="promoter-details-list">
@@ -191,34 +173,20 @@ export const PromoterDetails: React.FC = () => {
           />
         ))}
 
-        {/* Add Director Button: Hidden for One Person Company */}
-        {!isOpc && (
-          <button
-            type="button"
-            className="promoter-details-btn-add"
-            onClick={handleAddDirector}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="16" />
-              <line x1="8" y1="12" x2="16" y2="12" />
-            </svg>
-            + Add Promoter / Director
-          </button>
-        )}
-      </main>
-
-      {/* Error Alert */}
-      {error && (
-        <div className="promoter-details-error-alert">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        {/* Add Director Button */}
+        <button
+          type="button"
+          className="promoter-details-btn-add"
+          onClick={handleAddDirector}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
             <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
+            <line x1="12" y1="8" x2="12" y2="16" />
+            <line x1="8" y1="12" x2="16" y2="12" />
           </svg>
-          <span>{error}</span>
-        </div>
-      )}
+          + Add Promoter / Director
+        </button>
+      </main>
 
       {/* Footer Navigation */}
       <StepActionBar

@@ -1,0 +1,38 @@
+.incorporation-wizard-top {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  margin-bottom: 0.5rem;
+}
+
+.incorporation-wizard-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-top: 1rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.incorporation-wizard-page-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--palette-slate-900);
+  letter-spacing: -0.02em;
+}
+
+.incorporation-wizard-page-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--secondary-text);
+  line-height: 1.5;
+}
+
+.incorporation-wizard-stepper-wrap {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.75rem 0 1rem;
+  box-sizing: border-box;
+}

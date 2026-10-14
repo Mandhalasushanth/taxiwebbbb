@@ -41,7 +41,7 @@
   overflow: hidden;
 }
 .docs-kyc-stepbar__line-fill {
-  width: 50%;
+  width: 56%;
   height: 100%;
   background: var(--palette-orange-500-f25a22);
   border-radius: 9999px;

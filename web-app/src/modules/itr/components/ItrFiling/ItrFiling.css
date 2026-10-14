@@ -191,10 +191,14 @@
   flex-direction: column;
   gap: 0.45rem;
 }
-.itr-label {
-  font-size: 0.85rem;
+.itr-label,
+.itr-form-label,
+.itr-form-group > label {
+  font-size: 0.88rem;
   font-weight: 700;
-  color: var(--palette-slate-800);
+  color: #0f172a; /* Dark, crisp field heading */
+  letter-spacing: -0.01em;
+  line-height: 1.35;
 }
 .itr-hint {
   font-size: 0.75rem;
@@ -217,8 +221,8 @@
 .itr-currency-prefix {
   padding: 0.65rem 0.85rem;
   background: var(--subtle-border);
-  color: var(--secondary-text);
-  font-weight: 700;
+  color: #64748b;
+  font-weight: 600;
   font-size: 0.95rem;
   border-right: 1.5px solid var(--grey-300);
   user-select: none;
@@ -228,8 +232,8 @@
   border: none;
   padding: 0.65rem 0.85rem;
   font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--primary-navy);
+  font-weight: 600;
+  color: #0f172a;
   outline: none;
   background: transparent;
   width: 100%;
@@ -241,7 +245,7 @@
   padding: 0.65rem 0.85rem;
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--primary-navy);
+  color: #0f172a;
   outline: none;
   background: var(--surface);
   transition: border-color 0.2s ease;
@@ -251,6 +255,40 @@
 .itr-input-text:focus {
   border-color: var(--primary-orange);
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   Placeholder styling: Light color and smaller font size across all fields
+   -------------------------------------------------------------------------- */
+.itr-input-text::placeholder,
+.itr-input-currency::placeholder,
+.itr-form-group input::placeholder,
+.itr-step-card input::placeholder,
+.itr-salary-card input::placeholder,
+input.itr-input-text::placeholder,
+input.itr-input-currency::placeholder {
+  color: #94a3b8; /* Lighter soft grey */
+  font-size: 0.83rem; /* Noticeably smaller than heading */
+  font-weight: 400;
+  opacity: 1;
+}
+
+.itr-input-text::-webkit-input-placeholder,
+.itr-input-currency::-webkit-input-placeholder,
+.itr-form-group input::-webkit-input-placeholder {
+  color: #94a3b8;
+  font-size: 0.83rem;
+  font-weight: 400;
+  opacity: 1;
+}
+
+.itr-input-text::-moz-placeholder,
+.itr-input-currency::-moz-placeholder,
+.itr-form-group input::-moz-placeholder {
+  color: #94a3b8;
+  font-size: 0.83rem;
+  font-weight: 400;
+  opacity: 1;
 }
 .itr-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -269,7 +307,7 @@
 
 /* Document Checklist step: tighter rhythm between the document sections and the action bar */
 .itr-docs-step {
-  gap: 1rem;
+  gap: 1.25rem;
 }
 .itr-docs-step > .taxedge-doc-section--card {
   margin-bottom: 0;
@@ -277,3 +315,81 @@
 .itr-docs-step > .step-action-bar {
   margin-top: 0.25rem;
 }
+
+/* Document Checklist Summary Card & Info Box */
+.itr-docs-summary-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+  box-sizing: border-box;
+}
+
+.itr-docs-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.itr-docs-summary-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--primary-navy);
+  letter-spacing: -0.01em;
+}
+
+.itr-docs-summary-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  background: #ffedd5;
+  color: #c2410c;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.itr-docs-info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  box-sizing: border-box;
+}
+
+.itr-docs-info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-navy);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.itr-docs-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.itr-docs-info-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--primary-navy);
+}
+
+.itr-docs-info-desc {
+  font-size: 0.8125rem;
+  color: var(--secondary-text);
+  line-height: 1.45;
+  margin: 0;
+}
+

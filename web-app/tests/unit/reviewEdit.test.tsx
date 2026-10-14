@@ -9,7 +9,7 @@ import { authStorage } from '../../src/core/auth'
 import { localStore } from '../../src/core/storage/localStorage'
 import { useReviewEdit } from '../../src/shared/edit'
 import { StepActionBar } from '../../src/shared/components'
-import { IncorporationWizardLayout } from '../../src/modules/incorporation/components/IncorporationWizardLayout/IncorporationWizardLayout'
+import { IncorporationFlowSteps as IncorporationWizardLayout } from '../../src/modules/incorporation/components/IncorporationFlowSteps/IncorporationFlowSteps'
 import { useIncorporationFlow } from '../../src/modules/incorporation/hooks'
 import { useLoanStepFlow } from '../../src/modules/loans/hooks/useLoanStepFlow'
 

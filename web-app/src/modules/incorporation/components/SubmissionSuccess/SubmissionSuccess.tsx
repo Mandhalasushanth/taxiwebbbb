@@ -1,28 +1,63 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { routePaths } from '@core/config'
-import { getEntityStructureLabel, getProposedCompanyName } from '../../types/incorporation.types'
+import { getEntityStructureLabel } from '../../types/incorporation.types'
+import { userStorage } from '@core/storage/userStorage'
+import { useIncorporationFlow } from '../../hooks'
 import './SubmissionSuccess.css'
 
 export const SubmissionSuccess: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const { formData, draft } = useIncorporationFlow()
   const state = (location.state || {}) as Record<string, any>
 
-  useEffect(() => {
-    // Forward directly to Step 10: Application Tracking
-    navigate(routePaths.incorporation.applicationTracking, { replace: true, state: location.state })
-  }, [navigate, location.state])
-
-
-  const companyType = state.companyType || 'pvt_ltd'
+  const companyType = state.companyType || formData.companyType || 'pvt_ltd'
   const entityStructure = getEntityStructureLabel(companyType)
-  const companyName = getProposedCompanyName(companyType, state.companyDetails?.firstPreferredName)
-  const applicationId = state.applicationId || 'INC-2026-89421'
+  const preferredName = (
+    state.companyDetails?.firstPreferredName ||
+    formData.companyDetails?.firstPreferredName ||
+    ''
+  ).trim()
+  const companyName = preferredName || entityStructure
+  const applicationId = state.applicationId || formData.applicationId || 'INC-800419'
+  const submissionDate = state.submissionDate || new Date().toISOString().split('T')[0]
 
+  const persistApplication = React.useCallback(() => {
+    if (applicationId) {
+      try {
+        userStorage.saveUserApplication({
+          id: applicationId,
+          code: applicationId,
+          title: `${companyName} Incorporation`,
+          meta: `${entityStructure} · India`,
+          statusLabel: 'Submitted',
+          statusTone: 'info',
+          progress: 25,
+          icon: '🏢',
+          to: routePaths.applicationTrack(applicationId),
+        })
+      } catch {
+        // Storage write fallback
+      }
+    }
+  }, [applicationId, companyName, entityStructure])
 
-  const handleViewStatus = () => {
-    navigate(routePaths.incorporation.applicationTracking, { state })
+  React.useEffect(() => {
+    draft?.clearDraft?.()
+    persistApplication()
+  }, [draft, persistApplication])
+
+  const handleGoToDashboard = () => {
+    draft?.clearDraft?.()
+    persistApplication()
+    navigate(routePaths.dashboard)
+  }
+
+  const handleTrackApplication = () => {
+    draft?.clearDraft?.()
+    persistApplication()
+    navigate(routePaths.applications)
   }
 
   return (
@@ -48,14 +83,14 @@ export const SubmissionSuccess: React.FC = () => {
         <div className="submit-success-header">
           <h1 className="submit-success-header__title">Application Submitted Successfully!</h1>
           <p className="submit-success-header__subtitle">
-            Your company incorporation file has been received and assigned to a TaxEdge compliance officer.
+            Your company incorporation application has been submitted successfully.
           </p>
         </div>
 
         {/* Status Summary Card */}
         <section className="submit-success-card">
           <div className="submit-success-row">
-            <span className="submit-success-row__label">Application ID</span>
+            <span className="submit-success-row__label">Application Reference Number</span>
             <span className="submit-success-row__val submit-success-id">{applicationId}</span>
           </div>
           <div className="submit-success-row">
@@ -67,8 +102,12 @@ export const SubmissionSuccess: React.FC = () => {
             <span className="submit-success-row__val">{entityStructure}</span>
           </div>
           <div className="submit-success-row">
+            <span className="submit-success-row__label">Submission Date</span>
+            <span className="submit-success-row__val">{submissionDate}</span>
+          </div>
+          <div className="submit-success-row">
             <span className="submit-success-row__label">Current Status</span>
-            <span className="submit-success-row__val submit-success-status">Under Verification</span>
+            <span className="submit-success-row__val submit-success-status">Submitted</span>
           </div>
         </section>
 
@@ -77,13 +116,50 @@ export const SubmissionSuccess: React.FC = () => {
           <button
             type="button"
             className="submit-success-btn-primary"
-            onClick={handleViewStatus}
+            onClick={handleGoToDashboard}
           >
-            View Application Status
+            <svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ marginRight: '8px' }}
+              aria-hidden="true"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            <span>Go to Dashboard</span>
+          </button>
+          <button
+            type="button"
+            className="submit-success-btn-secondary"
+            onClick={handleTrackApplication}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ marginRight: '8px' }}
+              aria-hidden="true"
+            >
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+            </svg>
+            <span>Track Application</span>
           </button>
         </div>
       </div>
     </div>
   )
 }
+
 export default SubmissionSuccess
