@@ -1,8 +1,9 @@
-import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import React from 'react'
+import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
-import { DocumentCard, DocumentSection } from '@shared/components'
+import { DocumentCard } from '@shared/components'
 import { UPLOAD_HINT } from '@shared/upload'
+import '@modules/gst/shared/GSTComplianceCard/GSTComplianceUploadFields.css'
 
 interface GSTReconciliationDocsSectionProps {
   purchaseFile: File | null
@@ -32,95 +33,123 @@ export const GSTReconciliationDocsSection: React.FC<GSTReconciliationDocsSection
   setPreviewDoc,
 }) => {
   return (
-    <div className="recon-docs-container">
-      <DocumentSection
-        title="Reconciliation Documents"
-        className="recon-shared-doc-section"
-      >
-        <div className="recon-shared-cards-grid">
-          <div className="recon-card-col">
-            <DocumentCard
-              id="purchase-register"
-              title="Purchase Register"
-              subtitle={`Upload inward purchase register or bills (${UPLOAD_HINT})`}
-              isRequired={true}
-              isUploaded={Boolean(purchaseFile)}
-              fileName={purchaseFile?.name}
-              fileSize={
-                purchaseFile
-                  ? formatGstFileSize(purchaseFile.size)
-                  : undefined
-              }
-              file={purchaseFile || undefined}
-              className={errors.purchaseFile ? 'doc-card--has-error' : ''}
-              onUpload={(_, file) => {
-                setPurchaseFile(file)
-                setErrors((prev) => ({ ...prev, purchaseFile: undefined }))
-              }}
-              onRemove={() => setPurchaseFile(null)}
-              onView={() => {
-                if (purchaseFile) {
-                  setPreviewDoc({ file: purchaseFile, title: 'Purchase Register' })
-                }
-              }}
-            />
-            {errors.purchaseFile && <span className="form-error">{errors.purchaseFile}</span>}
-          </div>
-
-          <div className="recon-card-col">
-            <DocumentCard
-              id="sales-register"
-              title="Sales Register"
-              subtitle={`Upload outward sales register or invoices (${UPLOAD_HINT})`}
-              isRequired={true}
-              isUploaded={Boolean(salesFile)}
-              fileName={salesFile?.name}
-              fileSize={
-                salesFile
-                  ? formatGstFileSize(salesFile.size)
-                  : undefined
-              }
-              file={salesFile || undefined}
-              className={errors.salesFile ? 'doc-card--has-error' : ''}
-              onUpload={(_, file) => {
-                setSalesFile(file)
-                setErrors((prev) => ({ ...prev, salesFile: undefined }))
-              }}
-              onRemove={() => setSalesFile(null)}
-              onView={() => {
-                if (salesFile) {
-                  setPreviewDoc({ file: salesFile, title: 'Sales Register' })
-                }
-              }}
-            />
-            {errors.salesFile && <span className="form-error">{errors.salesFile}</span>}
-          </div>
+    <div className="gst-recon-card">
+      {/* Card Header */}
+      <div className="gst-notice-header">
+        <div className="gst-notice-header-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ea580c"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            width="22"
+            height="22"
+          >
+            <path d="m17 2 4 4-4 4" />
+            <path d="M3 11v-1a4 4 0 0 1 4-4h14" />
+            <path d="m7 22-4-4 4-4" />
+            <path d="M21 13v1a4 4 0 0 1-4 4H3" />
+          </svg>
         </div>
-      </DocumentSection>
-
-      {/* GSTR-2B ARN input */}
-      <div className="form-group">
-        <label className="form-label">GSTR-2B Reference / ARN (Optional)</label>
-        <input
-          type="text"
-          maxLength={15}
-          className={`form-input ${errors.gstr2bRef ? 'has-error' : ''}`}
-          placeholder="e.g. AA270124000123Z (15-character ARN)"
-          value={gstr2bRef}
-          onChange={(e) => setGstr2bRef(gstInput.arn(e.target.value))}
-        />
-        {errors.gstr2bRef && <span className="form-error">{errors.gstr2bRef}</span>}
+        <div>
+          <h3 className="gst-notice-header-title">Reconciliation Documents &amp; Details</h3>
+          <p className="gst-notice-header-sub">Purchase &amp; Sales registers against GSTR-2B</p>
+        </div>
       </div>
 
-      {/* CA Notes textarea */}
-      <div className="form-group">
-        <textarea
-          className="form-textarea"
-          rows={4}
-          placeholder="Tell us anything our CA should know..."
-          value={notes}
-          onChange={(e) => setNotes(gstInput.text(e.target.value, 1000))}
-        />
+      <div className="gst-notice-body">
+        {/* Document 1: Purchase Register */}
+        <div className="gst-notice-field-group">
+          <DocumentCard
+            id="purchase-register"
+            title="Purchase Register"
+            subtitle={`Upload inward purchase register or bills (${UPLOAD_HINT})`}
+            isRequired={true}
+            isUploaded={Boolean(purchaseFile)}
+            fileName={purchaseFile?.name}
+            fileSize={purchaseFile ? formatGstFileSize(purchaseFile.size) : undefined}
+            file={purchaseFile || undefined}
+            className={errors.purchaseFile ? 'doc-card--has-error' : ''}
+            onUpload={(_, file) => {
+              setPurchaseFile(file)
+              setErrors((prev) => ({ ...prev, purchaseFile: undefined }))
+            }}
+            onRemove={() => setPurchaseFile(null)}
+            onView={() => {
+              if (purchaseFile) {
+                setPreviewDoc({ file: purchaseFile, title: 'Purchase Register' })
+              }
+            }}
+          />
+          {errors.purchaseFile && <span className="form-error">{errors.purchaseFile}</span>}
+        </div>
+
+        {/* Document 2: Sales Register */}
+        <div className="gst-notice-field-group">
+          <DocumentCard
+            id="sales-register"
+            title="Sales Register"
+            subtitle={`Upload outward sales register or invoices (${UPLOAD_HINT})`}
+            isRequired={true}
+            isUploaded={Boolean(salesFile)}
+            fileName={salesFile?.name}
+            fileSize={salesFile ? formatGstFileSize(salesFile.size) : undefined}
+            file={salesFile || undefined}
+            className={errors.salesFile ? 'doc-card--has-error' : ''}
+            onUpload={(_, file) => {
+              setSalesFile(file)
+              setErrors((prev) => ({ ...prev, salesFile: undefined }))
+            }}
+            onRemove={() => setSalesFile(null)}
+            onView={() => {
+              if (salesFile) {
+                setPreviewDoc({ file: salesFile, title: 'Sales Register' })
+              }
+            }}
+          />
+          {errors.salesFile && <span className="form-error">{errors.salesFile}</span>}
+        </div>
+
+        {/* Field 3: GSTR-2B Reference */}
+        <div className="gst-notice-field-group">
+          <label className="gst-notice-label" htmlFor="gstr2b-ref-input">
+            GSTR-2B Reference
+          </label>
+          <input
+            id="gstr2b-ref-input"
+            type="text"
+            maxLength={15}
+            className={`gst-notice-input ${errors.gstr2bRef ? 'has-error' : ''}`}
+            placeholder="GSTR-2B Reference"
+            value={gstr2bRef}
+            onChange={(e) => {
+              setGstr2bRef(gstInput.arn(e.target.value))
+              setErrors((prev) => ({ ...prev, gstr2bRef: undefined }))
+            }}
+          />
+          {errors.gstr2bRef && <span className="form-error">{errors.gstr2bRef}</span>}
+        </div>
+
+        {/* Field 4: Remarks (Optional) */}
+        <div className="gst-notice-field-group">
+          <label className="gst-notice-label" htmlFor="recon-notes-input">
+            Remarks (Optional)
+          </label>
+          <div className="gst-notice-textarea-wrapper">
+            <textarea
+              id="recon-notes-input"
+              rows={4}
+              maxLength={500}
+              placeholder="Remarks (Optional)"
+              value={notes}
+              onChange={(e) => setNotes(gstInput.text(e.target.value, 500))}
+              className="gst-notice-textarea"
+            />
+            <span className="gst-notice-char-counter">{(notes || '').length}/500</span>
+          </div>
+        </div>
       </div>
     </div>
   )

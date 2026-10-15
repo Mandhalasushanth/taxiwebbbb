@@ -72,7 +72,7 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
       {/* Card Header */}
       <div className="gst-notice-header">
         <div className="gst-notice-header-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
             <polyline points="14 2 14 8 20 8" />
             <line x1="16" y1="13" x2="8" y2="13" />
@@ -80,8 +80,8 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
           </svg>
         </div>
         <div>
-          <h3 className="gst-notice-header-title">Notice Details &amp; Response</h3>
-          <p className="gst-notice-header-sub">Provide the notice details and upload the required documents.</p>
+          <h3 className="gst-notice-header-title">Notice Details &amp; Documents</h3>
+          <p className="gst-notice-header-sub">Notice numbers, critical dates &amp; notice copy</p>
         </div>
       </div>
 
@@ -89,7 +89,7 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
         {/* Field 1: Notice Number */}
         <div className="gst-notice-field-group">
           <label className="gst-notice-label" htmlFor="gst-notice-number-input">
-            Enter notice number <span className="req-asterisk">*</span>
+            Notice Number <span className="req-asterisk">*</span>
           </label>
           <input
             id="gst-notice-number-input"
@@ -174,22 +174,17 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
         />
         {errors.noticeFile && <span className="form-error">{errors.noticeFile}</span>}
 
-        {/* Section 4: Additional Information */}
+        {/* Section 4: Remarks (Optional) */}
         <div className="gst-notice-field-group">
-          <div className="gst-notice-title-box gst-notice-title-box--spaced">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" width="20" height="20">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-            </svg>
-            <span className="gst-notice-section-name">Additional Information</span>
-          </div>
+          <label className="gst-notice-label" htmlFor="gst-notice-remarks-input">
+            Remarks (Optional)
+          </label>
           <div className="gst-notice-textarea-wrapper">
             <textarea
+              id="gst-notice-remarks-input"
               rows={4}
               maxLength={500}
-              placeholder="Add any important information for our CA team..."
+              placeholder="Remarks (Optional)"
               value={additionalInfo}
               onChange={(e) => onChange('additionalInfo', gstInput.text(e.target.value, 500))}
               className="gst-notice-textarea"

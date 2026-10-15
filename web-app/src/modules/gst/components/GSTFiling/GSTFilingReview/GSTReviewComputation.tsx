@@ -4,6 +4,7 @@ import './GSTReviewComputation.css'
 
 export interface GSTReviewTaxComputationProps {
   turnover?: number
+  purchases?: number
   outputGst?: number
   eligibleItc?: number
   netLiability?: number
@@ -19,6 +20,7 @@ export interface GSTReviewFilingFeeProps {
 
 export const GSTReviewTaxComputationCard: React.FC<GSTReviewTaxComputationProps> = ({
   turnover = 866598,
+  purchases = 452300,
   outputGst = 155988,
   eligibleItc = 78976,
   netLiability = 77012,
@@ -56,6 +58,10 @@ export const GSTReviewTaxComputationCard: React.FC<GSTReviewTaxComputationProps>
         <div className="gst-comp-row">
           <span className="gst-comp-row__label">Gross Taxable Turnover</span>
           <span className="gst-comp-row__value">{formatCurrency(turnover)}</span>
+        </div>
+        <div className="gst-comp-row">
+          <span className="gst-comp-row__label">Estimated Taxable Purchases</span>
+          <span className="gst-comp-row__value">{formatCurrency(purchases)}</span>
         </div>
         <div className="gst-comp-row">
           <span className="gst-comp-row__label">Output GST (18%)</span>

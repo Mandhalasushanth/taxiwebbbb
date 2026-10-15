@@ -131,7 +131,13 @@ export const GSTCompliance: React.FC = () => {
                     <select
                       id="fy-select"
                       className={`form-select ${errors.financialYear ? 'has-error' : ''}`}
-                      value={financialYear}
+                      value={
+                        FINANCIAL_YEAR_OPTIONS.some((o) => o.value === financialYear)
+                          ? financialYear
+                          : FINANCIAL_YEAR_OPTIONS.some((o) => o.value === `FY ${financialYear}`)
+                            ? `FY ${financialYear}`
+                            : financialYear
+                      }
                       onChange={(e) => setField('financialYear', e.target.value)}
                     >
                       <option value="">Select Financial Year</option>

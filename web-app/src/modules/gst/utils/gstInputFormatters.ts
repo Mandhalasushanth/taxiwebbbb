@@ -19,9 +19,9 @@ export const gstInput = {
   /** City and District: text only (letters, spaces and -). No numbers, no special characters */
   cityDistrict: (v: string, max = 50): string =>
     v.replace(/[^A-Za-z -]/g, '').replace(/\s{2,}/g, ' ').slice(0, max),
-  /** Branch names: letters, digits, spaces, and . - (e.g. MG Road, Sector 17) */
+  /** Branch names: letters, digits, spaces, and allowed punctuation -, ., /, &, ', (, ), #, , */
   branch: (v: string, max = 60): string =>
-    v.replace(/[^A-Za-z0-9 .'-]/g, '').replace(/\s{2,}/g, ' ').slice(0, max),
+    v.replace(/[^A-Za-z0-9\s.&'()/#,-]/g, '').replace(/\s{2,}/g, ' ').slice(0, max),
   /** Designation: text only (letters, spaces, / and -). No numbers, no symbols */
   designation: (v: string): string =>
     v.replace(/[^A-Za-z /'-]/g, '').replace(/\s{2,}/g, ' ').slice(0, 60),

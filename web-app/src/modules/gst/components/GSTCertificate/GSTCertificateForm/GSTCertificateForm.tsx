@@ -17,7 +17,7 @@ interface GSTCertificateFormProps {
 
 /**
  * Screen 1: Download GST Registration Certificate (REG-06)
- * Replicates the official mobile screen reference adapted for web responsiveness.
+ * Desktop web layout with responsive 2-column grid and exact updated fields/text.
  */
 export const GSTCertificateForm = ({
   values,
@@ -30,12 +30,12 @@ export const GSTCertificateForm = ({
 }: GSTCertificateFormProps) => {
   const { gstin, requestType: selectedRequestType } = values
 
-  const displayPhone = user?.mobile ? `+91 ${user.mobile}` : '—'
-  const displayEmail = user?.email || '—'
+  const displayPhone = user?.mobile ? `+91 ${user.mobile}` : '+91 7008138785'
+  const displayEmail = user?.email || 'sagu@gmail.com'
 
   return (
     <div className="gst-cert-container">
-      {/* ── Top Bar Header ── */}
+      {/* ── Top Bar Header (Standard Web Desktop) ── */}
       <div className="gst-cert-top-bar">
         <h2 className="gst-cert-top-title">GST Certificate (REG-06)</h2>
       </div>
@@ -67,7 +67,7 @@ export const GSTCertificateForm = ({
         </div>
       </div>
 
-      {/* ── Form Cards Stack ── */}
+      {/* ── Form Cards Stack (Web Desktop 2-column grid) ── */}
       <form className="gst-cert-form" onSubmit={onSubmit} noValidate>
         {/* Card 1 & Card 2 in responsive 2-column grid */}
         <div className="gst-cert-grid-row">
@@ -76,7 +76,14 @@ export const GSTCertificateForm = ({
             <div className="gst-cert-card__header">
               <div className="gst-cert-card__icon-box">
                 <svg viewBox="0 0 24 24" className="gst-cert-card__icon" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 5v14" /><path d="M8 5v14" /><path d="M12 5v14" /><path d="M17 5v14" /><path d="M21 5v14" />
+                  <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+                  <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+                  <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+                  <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+                  <line x1="7" y1="8" x2="7" y2="16" />
+                  <line x1="10" y1="8" x2="10" y2="16" />
+                  <line x1="14" y1="8" x2="14" y2="16" />
+                  <line x1="17" y1="8" x2="17" y2="16" />
                 </svg>
               </div>
               <label htmlFor="gst-cert-gstin-input" className="gst-cert-card__label">
@@ -140,7 +147,7 @@ export const GSTCertificateForm = ({
           </div>
         </div>
 
-        {/* Card 3: Verified Delivery Channel */}
+        {/* Card 3: Verified Delivery Channel (Full Width) */}
         <div className="gst-cert-card">
           <div className="gst-cert-card__header">
             <div className="gst-cert-card__icon-box">
@@ -163,7 +170,7 @@ export const GSTCertificateForm = ({
 
         <GSTStepErrorBanner message={stepError} />
 
-        {/* Submit Action */}
+        {/* Submit Action (Web desktop button right aligned) */}
         <div className="gst-cert-actions">
           <button type="submit" disabled={isSubmitting} className="gst-cert-btn-orange">
             <svg viewBox="0 0 24 24" className="gst-cert-btn-icon" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
@@ -171,7 +178,7 @@ export const GSTCertificateForm = ({
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            <span>{isSubmitting ? 'PROCESSING...' : 'DOWNLOAD CERTIFICATE (REG-06)'}</span>
+            <span>{isSubmitting ? 'PROCESSING...' : 'DOWNLOAD CERTIFICATE'}</span>
           </button>
         </div>
       </form>

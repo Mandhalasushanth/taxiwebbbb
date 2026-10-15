@@ -55,6 +55,7 @@ export const WHAT_HAPPENS_NEXT_STEPS = [
 
 export interface ReconciledTaxFigures {
   turnover: number
+  purchases: number
   outputGst: number
   eligibleItc: number
   netLiability: number
@@ -66,6 +67,7 @@ export const getReconciledTaxComputation = (
   if (filingData?.filingType === 'nil') {
     return {
       turnover: 0,
+      purchases: 0,
       outputGst: 0,
       eligibleItc: 0,
       netLiability: 0,
@@ -73,17 +75,21 @@ export const getReconciledTaxComputation = (
   }
 
   const rawSales = filingData?.estimatedSales ? Number(filingData.estimatedSales.replace(/,/g, '')) : NaN
-  const turnover = !isNaN(rawSales) && rawSales > 0 ? rawSales : 866598
+  const turnover = !isNaN(rawSales) && rawSales > 0 ? rawSales : (filingData?.filingType === 'regular' && filingData?.calculationMethod === 'estimated_figures' ? 0 : 866598)
+
+  const rawPurchases = filingData?.estimatedPurchases ? Number(filingData.estimatedPurchases.replace(/,/g, '')) : NaN
+  const purchases = !isNaN(rawPurchases) && rawPurchases > 0 ? rawPurchases : (filingData?.filingType === 'regular' && filingData?.calculationMethod === 'estimated_figures' ? 0 : 452300)
 
   const outputGst = Math.round(turnover * 0.18)
 
   const rawItc = filingData?.estimatedItc ? Number(filingData.estimatedItc.replace(/,/g, '')) : NaN
-  const eligibleItc = !isNaN(rawItc) && rawItc > 0 ? rawItc : 78976
+  const eligibleItc = !isNaN(rawItc) && rawItc > 0 ? rawItc : (filingData?.filingType === 'regular' && filingData?.calculationMethod === 'estimated_figures' ? 0 : 78976)
 
   const netLiability = Math.max(0, outputGst - eligibleItc)
 
   return {
     turnover,
+    purchases,
     outputGst,
     eligibleItc,
     netLiability,
@@ -94,7 +100,7 @@ export const getResolvedReviewDetails = (
   filingData?: Partial<FilingPeriodData>,
   attachedDocsCount?: number
 ): ReviewDetailsData => {
-  const fy = filingData?.financialYear?.trim() || 'FY 2025-26'
+  const fy = filingData?.financialYear?.trim() || '2025-26'
   const startYearMatch = fy.match(/\d{4}/)
   const startYear = startYearMatch ? startYearMatch[0] : '2025'
 

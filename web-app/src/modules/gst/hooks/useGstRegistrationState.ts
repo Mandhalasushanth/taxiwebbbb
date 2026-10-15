@@ -9,7 +9,7 @@ import { GST_FEES } from '@modules/gst/constants/gstBusiness.constants'
 import { INITIAL_DOCUMENTS } from '@modules/gst/utils/gstDocuments.constants'
 import { clampRegistrationStep } from '@modules/gst/utils/gstRegistrationGuard'
 import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
-import { useServiceDraft, readServiceDraft, hasFormChanged, DRAFT_NAMESPACES } from '@shared/saveDraft'
+import { useServiceDraft, readServiceDraft, hasFormChanged, deleteServiceDraft, DRAFT_NAMESPACES } from '@shared/saveDraft'
 import { useReviewEdit } from '@shared/edit'
 import type { DocumentItem } from '@modules/gst/types/gstDocuments.types'
 import type { GstBusinessFormData } from '@modules/gst/types/gstBusiness.types'
@@ -72,6 +72,28 @@ const buildInitialBusinessData = (): GstBusinessFormData => ({
   aadhaarConsent: false,
 })
 
+/**
+ * Detects whether a stored draft was created purely from the legacy user-profile autofill,
+ * before registration fields were made blank by default.
+ */
+const isLegacyAutofillDraft = (formData: RegistrationDraft | null | undefined): boolean => {
+  if (!formData?.businessData) return false
+  const d = formData.businessData
+  const hasUserEnteredCoreField = Boolean(
+    d.tradeName?.trim() ||
+    d.constitution?.trim() ||
+    d.businessPan?.trim() ||
+    d.natureOfBusiness?.trim() ||
+    d.commencementDate?.trim() ||
+    d.placeOfBusiness?.trim() ||
+    d.district?.trim() ||
+    d.hsnSacCode?.trim() ||
+    d.accountNumber?.trim() ||
+    d.ifscCode?.trim()
+  )
+  return !hasUserEnteredCoreField
+}
+
 const STEP_NAME_FOR = (step: number): string => STEP_NAMES[step] ?? 'status'
 
 export const useGstRegistrationState = () => {
@@ -80,7 +102,15 @@ export const useGstRegistrationState = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const location = useLocation()
 
-  const [savedDraft] = useState(() => readServiceDraft<RegistrationDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst))
+  const [savedDraft] = useState(() => {
+    const draft = readServiceDraft<RegistrationDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst)
+    if (!draft?.formData) return null
+    if (isLegacyAutofillDraft(draft.formData)) {
+      deleteServiceDraft(SERVICE_ID)
+      return null
+    }
+    return draft
+  })
   const [initialBusinessData] = useState(() => buildInitialBusinessData())
 
   const [businessData, setBusinessData] = useState<GstBusinessFormData>(() => ({

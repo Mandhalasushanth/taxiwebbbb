@@ -177,16 +177,15 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
     })
   }
 
-  // Required docs verification: Sales, Purchases, and GSTR-2B
-  const reqDocIds = ['sales-invoices', 'purchase-invoices', 'gstr2b-statement']
+  // Required docs verification: all documents marked mandatory
   const [showMissing, setShowMissing] = useState(false)
   const missingDocs = DEFAULT_DOCUMENT_ITEMS.filter(
-    (doc) => reqDocIds.includes(doc.id) && !uploadedFiles[doc.id] && !notApplicableDocs[doc.id]
+    (doc) => doc.isRequired && !uploadedFiles[doc.id] && !notApplicableDocs[doc.id]
   )
   // Updates as documents are added, and disappears once nothing is missing
   const stepError =
     showMissing && missingDocs.length > 0
-      ? `Please upload ${missingDocs.map((doc) => doc.title).join(', ')} or mark them not applicable.`
+      ? `Please upload ${missingDocs.map((doc) => doc.title).join(', ')}.`
       : null
 
   // Continue stays enabled (as in loans); pressing it names the documents still missing
