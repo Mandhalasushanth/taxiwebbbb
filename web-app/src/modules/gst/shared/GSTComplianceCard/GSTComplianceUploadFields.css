@@ -58,6 +58,13 @@
   color: var(--palette-slate-800);
 }
 
+.gst-notice-field-hint {
+  font-size: 0.775rem;
+  color: var(--secondary-text);
+  margin-top: -0.15rem;
+  margin-bottom: 0.15rem;
+}
+
 .gst-notice-input,
 .gst-notice-date-input {
   width: 100%;

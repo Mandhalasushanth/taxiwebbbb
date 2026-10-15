@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { withPlatformGst } from '@modules/gst/constants/gstBusiness.constants'
 import { GSTFilingStepper } from '@modules/gst/shared/GSTFilingStepper/GSTFilingStepper'
 import type { FilingPeriodData } from '../GSTFilingPeriod/GSTFilingPeriod'
 import {
@@ -8,7 +7,6 @@ import {
 } from './GSTReviewFilingDetails'
 import {
   GSTReviewTaxComputationCard,
-  GSTReviewFilingFeeCard,
 } from './GSTReviewComputation'
 import { GSTRequestChangesModal } from './GSTRequestChangesModal'
 import {
@@ -36,7 +34,6 @@ export interface GSTFilingReviewProps {
   onSaveDraft?: () => void
   onEditFilingDetails?: () => void
   onEditTaxComputation?: () => void
-  onEditFilingFee?: () => void
   onEditDocuments?: () => void
 }
 
@@ -52,7 +49,6 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
   onSaveDraft,
   onEditFilingDetails,
   onEditTaxComputation,
-  onEditFilingFee,
   onEditDocuments,
 }) => {
   const [showRequestModal, setShowRequestModal] = useState(false)
@@ -70,16 +66,6 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
   const handleEditTaxComputation = () => {
     if (onEditTaxComputation) {
       onEditTaxComputation()
-    } else if (onStepClick) {
-      onStepClick(1)
-    } else {
-      onBack()
-    }
-  }
-
-  const handleEditFilingFee = () => {
-    if (onEditFilingFee) {
-      onEditFilingFee()
     } else if (onStepClick) {
       onStepClick(1)
     } else {
@@ -114,11 +100,6 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
     docSummaryResult.totalVerified
   )
 
-  const effectiveBaseFee =
-    filingData?.baseFee && filingData.baseFee > 0 && filingData.baseFee !== 2500
-      ? filingData.baseFee
-      : 1986
-  const { gst: gstAmount, total: totalPayableFee } = withPlatformGst(effectiveBaseFee)
   const taxFigures = getReconciledTaxComputation(filingData)
 
   return (
@@ -126,7 +107,7 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
       {/* Main Page Header */}
       <header className="gst-review-header">
         <h1 className="gst-review-title">GST Filing</h1>
-        <p className="gst-review-subtitle">Step 3 of 4 • Review &amp; Summary</p>
+        <p className="gst-review-subtitle">Step 3 of 3 • Review &amp; Summary</p>
       </header>
 
       {/* Stepper */}
@@ -153,15 +134,7 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
           onEdit={handleEditTaxComputation}
         />
 
-        {/* Section 3: Professional Filing Fee */}
-        <GSTReviewFilingFeeCard
-          baseFee={effectiveBaseFee}
-          gstFee={gstAmount}
-          totalFee={totalPayableFee}
-          onEdit={handleEditFilingFee}
-        />
-
-        {/* Section 4: Documents */}
+        {/* Section 3: Documents */}
         <GSTReviewDocumentsCard
           verifiedCount={docSummaryResult.totalVerified || 3}
           onEdit={handleEditDocuments}
@@ -173,7 +146,7 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
         onBack={onBack}
         onNext={onApprove}
         onSaveDraft={onSaveDraft}
-        nextLabel="Continue"
+        nextLabel="Submit Application"
       />
 
       {/* Confirmation Modal */}

@@ -50,10 +50,15 @@ const validateCompliance = (
     requestType: fields.requestType ? undefined : 'Request Type is required',
     purchaseFile: isRecon && !files.purchaseFile ? 'Purchase Register file is required' : undefined,
     salesFile: isRecon && !files.salesFile ? 'Sales Register file is required' : undefined,
-    gstr2bRef: isRecon ? gstFieldRules.optional(gstFieldRules.reference('GSTR-2B reference'))(fields.gstr2bRef) : undefined,
-    noticeNumber: isNotice ? gstFieldRules.reference('Notice number')(fields.noticeNumber) : undefined,
+    gstr2bRef: isRecon ? gstFieldRules.optional(gstFieldRules.arn('GSTR-2B reference'))(fields.gstr2bRef) : undefined,
+    noticeNumber: isNotice ? gstFieldRules.noticeNumber(fields.noticeNumber) : undefined,
     issueDate: isNotice ? gstFieldRules.pastDate('Notice issue date')(fields.issueDate) : undefined,
-    dueDate: isNotice ? gstFieldRules.futureDate('Reply due date')(fields.dueDate) : undefined,
+    dueDate: isNotice
+      ? (gstFieldRules.futureDate('Reply due date')(fields.dueDate) ||
+         (fields.issueDate && fields.dueDate && new Date(fields.dueDate) < new Date(fields.issueDate)
+           ? 'Reply due date cannot be before notice issue date'
+           : undefined))
+      : undefined,
     noticeFile: isNotice && !files.noticeFile ? 'Notice copy upload is required' : undefined,
   })
 }
@@ -105,6 +110,25 @@ export const useGSTComplianceState = () => {
     setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev))
   }
 
+  const validateField = (field: keyof ComplianceFields) => {
+    let err: string | undefined
+    if (field === 'noticeNumber' && fields.requestType === 'Notice Response') {
+      err = gstFieldRules.noticeNumber(fields.noticeNumber)
+    } else if (field === 'gstin') {
+      err = gstFieldRules.gstin(fields.gstin)
+    } else if (field === 'gstr2bRef' && fields.requestType === 'Reconciliation Support') {
+      err = gstFieldRules.optional(gstFieldRules.arn('GSTR-2B reference'))(fields.gstr2bRef)
+    } else if (field === 'issueDate' && fields.requestType === 'Notice Response') {
+      err = gstFieldRules.pastDate('Notice issue date')(fields.issueDate)
+    } else if (field === 'dueDate' && fields.requestType === 'Notice Response') {
+      err = gstFieldRules.futureDate('Reply due date')(fields.dueDate)
+      if (!err && fields.issueDate && fields.dueDate && new Date(fields.dueDate) < new Date(fields.issueDate)) {
+        err = 'Reply due date cannot be before notice issue date'
+      }
+    }
+    setErrors((prev) => ({ ...prev, [field]: err }))
+  }
+
   const hasErrors = Object.values(errors).some(Boolean)
 
   const handleSubmit = (e?: FormEvent) => {
@@ -139,6 +163,7 @@ export const useGSTComplianceState = () => {
   return {
     fields,
     setField,
+    validateField,
     purchaseFile,
     setPurchaseFile: setFileWithClear(setPurchaseFile, 'purchaseFile'),
     salesFile,

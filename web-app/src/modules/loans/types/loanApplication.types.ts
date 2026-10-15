@@ -1,3 +1,15 @@
+/** Applicant profile pulled from the signed-in account */
+export interface ApplicantIdentityProfile {
+  name: string
+  mobile: string
+  email: string
+  pan: string
+  aadhaar: string
+  dob: string
+  address: string
+  isVerified: boolean
+}
+
 export type LoanApplicationStatusType =
   | 'draft'
   | 'submitted'

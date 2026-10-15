@@ -33,15 +33,15 @@ export const validateGstBusinessForm = (data: GstBusinessFormData): Record<strin
     compositionScheme: select('Please select Yes or No for composition scheme'),
     placeOfBusiness: select('Please select place of business type'),
     businessAddress: r.address('Business address'),
-    city: r.placeName('City'),
-    district: r.placeName('District'),
+    city: r.cityDistrict('City'),
+    district: r.cityDistrict('District'),
     state: select('Please select state'),
     pinCode: r.pinCode,
     hsnSacCode: r.hsnSac,
 
     // Bank details
     bankName: r.bankName,
-    branch: r.placeName('Branch'),
+    branch: r.branch,
     accountHolderName: r.personName('Account holder name'),
     accountNumber: r.accountNumber,
     confirmAccountNumber: (v) => r.confirmAccountNumber(data.accountNumber, v),

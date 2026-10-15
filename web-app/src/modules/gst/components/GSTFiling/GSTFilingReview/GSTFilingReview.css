@@ -2,7 +2,7 @@
   width: 100%;
   max-width: 100%;
   margin: 0;
-  padding: 16px 20px 64px;
+  padding: 0 0 4rem 0;
   font-family: inherit;
   color: var(--palette-slate-800);
   box-sizing: border-box;

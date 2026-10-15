@@ -2,7 +2,8 @@
   width: 100%;
   max-width: 100%;
   margin: 0;
-  padding: 16px 20px 64px 20px;
+  padding: 0 0 3.5rem 0;
+  box-sizing: border-box;
   color: var(--palette-slate-900);
 }
 
@@ -25,23 +26,19 @@
   line-height: 1.5;
 }
 
-.gst-filing-period__card {
-  background: transparent;
-  border: none;
-  padding: 0;
-  box-shadow: none;
-}
-
 .gst-filing-period__form {
   display: flex;
   flex-direction: column;
+  gap: 1.75rem;
+  width: 100%;
 }
 
-.gst-filing-period__grid {
+.gst-filing-period__row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  column-gap: 32px;
-  row-gap: 22px;
+  column-gap: 24px;
+  row-gap: 18px;
+  width: 100%;
 }
 
 .gst-filing-period__field {
@@ -49,8 +46,11 @@
   flex-direction: column;
 }
 
-.gst-filing-period__field--full {
-  grid-column: 1 / -1;
+.gst-filing-period__hint {
+  font-size: 13px;
+  color: var(--secondary-text);
+  margin: 6px 0 0;
+  line-height: 1.4;
 }
 
 .gst-filing-period__label {
@@ -267,12 +267,13 @@
 }
 
 @media (max-width: 768px) {
-  .gst-filing-period__card {
-    padding: 0;
+  .gst-filing-period-container {
+    padding: 0.25rem 1rem 2.5rem 1rem;
   }
 
-  .gst-filing-period__grid {
+  .gst-filing-period__row {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .gst-filing-period__cards-grid {

@@ -1,5 +1,5 @@
 .gst-compliance-page {
-  padding: 2rem 2.5rem;
+  padding: 1.5rem 0 3.5rem 0;
   background-color: var(--palette-slate-50);
   min-height: calc(100vh - 64px);
   box-sizing: border-box;
@@ -8,8 +8,8 @@
 
 .gst-compliance-wrapper {
   width: 100%;
-  max-width: var(--service-page-max-width);
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
 }
 
 /* Header */
@@ -83,10 +83,11 @@
 /* Form Card */
 .gst-form-card {
   background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
   padding: 1.75rem 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-md);
+  box-sizing: border-box;
 }
 
 .card-header {
@@ -415,37 +416,5 @@
   border-color: var(--palette-red-400);
 }
 
-
-/* Submit Request Button */
-.submit-btn-wrapper {
-  margin-top: 0.5rem;
-}
-
-.gst-btn-submit-primary {
-  width: 100%;
-  height: 52px;
-  background-color: var(--palette-orange-500-ff6600);
-  color: var(--surface);
-  font-size: 1.05rem;
-  font-weight: 700;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.1s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
-}
-
-.gst-btn-submit-primary:hover:not(:disabled) {
-  background-color: var(--palette-orange-600);
-}
-
-.gst-btn-submit-primary:disabled {
-  background-color: var(--orange-300);
-  cursor: not-allowed;
-  box-shadow: none;
-}
 
 /* (Legacy inline success card styles removed - replaced by GSTSuccessView.css) */

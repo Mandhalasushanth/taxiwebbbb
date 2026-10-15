@@ -230,6 +230,7 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
           <DocumentSection
             key={category.id}
             title={category.title}
+            variant="card"
           >
             {items.map((item) => {
               const fileInfo = uploadedFiles[item.id]

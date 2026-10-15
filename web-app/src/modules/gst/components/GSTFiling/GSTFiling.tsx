@@ -1,10 +1,8 @@
 import { routePaths } from '@core/config'
-import { GST_FEES, withPlatformGst } from '@modules/gst/constants/gstBusiness.constants'
 import { ServiceDraftModal } from '@shared/saveDraft'
 import { GSTFilingPeriod } from './GSTFilingPeriod/GSTFilingPeriod'
 import { GSTFilingDocuments } from './GSTFilingDocuments/GSTFilingDocuments'
 import { GSTFilingReview } from './GSTFilingReview/GSTFilingReview'
-import { GSTFilingPayment } from './GSTFilingPayment/GSTFilingPayment'
 import { GSTFilingSuccess } from './GSTFilingSuccess/GSTFilingSuccess'
 import { GSTFilingReceipt } from './GSTFilingReceipt/GSTFilingReceipt'
 import { useGSTFilingFlow } from '@modules/gst/hooks/useGSTFilingFlow'
@@ -18,7 +16,6 @@ export const GSTFiling = () => {
     goToStep,
     setFilingData,
     filingData,
-    filingRef,
     paymentResult,
     uploadedFiles,
     notApplicableDocs,
@@ -29,7 +26,6 @@ export const GSTFiling = () => {
     handleStep2Back,
     handleStep2Next,
     handleStep3Approve,
-    handleStep4Success,
     handleFileUpload,
     handleFileRemove,
     handleToggleNotApplicable,
@@ -84,7 +80,6 @@ export const GSTFiling = () => {
           onSaveDraft={openModal}
           onEditFilingDetails={() => startEditingFromReview(1)}
           onEditTaxComputation={() => startEditingFromReview(1)}
-          onEditFilingFee={() => startEditingFromReview(1)}
           onEditDocuments={() => startEditingFromReview(2)}
           onBack={() => goToStep(2)}
           onRequestChange={() => goToStep(2)}
@@ -92,36 +87,24 @@ export const GSTFiling = () => {
         />
       )}
 
-      {/* Step 4: Payment */}
+      {/* Step 4: Success Screen / Application Status */}
       {currentStep === 4 && (
-        <GSTFilingPayment
-          amount={withPlatformGst(filingData.baseFee > 0 ? filingData.baseFee : GST_FEES.filingCombo).total}
-          applicationRef={filingRef}
-          serviceTitle={`GST Filing — ${filingData.selectedMonth || 'Return'}`}
-          onStepClick={handleStepClick}
-          onBack={() => goToStep(3)}
-          onSuccess={handleStep4Success}
-        />
-      )}
-
-      {/* Step 5: Success Screen */}
-      {currentStep === 5 && (
         <GSTFilingSuccess
           details={paymentResult}
           businessName={filingData.businessName}
-          onBack={() => goToStep(4)}
-          onViewReceipt={() => goToStep(6)}
+          onBack={() => goToStep(3)}
+          onViewReceipt={() => goToStep(5)}
           onTrackApplication={() => navigate(routePaths.applications)}
           onBackToDashboard={() => navigate(routePaths.dashboard)}
           onContactSupport={() => navigate(routePaths.support)}
         />
       )}
 
-      {/* Step 6: Receipt Screen */}
-      {currentStep === 6 && (
+      {/* Step 5: Receipt Screen */}
+      {currentStep === 5 && (
         <GSTFilingReceipt
           details={paymentResult}
-          onBack={() => goToStep(5)}
+          onBack={() => goToStep(4)}
         />
       )}
 

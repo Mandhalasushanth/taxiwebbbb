@@ -34,7 +34,7 @@ export const GSTReviewDeclaration: FC<GSTReviewDeclarationProps> = ({
 
       {hasError && (
         <div className="gst-review-declaration-error" role="alert">
-          * Please accept the declaration before proceeding to payment.
+          * Please accept the declaration before submitting your application.
         </div>
       )}
     </div>

@@ -144,14 +144,14 @@
 
 /* ── Individual Field Card ── */
 .gst-cert-card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 1.15rem 1.35rem;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 20px;
+  padding: 1.35rem 1.6rem;
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.05));
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
   box-sizing: border-box;
 }
@@ -314,26 +314,47 @@
   line-height: 1.4;
 }
 
-/* ── Main Action Button ── */
-.gst-cert-btn-orange {
+/* ── Responsive 2-Column Cards Grid ── */
+.gst-cert-grid-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
   width: 100%;
-  height: 50px;
+}
+
+@media (max-width: 768px) {
+  .gst-cert-grid-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* ── Main Action Button ── */
+.gst-cert-actions {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.gst-cert-btn-orange {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  height: 48px;
+  padding: 0 2rem;
   background: #ff7a00;
   color: #ffffff;
   border: none;
   border-radius: 12px;
   font-size: 0.92rem;
   font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.65rem;
   cursor: pointer;
   transition: all 0.18s ease;
   box-shadow: 0 4px 14px rgba(255, 122, 0, 0.25);
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  margin-top: 0.25rem;
 }
 
 .gst-cert-btn-orange:hover:not(:disabled) {
@@ -359,6 +380,14 @@
 
   .gst-cert-card {
     padding: 1rem 1.15rem;
+  }
+
+  .gst-cert-actions {
+    justify-content: stretch;
+  }
+
+  .gst-cert-btn-orange {
+    width: 100%;
   }
 }
 

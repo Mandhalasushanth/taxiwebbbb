@@ -1,4 +1,6 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { routePaths } from '@app/routes'
 import { GSTNoticeResponseFields } from '@modules/gst/shared/GSTComplianceCard/GSTNoticeResponseFields'
 import { ComplianceDocPreviewModal } from '@modules/gst/shared/GSTComplianceCard/GSTComplianceDocPreviewModal'
 import { GSTSubmitConfirmModal } from './GSTSubmitConfirmModal'
@@ -8,7 +10,7 @@ import { FINANCIAL_YEAR_OPTIONS } from '@modules/gst/utils/gstPeriodOptions'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { ServiceDraftModal } from '@shared/saveDraft'
 import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
-import { SaveDraftButton } from '@shared/saveDraft'
+import { StepActionBar } from '@shared/components'
 import { GSTReconciliationDocsSection } from './GSTReconciliationDocsSection'
 import './GSTCompliance.css'
 import './GSTCompliance.sidebar.css'
@@ -16,10 +18,12 @@ import './GSTCompliance.sidebar.css'
 export type { ComplianceRequestOption }
 
 export const GSTCompliance: React.FC = () => {
+  const navigate = useNavigate()
   const flow = useGSTComplianceState()
   const {
     fields,
     setField,
+    validateField,
     purchaseFile,
     setPurchaseFile,
     salesFile,
@@ -113,6 +117,7 @@ export const GSTCompliance: React.FC = () => {
                       placeholder="Enter 15-character GSTIN"
                       value={gstin}
                       onChange={(e) => setField('gstin', gstInput.gstin(e.target.value))}
+                      onBlur={() => validateField('gstin')}
                       maxLength={15}
                     />
                     {errors.gstin && <span className="form-error">{errors.gstin}</span>}
@@ -181,6 +186,7 @@ export const GSTCompliance: React.FC = () => {
                 <GSTNoticeResponseFields
                   values={fields}
                   onChange={setField}
+                  onBlurField={validateField}
                   noticeFile={noticeFile}
                   onNoticeFileChange={setNoticeFile}
                   errors={errors}
@@ -190,18 +196,21 @@ export const GSTCompliance: React.FC = () => {
 
               <GSTStepErrorBanner message={stepError} />
 
-              {/* Submit Request Button */}
-              <div className="submit-btn-wrapper form-actions-group">
-                <SaveDraftButton onClick={openDraftModal} />
-                <button
-                  type="button"
-                  onClick={() => handleSubmit()}
-                  className="gst-btn-submit-primary"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? 'Submitting...' : 'Submit Request'}
-                </button>
-              </div>
+              {/* Standard Step Action Bar (Back, Save Draft & Exit, Submit Request) */}
+              <StepActionBar
+                onBack={() => {
+                  if (window.history.state && window.history.state.idx > 0) {
+                    navigate(-1)
+                  } else {
+                    navigate(routePaths.gst.root)
+                  }
+                }}
+                onSaveDraft={openDraftModal}
+                onNext={() => handleSubmit()}
+                nextLabel="Submit Request"
+                isSubmitting={isSubmitting}
+                nextTestId="gst-compliance-submit-btn"
+              />
             </div>
           </div>
         </div>

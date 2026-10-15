@@ -16,7 +16,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 720px;
+  max-width: 100%;
 }
 
 .gst-reg-stepper__item-wrapper {

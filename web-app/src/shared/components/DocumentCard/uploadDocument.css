@@ -337,9 +337,9 @@
 }
 
 .loan-doc-item__badge--required {
-  background-color: var(--palette-rose-100);
-  color: var(--palette-rose-600);
-  border: 1px solid rgba(225, 29, 72, 0.15);
+  background-color: var(--palette-orange-50, #fff7ed);
+  color: var(--palette-orange-600, #ea580c);
+  border: 1px solid var(--palette-orange-200, #fed7aa);
 }
 
 .loan-doc-item__badge--optional {

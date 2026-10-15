@@ -1,10 +1,8 @@
 import { routePaths } from '@core/config'
-import { GST_FEES } from '@modules/gst/constants/gstBusiness.constants'
 import { ServiceDraftModal } from '@shared/saveDraft'
 import { GSTStepBusiness } from './GSTStepBusiness/GSTStepBusiness'
 import { GSTStepDocuments } from './GSTStepDocuments/GSTStepDocuments'
 import { GSTStepReview } from './GSTStepReview/GSTStepReview'
-import { GSTStepPayment } from './GSTStepPayment/GSTStepPayment'
 import { GSTPaymentSuccess } from './GSTPaymentSuccess/GSTPaymentSuccess'
 import { GSTRegistrationStepper } from '@modules/gst/shared/GSTRegistrationStepper/GSTRegistrationStepper'
 import { useGstRegistrationState } from '@modules/gst/hooks/useGstRegistrationState'
@@ -31,8 +29,6 @@ export const GSTRegistration = () => {
     handleStep2Next,
     handleStep3Back,
     handleStep3Proceed,
-    handleStep4Back,
-    handlePaymentSuccess,
     navigate,
   } = flow
 
@@ -42,8 +38,6 @@ export const GSTRegistration = () => {
         return 'Upload Documents'
       case 3:
         return 'Review Application'
-      case 4:
-        return 'Complete Payment'
       default:
         return 'GST Registration'
     }
@@ -54,9 +48,7 @@ export const GSTRegistration = () => {
       case 2:
         return 'Please upload the required documents to continue your GST registration.'
       case 3:
-        return 'Please review your details and documents before proceeding to payment.'
-      case 4:
-        return 'Choose your preferred payment method to complete your GST registration.'
+        return 'Please review your details and documents before submitting your application.'
       default:
         return 'Complete your GST registration in a few simple steps'
     }
@@ -65,7 +57,7 @@ export const GSTRegistration = () => {
   return (
     <div className="gst-reg-page">
       {/* Top Header */}
-      {currentStep <= 4 && (
+      {currentStep <= 3 && (
         <div className="gst-reg-top-header">
           <div className="gst-reg-header-titles">
             <h1 className="gst-reg-title">{getHeaderTitle()}</h1>
@@ -74,8 +66,8 @@ export const GSTRegistration = () => {
         </div>
       )}
 
-      {/* Stepper (Steps 1 to 4) */}
-      {currentStep <= 4 && (
+      {/* Stepper (Steps 1 to 3) */}
+      {currentStep <= 3 && (
         <div className="gst-reg-stepper-container">
           <GSTRegistrationStepper
             currentStep={currentStep}
@@ -84,8 +76,8 @@ export const GSTRegistration = () => {
         </div>
       )}
 
-      {/* Steps 1 to 4 */}
-      {currentStep <= 4 && (
+      {/* Steps 1 to 3 */}
+      {currentStep <= 3 && (
         <div className="gst-reg-content-grid gst-reg-content-grid--full-width">
           <main className="gst-reg-main-content">
             {currentStep === 1 && (
@@ -121,25 +113,24 @@ export const GSTRegistration = () => {
                 onSaveDraft={openDraftModal}
               />
             )}
-
-            {currentStep === 4 && (
-              <GSTStepPayment
-                amount={GST_FEES.registration}
-                applicationRef={applicationRef}
-                serviceTitle="GST Registration"
-                applicantName={businessData.signatoryName || businessData.legalName || 'Applicant'}
-                onBack={handleStep4Back}
-                onSuccess={handlePaymentSuccess}
-              />
-            )}
           </main>
         </div>
       )}
 
-      {/* Step 5: Application Status (Post-Payment Complete Screen) */}
-      {currentStep === 5 && paymentResult && (
+      {/* Step 4: Application Status (Post-Submission Complete Screen) */}
+      {currentStep === 4 && (
         <GSTPaymentSuccess
-          details={paymentResult}
+          details={
+            paymentResult || {
+              applicationRef,
+              transactionId: applicationRef,
+              receiptNumber: `TE/${new Date().getFullYear()}/REG-${applicationRef.slice(-6)}`,
+              method: 'Direct Submission',
+              dateText: new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
+              amount: 0,
+              verified: true,
+            }
+          }
           businessName={businessData.tradeName || businessData.legalName || 'Your Business'}
           onBackToDashboard={() => navigate(routePaths.dashboard)}
           onTrackApplications={() => navigate(routePaths.applications)}

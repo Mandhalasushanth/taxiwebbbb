@@ -139,27 +139,8 @@ export const GSTPaymentSuccess: React.FC<GSTPaymentSuccessProps> = ({
         <GSTStatusTimeline />
       </div>
 
-      {/* 4. Bottom Action Buttons in ONE Full-Width Row */}
+      {/* 4. Bottom Action Buttons in ONE Full-Width Row: Left: Dashboard, Middle: Support/CA, Right: Track */}
       <div className="gst-status-bottom-actions-row">
-        <button
-          type="button"
-          className="gst-status-btn gst-status-btn--track"
-          onClick={handleTrackInApplications}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="gst-status-btn-icon"
-          >
-            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
-          </svg>
-          <span>Track in My Applications</span>
-        </button>
-
         <button
           type="button"
           className="gst-status-btn gst-status-btn--dashboard"
@@ -172,7 +153,7 @@ export const GSTPaymentSuccess: React.FC<GSTPaymentSuccessProps> = ({
           >
             <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
           </svg>
-          <span>Go to Home Dashboard</span>
+          <span>Go to Dashboard</span>
         </button>
 
         <button
@@ -192,6 +173,25 @@ export const GSTPaymentSuccess: React.FC<GSTPaymentSuccessProps> = ({
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
           <span>Contact Support / CA</span>
+        </button>
+
+        <button
+          type="button"
+          className="gst-status-btn gst-status-btn--track"
+          onClick={handleTrackInApplications}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="gst-status-btn-icon"
+          >
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+          </svg>
+          <span>Track in My Applications</span>
         </button>
       </div>
     </div>

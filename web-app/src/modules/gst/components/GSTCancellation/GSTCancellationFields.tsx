@@ -1,4 +1,6 @@
 import React, { useRef } from 'react'
+import { FileText, Calculator } from 'lucide-react'
+import { GSTFormSection } from '@modules/gst/shared/GSTFormSection'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 
 interface GSTCancellationFieldsProps {
@@ -45,94 +47,125 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
   }
 
   return (
-    <div className="gst-canc-card-box">
-      <div className="gst-canc-field-group">
-        <label htmlFor="gst-canc-gstin-input" className="gst-canc-label">
-          GSTIN (15-Character) <span className="gst-canc-star">*</span>
-        </label>
-        <input
-          id="gst-canc-gstin-input" type="text" maxLength={15} placeholder="Enter your GSTIN"
-          value={gstin} onChange={(e) => { setGstin(gstInput.gstin(e.target.value)); clearError('gstin') }}
-          className={`gst-canc-input ${errors.gstin ? 'has-error' : ''}`}
-        />
-        {errors.gstin && <span className="gst-canc-error-msg">{errors.gstin}</span>}
-      </div>
-
-      <div className="gst-canc-form-row">
+    <>
+      {/* Section 1: Cancellation Details Card */}
+      <GSTFormSection
+        id="gst-canc-details-section"
+        icon={<FileText />}
+        title="Cancellation Details"
+        subtitle="Specify your GSTIN, reason and effective date for cancellation"
+        fields={['gstin', 'reason', 'cancellationDate']}
+        errors={errors}
+      >
         <div className="gst-canc-field-group">
-          <label htmlFor="gst-canc-reason-select" className="gst-canc-label">
-            Reason for Cancellation <span className="gst-canc-star">*</span>
-          </label>
-          <div className="gst-canc-select-wrapper">
-            <select
-              id="gst-canc-reason-select" value={reason}
-              onChange={(e) => { setReason(e.target.value); clearError('reason') }}
-              className={`gst-canc-select ${errors.reason ? 'has-error' : ''}`}
-            >
-              <option value="">Select Reason for Cancellation</option>
-              {REASON_OPTIONS.map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
-            </select>
-            <span className="gst-canc-chevron">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </span>
-          </div>
-          {errors.reason && <span className="gst-canc-error-msg">{errors.reason}</span>}
-        </div>
-
-        <div className="gst-canc-field-group">
-          <label htmlFor="gst-canc-date-input" className="gst-canc-label">
-            Date Cancellation Is Sought <span className="gst-canc-star">*</span>
-          </label>
-          <div className="gst-canc-date-wrapper" onClick={handleCalendarClick}>
-            <input
-              id="gst-canc-date-input" ref={dateInputRef} type="date" value={cancellationDate}
-              onChange={(e) => { setCancellationDate(e.target.value); clearError('cancellationDate') }}
-              className={`gst-canc-date-input ${errors.cancellationDate ? 'has-error' : ''}`}
-            />
-            <button type="button" className="gst-canc-calendar-btn" onClick={(e) => { e.stopPropagation(); handleCalendarClick() }} aria-label="Open calendar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
-            </button>
-          </div>
-          {errors.cancellationDate && <span className="gst-canc-error-msg">{errors.cancellationDate}</span>}
-        </div>
-      </div>
-
-      <div className="gst-canc-form-row">
-        <div className="gst-canc-field-group">
-          <label htmlFor="gst-canc-dues-input" className="gst-canc-label">Pending Dues / Liabilities (Optional)</label>
-          <input id="gst-canc-dues-input" type="text" placeholder="Enter any pending penalty or tax dues, if any" value={pendingLiabilities} onChange={(e) => setPendingLiabilities(e.target.value)} className="gst-canc-input" />
-        </div>
-
-        <div className="gst-canc-field-group">
-          <label htmlFor="gst-canc-gstr3b-input" className="gst-canc-label">
-            Last GSTR-3B Filed ARN / Period <span className="gst-canc-star">*</span>
+          <label htmlFor="gst-canc-gstin-input" className="gst-canc-label">
+            GSTIN (15-Character) <span className="gst-canc-star">*</span>
           </label>
           <input
-            id="gst-canc-gstr3b-input" type="text" placeholder="Enter ARN or return period" value={lastGstr3bFiled}
-            onChange={(e) => { setLastGstr3bFiled(gstInput.text(e.target.value, 60)); clearError('lastGstr3bFiled') }}
-            className={`gst-canc-input ${errors.lastGstr3bFiled ? 'has-error' : ''}`}
+            id="gst-canc-gstin-input" type="text" maxLength={15} placeholder="Enter your GSTIN"
+            value={gstin} onChange={(e) => { setGstin(gstInput.gstin(e.target.value)); clearError('gstin') }}
+            className={`gst-canc-input ${errors.gstin ? 'has-error' : ''}`}
           />
-          {errors.lastGstr3bFiled && <span className="gst-canc-error-msg">{errors.lastGstr3bFiled}</span>}
+          {errors.gstin && <span className="gst-canc-error-msg">{errors.gstin}</span>}
         </div>
-      </div>
 
-      <div className="gst-canc-field-group">
-        <label htmlFor="gst-canc-stock-textarea" className="gst-canc-label">
-          Details of Closing Stock & Input Tax Reversal <span className="gst-canc-star">*</span>
-        </label>
-        <div className="gst-canc-textarea-wrapper">
-          <textarea
-            id="gst-canc-stock-textarea" rows={3} maxLength={300} placeholder="Describe closing inventory value and ITC reversal or enter 'Nil'"
-            value={closingStockDetails} onChange={(e) => { setClosingStockDetails(gstInput.text(e.target.value, 500)); clearError('closingStockDetails') }}
-            className={`gst-canc-textarea ${errors.closingStockDetails ? 'has-error' : ''}`}
-          />
-          <span className="gst-canc-char-count">{closingStockDetails.length}/300</span>
+        <div className="gst-canc-form-row">
+          <div className="gst-canc-field-group">
+            <label htmlFor="gst-canc-reason-select" className="gst-canc-label">
+              Reason for Cancellation <span className="gst-canc-star">*</span>
+            </label>
+            <div className="gst-canc-select-wrapper">
+              <select
+                id="gst-canc-reason-select" value={reason}
+                onChange={(e) => { setReason(e.target.value); clearError('reason') }}
+                className={`gst-canc-select ${errors.reason ? 'has-error' : ''}`}
+              >
+                <option value="">Select Reason for Cancellation</option>
+                {REASON_OPTIONS.map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
+              </select>
+              <span className="gst-canc-chevron">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </span>
+            </div>
+            {errors.reason && <span className="gst-canc-error-msg">{errors.reason}</span>}
+          </div>
+
+          <div className="gst-canc-field-group">
+            <label htmlFor="gst-canc-date-input" className="gst-canc-label">
+              Date Cancellation Is Sought <span className="gst-canc-star">*</span>
+            </label>
+            <div className="gst-canc-date-wrapper" onClick={handleCalendarClick}>
+              <input
+                id="gst-canc-date-input" ref={dateInputRef} type="date" value={cancellationDate}
+                onChange={(e) => { setCancellationDate(e.target.value); clearError('cancellationDate') }}
+                className={`gst-canc-date-input ${errors.cancellationDate ? 'has-error' : ''}`}
+              />
+              <button type="button" className="gst-canc-calendar-btn" onClick={(e) => { e.stopPropagation(); handleCalendarClick() }} aria-label="Open calendar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
+              </button>
+            </div>
+            {errors.cancellationDate && <span className="gst-canc-error-msg">{errors.cancellationDate}</span>}
+          </div>
         </div>
-        {errors.closingStockDetails && <span className="gst-canc-error-msg">{errors.closingStockDetails}</span>}
-      </div>
-    </div>
+      </GSTFormSection>
+
+      {/* Section 2: Liabilities & Stock Details Card */}
+      <GSTFormSection
+        id="gst-canc-liabilities-section"
+        icon={<Calculator />}
+        title="Liabilities & Stock Details"
+        subtitle="Declare pending tax liabilities, last return filed, and closing stock"
+        fields={['lastGstr3bFiled', 'closingStockDetails']}
+        errors={errors}
+      >
+        <div className="gst-canc-form-row">
+          <div className="gst-canc-field-group">
+            <label htmlFor="gst-canc-dues-input" className="gst-canc-label">Pending Dues / Liabilities (Optional)</label>
+            <input
+              id="gst-canc-dues-input"
+              type="text"
+              placeholder="Enter amount in ₹ (e.g. 10,000)"
+              value={pendingLiabilities}
+              onChange={(e) => setPendingLiabilities(gstInput.amount(e.target.value))}
+              className="gst-canc-input"
+            />
+          </div>
+
+          <div className="gst-canc-field-group">
+            <label htmlFor="gst-canc-gstr3b-input" className="gst-canc-label">
+              Last GSTR-3B Filed ARN / Period <span className="gst-canc-star">*</span>
+            </label>
+            <input
+              id="gst-canc-gstr3b-input"
+              type="text"
+              maxLength={20}
+              placeholder="e.g. AA270124000123Z or March 2024"
+              value={lastGstr3bFiled}
+              onChange={(e) => { setLastGstr3bFiled(gstInput.reference(e.target.value)); clearError('lastGstr3bFiled') }}
+              className={`gst-canc-input ${errors.lastGstr3bFiled ? 'has-error' : ''}`}
+            />
+            {errors.lastGstr3bFiled && <span className="gst-canc-error-msg">{errors.lastGstr3bFiled}</span>}
+          </div>
+        </div>
+
+        <div className="gst-canc-field-group">
+          <label htmlFor="gst-canc-stock-textarea" className="gst-canc-label">
+            Details of Closing Stock & Input Tax Reversal <span className="gst-canc-star">*</span>
+          </label>
+          <div className="gst-canc-textarea-wrapper">
+            <textarea
+              id="gst-canc-stock-textarea" rows={3} maxLength={300} placeholder="Describe closing inventory value and ITC reversal or enter 'Nil'"
+              value={closingStockDetails} onChange={(e) => { setClosingStockDetails(gstInput.text(e.target.value, 500)); clearError('closingStockDetails') }}
+              className={`gst-canc-textarea ${errors.closingStockDetails ? 'has-error' : ''}`}
+            />
+            <span className="gst-canc-char-count">{closingStockDetails.length}/300</span>
+          </div>
+          {errors.closingStockDetails && <span className="gst-canc-error-msg">{errors.closingStockDetails}</span>}
+        </div>
+      </GSTFormSection>
+    </>
   )
 }
 

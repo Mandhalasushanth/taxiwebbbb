@@ -36,19 +36,17 @@ describe('LoanMarketplace Module', () => {
     cleanup()
   })
 
-  it('contains exactly 9 loans in the marketplace catalog matching the specification', () => {
-    expect(LOAN_MARKETPLACE_ITEMS).toHaveLength(9)
+  it('contains exactly 7 loans in the marketplace catalog matching the specification', () => {
+    expect(LOAN_MARKETPLACE_ITEMS).toHaveLength(7)
 
     const expectedOrder = [
-      { id: 'business-loan', title: 'Business Loan' },
+      { id: 'business-working-capital', title: 'Business & Working Capital' },
       { id: 'personal-loan', title: 'Personal Loan' },
       { id: 'home-loan', title: 'Home Loan' },
       { id: 'property-loan', title: 'Property Loan' },
       { id: 'vehicle-loan', title: 'Vehicle Loan' },
-      { id: 'working-capital', title: 'Working Capital' },
       { id: 'machinery-loan', title: 'Machinery Loan' },
       { id: 'project-finance', title: 'Project Finance' },
-      { id: 'msme-loan', title: 'MSME Loan' },
     ]
 
     expectedOrder.forEach((expected, index) => {
@@ -58,7 +56,7 @@ describe('LoanMarketplace Module', () => {
     })
   })
 
-  it('renders all 9 loan cards and header inside LoanMarketplace without rate badges', () => {
+  it('renders all 7 loan cards and header inside LoanMarketplace without rate badges', () => {
     render(
       <MemoryRouter>
         <LoanMarketplace />
@@ -68,16 +66,14 @@ describe('LoanMarketplace Module', () => {
     expect(screen.getByText('Capital & Financing')).toBeInTheDocument()
     expect(screen.getByText('Loan Marketplace & Assistance')).toBeInTheDocument()
 
-    // Verify all 9 loan titles are rendered
-    expect(screen.getByText('Business Loan')).toBeInTheDocument()
+    // Verify all 7 loan titles are rendered
+    expect(screen.getByText('Business & Working Capital')).toBeInTheDocument()
     expect(screen.getByText('Personal Loan')).toBeInTheDocument()
     expect(screen.getByText('Home Loan')).toBeInTheDocument()
     expect(screen.getByText('Property Loan')).toBeInTheDocument()
     expect(screen.getByText('Vehicle Loan')).toBeInTheDocument()
-    expect(screen.getByText('Working Capital')).toBeInTheDocument()
     expect(screen.getByText('Machinery Loan')).toBeInTheDocument()
     expect(screen.getByText('Project Finance')).toBeInTheDocument()
-    expect(screen.getByText('MSME Loan')).toBeInTheDocument()
 
     // Verify rate badges are removed
     expect(screen.queryByText('From 12% p.a.')).not.toBeInTheDocument()

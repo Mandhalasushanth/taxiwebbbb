@@ -19,6 +19,7 @@ interface GSTNoticeResponseFieldsProps {
   onNoticeFileChange: (file: File | null) => void
   errors?: Partial<Record<keyof NoticeResponseValues | 'noticeFile', string>>
   onPreviewDoc?: (file: File, title: string) => void
+  onBlurField?: (field: keyof NoticeResponseValues) => void
 }
 
 /** Notice details for a compliance request; the values live in the parent so they can be validated and drafted */
@@ -29,6 +30,7 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
   onNoticeFileChange,
   errors = {},
   onPreviewDoc,
+  onBlurField,
 }) => {
   const { noticeNumber, issueDate, dueDate, additionalInfo } = values
 
@@ -86,16 +88,22 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
       <div className="gst-notice-body">
         {/* Field 1: Notice Number */}
         <div className="gst-notice-field-group">
-          <label className="gst-notice-label">
+          <label className="gst-notice-label" htmlFor="gst-notice-number-input">
             Enter notice number <span className="req-asterisk">*</span>
           </label>
           <input
+            id="gst-notice-number-input"
             type="text"
-            placeholder="Enter notice number"
+            maxLength={20}
+            placeholder="e.g. ZA270124000123Z or CBIC DIN"
             value={noticeNumber}
-            onChange={(e) => onChange('noticeNumber', gstInput.reference(e.target.value))}
+            onChange={(e) => onChange('noticeNumber', gstInput.noticeNumber(e.target.value))}
+            onBlur={() => onBlurField?.('noticeNumber')}
             className={`gst-notice-input ${errors.noticeNumber ? 'has-error' : ''}`}
           />
+          <span className="gst-notice-field-hint">
+            15-character GST Portal Reference Number (RFN) or 20-digit CBIC DIN
+          </span>
           {errors.noticeNumber && <span className="form-error">{errors.noticeNumber}</span>}
         </div>
 

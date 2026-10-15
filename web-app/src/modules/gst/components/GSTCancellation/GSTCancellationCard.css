@@ -187,12 +187,19 @@
 }
 
 /* Card 4: Declaration Checkbox Card */
+.gst-canc-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
 .gst-canc-declaration-card {
   background-color: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.25rem 1.5rem;
-  margin-top: 1.5rem;
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+  padding: 1.35rem 1.65rem;
+  margin-top: 0;
   display: flex;
   align-items: flex-start;
   gap: 1rem;

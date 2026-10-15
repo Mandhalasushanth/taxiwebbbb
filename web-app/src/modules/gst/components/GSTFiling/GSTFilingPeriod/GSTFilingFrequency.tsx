@@ -35,6 +35,9 @@ export const GSTFilingFrequency: React.FC<GSTFilingFrequencyProps> = ({
           )
         })}
       </div>
+      <p className="gst-filing-frequency__hint">
+        Frequency filters both the period list and the return types below.
+      </p>
       {error && <span className="gst-filing-period__error-text">{error}</span>}
     </div>
   )
