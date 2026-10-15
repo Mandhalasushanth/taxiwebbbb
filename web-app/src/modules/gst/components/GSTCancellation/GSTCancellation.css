@@ -11,6 +11,11 @@
   margin: 0;
 }
 
+.gst-canc-star {
+  color: var(--palette-red-500, #ef4444);
+  margin-left: 2px;
+}
+
 @media (max-width: 640px) {
   .gst-cancellation-page {
     padding: 1rem 0 2rem 0;

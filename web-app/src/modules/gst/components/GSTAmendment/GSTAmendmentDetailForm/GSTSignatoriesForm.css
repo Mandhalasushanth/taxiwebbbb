@@ -1,157 +1,69 @@
 /* Authorised Signatories Form Styling */
 
-.gst-sig-readonly-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem 2rem;
-  padding: 0.25rem 0;
-}
-
-.gst-sig-readonly-col {
-  display: flex;
-  flex-direction: column;
-}
-
-.gst-sig-dob-wrapper {
+.gst-sig-dob-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+  border: 1px solid var(--grey-300);
+  border-radius: 10px;
+  background-color: var(--surface);
+  transition: all 0.2s ease;
 }
 
-.gst-sig-date-input {
-  cursor: pointer;
-  padding-right: 2.75rem;
+.gst-sig-dob-input-wrapper:focus-within {
+  border-color: var(--palette-blue-600);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
-.gst-sig-date-input::-webkit-calendar-picker-indicator {
-  opacity: 0;
-  cursor: pointer;
+.gst-sig-dob-input-wrapper.has-error {
+  border-color: var(--palette-red-500);
+  background-color: var(--palette-red-50);
 }
 
-.gst-sig-calendar-btn {
-  position: absolute;
-  right: 0.75rem;
-  background: transparent;
-  border: none;
-  color: var(--secondary-text);
+.gst-sig-dob-calendar-icon {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-left: 0.875rem;
+  color: #0284c7;
+  pointer-events: none;
+}
+
+.gst-sig-dob-calendar-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.gst-sig-dob-native-input {
+  flex: 1;
+  padding: 0.8125rem 0.75rem;
+  border: none;
+  background: transparent;
+  font-size: 0.9375rem;
+  color: var(--palette-slate-900);
+  outline: none;
   cursor: pointer;
-  padding: 0.25rem;
-  transition: color 0.2s ease;
 }
 
-.gst-sig-calendar-btn:hover {
-  color: var(--palette-blue-600);
+.gst-sig-dob-native-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.gst-sig-calendar-btn svg {
+.gst-sig-dob-chevron {
+  display: flex;
+  align-items: center;
+  padding-right: 0.875rem;
+  color: #0284c7;
+  pointer-events: none;
+}
+
+.gst-sig-dob-chevron svg {
   width: 18px;
   height: 18px;
-}
-
-/* Sidebar Cards */
-.gst-sig-accepted-proofs-card {
-  background-color: var(--palette-orange-50);
-  border: 1px solid var(--orange-200);
-  border-radius: 12px;
-  padding: 1.25rem;
-  margin-bottom: 1.25rem;
-}
-
-.gst-sig-info-card {
-  background-color: var(--palette-blue-50);
-  border: 1px solid var(--palette-blue-100);
-  border-radius: 12px;
-  padding: 1.25rem;
-  margin-bottom: 1.25rem;
-}
-
-.gst-sig-card-header {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  margin-bottom: 0.75rem;
-}
-
-.gst-sig-orange-icon-box {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: var(--palette-orange-600);
-  color: var(--surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gst-sig-orange-icon-box svg {
-  width: 14px;
-  height: 14px;
-}
-
-.gst-sig-blue-icon-box {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: var(--palette-blue-600);
-  color: var(--surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gst-sig-blue-icon-box svg {
-  width: 14px;
-  height: 14px;
-}
-
-.gst-sig-card-title {
-  font-size: 0.95rem;
-  font-weight: 700;
-  margin: 0;
-}
-
-.gst-sig-card-title.orange-title {
-  color: var(--orange-800);
-}
-
-.gst-sig-card-title.blue-title {
-  color: var(--palette-blue-800-1e40af);
-}
-
-.gst-sig-proofs-list,
-.gst-sig-info-list {
-  margin: 0;
-  padding-left: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  font-size: 0.8125rem;
-  line-height: 1.45;
-}
-
-.gst-sig-proofs-list {
-  color: var(--orange-800);
-}
-
-.gst-sig-info-list {
-  color: var(--palette-blue-800-1e40af);
-}
-
-.gst-sig-proofs-list li::marker {
-  color: var(--palette-orange-600);
-}
-
-.gst-sig-info-list li::marker {
-  color: var(--palette-blue-600);
-}
-
-@media (max-width: 768px) {
-  .gst-sig-readonly-grid {
-    grid-template-columns: 1fr;
-  }
 }

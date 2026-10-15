@@ -58,6 +58,11 @@
   color: var(--palette-slate-800);
 }
 
+.req-asterisk {
+  color: var(--palette-red-500, #ef4444);
+  margin-left: 2px;
+}
+
 .gst-notice-field-hint {
   font-size: 0.775rem;
   color: var(--secondary-text);

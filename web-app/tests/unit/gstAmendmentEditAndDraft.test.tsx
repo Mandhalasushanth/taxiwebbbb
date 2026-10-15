@@ -36,7 +36,7 @@ describe('GST Amendment Edit Flow & Draft Persistence', () => {
     )
 
     // Fill valid GSTIN first
-    const gstinInput = screen.getByPlaceholderText('Enter your GSTIN')
+    const gstinInput = screen.getByPlaceholderText('Enter 15-character GSTIN')
     fireEvent.change(gstinInput, { target: { value: '29AAAAA0000F1Z2' } })
 
     // Select Legal Business Name card
@@ -44,7 +44,7 @@ describe('GST Amendment Edit Flow & Draft Persistence', () => {
     fireEvent.click(legalNameCard)
 
     // Form screen should be visible
-    const input = screen.getByPlaceholderText('As per PAN')
+    const input = screen.getByPlaceholderText('Enter legal business name')
     expect(input).toBeInTheDocument()
 
     // Type a new legal name
@@ -56,8 +56,8 @@ describe('GST Amendment Edit Flow & Draft Persistence', () => {
     expect(fileInput).toBeInTheDocument()
     await pickFiles(fileInput, [file])
 
-    // Click Review Changes button
-    const reviewBtn = screen.getByRole('button', { name: /Review Changes/i })
+    // Click Continue button
+    const reviewBtn = screen.getByRole('button', { name: /Continue|Review Changes/i })
     fireEvent.click(reviewBtn)
 
     // Review screen should be displayed
@@ -72,7 +72,7 @@ describe('GST Amendment Edit Flow & Draft Persistence', () => {
 
     // Form screen should be back with the typed value and file PRESERVED!
     await waitFor(() => {
-      const restoredInput = screen.getByPlaceholderText('As per PAN') as HTMLInputElement
+      const restoredInput = screen.getByPlaceholderText('Enter legal business name') as HTMLInputElement
       expect(restoredInput.value).toBe('Acme Global Enterprises')
       expect(screen.getByText(/incorporation_cert\.pdf/i)).toBeInTheDocument()
     })
@@ -83,7 +83,7 @@ describe('GST Amendment Edit Flow & Draft Persistence', () => {
     expect(updateAndReviewBtn).toHaveTextContent('Update & Review')
 
     // Edit the input further
-    const restoredInput = screen.getByPlaceholderText('As per PAN') as HTMLInputElement
+    const restoredInput = screen.getByPlaceholderText('Enter legal business name') as HTMLInputElement
     fireEvent.change(restoredInput, { target: { value: 'Acme Global Worldwide Enterprises' } })
 
     // Click Update & Review
@@ -129,7 +129,7 @@ describe('GST Amendment Edit Flow & Draft Persistence', () => {
 
     // Should restore directly into the form step with prefilled values
     await waitFor(() => {
-      const input = screen.getByPlaceholderText('As per PAN') as HTMLInputElement
+      const input = screen.getByPlaceholderText('Enter legal business name') as HTMLInputElement
       expect(input.value).toBe('Saved Draft Corp Private Limited')
       expect(screen.getByText(/certificate_draft\.pdf/i)).toBeInTheDocument()
     })

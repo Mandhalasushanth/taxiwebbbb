@@ -11,6 +11,7 @@ import {
 export interface AmendmentConfig {
   title: string
   currentValue: string
+  currentLabel?: string
   inputLabel: string
   placeholder: string
   proofs: string[]
@@ -24,8 +25,9 @@ const AMENDMENT_CONFIG_TEMPLATES: Record<string, AmendmentConfigTemplate> = {
   legal_name: {
     title: 'Legal Business Name',
     currentValue: (p) => orNotAvailable(p.legalName),
+    currentLabel: 'Legal Name',
     inputLabel: 'New Legal Business Name',
-    placeholder: 'As per PAN',
+    placeholder: 'Enter legal business name',
     proofs: [
       'Certificate of Incorporation / Name Change Certificate',
       'Revised Certificate of Incorporation',
@@ -38,29 +40,39 @@ const AMENDMENT_CONFIG_TEMPLATES: Record<string, AmendmentConfigTemplate> = {
   principal_place: {
     title: 'Principal Place of Business',
     currentValue: formatProfileAddress,
+    currentLabel: 'Principal Address',
     inputLabel: 'New Principal Address',
-    placeholder: 'Enter full address with PIN code',
+    placeholder: 'Enter business address',
     proofs: [
-      'Electricity bill / Utility bill (not older than 2 months)',
-      'Rent / Lease Agreement & No Objection Certificate (NOC)',
-      'Property tax receipt or Municipal khata copy',
-      'Consent letter from property owner along with ownership proof',
+      'Property Tax Receipt',
+      'Municipal Khata Certificate / Khata Copy',
+      'Electricity Bill',
+      'Rent / Lease Agreement',
+      'Consent Letter',
+      'Government-issued document/certificate showing the premises',
+      'Legal ownership document',
     ],
   },
   additional_place: {
     title: 'Additional Place of Business',
     currentValue: () => 'None on record',
+    currentLabel: 'Additional Place Address',
     inputLabel: 'New Additional Place Address',
-    placeholder: 'Enter full address of additional premises',
+    placeholder: 'Enter business address',
     proofs: [
-      'Lease / Rental agreement for additional premises',
-      'Latest Utility Bill (Electricity/Water)',
-      'Property Ownership Deed / Khata copy',
+      'Property Tax Receipt',
+      'Municipal Khata Certificate / Khata Copy',
+      'Electricity Bill',
+      'Rent / Lease Agreement',
+      'Consent Letter',
+      'Government-issued document/certificate showing the premises',
+      'Legal ownership document',
     ],
   },
   bank_accounts: {
     title: 'Bank Accounts',
     currentValue: formatProfileBank,
+    currentLabel: 'Bank Account Details',
     inputLabel: 'New Bank Account Details',
     placeholder: 'Enter Account Number & IFSC Code',
     proofs: [
@@ -72,23 +84,31 @@ const AMENDMENT_CONFIG_TEMPLATES: Record<string, AmendmentConfigTemplate> = {
   authorised_signatories: {
     title: 'Authorised Signatories',
     currentValue: formatProfileSignatory,
+    currentLabel: 'Authorised Signatory Name',
     inputLabel: 'New Authorised Signatory Name',
     placeholder: 'Enter full name as per Aadhaar/PAN',
     proofs: [
-      'Board Resolution / Letter of Authorisation',
-      'Copy of PAN & Aadhaar of new signatory',
-      'Passport / Voter ID proof',
+      'Letter of Authorisation',
+      'Board Resolution',
+      'Managing Committee Resolution',
+      'Acceptance Letter accompanying the Resolution',
+      'Applicable official appointment / authorisation document',
+      'Other official authorisation document applicable to the entity',
     ],
   },
   contact_details: {
     title: 'Contact Details',
     currentValue: formatProfileContact,
-    inputLabel: 'New Contact Mobile & Email',
+    currentLabel: 'Contact Details',
+    inputLabel: 'New Primary Contact Mobile & Email',
     placeholder: 'Enter new mobile number & official email',
     proofs: [
-      'Authorisation letter signed by proprietor/authorised signatory',
-      'Self-attested PAN of authorised signatory',
-      'ID proof / Board declaration',
+      'Official government/business registration document showing the updated contact details',
+      'Official government correspondence showing the updated contact details',
+      'Other supporting document showing the updated contact details',
+      'Board Resolution / Authorization for contact update',
+      'Utility Bill in the name of the entity / authorized person',
+      'Other official document evidencing the contact detail change',
     ],
   },
 }
@@ -97,7 +117,7 @@ const AMENDMENT_CONFIG_TEMPLATES: Record<string, AmendmentConfigTemplate> = {
 export const getAmendmentConfig = (id: string, fallbackTitle: string): AmendmentConfig => {
   const template = AMENDMENT_CONFIG_TEMPLATES[id]
   if (!template) {
-    return { title: fallbackTitle, currentValue: 'Current details', inputLabel: 'New Value', placeholder: 'Enter new value', proofs: [] }
+    return { title: fallbackTitle, currentValue: 'Current details', currentLabel: 'Current details', inputLabel: 'New Value', placeholder: 'Enter new value', proofs: [] }
   }
   return { ...template, currentValue: template.currentValue(gstProfileService.get()) }
 }

@@ -60,6 +60,12 @@
   margin-bottom: 8px;
 }
 
+.gst-filing-period__required {
+  color: var(--palette-red-500, #ef4444);
+  margin-left: 3px;
+  font-weight: 700;
+}
+
 .gst-filing-period__select-wrap {
   position: relative;
   display: flex;

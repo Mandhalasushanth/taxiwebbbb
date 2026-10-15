@@ -101,9 +101,12 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
       <div className="gst-amend-top-row">
         {/* Left Column: GSTIN Input Box */}
         <div className="gst-amend-gstin-box">
-          <label htmlFor="gstin-search-input" className="gst-amend-gstin-label">
-            GSTIN <span className="gst-amend-required-star">*</span>
-          </label>
+          <div className="gst-amend-gstin-header-row">
+            <label htmlFor="gstin-search-input" className="gst-amend-gstin-label">
+              GSTIN to Amend <span className="gst-amend-required-star">*</span>
+            </label>
+            <span className="gst-amend-gstin-counter">{gstin.length}/15</span>
+          </div>
 
           <div className="gst-amend-input-wrapper">
             <input
@@ -112,7 +115,7 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
               value={gstin}
               onChange={handleInputChange}
               maxLength={15}
-              placeholder="Enter your GSTIN"
+              placeholder="Enter 15-character GSTIN"
               className={`gst-amend-input ${errorText ? 'has-error' : ''}`}
             />
           </div>
@@ -121,7 +124,6 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
             <span className="gst-amend-gstin-hint">
               {errorText ? <span className="gst-amend-error-text">{errorText}</span> : 'Enter 15 digit GSTIN to proceed'}
             </span>
-            <span className="gst-amend-gstin-counter">{gstin.length} / 15 chars</span>
           </div>
         </div>
 
@@ -136,7 +138,7 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
           </div>
           <div className="gst-amend-info-card__text-wrap">
             <h4 className="gst-amend-info-card__title">
-              Amendments reuse your GST Registration fields, validation and upload flow — nothing new to learn.
+              Core amendments require tax officer approval (approx. 15 working days). Non-core amendments are auto-approved via portal acknowledgment.
             </h4>
           </div>
         </div>
@@ -145,9 +147,9 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
       {/* Core Amendments Section */}
       <section className="gst-amend-section">
         <div className="gst-amend-section__header">
-          <h2 className="gst-amend-section__title">Core amendments</h2>
+          <h2 className="gst-amend-section__title">Core Fields</h2>
           <p className="gst-amend-section__desc">
-            These changes require officer approval and are part of your core GST details.
+            Requires Tax Officer approval & supporting government orders
           </p>
         </div>
 
@@ -166,6 +168,9 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
               <div className="gst-amend-card__info">
                 <h3 className="gst-amend-card__title">{item.title}</h3>
                 <p className="gst-amend-card__subtitle">{item.subtitle}</p>
+                <span className="gst-amend-card__badge gst-amend-card__badge--core">
+                  Approval Required
+                </span>
               </div>
               <div className="gst-amend-card__arrow">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -180,9 +185,9 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
       {/* Non-core Amendments Section */}
       <section className="gst-amend-section">
         <div className="gst-amend-section__header">
-          <h2 className="gst-amend-section__title">Non-core amendments</h2>
+          <h2 className="gst-amend-section__title">Non-Core Fields</h2>
           <p className="gst-amend-section__desc">
-            These changes are auto-approved and do not require officer approval.
+            Auto-updated on GST Portal after submission
           </p>
         </div>
 
@@ -201,6 +206,9 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
               <div className="gst-amend-card__info">
                 <h3 className="gst-amend-card__title">{item.title}</h3>
                 <p className="gst-amend-card__subtitle">{item.subtitle}</p>
+                <span className="gst-amend-card__badge gst-amend-card__badge--non_core">
+                  Auto Approved
+                </span>
               </div>
               <div className="gst-amend-card__arrow">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -133,107 +133,163 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
     })
   }
 
+  const [isExpanded, setIsExpanded] = useState<boolean>(false)
+
+  const proofs = [
+    'Bank Statement',
+    'First Page of Passbook',
+    'Cancelled Cheque',
+    'Recent Bank Account Statement (last 3 months)',
+    'Bank Account Certificate Issued by Bank',
+    'Letter from Bank confirming account details',
+  ]
+
   return (
     <div className="gst-amend-detail-container gst-amend-bank-container">
       {/* Header */}
       <div className="gst-amend-detail-header">
         <h1 className="gst-amend-detail-title">Bank Accounts</h1>
+        <p className="gst-amend-detail-subtitle">Non-core field amendment</p>
       </div>
 
       <form onSubmit={handleSubmitForm} noValidate>
-
-        {/* Card 2: New details */}
+        {/* Card 1: Currently Registered on Portal */}
         <div className="gst-amend-card-box">
-          <h3 className="gst-amend-card-box__title">New details</h3>
-
-          {/* Row 1: Bank Name & Account Number */}
-          <div className="gst-amend-form-row">
-            <div className="gst-amend-field-group">
-              <label htmlFor="bank-name-input" className="gst-amend-field-label">
-                New Bank Name <span className="gst-amend-star">*</span>
-              </label>
-              <input
-                id="bank-name-input"
-                type="text"
-                placeholder="Enter bank name"
-                value={bankName}
-                onChange={(e) => {
-                  setBankName(gstInput.letters(e.target.value))
-                  if (errors.bankName) setErrors((prev) => ({ ...prev, bankName: '' }))
-                }}
-                className={`gst-amend-text-input ${errors.bankName ? 'has-error' : ''}`}
-              />
-              {errors.bankName && <span className="gst-amend-error-msg">{errors.bankName}</span>}
+          <div className="gst-amend-card-box__header-flex">
+            <div className="gst-amend-card-header-icon-box gst-amend-card-header-icon-box--building">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
+                <path d="M9 22v-4h6v4" />
+              </svg>
             </div>
+            <div>
+              <h3 className="gst-amend-card-box__title">Currently Registered on Portal</h3>
+              <p className="gst-amend-card-box__subtitle">Read-only baseline from GST profile</p>
+            </div>
+          </div>
+          <div className="gst-amend-readonly-multiline-list">
+            <div className="gst-amend-readonly-row">
+              <span className="gst-amend-readonly-label">Bank Name</span>
+              <span className="gst-amend-readonly-value">
+                {_currentDetailsProp?.bankName && _currentDetailsProp.bankName !== '—' ? _currentDetailsProp.bankName : '-'}
+              </span>
+            </div>
+            <div className="gst-amend-readonly-row">
+              <span className="gst-amend-readonly-label">Account Number</span>
+              <span className="gst-amend-readonly-value">
+                {_currentDetailsProp?.accountNumber && _currentDetailsProp.accountNumber !== '—' ? _currentDetailsProp.accountNumber : '-'}
+              </span>
+            </div>
+            <div className="gst-amend-readonly-row">
+              <span className="gst-amend-readonly-label">IFSC Code</span>
+              <span className="gst-amend-readonly-value">
+                {_currentDetailsProp?.ifscCode && _currentDetailsProp.ifscCode !== '—' ? _currentDetailsProp.ifscCode : '-'}
+              </span>
+            </div>
+          </div>
+        </div>
 
-            <div className="gst-amend-field-group">
-              <label htmlFor="account-no-input" className="gst-amend-field-label">
-                New Account Number <span className="gst-amend-star">*</span>
-              </label>
-              <input
-                id="account-no-input"
-                type="text"
-                placeholder="Enter your bank account number"
-                value={accountNumber}
-                onChange={(e) => {
-                  setAccountNumber(gstInput.accountNumber(e.target.value))
-                  if (errors.accountNumber) setErrors((prev) => ({ ...prev, accountNumber: '' }))
-                }}
-                className={`gst-amend-text-input ${errors.accountNumber ? 'has-error' : ''}`}
-              />
-              {errors.accountNumber && <span className="gst-amend-error-msg">{errors.accountNumber}</span>}
+        {/* Card 2: Amended details */}
+        <div className="gst-amend-card-box">
+          <div className="gst-amend-card-box__header-flex">
+            <div className="gst-amend-card-header-icon-box gst-amend-card-header-icon-box--edit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="gst-amend-card-box__title">Amended details</h3>
+              <p className="gst-amend-card-box__subtitle">Enter revised information for verification</p>
             </div>
           </div>
 
-          {/* Row 2: Confirm Account Number & IFSC Code */}
-          <div className="gst-amend-form-row">
-            <div className="gst-amend-field-group">
-              <label htmlFor="confirm-account-no-input" className="gst-amend-field-label">
-                Confirm Account Number <span className="gst-amend-star">*</span>
-              </label>
-              <ConfirmAccountNumberInput
-                id="confirm-account-no-input"
-                name="confirmAccountNumber"
-                placeholder="Enter your bank account number"
-                value={confirmAccountNumber}
-                onChange={(val) => {
-                  setConfirmAccountNumber(val)
-                  if (errors.confirmAccountNumber) setErrors((prev) => ({ ...prev, confirmAccountNumber: '' }))
-                }}
-                className={`gst-amend-text-input ${errors.confirmAccountNumber ? 'has-error' : ''}`}
-                hasError={Boolean(errors.confirmAccountNumber)}
-                error={errors.confirmAccountNumber}
-              />
-            </div>
+          {/* Field 1: New Bank Name */}
+          <div className="gst-amend-field-group">
+            <label htmlFor="bank-name-input" className="gst-amend-field-label">
+              New Bank Name <span className="gst-amend-star">*</span>
+            </label>
+            <input
+              id="bank-name-input"
+              type="text"
+              placeholder="Enter bank name"
+              value={bankName}
+              onChange={(e) => {
+                setBankName(gstInput.letters(e.target.value))
+                if (errors.bankName) setErrors((prev) => ({ ...prev, bankName: '' }))
+              }}
+              className={`gst-amend-text-input ${errors.bankName ? 'has-error' : ''}`}
+            />
+            {errors.bankName && <span className="gst-amend-error-msg">{errors.bankName}</span>}
+          </div>
 
-            <div className="gst-amend-field-group">
-              <label htmlFor="ifsc-code-input" className="gst-amend-field-label">
-                New IFSC Code <span className="gst-amend-star">*</span>
-              </label>
-              <input
-                id="ifsc-code-input"
-                type="text"
-                placeholder="Enter your IFSC code"
-                value={ifscCode}
-                onChange={(e) => {
-                  const cleaned = gstInput.ifsc(e.target.value)
-                  setIfscCode(cleaned)
-                  if (errors.ifscCode) setErrors((prev) => ({ ...prev, ifscCode: '' }))
-                  if (cleaned.length >= 4) {
-                    const match = lookupSampleBankByIfsc(cleaned)
-                    if (match) {
-                      setBankName(match.bankName)
-                      if (errors.bankName) setErrors((prev) => ({ ...prev, bankName: '' }))
-                    }
+          {/* Field 2: New Bank Account Number */}
+          <div className="gst-amend-field-group">
+            <label htmlFor="account-no-input" className="gst-amend-field-label">
+              New Bank Account Number <span className="gst-amend-star">*</span>
+            </label>
+            <input
+              id="account-no-input"
+              type="text"
+              placeholder="Enter bank account number"
+              value={accountNumber}
+              onChange={(e) => {
+                setAccountNumber(gstInput.accountNumber(e.target.value))
+                if (errors.accountNumber) setErrors((prev) => ({ ...prev, accountNumber: '' }))
+              }}
+              className={`gst-amend-text-input ${errors.accountNumber ? 'has-error' : ''}`}
+            />
+            {errors.accountNumber && <span className="gst-amend-error-msg">{errors.accountNumber}</span>}
+          </div>
+
+          {/* Field 3: Confirm Bank Account Number */}
+          <div className="gst-amend-field-group">
+            <label htmlFor="confirm-account-no-input" className="gst-amend-field-label">
+              Confirm Bank Account Number <span className="gst-amend-star">*</span>
+            </label>
+            <ConfirmAccountNumberInput
+              id="confirm-account-no-input"
+              name="confirmAccountNumber"
+              placeholder="Re-enter bank account number"
+              value={confirmAccountNumber}
+              onChange={(val) => {
+                setConfirmAccountNumber(val)
+                if (errors.confirmAccountNumber) setErrors((prev) => ({ ...prev, confirmAccountNumber: '' }))
+              }}
+              className={`gst-amend-text-input ${errors.confirmAccountNumber ? 'has-error' : ''}`}
+              hasError={Boolean(errors.confirmAccountNumber)}
+              error={errors.confirmAccountNumber}
+            />
+          </div>
+
+          {/* Field 4: IFSC Code */}
+          <div className="gst-amend-field-group">
+            <label htmlFor="ifsc-code-input" className="gst-amend-field-label">
+              IFSC Code <span className="gst-amend-star">*</span>
+            </label>
+            <input
+              id="ifsc-code-input"
+              type="text"
+              placeholder="Enter IFSC code"
+              value={ifscCode}
+              onChange={(e) => {
+                const cleaned = gstInput.ifsc(e.target.value)
+                setIfscCode(cleaned)
+                if (errors.ifscCode) setErrors((prev) => ({ ...prev, ifscCode: '' }))
+                if (cleaned.length >= 4) {
+                  const match = lookupSampleBankByIfsc(cleaned)
+                  if (match) {
+                    setBankName(match.bankName)
+                    if (errors.bankName) setErrors((prev) => ({ ...prev, bankName: '' }))
                   }
-                }}
-                className={`gst-amend-text-input ${errors.ifscCode ? 'has-error' : ''}`}
-              />
-              {errors.ifscCode && <span className="gst-amend-error-msg">{errors.ifscCode}</span>}
-            </div>
+                }
+              }}
+              className={`gst-amend-text-input ${errors.ifscCode ? 'has-error' : ''}`}
+            />
+            {errors.ifscCode && <span className="gst-amend-error-msg">{errors.ifscCode}</span>}
           </div>
 
-          {/* Row 3: Account Type */}
+          {/* Field 5: Account Type */}
           <div className="gst-amend-field-group">
             <label htmlFor="account-type-select" className="gst-amend-field-label">
               Account Type <span className="gst-amend-star">*</span>
@@ -248,7 +304,7 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
                 }}
                 className={`gst-amend-select-input ${errors.accountType ? 'has-error' : ''}`}
               >
-                <option value="">Select an option</option>
+                <option value="">Select Account Type</option>
                 {ACCOUNT_TYPES.map((type) => (
                   <option key={type} value={type}>
                     {type}
@@ -266,6 +322,7 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
         </div>
 
         {/* Card 3: Supporting proof */}
+        <div className="gst-amend-section-heading">Supporting Proof</div>
         <GSTProofUpload
           selectedFile={selectedFile}
           existingFileName={!selectedFile ? effectiveFileName : undefined}
@@ -277,6 +334,50 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
             setRemovedInitialFile(true)
           }}
         />
+
+        {/* Accepted proofs card */}
+        <div className="gst-amend-accepted-proofs-card">
+          <div className="gst-amend-accepted-proofs-header">
+            <div className="gst-amend-accepted-proofs-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+            </div>
+            <span className="gst-amend-accepted-proofs-title">Accepted proofs</span>
+          </div>
+          <ul className="gst-amend-accepted-proofs-list">
+            {(isExpanded ? proofs : proofs.slice(0, 3)).map((proof, idx) => (
+              <li key={idx} className="gst-amend-accepted-proofs-item">
+                • {proof}
+              </li>
+            ))}
+          </ul>
+          {proofs.length > 3 && (
+            <button
+              type="button"
+              className="gst-amend-view-more-btn"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              {isExpanded ? (
+                <>
+                  View Less{' '}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="18 15 12 9 6 15" />
+                  </svg>
+                </>
+              ) : (
+                <>
+                  View More{' '}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </>
+              )}
+            </button>
+          )}
+        </div>
 
         {/* Bottom Action Row (Left: Back, Right: Review Changes) */}
         <div className="gst-amend-detail-actions-row">
@@ -322,7 +423,7 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
                 disabled={isSubmitting}
                 className="gst-amend-submit-orange-btn"
               >
-                {isSubmitting ? 'Submitting...' : 'Review Changes'}
+                {isSubmitting ? 'Submitting...' : 'Continue'}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />

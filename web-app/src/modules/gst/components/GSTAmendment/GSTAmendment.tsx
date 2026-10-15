@@ -57,6 +57,7 @@ export const GSTAmendment = () => {
         submissionDateText={new Date(submittedRecord.createdAt).toLocaleDateString('en-US')}
         requestedSection={sectionTitle}
         gstin={gstin || '29AAAAA0000F1Z2'}
+        estimatedCompletion={selectedOption?.type === 'non_core' ? 'Immediate / 1 Working Day' : '15 Working Days'}
         onTrackAmendment={() => navigate(routePaths.applications)}
         onGoToDashboard={handleBackToDashboard}
       />
@@ -165,6 +166,7 @@ export const GSTAmendment = () => {
             initialFile={formData?.file}
             initialFileName={formData?.fileName}
             initialFileSize={formData?.fileSizeText}
+            proofs={config.proofs}
             isSubmitting={isSubmitting}
             isEditMode={isEditMode}
             onBack={handleFormBack}
@@ -175,7 +177,9 @@ export const GSTAmendment = () => {
         ) : (
           <GSTAmendmentDetailForm
             title={config.title}
+            subtitle={selectedOption.type === 'core' ? 'Core field amendment' : 'Non-core field amendment'}
             currentValue={config.currentValue}
+            currentLabel={config.currentLabel}
             inputLabel={config.inputLabel}
             placeholder={config.placeholder}
             proofs={config.proofs}

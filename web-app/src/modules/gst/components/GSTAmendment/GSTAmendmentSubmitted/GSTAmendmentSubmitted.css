@@ -105,57 +105,59 @@
   background-color: var(--subtle-border);
 }
 
-/* Action Buttons Row - Only Two Buttons */
+/* Action Buttons Row - One Left, One Right */
 .gst-amend-submitted-actions-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-  margin-bottom: 1.5rem;
-}
-
-.gst-amend-submitted-btn-orange {
-  display: inline-flex;
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  padding: 0.9375rem 1.5rem;
-  background-color: var(--primary-orange);
-  border: none;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--surface);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
-  text-align: center;
-}
-
-.gst-amend-submitted-btn-orange:hover {
-  background-color: var(--palette-orange-600);
-  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35);
-  transform: translateY(-1px);
+  justify-content: space-between;
+  gap: 1.25rem;
+  width: 100%;
+  margin-bottom: 1.5rem;
 }
 
 .gst-amend-submitted-btn-navy {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.9375rem 1.5rem;
-  background-color: var(--surface);
-  border: 1.5px solid var(--palette-blue-900-1e3a8a);
+  padding: 0.875rem 1.75rem;
+  background-color: var(--palette-blue-900-1e3a8a, #0f3b75);
+  border: none;
   border-radius: 12px;
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--palette-blue-900-1e3a8a);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(15, 59, 117, 0.2);
+}
+
+.gst-amend-submitted-btn-navy:hover {
+  background-color: #0b2d59;
+  box-shadow: 0 6px 16px rgba(15, 59, 117, 0.3);
+  transform: translateY(-1px);
+}
+
+.gst-amend-submitted-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1.75rem;
+  background-color: var(--surface, #ffffff);
+  border: 1px solid var(--grey-300, #cbd5e1);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--palette-slate-800, #1e293b);
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
 }
 
-.gst-amend-submitted-btn-navy:hover {
-  background-color: var(--palette-blue-50);
-  border-color: var(--palette-blue-700);
-  color: var(--palette-blue-700);
+.gst-amend-submitted-btn-outline:hover {
+  background-color: var(--palette-slate-50, #f8fafc);
+  border-color: var(--muted-text, #94a3b8);
 }
 
 @media (max-width: 640px) {
@@ -168,6 +170,14 @@
   }
 
   .gst-amend-submitted-actions-row {
-    grid-template-columns: 1fr;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .gst-amend-submitted-btn-navy,
+  .gst-amend-submitted-btn-outline {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
   }
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { routePaths } from '@app/routes'
+import { routePaths } from '@core/config'
 import { GSTNoticeResponseFields } from '@modules/gst/shared/GSTComplianceCard/GSTNoticeResponseFields'
 import { ComplianceDocPreviewModal } from '@modules/gst/shared/GSTComplianceCard/GSTComplianceDocPreviewModal'
 import { GSTSubmitConfirmModal } from './GSTSubmitConfirmModal'

@@ -7,24 +7,17 @@ export interface RowItem {
 }
 
 export function getBankRows(details: BankDetailsItem, isRequested: boolean): RowItem[] {
-  const rows: RowItem[] = [
+  const displayAccountNumber =
+    isRequested && details.accountNumber && details.accountNumber.length > 4
+      ? `XXXX${details.accountNumber.slice(-4)}`
+      : details.accountNumber
+
+  return [
     { label: 'Bank Name', value: details.bankName },
-    { label: 'Account Number', value: details.accountNumber },
-  ]
-
-  if (isRequested) {
-    rows.push({
-      label: 'Confirm Account Number',
-      value: details.confirmAccountNumber || details.accountNumber,
-    })
-  }
-
-  rows.push(
+    { label: 'Account Number', value: displayAccountNumber },
     { label: 'IFSC Code', value: details.ifscCode },
-    { label: 'Account Type', value: details.accountType }
-  )
-
-  return rows
+    { label: 'Account Type', value: details.accountType },
+  ]
 }
 
 export function getAddressRows(
@@ -34,7 +27,7 @@ export function getAddressRows(
 ): RowItem[] {
   const rows: RowItem[] = [
     {
-      label: isRequested ? (isAdditional ? 'Additional Place Address' : 'Address') : 'Address',
+      label: isRequested ? (isAdditional ? 'Additional Place Address' : 'Business Address') : 'Address',
       value: details.address,
     },
     { label: 'City', value: details.city },
@@ -58,12 +51,20 @@ export function getAddressRows(
 
 export function getSignatoryRows(details: SignatoryDetailsItem, isRequested: boolean): RowItem[] {
   if (isRequested) {
+    let displayDob = details.dob || orNotAvailable('')
+    if (details.dob && /^\d{4}-\d{2}-\d{2}$/.test(details.dob)) {
+      const [year, month, day] = details.dob.split('-')
+      displayDob = `${day}-${month}-${year}`
+    }
+
+    const displayMobile = details.mobile ? details.mobile.replace(/^\+91\s*/, '') : ''
+
     return [
       { label: 'Signatory Name', value: details.name },
       { label: 'Signatory PAN', value: details.pan },
-      { label: 'Date of Birth', value: orNotAvailable(details.dob) },
+      { label: 'Date of Birth', value: displayDob },
       { label: 'Designation', value: details.designation },
-      { label: 'Signatory Mobile', value: details.mobile },
+      { label: 'Signatory Mobile', value: displayMobile },
       { label: 'Signatory Email', value: details.email },
     ]
   }
@@ -78,8 +79,9 @@ export function getSignatoryRows(details: SignatoryDetailsItem, isRequested: boo
 }
 
 export function getContactRows(details: ContactDetailsItem): RowItem[] {
+  const displayMobile = details.mobile ? details.mobile.replace(/^\+91\s*/, '') : ''
   return [
-    { label: 'Mobile Number', value: details.mobile },
+    { label: 'Mobile Number', value: displayMobile },
     { label: 'Email Address', value: details.email },
   ]
 }
