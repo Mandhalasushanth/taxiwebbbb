@@ -6,10 +6,8 @@ import {
   Home,
   Building,
   Car,
-  Building2,
   Factory,
   FolderGit2,
-  Award,
   Wallet,
 } from 'lucide-react'
 
@@ -49,13 +47,6 @@ export const ExecutivePersonIcon: React.FC = () => (
 )
 
 /**
- * 6. Working Capital: High-Rise Building with Grid Windows
- */
-export const BuildingGridIcon: React.FC = () => (
-  <Building2 size={36} className="loan-item-card__icon-svg" aria-hidden="true" />
-)
-
-/**
  * 7. Machinery Loan: Industrial Equipment / Vehicle
  */
 export const MachineryVehicleIcon: React.FC = () => (
@@ -67,13 +58,6 @@ export const MachineryVehicleIcon: React.FC = () => (
  */
 export const ProjectFinanceIcon: React.FC = () => (
   <FolderGit2 size={36} className="loan-item-card__icon-svg" aria-hidden="true" />
-)
-
-/**
- * 9. MSME Loan: Government Seal / Badge
- */
-export const MsmeSealIcon: React.FC = () => (
-  <Award size={36} className="loan-item-card__icon-svg" aria-hidden="true" />
 )
 
 /**

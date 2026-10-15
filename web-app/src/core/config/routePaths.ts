@@ -59,13 +59,17 @@ export const routePaths = {
   loans: '/loans',
   loansHomeLoan: '/loans/home-loan',
   loansPersonalLoan: '/loans/personal-loan',
-  loansBusinessLoan: '/loans/business-loan',
   loansPropertyLoan: '/loans/property-loan',
   loansVehicleLoan: '/loans/vehicle-loan',
-  loansWorkingCapitalLoan: '/loans/working-capital-loan',
+  /** Retired URLs that now redirect to loansBusinessWorkingCapital */
+  legacyLoans: {
+    businessLoan: '/loans/business-loan',
+    workingCapitalLoan: '/loans/working-capital-loan',
+    msmeLoan: '/loans/msme-loan',
+  },
+  loansBusinessWorkingCapital: '/loans/business-working-capital',
   loansMachineryLoan: '/loans/machinery-loan',
   loansProjectFinance: '/loans/project-finance',
-  loansMsmeLoan: '/loans/msme-loan',
   loansStatus: (id = ':id') => `/loans/status/${id}`,
   insurance: '/insurance',
   incorporation: {

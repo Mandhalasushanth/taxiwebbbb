@@ -174,9 +174,9 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
           <div className="supporting-doc-item__meta">
             <div className="supporting-doc-item__title-row">
               <span className="supporting-doc-item__title">
-                {title}{" "}
+                {title}
                 {isRequired && (
-                  <span className="supporting-doc-item__required">*</span>
+                  <span className="supporting-doc-item__required"> *</span>
                 )}
               </span>
               {badge}

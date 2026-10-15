@@ -1,6 +1,6 @@
 import { authStorage } from '@core/auth'
 import { useAuthStore } from '@store/index'
-import type { ApplicantIdentityProfile } from '@modules/loans/types/businessLoan.types'
+import type { ApplicantIdentityProfile } from '@modules/loans/types/loanApplication.types'
 
 /**
  * Default empty applicant profile when no account session is active
