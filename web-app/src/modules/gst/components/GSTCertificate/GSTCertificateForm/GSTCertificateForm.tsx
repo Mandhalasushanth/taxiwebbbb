@@ -69,71 +69,74 @@ export const GSTCertificateForm = ({
 
       {/* ── Form Cards Stack ── */}
       <form className="gst-cert-form" onSubmit={onSubmit} noValidate>
-        {/* Card 1: GSTIN Number */}
-        <div className="gst-cert-card">
-          <div className="gst-cert-card__header">
-            <div className="gst-cert-card__icon-box">
-              <svg viewBox="0 0 24 24" className="gst-cert-card__icon" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 5v14" /><path d="M8 5v14" /><path d="M12 5v14" /><path d="M17 5v14" /><path d="M21 5v14" />
-              </svg>
-            </div>
-            <label htmlFor="gst-cert-gstin-input" className="gst-cert-card__label">
-              GSTIN Number <span className="gst-cert-required">*</span>
-            </label>
-          </div>
-
-          <div className="gst-cert-field-wrap">
-            <input
-              id="gst-cert-gstin-input"
-              type="text"
-              className={`gst-cert-text-input ${errors.gstin ? 'has-error' : ''}`}
-              placeholder="Enter your GSTIN number"
-              maxLength={15}
-              value={gstin}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => onChange('gstin', gstInput.gstin(e.target.value))}
-            />
-            <p className="gst-cert-field-hint">Enter 15-character GSTIN for certificate download</p>
-            {errors.gstin && <p className="gst-cert-field-error">{errors.gstin}</p>}
-          </div>
-        </div>
-
-        {/* Card 2: Request Purpose */}
-        <div className="gst-cert-card">
-          <div className="gst-cert-card__header">
-            <div className="gst-cert-card__icon-box">
-              <svg viewBox="0 0 24 24" className="gst-cert-card__icon" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="4" y1="21" x2="4" y2="14" /><line x1="4" y1="10" x2="4" y2="3" />
-                <line x1="12" y1="21" x2="12" y2="12" /><line x1="12" y1="8" x2="12" y2="3" />
-                <line x1="20" y1="21" x2="20" y2="16" /><line x1="20" y1="12" x2="20" y2="3" />
-                <line x1="1" y1="14" x2="7" y2="14" /><line x1="9" y1="8" x2="15" y2="8" /><line x1="17" y1="16" x2="23" y2="16" />
-              </svg>
-            </div>
-            <label htmlFor="gst-cert-purpose-select" className="gst-cert-card__label">
-              Request Purpose <span className="gst-cert-required">*</span>
-            </label>
-          </div>
-
-          <div className="gst-cert-field-wrap">
-            <div className="gst-cert-select-box">
-              <select
-                id="gst-cert-purpose-select"
-                className={`gst-cert-select ${errors.requestType ? 'has-error' : ''}`}
-                value={selectedRequestType}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) => onChange('requestType', e.target.value)}
-              >
-                {GST_CERTIFICATE_REQUEST_TYPES.map((t) => (
-                  <option key={t.key} value={t.label}>
-                    {t.label}
-                  </option>
-                ))}
-              </select>
-              <span className="gst-cert-select-arrow" aria-hidden="true">
-                <svg viewBox="0 0 24 24" className="gst-cert-arrow-svg" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="6 9 12 15 18 9" />
+        {/* Card 1 & Card 2 in responsive 2-column grid */}
+        <div className="gst-cert-grid-row">
+          {/* Card 1: GSTIN Number */}
+          <div className="gst-cert-card">
+            <div className="gst-cert-card__header">
+              <div className="gst-cert-card__icon-box">
+                <svg viewBox="0 0 24 24" className="gst-cert-card__icon" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 5v14" /><path d="M8 5v14" /><path d="M12 5v14" /><path d="M17 5v14" /><path d="M21 5v14" />
                 </svg>
-              </span>
+              </div>
+              <label htmlFor="gst-cert-gstin-input" className="gst-cert-card__label">
+                GSTIN Number <span className="gst-cert-required">*</span>
+              </label>
             </div>
-            {errors.requestType && <p className="gst-cert-field-error">{errors.requestType}</p>}
+
+            <div className="gst-cert-field-wrap">
+              <input
+                id="gst-cert-gstin-input"
+                type="text"
+                className={`gst-cert-text-input ${errors.gstin ? 'has-error' : ''}`}
+                placeholder="Enter your GSTIN number"
+                maxLength={15}
+                value={gstin}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => onChange('gstin', gstInput.gstin(e.target.value))}
+              />
+              <p className="gst-cert-field-hint">Enter 15-character GSTIN for certificate download</p>
+              {errors.gstin && <p className="gst-cert-field-error">{errors.gstin}</p>}
+            </div>
+          </div>
+
+          {/* Card 2: Request Purpose */}
+          <div className="gst-cert-card">
+            <div className="gst-cert-card__header">
+              <div className="gst-cert-card__icon-box">
+                <svg viewBox="0 0 24 24" className="gst-cert-card__icon" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="4" y1="21" x2="4" y2="14" /><line x1="4" y1="10" x2="4" y2="3" />
+                  <line x1="12" y1="21" x2="12" y2="12" /><line x1="12" y1="8" x2="12" y2="3" />
+                  <line x1="20" y1="21" x2="20" y2="16" /><line x1="20" y1="12" x2="20" y2="3" />
+                  <line x1="1" y1="14" x2="7" y2="14" /><line x1="9" y1="8" x2="15" y2="8" /><line x1="17" y1="16" x2="23" y2="16" />
+                </svg>
+              </div>
+              <label htmlFor="gst-cert-purpose-select" className="gst-cert-card__label">
+                Request Purpose <span className="gst-cert-required">*</span>
+              </label>
+            </div>
+
+            <div className="gst-cert-field-wrap">
+              <div className="gst-cert-select-box">
+                <select
+                  id="gst-cert-purpose-select"
+                  className={`gst-cert-select ${errors.requestType ? 'has-error' : ''}`}
+                  value={selectedRequestType}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => onChange('requestType', e.target.value)}
+                >
+                  {GST_CERTIFICATE_REQUEST_TYPES.map((t) => (
+                    <option key={t.key} value={t.label}>
+                      {t.label}
+                    </option>
+                  ))}
+                </select>
+                <span className="gst-cert-select-arrow" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" className="gst-cert-arrow-svg" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </span>
+              </div>
+              {errors.requestType && <p className="gst-cert-field-error">{errors.requestType}</p>}
+            </div>
           </div>
         </div>
 
@@ -161,14 +164,16 @@ export const GSTCertificateForm = ({
         <GSTStepErrorBanner message={stepError} />
 
         {/* Submit Action */}
-        <button type="submit" disabled={isSubmitting} className="gst-cert-btn-orange">
-          <svg viewBox="0 0 24 24" className="gst-cert-btn-icon" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
-          <span>{isSubmitting ? 'PROCESSING...' : 'DOWNLOAD CERTIFICATE (REG-06)'}</span>
-        </button>
+        <div className="gst-cert-actions">
+          <button type="submit" disabled={isSubmitting} className="gst-cert-btn-orange">
+            <svg viewBox="0 0 24 24" className="gst-cert-btn-icon" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span>{isSubmitting ? 'PROCESSING...' : 'DOWNLOAD CERTIFICATE (REG-06)'}</span>
+          </button>
+        </div>
       </form>
     </div>
   )

@@ -24,36 +24,25 @@ export const ChevronDown: React.FC = () => (
   </svg>
 )
 
-export interface GSTPeriodFieldsProps {
+export interface GSTPeriodSelectionFieldsProps {
   financialYear: string
   setFinancialYear: (fy: string) => void
   returnPeriod: string
   setReturnPeriod: (p: string) => void
-  gstin: string
-  setGstin: (g: string) => void
-  returnType: string
-  setReturnType: (t: string) => void
-  filingType: 'regular' | 'nil' | ''
   periodOptions: SelectOption[]
   errors: Record<string, string>
   handleClearError: (field: string) => void
 }
 
-export const GSTPeriodFields: React.FC<GSTPeriodFieldsProps> = ({
+export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> = ({
   financialYear,
   setFinancialYear,
   returnPeriod,
   setReturnPeriod,
-  gstin,
-  setGstin,
-  returnType,
-  setReturnType,
-  filingType,
   periodOptions,
   errors,
   handleClearError,
 }) => {
-  const profile = useMemo(() => gstProfileService.get(), [])
   return (
     <>
       {/* Financial Year */}
@@ -80,6 +69,9 @@ export const GSTPeriodFields: React.FC<GSTPeriodFieldsProps> = ({
           </select>
           <ChevronDown />
         </div>
+        <p className="gst-filing-period__hint">
+          Historical periods are available based on GST portal eligibility and filing rules.
+        </p>
         {errors.financialYear && (
           <span className="gst-filing-period__error-text">{errors.financialYear}</span>
         )}
@@ -100,7 +92,7 @@ export const GSTPeriodFields: React.FC<GSTPeriodFieldsProps> = ({
               handleClearError('returnPeriod')
             }}
           >
-            <option value="">Select or enter filing period</option>
+            <option value="">Select return period</option>
             {periodOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
@@ -113,7 +105,33 @@ export const GSTPeriodFields: React.FC<GSTPeriodFieldsProps> = ({
           <span className="gst-filing-period__error-text">{errors.returnPeriod}</span>
         )}
       </div>
+    </>
+  )
+}
 
+export interface GSTTaxpayerReturnFieldsProps {
+  gstin: string
+  setGstin: (g: string) => void
+  returnType: string
+  setReturnType: (t: string) => void
+  filingType: 'regular' | 'nil' | ''
+  errors: Record<string, string>
+  handleClearError: (field: string) => void
+}
+
+export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = ({
+  gstin,
+  setGstin,
+  returnType,
+  setReturnType,
+  filingType,
+  errors,
+  handleClearError,
+}) => {
+  const profile = useMemo(() => gstProfileService.get(), [])
+
+  return (
+    <>
       {/* GSTIN (15-Character) */}
       <div className="gst-filing-period__field">
         <label htmlFor="gst-gstin" className="gst-filing-period__label">
@@ -124,7 +142,7 @@ export const GSTPeriodFields: React.FC<GSTPeriodFieldsProps> = ({
           type="text"
           maxLength={15}
           className="gst-filing-period__input"
-          placeholder="Enter your GSTIN"
+          placeholder="Enter your GSTIN number"
           value={gstin}
           onChange={(e) => {
             setGstin(gstInput.gstin(e.target.value))
@@ -174,6 +192,33 @@ export const GSTPeriodFields: React.FC<GSTPeriodFieldsProps> = ({
           <span className="gst-filing-period__error-text">{errors.returnType}</span>
         )}
       </div>
+    </>
+  )
+}
+
+export interface GSTPeriodFieldsProps extends GSTPeriodSelectionFieldsProps, GSTTaxpayerReturnFieldsProps {}
+
+export const GSTPeriodFields: React.FC<GSTPeriodFieldsProps> = (props) => {
+  return (
+    <>
+      <GSTPeriodSelectionFields
+        financialYear={props.financialYear}
+        setFinancialYear={props.setFinancialYear}
+        returnPeriod={props.returnPeriod}
+        setReturnPeriod={props.setReturnPeriod}
+        periodOptions={props.periodOptions}
+        errors={props.errors}
+        handleClearError={props.handleClearError}
+      />
+      <GSTTaxpayerReturnFields
+        gstin={props.gstin}
+        setGstin={props.setGstin}
+        returnType={props.returnType}
+        setReturnType={props.setReturnType}
+        filingType={props.filingType}
+        errors={props.errors}
+        handleClearError={props.handleClearError}
+      />
     </>
   )
 }

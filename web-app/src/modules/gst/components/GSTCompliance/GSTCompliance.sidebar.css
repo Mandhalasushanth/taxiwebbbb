@@ -163,7 +163,7 @@
 
 @media (max-width: 640px) {
   .gst-compliance-page {
-    padding: 1.25rem 1rem;
+    padding: 1rem 0 2rem 0;
   }
 
   .gst-form-card {
@@ -173,14 +173,4 @@
   .gst-form {
     grid-template-columns: 1fr;
   }
-}
-
-/* Submit row: Save Draft beside the full-width submit button */
-.submit-btn-wrapper.form-actions-group {
-  flex-wrap: nowrap;
-}
-
-.submit-btn-wrapper.form-actions-group .gst-btn-submit-primary {
-  flex: 1;
-  width: auto;
 }

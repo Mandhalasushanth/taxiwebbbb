@@ -1,10 +1,11 @@
 .gst-review-card {
   background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px 24px;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-md);
+  box-sizing: border-box;
 }
 
 .gst-review-card__header {

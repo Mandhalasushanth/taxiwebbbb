@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { ServiceDraftModal } from '@shared/saveDraft'
 import { useReviewEdit, UPDATE_AND_REVIEW_LABEL } from '@shared/edit'
+import { UploadCloud } from 'lucide-react'
+import { GSTFormSection } from '@modules/gst/shared/GSTFormSection'
 import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
 import { GSTCancellationSubmitted } from './GSTCancellationSubmitted'
 import { GSTCancellationFields } from './GSTCancellationFields'
@@ -139,18 +141,23 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
           errors={errors} clearError={clearError}
         />
 
-        <div className="gst-canc-proof-grid">
-          <div className="gst-canc-proof-left">
-            <GSTProofUpload
-              selectedFile={selectedFile}
-              error={errors.file}
-              onFileSelect={handleFileChange}
-              onRemoveFile={() => {
-                setSelectedFile(null)
-              }}
-            />
-          </div>
-        </div>
+        <GSTFormSection
+          id="gst-canc-proof-section"
+          icon={<UploadCloud />}
+          title="Supporting Proof"
+          subtitle="Upload official proof supporting your cancellation request"
+          fields={['file']}
+          errors={errors}
+        >
+          <GSTProofUpload
+            selectedFile={selectedFile}
+            error={errors.file}
+            onFileSelect={handleFileChange}
+            onRemoveFile={() => {
+              setSelectedFile(null)
+            }}
+          />
+        </GSTFormSection>
 
         <div
           className={`gst-canc-declaration-card ${errors.finalReturnDeclaration ? 'has-error' : ''}`}

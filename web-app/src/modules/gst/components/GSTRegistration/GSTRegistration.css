@@ -1,12 +1,10 @@
 .gst-reg-page {
-  /* One width for every registration screen (header, stepper, steps 1-4, status) */
-  --gst-reg-max-width: var(--service-page-max-width);
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: var(--gst-reg-max-width);
-  margin: 0 auto;
-  padding: 0.5rem 2rem 3.5rem 2rem;
+  max-width: 100%;
+  margin: 0;
+  padding: 0.5rem 0 3.5rem 0;
   box-sizing: border-box;
 }
 
@@ -69,13 +67,13 @@
 /* Responsive screen size adjustments */
 @media (max-width: 1024px) {
   .gst-reg-page {
-    padding: 0.5rem 1.5rem 3rem 1.5rem;
+    padding: 0.5rem 0 3rem 0;
   }
 }
 
 @media (max-width: 768px) {
   .gst-reg-page {
-    padding: 0.25rem 1rem 2.5rem 1rem;
+    padding: 0.25rem 0 2.5rem 0;
   }
 
   .gst-reg-title {
@@ -85,7 +83,7 @@
 
 @media (max-width: 480px) {
   .gst-reg-page {
-    padding: 0.25rem 0.65rem 2rem 0.65rem;
+    padding: 0.25rem 0 2rem 0;
   }
 
   .gst-reg-title {

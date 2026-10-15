@@ -3,11 +3,13 @@ import React, { useState, useMemo, useEffect } from 'react'
 import { gstFieldRules, GST_STEP_ERROR } from '@modules/gst/validation/gstFieldRules'
 import { gstProfileService } from '@modules/gst/services/gstProfileService'
 import { getFilingBaseFee } from '@modules/gst/constants/gstBusiness.constants'
+import { Calendar, FileText, Calculator } from 'lucide-react'
+import { GSTFormSection } from '@modules/gst/shared/GSTFormSection'
 import { GSTFilingStepper } from '@modules/gst/shared/GSTFilingStepper/GSTFilingStepper'
 import { GSTCalculationMethod } from './GSTCalculationMethod'
 import { GSTFilingFrequency } from './GSTFilingFrequency'
 import { GSTFilingTypeSelector } from './GSTFilingTypeSelector'
-import { GSTPeriodFields } from './GSTPeriodFields'
+import { GSTPeriodSelectionFields, GSTTaxpayerReturnFields } from './GSTPeriodFields'
 import {
   CURRENT_FINANCIAL_YEAR,
   FINANCIAL_YEAR_OPTIONS,
@@ -152,78 +154,107 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
       {/* Step Progress Stepper */}
       <GSTFilingStepper currentStep={1} onStepClick={onStepClick} />
 
-      {/* Main Content Form */}
-      <div className="gst-filing-period__card">
-        <form className="gst-filing-period__form" onSubmit={handleSubmit} noValidate>
-          <div className="gst-filing-period__grid">
-            {/* Filing Frequency Section */}
-            <GSTFilingFrequency
-              value={frequency}
-              onChange={(newFreq) => {
-                setFrequency(newFreq)
-                handleClearError('frequency')
-                setReturnPeriod('')
-              }}
-              error={errors.frequency}
-            />
+      {/* Main Content Form with Section Cards */}
+      <form className="gst-filing-period__form" onSubmit={handleSubmit} noValidate>
+        {/* Card 1: Filing Frequency & Period */}
+        <GSTFormSection
+          id="gst-filing-frequency-period"
+          icon={<Calendar />}
+          title="Filing Frequency & Period"
+          subtitle="Select filing frequency and return period"
+          fields={['frequency', 'financialYear', 'returnPeriod']}
+          errors={errors}
+        >
+          <GSTFilingFrequency
+            value={frequency}
+            onChange={(newFreq) => {
+              setFrequency(newFreq)
+              handleClearError('frequency')
+              setReturnPeriod('')
+            }}
+            error={errors.frequency}
+          />
 
-            {/* Financial Year, Period, GSTIN, Return Type */}
-            <GSTPeriodFields
+          <div className="gst-filing-period__row">
+            <GSTPeriodSelectionFields
               financialYear={financialYear}
               setFinancialYear={setFinancialYear}
               returnPeriod={returnPeriod}
               setReturnPeriod={setReturnPeriod}
+              periodOptions={periodOptions}
+              errors={errors}
+              handleClearError={handleClearError}
+            />
+          </div>
+        </GSTFormSection>
+
+        {/* Card 2: Taxpayer & Return Details */}
+        <GSTFormSection
+          id="gst-taxpayer-details"
+          icon={<FileText />}
+          title="Taxpayer & Return Details"
+          subtitle="Enter 15-character GSTIN & return type"
+          fields={['gstin', 'returnType', 'filingType']}
+          errors={errors}
+        >
+          <div className="gst-filing-period__row">
+            <GSTTaxpayerReturnFields
               gstin={gstin}
               setGstin={setGstin}
               returnType={returnType}
               setReturnType={setReturnType}
               filingType={filingType}
-              periodOptions={periodOptions}
               errors={errors}
               handleClearError={handleClearError}
             />
-
-            {/* Filing Type Selection Cards */}
-            <GSTFilingTypeSelector
-              value={filingType}
-              onChange={(type) => {
-                setFilingType(type)
-                handleClearError('filingType')
-              }}
-            />
-
-            {/* Tax Calculation Method */}
-            {filingType === 'regular' && (
-              <GSTCalculationMethod
-                value={calculationMethod}
-                onChange={(method) => {
-                  setCalculationMethod(method)
-                  handleClearError('calculationMethod')
-                }}
-                error={errors.calculationMethod}
-                estimatedSales={estimatedSales}
-                onSalesChange={setEstimatedSales}
-                estimatedPurchases={estimatedPurchases}
-                onPurchasesChange={setEstimatedPurchases}
-                estimatedItc={estimatedItc}
-                onItcChange={setEstimatedItc}
-              />
-            )}
           </div>
 
-          <hr className="gst-filing-period__divider" />
-
-          <GSTStepErrorBanner message={stepError} />
-
-          {/* Action Navigation Footer */}
-          <StepActionBar
-            onBack={onCancel}
-            onSaveDraft={onSaveDraft}
-            nextType="submit"
-            isEditMode={isEditMode}
+          <GSTFilingTypeSelector
+            value={filingType}
+            onChange={(type) => {
+              setFilingType(type)
+              handleClearError('filingType')
+            }}
           />
-        </form>
-      </div>
+        </GSTFormSection>
+
+        {/* Card 3: Tax Calculation Method */}
+        {filingType === 'regular' && (
+          <GSTFormSection
+            id="gst-calculation-method"
+            icon={<Calculator />}
+            title="Tax Calculation Method"
+            subtitle="Choose how tax calculations should be handled"
+            fields={['calculationMethod']}
+            errors={errors}
+          >
+            <GSTCalculationMethod
+              value={calculationMethod}
+              onChange={(method) => {
+                setCalculationMethod(method)
+                handleClearError('calculationMethod')
+              }}
+              error={errors.calculationMethod}
+              estimatedSales={estimatedSales}
+              onSalesChange={setEstimatedSales}
+              estimatedPurchases={estimatedPurchases}
+              onPurchasesChange={setEstimatedPurchases}
+              estimatedItc={estimatedItc}
+              onItcChange={setEstimatedItc}
+            />
+          </GSTFormSection>
+        )}
+
+        <GSTStepErrorBanner message={stepError} />
+
+        {/* Action Navigation Footer */}
+        <StepActionBar
+          onBack={onCancel}
+          onSaveDraft={onSaveDraft}
+          nextType="submit"
+          isEditMode={isEditMode}
+        />
+      </form>
     </div>
   )
 }
