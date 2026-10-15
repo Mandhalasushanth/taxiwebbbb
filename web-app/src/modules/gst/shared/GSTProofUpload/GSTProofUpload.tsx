@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import { UploadDocument } from '@shared/components'
-import { UPLOAD_HINT, formatUploadSize } from '@shared/upload'
+import { formatUploadSize } from '@shared/upload'
 import './GSTProofUpload.css'
 
 export interface GSTProofUploadProps {
@@ -30,9 +30,12 @@ export const GSTProofUpload: FC<GSTProofUploadProps> = ({
     <div className="gst-amend-proof-container">
       <UploadDocument
         id="gst-supporting-proof"
-        title="Supporting proof"
-        subtitle={`Attach the document that evidences this change (${UPLOAD_HINT})`}
+        title="Supporting Proof Document"
+        subtitle="Attach proof evidencing this change"
         isRequired
+        uploadLabel="Upload File"
+        iconBg="#fff7ed"
+        iconColor="#ea580c"
         isUploaded={Boolean(fileName)}
         fileName={fileName}
         fileSize={fileSize}

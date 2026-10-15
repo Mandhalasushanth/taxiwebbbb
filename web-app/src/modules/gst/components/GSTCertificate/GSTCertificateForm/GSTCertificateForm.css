@@ -190,7 +190,7 @@
 }
 
 .gst-cert-required {
-  color: #ff7a00;
+  color: var(--palette-red-500, #ef4444);
   margin-left: 2px;
   font-weight: 800;
 }

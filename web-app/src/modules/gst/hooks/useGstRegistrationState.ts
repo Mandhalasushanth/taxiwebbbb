@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { userStorage } from '@core/storage/userStorage'
-import { useAppStore, useAuthStore } from '@store/index'
+import { useAppStore } from '@store/index'
 import { formatRupees, generateGstReference } from '@modules/gst/utils/gstFormat'
 import { gstProfileService } from '@modules/gst/services/gstProfileService'
 import { GST_FEES } from '@modules/gst/constants/gstBusiness.constants'
@@ -15,7 +15,6 @@ import type { DocumentItem } from '@modules/gst/types/gstDocuments.types'
 import type { GstBusinessFormData } from '@modules/gst/types/gstBusiness.types'
 import type { PaymentResult } from '@modules/gst/types/gst.types'
 
-type CurrentUser = ReturnType<typeof useAuthStore.getState>['user']
 
 const SERVICE_ID = 'gst-registration'
 const SERVICE_TITLE = 'GST Registration'
@@ -40,9 +39,9 @@ const registrationStepFromUrl = (stepParam: string | null, pathname: string): nu
   return null
 }
 
-/** Empty registration form, prefilled from the signed-in user's profile */
-const buildInitialBusinessData = (user: CurrentUser): GstBusinessFormData => ({
-  legalName: user?.fullName || '',
+/** Empty registration form with clean blank fields */
+const buildInitialBusinessData = (): GstBusinessFormData => ({
+  legalName: '',
   tradeName: '',
   constitution: '',
   businessPan: '',
@@ -51,25 +50,25 @@ const buildInitialBusinessData = (user: CurrentUser): GstBusinessFormData => ({
   registrationReason: '',
   compositionScheme: '',
   placeOfBusiness: '',
-  businessAddress: [user?.addressLine1, user?.addressLine2].filter(Boolean).join(', '),
-  city: user?.city || '',
+  businessAddress: '',
+  city: '',
   district: '',
-  state: user?.state || '',
-  pinCode: user?.pincode || '',
+  state: '',
+  pinCode: '',
   hsnSacCode: '',
-  accountHolderName: user?.fullName || '',
+  accountHolderName: '',
   accountNumber: '',
   confirmAccountNumber: '',
   ifscCode: '',
   bankName: '',
   branch: '',
   accountType: '',
-  signatoryName: user?.fullName || '',
-  signatoryPan: user?.pan || '',
+  signatoryName: '',
+  signatoryPan: '',
   dob: '',
   designation: '',
-  signatoryMobile: user?.mobile || '',
-  signatoryEmail: user?.email || '',
+  signatoryMobile: '',
+  signatoryEmail: '',
   aadhaarConsent: false,
 })
 
@@ -78,12 +77,11 @@ const STEP_NAME_FOR = (step: number): string => STEP_NAMES[step] ?? 'status'
 export const useGstRegistrationState = () => {
   const navigate = useNavigate()
   const pushToast = useAppStore((state) => state.pushToast)
-  const user = useAuthStore((state) => state.user)
   const [searchParams, setSearchParams] = useSearchParams()
   const location = useLocation()
 
   const [savedDraft] = useState(() => readServiceDraft<RegistrationDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst))
-  const [initialBusinessData] = useState(() => buildInitialBusinessData(user))
+  const [initialBusinessData] = useState(() => buildInitialBusinessData())
 
   const [businessData, setBusinessData] = useState<GstBusinessFormData>(() => ({
     ...initialBusinessData,

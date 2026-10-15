@@ -37,7 +37,7 @@
 
 .gst-field__required {
   margin-left: 2px;
-  color: inherit;
+  color: var(--palette-red-500, #ef4444);
 }
 
 .gst-field__input {

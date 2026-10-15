@@ -48,7 +48,7 @@ export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> =
       {/* Financial Year */}
       <div className="gst-filing-period__field">
         <label htmlFor="gst-fy" className="gst-filing-period__label">
-          Financial Year *
+          Financial Year <span className="gst-filing-period__required">*</span>
         </label>
         <div className="gst-filing-period__select-wrap">
           <select
@@ -80,7 +80,7 @@ export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> =
       {/* Filing Period / Return Period */}
       <div className="gst-filing-period__field">
         <label htmlFor="gst-return-period" className="gst-filing-period__label">
-          Filing Period / Return Period *
+          Filing Period / Return Period <span className="gst-filing-period__required">*</span>
         </label>
         <div className="gst-filing-period__select-wrap">
           <select
@@ -135,7 +135,7 @@ export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = (
       {/* GSTIN (15-Character) */}
       <div className="gst-filing-period__field">
         <label htmlFor="gst-gstin" className="gst-filing-period__label">
-          GSTIN (15-Character) *
+          GSTIN (15-Character) <span className="gst-filing-period__required">*</span>
         </label>
         <input
           id="gst-gstin"
@@ -167,7 +167,7 @@ export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = (
       {/* Filing Return Type */}
       <div className="gst-filing-period__field">
         <label htmlFor="gst-return-type" className="gst-filing-period__label">
-          Filing Return Type *
+          Filing Return Type <span className="gst-filing-period__required">*</span>
         </label>
         <div className="gst-filing-period__select-wrap">
           <select

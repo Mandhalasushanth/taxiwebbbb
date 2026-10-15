@@ -13,12 +13,13 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  /* gap: 2rem;
+  margin-bottom: 2rem; */
 }
 
 .gst-amend-detail-header {
-  flex: 1;
+  width: 100%;
+  margin-bottom: 1.5rem;
 }
 
 .gst-amend-title-with-icon {
@@ -28,9 +29,9 @@
 }
 
 .gst-amend-title-icon-box {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   background-color: var(--palette-blue-50);
   display: flex;
   align-items: center;
@@ -39,42 +40,42 @@
 }
 
 .gst-amend-title-icon-box svg {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
 }
 
 .gst-amend-detail-title {
-  font-size: 2.25rem;
-  font-weight: 800;
+  font-size: 1.45rem;
+  font-weight: 700;
   color: var(--palette-slate-900);
-  margin: 0 0 0.35rem 0;
-  letter-spacing: -0.02em;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.01em;
 }
 
 .gst-amend-detail-subtitle {
-  font-size: 1.05rem;
+  font-size: 0.875rem;
   color: var(--secondary-text);
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .gst-amend-additional-notice-box {
   max-width: 440px;
   background-color: var(--palette-blue-50);
   border: 1px solid var(--palette-blue-100);
-  border-radius: 14px;
-  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
   display: flex;
   align-items: flex-start;
-  gap: 0.75rem;
-  font-size: 0.9375rem;
+  gap: 0.625rem;
+  font-size: 0.84rem;
   color: var(--palette-blue-800-1e40af);
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 .gst-amend-notice-icon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   color: var(--palette-blue-600);
   flex-shrink: 0;
   margin-top: 0.125rem;
@@ -94,14 +95,13 @@
   width: 100%;
 }
 
-
 /* Card Boxes */
 .gst-amend-card-box {
   background-color: var(--surface);
   border: 1px solid var(--color-border);
   border-radius: 20px;
-  padding: 1.5rem 1.75rem;
-  margin-bottom: 1.5rem;
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.75rem;
   box-shadow: var(--shadow-md);
   box-sizing: border-box;
 }
@@ -109,14 +109,14 @@
 .gst-amend-card-box__header-flex {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.875rem;
+  gap: 0.875rem;
+  margin-bottom: 1.5rem;
 }
 
 .gst-amend-card-header-icon-box {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   background-color: var(--palette-blue-50);
   display: flex;
   align-items: center;
@@ -125,21 +125,21 @@
 }
 
 .gst-amend-card-header-icon-box svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 .gst-amend-card-box__title {
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--palette-slate-900);
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.25rem 0;
 }
 
 .gst-amend-card-box__subtitle {
   font-size: 0.84rem;
   color: var(--secondary-text);
-  margin: 0 0 1rem 0;
+  margin: 0;
 }
 
 /* Readonly 2-column grid layout for Additional Place */
@@ -182,47 +182,54 @@
 .gst-amend-readonly-multiline-list {
   display: flex;
   flex-direction: column;
+  gap: 0.75rem;
 }
 
 .gst-amend-readonly-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.625rem 0;
-  border-bottom: 1px solid var(--subtle-border);
-}
-
-.gst-amend-readonly-row:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+  padding: 0.25rem 0;
 }
 
 /* Form Inputs */
 .gst-amend-field-group {
   display: flex;
   flex-direction: column;
+  margin-bottom: 1.375rem;
+}
+
+.gst-amend-form-row .gst-amend-field-group {
+  margin-bottom: 0;
+}
+
+.gst-amend-field-group:last-child {
+  margin-bottom: 0;
 }
 
 .gst-amend-field-label {
-  font-size: 0.84rem;
+  font-size: 0.875rem;
   font-weight: 700;
   color: var(--palette-slate-900);
-  margin-bottom: 0.375rem;
+  margin-bottom: 0.625rem;
+  line-height: 1.3;
 }
 
 .gst-amend-star {
   color: var(--palette-red-500);
+  margin-left: 0.15rem;
 }
 
 .gst-amend-text-input {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.8125rem 1rem;
   border: 1px solid var(--grey-300);
   border-radius: 10px;
   font-size: 0.9375rem;
   color: var(--palette-slate-900);
   background-color: var(--surface);
   transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .gst-amend-text-input:focus {
@@ -240,7 +247,7 @@
   font-size: 0.78rem;
   color: var(--error);
   font-weight: 600;
-  margin-top: 0.375rem;
+  margin-top: 0.45rem;
 }
 
 /* Bottom Actions Row */
@@ -305,6 +312,98 @@
 .gst-amend-submit-orange-btn svg {
   width: 18px;
   height: 18px;
+}
+
+/* Section heading for Supporting Proof */
+.gst-amend-section-heading {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--palette-slate-900);
+  margin: 2rem 0 1rem 0;
+}
+
+.gst-amend-card-header-icon-box--building,
+.gst-amend-card-header-icon-box--edit {
+  background-color: #fff7ed;
+  border: 1px solid #fed7aa;
+}
+
+/* Accepted proofs card */
+.gst-amend-accepted-proofs-card {
+  background-color: var(--surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  margin-top: 1.25rem;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.04));
+  box-sizing: border-box;
+}
+
+.gst-amend-accepted-proofs-header {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 0.875rem;
+}
+
+.gst-amend-accepted-proofs-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ea580c;
+  flex-shrink: 0;
+}
+
+.gst-amend-accepted-proofs-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.gst-amend-accepted-proofs-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--palette-slate-900);
+}
+
+.gst-amend-accepted-proofs-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gst-amend-accepted-proofs-item {
+  font-size: 0.85rem;
+  color: var(--palette-slate-600, #475569);
+  line-height: 1.45;
+}
+
+.gst-amend-view-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.875rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #ea580c;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.gst-amend-view-more-btn:hover {
+  color: #c2410c;
+}
+
+.gst-amend-view-more-btn svg {
+  width: 14px;
+  height: 14px;
 }
 
 /* Responsive adjustments */

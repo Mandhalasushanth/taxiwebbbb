@@ -81,9 +81,6 @@ export const GSTAmendmentSubmitted: React.FC<GSTAmendmentSubmittedProps> = ({
         </div>
 
         <h1 className="gst-amend-submitted-title">Amendment Submitted</h1>
-        <p className="gst-amend-submitted-subtitle">
-          Your GST amendment request has been successfully submitted.
-        </p>
       </div>
 
       {/* 2. Mandatory Details Card Matching Design */}
@@ -132,22 +129,22 @@ export const GSTAmendmentSubmitted: React.FC<GSTAmendmentSubmittedProps> = ({
         </div>
       </div>
 
-      {/* 3. Action Buttons - ONLY TWO BUTTONS AS REQUESTED */}
+      {/* 3. Action Buttons Matching Mobile App */}
       <div className="gst-amend-submitted-actions-row">
         <button
           type="button"
           onClick={handleTrack}
-          className="gst-amend-submitted-btn-orange"
+          className="gst-amend-submitted-btn-navy"
         >
-          Track My Application
+          Track Application Status
         </button>
 
         <button
           type="button"
           onClick={handleDashboard}
-          className="gst-amend-submitted-btn-navy"
+          className="gst-amend-submitted-btn-outline"
         >
-          Go to Dashboard
+          Go to Home
         </button>
       </div>
     </div>
