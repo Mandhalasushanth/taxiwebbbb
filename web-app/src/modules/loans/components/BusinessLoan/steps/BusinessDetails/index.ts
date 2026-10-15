@@ -1,6 +1,0 @@
-export { BusinessDetails, default } from './BusinessDetails'
-export { BusinessEnterpriseCard } from './BusinessEnterpriseCard'
-export { BusinessFinancialsCard } from './BusinessFinancialsCard'
-export { BusinessRegistrationCard } from './BusinessRegistrationCard'
-export { AuthorizedSignatoryCard } from './AuthorizedSignatoryCard'
-export type { BusinessDetailsProps } from '@modules/loans/types/businessLoan.types'

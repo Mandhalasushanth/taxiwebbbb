@@ -19,7 +19,6 @@ const DEFAULT_TOTAL_STEPS = 4
 /** Resume routes for loans that do not pass one (kept for drafts listed before resumeRoute existed) */
 const DEFAULT_RESUME_ROUTES: Record<string, string> = {
   vehicle_loan: '/loans/vehicle-loan',
-  working_capital_loan: '/loans/working-capital-loan',
   machinery_loan: '/loans/machinery-loan',
 }
 const FALLBACK_RESUME_ROUTE = '/loans/home-loan'

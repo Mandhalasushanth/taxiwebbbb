@@ -1,5 +1,0 @@
-export { Banking, default } from './Banking'
-export { BankingTaxRecordsCard } from './BankingTaxRecordsCard'
-export { ExistingCreditFacilitiesCard } from './ExistingCreditFacilitiesCard'
-export { BusinessTaxFilingsCard } from './BusinessTaxFilingsCard'
-export type { BankingProps } from '@modules/loans/types/businessLoan.types'

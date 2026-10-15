@@ -20,10 +20,8 @@ export type * from './types'
 export {
   HomeLoan,
   MachineryLoan,
-  WorkingCapitalLoan,
+  BusinessWorkingCapital,
   VehicleLoan,
-  BusinessLoan,
-  MSMELoan,
   ProjectFinance,
   PersonalLoan,
   PropertyLoan,

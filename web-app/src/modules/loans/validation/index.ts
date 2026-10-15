@@ -1,11 +1,9 @@
 export * from './commonLoanValidation'
 
-export { personalLoanValidation, PERSONAL_LOAN_REQUIRED_DOC_IDS } from './personalLoanValidation'
+export { personalLoanValidation } from './personalLoanValidation'
 export { homeLoanValidation, HOME_LOAN_REQUIRED_DOCUMENTS } from './homeLoanValidation'
 export { propertyLoanValidation } from './propertyLoanValidation'
 export { vehicleLoanValidation } from './vehicleLoanValidation'
 export { MACHINERY_DOCUMENT_CONFIGS, machineryLoanValidation } from './machineryLoanValidation'
-export { WORKING_CAPITAL_DOCUMENT_CONFIGS, workingCapitalLoanValidation } from './workingCapitalLoanValidation'
-export { businessLoanValidation, validateDocumentFile } from './businessLoanValidation'
-export { msmeLoanValidation } from './msmeLoanValidation'
+export { businessWorkingCapitalValidation } from './businessWorkingCapitalValidation'
 export { projectFinanceValidation } from './projectFinanceValidation'

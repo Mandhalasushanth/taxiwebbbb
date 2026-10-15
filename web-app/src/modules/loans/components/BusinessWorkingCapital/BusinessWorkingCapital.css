@@ -1,0 +1,28 @@
+.bwc-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: var(--service-page-max-width);
+  margin: 0 auto;
+  padding: 0.5rem 0 3.5rem;
+  box-sizing: border-box;
+}
+
+.bwc-page__title {
+  margin: 0;
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--color-primary-navy);
+}
+
+@media (max-width: 640px) {
+  .bwc-page {
+    padding-bottom: 2rem;
+  }
+
+  .bwc-page__title {
+    font-size: 1.5rem;
+  }
+}
