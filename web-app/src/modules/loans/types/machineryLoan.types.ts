@@ -1,3 +1,4 @@
+import type { LoanAddress, YesNoChoice } from '@modules/loans/types'
 import type { UploadedLoanDocument } from '@modules/loans/documents/loanDocument.types'
 
 export type MachineryEquipmentType =
@@ -36,13 +37,25 @@ export type MachineryBusinessVintage =
   | '10+ years'
   | ''
 
+export interface MachineryLoanStepProps {
+  data: MachineryLoanData
+  onChange: (patch: Partial<MachineryLoanData>) => void
+  errors?: Record<string, string>
+}
+
 export interface MachineryLoanData {
-  // Step 1: Loan Details
+  // Step 1: KYC Verification
+  currentAddress: LoanAddress
+  permanentSameAsCurrent: YesNoChoice
+  permanentAddress: LoanAddress
+  kycConsent: boolean
+
+  // Step 2: Loan Details
   loanAmount: number | string
   machineryType: MachineryEquipmentType
   repaymentTenure: MachineryLoanRepaymentTenure
 
-  // Step 2: Business Details
+  // Step 3: Business Details
   businessName: string
   businessType: MachineryBusinessType
   businessVintage: MachineryBusinessVintage
@@ -50,13 +63,13 @@ export interface MachineryLoanData {
   isGstRegistered: boolean
   gstin?: string
 
-  // Step 3: Banking
+  // Step 4: Banking
   bankName: string
   accountNumber: string
   ifscCode: string
   branchName?: string
 
-  // Step 4: Documents & Review
+  // Step 5: Documents & Review
   uploadedDocs: Record<string, UploadedLoanDocument>
   termsAccepted: boolean
 }

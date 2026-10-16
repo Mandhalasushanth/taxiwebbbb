@@ -1,59 +1,49 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { FlowStepper } from '@shared/components'
-import type { FlowStepItem } from '@shared/components'
 import { LoanStepErrorBanner, LoanStepFlowFooter } from '@modules/loans/shared'
 import { useLoanStepFlow } from '@modules/loans/hooks/useLoanStepFlow'
 import { toAmount } from '@modules/loans/validation/commonLoanValidation'
 import type { MachineryLoanData } from '@modules/loans/types/machineryLoan.types'
 import { machineryLoanValidation } from '@modules/loans/validation/machineryLoanValidation'
+import {
+  MACHINERY_LOAN_TITLE,
+  MACHINERY_LOAN_TYPE,
+  MACHINERY_LOAN_STEPS,
+  MACHINERY_LOAN_FORM_STEP_COUNT,
+  MACHINERY_LOAN_RESUME_ROUTE,
+  INITIAL_MACHINERY_LOAN_DATA,
+} from './machineryLoan.constants'
 
-import { LoanDetails } from './steps/LoanDetails/LoanDetails'
-import { BusinessDetails } from './steps/BusinessDetails/BusinessDetails'
-import { Banking } from './steps/Banking/Banking'
-import { DocumentsAndReview } from './steps/DocumentsAndReview/DocumentsAndReview'
+import {
+  KycVerification,
+  loadVerifiedCustomer,
+  LoanDetails,
+  BusinessDetails,
+  Banking,
+  DocumentsAndReview,
+} from './steps'
+import './machForm.css'
 import './MachineryLoan.css'
 
-const MACHINERY_LOAN_STEPS: FlowStepItem[] = [
-  { stepNumber: 1, title: 'Loan Details', shortLabel: 'Loan Details' },
-  { stepNumber: 2, title: 'Business Details', shortLabel: 'Business Details' },
-  { stepNumber: 3, title: 'Banking', shortLabel: 'Banking' },
-  { stepNumber: 4, title: 'Documents & Review', shortLabel: 'Documents & Review' },
-]
-
-const INITIAL_MACHINERY_LOAN_DATA: MachineryLoanData = {
-  loanAmount: '',
-  machineryType: '',
-  repaymentTenure: '',
-  businessName: '',
-  businessType: 'Proprietorship',
-  businessVintage: '1–3 years',
-  annualTurnover: '',
-  isGstRegistered: true,
-  gstin: '',
-  bankName: '',
-  accountNumber: '',
-  ifscCode: '',
-  branchName: '',
-  uploadedDocs: {},
-  termsAccepted: false,
-}
-
 export const MachineryLoan: React.FC = () => {
+  const customer = useMemo(loadVerifiedCustomer, [])
+
   const flow = useLoanStepFlow<MachineryLoanData>({
-    loanType: 'machinery_loan',
-    loanTitle: 'Machinery Loan',
+    loanType: MACHINERY_LOAN_TYPE,
+    loanTitle: MACHINERY_LOAN_TITLE,
     initialValues: INITIAL_MACHINERY_LOAN_DATA,
     application: {
-      serviceTitle: 'Machinery Loan',
-      totalSteps: 4,
-      stepLabels: MACHINERY_LOAN_STEPS.map((s) => s.title ?? ''),
-      resumeRoute: '/loans/machinery-loan',
+      serviceTitle: MACHINERY_LOAN_TITLE,
+      totalSteps: MACHINERY_LOAN_FORM_STEP_COUNT,
+      stepLabels: MACHINERY_LOAN_STEPS.slice(0, MACHINERY_LOAN_FORM_STEP_COUNT).map((s) => s.title ?? ''),
+      resumeRoute: MACHINERY_LOAN_RESUME_ROUTE,
     },
     validators: [
       machineryLoanValidation.validateStep1,
       machineryLoanValidation.validateStep2,
       machineryLoanValidation.validateStep3,
       machineryLoanValidation.validateStep4,
+      machineryLoanValidation.validateStep5,
     ],
     buildSubmission: (data) => ({
       title: 'Machinery Loan Application',
@@ -67,25 +57,49 @@ export const MachineryLoan: React.FC = () => {
 
   return (
     <div className="machinery-loan-page" data-testid="machinery-loan-page">
-      <h1 className="machinery-loan-page__title">Machinery Loan</h1>
+      <h1 className="machinery-loan-page__title">{MACHINERY_LOAN_TITLE}</h1>
 
       <FlowStepper steps={MACHINERY_LOAN_STEPS} currentStep={currentStep} onStepClick={flow.handleStepClick} />
 
       <LoanStepErrorBanner message={flow.stepError} />
 
-      <div className="machinery-loan-page__card">
-        {currentStep === 1 && <LoanDetails data={formData} onChange={handleFieldChange} errors={fieldErrors} />}
-        {currentStep === 2 && <BusinessDetails data={formData} onChange={handleFieldChange} errors={fieldErrors} />}
-        {currentStep === 3 && <Banking data={formData} onChange={handleFieldChange} errors={fieldErrors} />}
-        {currentStep === 4 && (
+      {currentStep === 1 && (
+        <KycVerification
+          data={formData}
+          customer={customer}
+          onChange={handleFieldChange}
+          errors={fieldErrors}
+        />
+      )}
+
+      {currentStep === 2 && (
+        <div className="machinery-loan-page__card">
+          <LoanDetails data={formData} onChange={handleFieldChange} errors={fieldErrors} />
+        </div>
+      )}
+
+      {currentStep === 3 && (
+        <div className="machinery-loan-page__card">
+          <BusinessDetails data={formData} onChange={handleFieldChange} errors={fieldErrors} />
+        </div>
+      )}
+
+      {currentStep === 4 && (
+        <div className="machinery-loan-page__card">
+          <Banking data={formData} onChange={handleFieldChange} errors={fieldErrors} />
+        </div>
+      )}
+
+      {currentStep === 5 && (
+        <div className="machinery-loan-page__card">
           <DocumentsAndReview
             data={formData}
             onChange={handleFieldChange}
             onNavigateToStep={flow.navigateToStep}
             errors={fieldErrors}
           />
-        )}
-      </div>
+        </div>
+      )}
 
       <LoanStepFlowFooter
         flow={flow}
