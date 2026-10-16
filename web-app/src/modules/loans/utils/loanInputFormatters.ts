@@ -15,7 +15,7 @@ export const LOAN_FIELD_LIMITS = {
   BANK_ACCOUNT_MAX: 18,
   BANK_ACCOUNT_MIN: 9,
   ITR_ACK: 15,
-  UDYAM_MAX: 19,
+  UDYAM_MAX: 21,
   PINCODE: 6,
   MOBILE: 10,
 } as const
@@ -47,16 +47,16 @@ export function formatLettersOnly(val: string, maxLen = 100): string {
   return val.replace(/[^A-Za-z .'&()-]/g, '').replace(/\s{2,}/g, ' ').slice(0, maxLen)
 }
 
-/** Udyam number: auto-formats to UDYAM-XX-00-0000000 as the user types */
+/** Udyam number: auto-formats to UDYAM-XX-00-0000000 or UDYAM-00-XX-00000000 as user types */
 export function formatUdyamNumber(val: string, maxLen = LOAN_FIELD_LIMITS.UDYAM_MAX): string {
   const upper = val.toUpperCase().replace(/[^A-Z0-9]/g, '')
   // Still typing the "UDYAM" prefix (or empty): keep as-is
   if ('UDYAM'.startsWith(upper)) return upper
   const raw = upper.replace(/^UDYAM/, '')
-  const state = raw.slice(0, 2).replace(/[^A-Z]/g, '')
-  const district = raw.slice(state.length, state.length + 2).replace(/\D/g, '')
-  const serial = raw.slice(state.length + district.length).replace(/\D/g, '').slice(0, 7)
-  return ['UDYAM', state, district, serial].filter(Boolean).join('-').slice(0, maxLen)
+  const seg1 = raw.slice(0, 2)
+  const seg2 = raw.slice(2, 4)
+  const serial = raw.slice(4, 12)
+  return ['UDYAM', seg1, seg2, serial].filter(Boolean).join('-').slice(0, maxLen)
 }
 
 /** Date of birth: auto-formats digits to DD/MM/YYYY */

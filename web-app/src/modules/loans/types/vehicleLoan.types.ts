@@ -1,6 +1,12 @@
-export type VehicleCondition = 'New Vehicle' | 'Pre-Owned / Used Vehicle'
+import type { LoanAddress, YesNoChoice } from '@modules/loans/types'
+
+export type VehicleCondition = 'New Vehicle' | 'Used Vehicle' | 'Pre-Owned / Used Vehicle' | ''
 
 export type VehicleCategory =
+  | 'Car'
+  | 'Two-Wheeler'
+  | 'Commercial Vehicle'
+  | 'Other'
   | 'New Car (Passenger)'
   | 'Pre-Owned / Used Car'
   | 'Electric Vehicle (EV - 2W / 4W)'
@@ -9,6 +15,22 @@ export type VehicleCategory =
   | 'Fleet Purchase'
   | 'Balance Transfer & Top-Up'
   | 'Others'
+  | ''
+
+export type VehicleDealerSelected = 'Yes' | 'No' | ''
+
+export type VehiclePurchaseTimeline =
+  | 'Within 7 days'
+  | 'Within 30 days'
+  | '1–3 months'
+  | 'Just exploring'
+  | ''
+
+export interface VehicleLoanStepProps {
+  data: VehicleLoanData
+  onChange: (patch: Partial<VehicleLoanData>) => void
+  errors?: Record<string, string>
+}
 
 export type VehicleRepaymentTenure =
   | '3 M (3 Months)'
@@ -51,54 +73,36 @@ export type VehicleMakeModel =
   | 'Commercial: Tata Ace / Mahindra Bolero Pik-Up'
   | 'Other (Specify Custom Vehicle Model)'
 
-export type VehicleOccupationType = 'Salaried' | 'Self-Employed Pro' | 'Business Owner'
-
-export type VehicleIncomeRange =
-  | 'Below ₹10,000'
-  | '₹10,000 - ₹15,000'
-  | '₹15,000 - ₹30,000'
-  | '₹30,000 - ₹50,000'
-  | '₹50,000 - ₹1,00,000'
-  | 'Above ₹1,00,000'
-
-export type VehicleItrFilingStatus = 'Filed' | 'Not Filed' | 'Exempt'
-
 export interface VehicleLoanData {
-  // Step 1: Vehicle & Loan Requirements
+  // Step 1: KYC Verification
+  currentAddress: LoanAddress
+  permanentSameAsCurrent: YesNoChoice
+  permanentAddress: LoanAddress
+  kycConsent: boolean
+
+  // Step 2: Vehicle & Loan Details
+  requestedLoanAmount?: string
   loanAmount: string | number
-  vehicleCategory: VehicleCategory | ''
-  repaymentTenure: VehicleRepaymentTenure | ''
+  vehicleCategory: VehicleCategory
+  repaymentTenure?: VehicleRepaymentTenure | ''
   vehicleCondition: VehicleCondition
-  vehicleMakeModel: string
+  vehicleMakeBrand?: string
+  vehicleBrand?: string
+  vehicleModel?: string
+  vehicleMakeModel?: string
   customVehicleMakeModel?: string
+  approximateVehiclePrice?: string | number
   onRoadPrice: string | number
-  downPayment: string | number
+  dealerSelected?: VehicleDealerSelected
+  dealerName?: string
+  purchaseTimeline?: VehiclePurchaseTimeline
+  registrationState?: string
+  downPayment?: string | number
 
-  // Step 2: Employment & Income
-  occupationType: VehicleOccupationType
-  monthlyIncomeRange: VehicleIncomeRange | ''
-  
-  // Business Profile & Compliance (when Business Owner or Self-Employed Pro)
-  legalBusinessName?: string
-  gstin?: string
-  udyamNumber?: string
-  businessVintageYears?: string
-  annualTurnover?: string | number
-
-  // Existing Loan Obligations
-  hasActiveEmis: boolean
-  totalMonthlyEmi?: string | number
-
-  // Step 3: Banking & ITR
-  bankName: string
-  accountNumber: string
-  ifscCode: string
-  branchName?: string
-  itrStatus: VehicleItrFilingStatus
-  itrAckNumber?: string
-  grossAnnualIncomeItr?: string | number
-
-  // Step 4: Documents & Review
+  // Step 3: Documents
   uploadedDocs?: Record<string, { name: string; size: string; file?: File; uploadedAt: string }>
+
+  // Step 4: Review & Declaration
   termsAccepted: boolean
 }
+

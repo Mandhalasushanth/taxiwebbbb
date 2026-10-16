@@ -1,7 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  ArrowRight,
   Banknote,
   CalendarDays,
   Check,
@@ -42,7 +41,7 @@ export interface ApplicationSubmittedProps {
   applicationType: string
   requestedAmount: string
   submittedAt?: string
-  onTrackApplication: () => void
+  onTrackApplication?: () => void
 }
 
 /** Step 5: confirmation shown once the application has been sent */
@@ -51,7 +50,6 @@ export const ApplicationSubmitted: React.FC<ApplicationSubmittedProps> = ({
   applicationType,
   requestedAmount,
   submittedAt,
-  onTrackApplication,
 }) => {
   const navigate = useNavigate()
 
@@ -123,15 +121,6 @@ export const ApplicationSubmitted: React.FC<ApplicationSubmittedProps> = ({
         >
           <LayoutDashboard size={18} aria-hidden="true" />
           Go to Dashboard
-        </button>
-        <button
-          type="button"
-          className="bwc-submitted__btn bwc-submitted__btn--secondary"
-          onClick={onTrackApplication}
-          data-testid="bwc-track-application-btn"
-        >
-          Track Application
-          <ArrowRight size={18} aria-hidden="true" />
         </button>
         <button
           type="button"

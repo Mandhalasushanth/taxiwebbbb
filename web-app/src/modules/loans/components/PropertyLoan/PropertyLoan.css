@@ -1,16 +1,11 @@
-/* ==========================================================================
-   PropertyLoan Main Container Styles
-   Advanced Modular Responsive Monolith Design
-   ========================================================================== */
-
 .property-loan-page {
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding: 0.5rem 0 3.5rem 0;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  width: 100%;
+  max-width: var(--service-page-max-width);
+  margin: 0 auto;
+  padding: 0.5rem 0 3.5rem;
   box-sizing: border-box;
 }
 
@@ -19,38 +14,15 @@
   font-size: 1.85rem;
   font-weight: 800;
   letter-spacing: -0.015em;
-  color: var(--palette-sky-900-041d3e);
+  color: var(--color-primary-navy);
 }
 
-/* Universal Down Arrow for all dropdown fields in Property Loan */
-.property-form-select {
-  appearance: none !important;
-  -webkit-appearance: none !important;
-  -moz-appearance: none !important;
-  padding-right: 2.75rem !important;
-  background-color: var(--surface) !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
-  background-repeat: no-repeat !important;
-  background-position: right 1rem center !important;
-  background-size: 16px 16px !important;
-  cursor: pointer;
-}
-
-.property-form-select:focus {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ea580c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
-}
-
-.property-loan-page__card {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  background: transparent;
-  border: none;
-  padding: 0;
-}
-
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .property-loan-page {
-    padding: 0.5rem 0 4rem 0;
+    padding-bottom: 2rem;
+  }
+
+  .property-loan-page__title {
+    font-size: 1.5rem;
   }
 }

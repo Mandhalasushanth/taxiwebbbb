@@ -1,249 +1,209 @@
-.vehicle-review-step {
+/* Step 4 Review & Declaration styling for Vehicle Loan */
+.veh-review-step {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: var(--space-4);
   width: 100%;
 }
 
-.vehicle-review-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1.25rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-}
-
-.vehicle-review-card__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--subtle-border);
-}
-
-.vehicle-review-card__header-left {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-}
-
-.vehicle-review-card__icon {
-  width: 18px;
-  height: 18px;
-  color: var(--palette-orange-600);
-  flex-shrink: 0;
-}
-
-.vehicle-review-card__title {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--palette-slate-900);
-}
-
-.vehicle-review-card__verified-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  color: var(--palette-emerald-500);
-  font-size: 0.8125rem;
-  font-weight: 600;
-}
-
-.vehicle-review-card__edit-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  background: transparent;
-  border: none;
-  color: var(--palette-orange-600);
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-}
-
-.vehicle-review-card__edit-btn:hover {
-  background-color: var(--palette-orange-50);
-}
-
-.vehicle-review-card__rows {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.vehicle-review-card__row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.875rem;
-}
-
-.vehicle-review-card__row-label {
-  color: var(--secondary-text);
-  font-weight: 500;
-}
-
-.vehicle-review-card__row-value {
-  color: var(--palette-slate-900);
-  font-weight: 600;
-  text-align: right;
-}
-
-.vehicle-review-card__row-value--highlight {
-  color: var(--palette-orange-600);
-  font-weight: 700;
-  font-size: 0.9375rem;
-}
-
-/* Uploaded Records List in Step 5 */
-.vehicle-review-docs-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.625rem;
-}
-
-.vehicle-review-doc-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  gap: 0.75rem;
-}
-
-.vehicle-review-doc-info {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-width: 0;
-}
-
-.vehicle-review-doc-check {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  background-color: var(--palette-green-100);
-  color: var(--success);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.vehicle-review-doc-texts {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-  min-width: 0;
-}
-
-.vehicle-review-doc-name {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--palette-slate-900);
-}
-
-.vehicle-review-doc-filename {
-  font-size: 0.75rem;
-  color: var(--secondary-text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.vehicle-review-doc-preview-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.375rem 0.75rem;
-  background: var(--palette-orange-50);
-  border: 1px solid var(--orange-300);
-  border-radius: 6px;
-  color: var(--palette-orange-600);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-}
-
-.vehicle-review-doc-preview-btn:hover {
-  background: var(--orange-100);
-  border-color: var(--palette-orange-400);
-}
-
-.vehicle-review__declaration {
+.veh-review-card__header {
   display: flex;
   align-items: flex-start;
-  gap: 0.75rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.25rem;
-  margin-top: 0.25rem;
+  justify-content: space-between;
+  gap: var(--space-3);
 }
 
-.vehicle-review__checkbox {
+.veh-review-card__header-group {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  flex: 1;
+}
+
+.veh-review-card__header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.veh-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid #dbeafe;
+  border-radius: var(--radius-md);
+  background: #eff6ff;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-primary-navy);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.veh-edit-btn svg {
+  color: var(--color-primary);
+}
+
+.veh-edit-btn:hover {
+  background: #dbeafe;
+  border-color: #bfdbfe;
+}
+
+.veh-review-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.veh-review-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.veh-review-row:last-child {
+  border-bottom: none;
+}
+
+.veh-review-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.veh-review-value {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-primary-navy);
+  text-align: right;
+  word-break: break-word;
+}
+
+.veh-review-value--highlight {
+  color: var(--color-primary, #ff7a00);
+}
+
+.veh-review-value--amount {
+  font-weight: 800;
+  color: var(--color-primary-navy, #041d3e);
+}
+
+.veh-uploaded-docs-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.veh-review-doc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+}
+
+.veh-review-doc-row:last-child {
+  border-bottom: none;
+}
+
+.veh-review-doc-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.veh-review-doc-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: var(--color-success);
+  color: #ffffff;
+}
+
+.veh-review-doc-circle {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-border);
+}
+
+.veh-review-doc-status {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+/* Consent & Declaration Card */
+.veh-consent-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.veh-consent-label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+}
+
+.veh-consent-checkbox {
   width: 18px;
   height: 18px;
   margin-top: 2px;
+  accent-color: var(--color-primary, #ff7a00);
   cursor: pointer;
-  accent-color: var(--feature-orange);
   flex-shrink: 0;
 }
 
-.vehicle-review__label {
-  font-size: 0.875rem;
-  color: var(--grey-700);
-  line-height: 1.45;
-  cursor: pointer;
+.veh-consent-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
-.vehicle-field-error {
-  font-size: 0.75rem;
-  color: var(--palette-red-500);
-  font-weight: 500;
-  margin-top: 0.25rem;
+.veh-consent-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-navy);
 }
 
-.vehicle-review-doc-preview {
-  padding: 2rem;
-  text-align: center;
-  color: var(--secondary-text);
-}
-
-.vehicle-review-doc-preview__icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.vehicle-review-doc-preview__name {
+.veh-consent-text {
   margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-relaxed);
+}
+
+.veh-consent-security {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  font-size: var(--font-size-xs);
   font-weight: 600;
-  color: var(--palette-slate-900);
+  color: #475569;
 }
 
-.vehicle-review-doc-preview__desc {
-  margin: 0.5rem 0 0 0;
-  font-size: 0.875rem;
+.veh-consent-security svg {
+  color: var(--color-primary, #ff7a00);
+  flex-shrink: 0;
 }
 
-.vehicle-review-no-docs {
-  margin: 0;
-  padding: 1rem;
-  color: var(--secondary-text);
-  font-size: 0.875rem;
-  text-align: center;
-  background: var(--palette-slate-50);
-  border-radius: 8px;
-  border: 1px dashed var(--grey-300);
-}
