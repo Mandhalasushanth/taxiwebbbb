@@ -1,2 +1,2 @@
-export { Documents, default } from './Documents'
-export type { DocumentsProps } from './Documents'
+export * from './Documents'
+export { Documents as default } from './Documents'

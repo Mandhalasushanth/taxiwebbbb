@@ -1,119 +1,79 @@
-.home-loan-docs {
+/* Step 3 Documents styling modeled after Personal Loan & BWC */
+.hl-docs {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-}
-
-.home-loan-docs__section-icon {
-  width: 17px;
-  height: 17px;
-}
-
-.home-loan-docs__error-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.home-loan-docs__required-star {
-  color: var(--error);
-  font-weight: 700;
-}
-
-
-/* Document Checklist Progress Card matching mobile wireframe */
-.home-loan-docs__progress-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 1.15rem 1.35rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-  display: flex;
-  flex-direction: column;
+  gap: var(--space-4);
   width: 100%;
-  box-sizing: border-box;
 }
 
-.home-loan-docs__progress-header {
+.hl-docs .loan-doc-grid {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.hl-docs .supporting-doc-item {
+  width: 100%;
+  padding: 1.15rem 1.4rem;
+  border-radius: var(--radius-lg, 16px);
+  background: var(--color-surface, #ffffff);
+  border: 1.5px solid var(--color-border, #e2e8f0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.hl-docs .supporting-doc-item:hover {
+  border-color: var(--color-primary-navy, #041d3e);
+  box-shadow: 0 4px 14px rgba(8, 59, 117, 0.08);
+}
+
+.hl-docs .supporting-doc-item__title-row {
+  display: flex;
   align-items: center;
-  margin-bottom: 0.75rem;
+  gap: var(--space-2);
+  flex-wrap: nowrap;
 }
 
-.home-loan-docs__progress-title {
-  font-size: 0.9375rem;
+.hl-docs .supporting-doc-item__title {
+  font-size: var(--font-size-base, 1rem);
   font-weight: 700;
-  color: var(--palette-slate-900);
+  color: var(--color-text, #0f172a);
+  white-space: nowrap;
 }
 
-.home-loan-docs__progress-count {
-  font-size: 0.9375rem;
-  font-weight: 700;
-  color: var(--palette-orange-600);
-}
-
-.home-loan-docs__progress-track {
-  width: 100%;
-  height: 6px;
-  background-color: var(--subtle-border);
-  border-radius: 9999px;
-  overflow: hidden;
-  margin-bottom: 0.75rem;
-}
-
-.home-loan-docs__progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--palette-orange-600), var(--primary-orange));
-  border-radius: 9999px;
-  transition: width 0.3s ease;
-}
-
-.home-loan-docs__progress-fill--0 { width: 0%; }
-.home-loan-docs__progress-fill--10 { width: 10%; }
-.home-loan-docs__progress-fill--20 { width: 20%; }
-.home-loan-docs__progress-fill--30 { width: 30%; }
-.home-loan-docs__progress-fill--40 { width: 40%; }
-.home-loan-docs__progress-fill--50 { width: 50%; }
-.home-loan-docs__progress-fill--60 { width: 60%; }
-.home-loan-docs__progress-fill--70 { width: 70%; }
-.home-loan-docs__progress-fill--80 { width: 80%; }
-.home-loan-docs__progress-fill--90 { width: 90%; }
-.home-loan-docs__progress-fill--100 { width: 100%; }
-
-
-.home-loan-docs__progress-subtitle {
-  margin: 0;
-  font-size: 0.78125rem;
-  color: var(--secondary-text);
+.hl-docs .supporting-doc-item__subtitle {
+  font-size: var(--font-size-xs, 0.8125rem);
+  color: var(--color-text-muted, #64748b);
+  white-space: normal;
   line-height: 1.4;
+}
+
+/* Orange Required Badge */
+.hl-docs .loan-doc-item__badge--required {
+  background-color: var(--palette-orange-50, #fff7ed);
+  color: var(--palette-orange-600, #ea580c);
+  border: 1px solid var(--palette-orange-200, #fed7aa);
+  font-weight: 600;
+}
+
+.hl-docs-pending-note {
+  text-align: center;
+  font-size: var(--font-size-xs, 0.8125rem);
+  color: var(--color-text-muted, #64748b);
+  margin-top: var(--space-2);
 }
 
 @media (max-width: 640px) {
-  .home-loan-docs__progress-card {
+  .hl-docs .supporting-doc-item {
     padding: 1rem 1.15rem;
   }
-}
 
-.home-loan-docs__error-banner {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  background-color: var(--palette-red-50);
-  border: 1px solid var(--palette-red-200);
-  border-left: 4px solid var(--palette-red-500);
-  border-radius: 12px;
-  padding: 0.9rem 1.15rem;
-  color: var(--palette-red-800);
-  font-size: 0.875rem;
-  box-shadow: 0 1px 3px rgba(239, 68, 68, 0.05);
-}
+  .hl-docs .supporting-doc-item__title {
+    white-space: normal;
+  }
 
-.home-loan-docs__error-desc {
-  margin: 0.25rem 0 0 0;
-  font-size: 0.8125rem;
-  color: var(--palette-red-900);
-  line-height: 1.4;
+  .hl-docs .supporting-doc-item__title-row {
+    flex-wrap: wrap;
+  }
 }
-
