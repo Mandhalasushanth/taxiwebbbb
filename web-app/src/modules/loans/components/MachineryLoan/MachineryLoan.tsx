@@ -1,5 +1,9 @@
 import React, { useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Lock } from 'lucide-react'
 import { FlowStepper } from '@shared/components'
+import { routePaths } from '@core/config'
+import { safeNavigateTo } from '@modules/loans/utils/loanMarketplace.utils'
 import { LoanStepErrorBanner, LoanStepFlowFooter } from '@modules/loans/shared'
 import { useLoanStepFlow } from '@modules/loans/hooks/useLoanStepFlow'
 import { toAmount } from '@modules/loans/validation/commonLoanValidation'
@@ -18,14 +22,15 @@ import {
   KycVerification,
   loadVerifiedCustomer,
   MachineryAndLoanDetails,
-  BusinessDetails,
-  Banking,
-  DocumentsAndReview,
+  Documents,
+  ReviewAndDeclaration,
+  ApplicationSubmitted,
 } from './steps'
 import './machForm.css'
 import './MachineryLoan.css'
 
 export const MachineryLoan: React.FC = () => {
+  const navigate = useNavigate()
   const customer = useMemo(loadVerifiedCustomer, [])
 
   const flow = useLoanStepFlow<MachineryLoanData>({
@@ -43,7 +48,6 @@ export const MachineryLoan: React.FC = () => {
       machineryLoanValidation.validateStep2,
       machineryLoanValidation.validateStep3,
       machineryLoanValidation.validateStep4,
-      machineryLoanValidation.validateStep5,
     ],
     buildSubmission: (data) => ({
       title: 'Machinery Loan Application',
@@ -53,7 +57,30 @@ export const MachineryLoan: React.FC = () => {
       details: { ...data },
     }),
   })
-  const { formData, currentStep, fieldErrors, handleFieldChange } = flow
+  const { formData, currentStep, fieldErrors, handleFieldChange, submittedApp } = flow
+
+  if (submittedApp || currentStep > MACHINERY_LOAN_FORM_STEP_COUNT) {
+    return (
+      <div className="machinery-loan-page" data-testid="machinery-loan-page">
+        <FlowStepper steps={MACHINERY_LOAN_STEPS} currentStep={MACHINERY_LOAN_STEPS.length} />
+        <ApplicationSubmitted
+          referenceNumber={flow.referenceNumber}
+          applicationType={MACHINERY_LOAN_TITLE}
+          requestedAmount={formData.requestedLoanAmount || String(formData.loanAmount || '')}
+          submittedAt={submittedApp?.createdAt}
+          onTrackApplication={flow.handleTrackStatus}
+          onGoHome={() => {
+            flow.markSubmitted()
+            safeNavigateTo(navigate, routePaths.root)
+          }}
+          onContactSupport={() => {
+            flow.markSubmitted()
+            safeNavigateTo(navigate, routePaths.support)
+          }}
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="machinery-loan-page" data-testid="machinery-loan-page">
@@ -81,26 +108,21 @@ export const MachineryLoan: React.FC = () => {
       )}
 
       {currentStep === 3 && (
-        <div className="machinery-loan-page__card">
-          <BusinessDetails data={formData} onChange={handleFieldChange} errors={fieldErrors} />
-        </div>
+        <Documents
+          data={formData}
+          onChange={handleFieldChange}
+          errors={fieldErrors}
+        />
       )}
 
       {currentStep === 4 && (
-        <div className="machinery-loan-page__card">
-          <Banking data={formData} onChange={handleFieldChange} errors={fieldErrors} />
-        </div>
-      )}
-
-      {currentStep === 5 && (
-        <div className="machinery-loan-page__card">
-          <DocumentsAndReview
-            data={formData}
-            onChange={handleFieldChange}
-            onNavigateToStep={flow.navigateToStep}
-            errors={fieldErrors}
-          />
-        </div>
+        <ReviewAndDeclaration
+          data={formData}
+          customer={customer}
+          onChange={handleFieldChange}
+          onNavigateToStep={flow.navigateToStep}
+          errors={fieldErrors}
+        />
       )}
 
       <LoanStepFlowFooter
@@ -108,6 +130,18 @@ export const MachineryLoan: React.FC = () => {
         serviceTitle="Machinery Loan Application"
         successTitle="Machinery Loan Submitted"
         successMessage="Your Machinery Loan application has been successfully received. A TaxEdge Loan Advisor will review your equipment quotation and financial records and contact you shortly."
+        testIdPrefix="machinery"
+        nextDisabled={flow.isLastStep && !formData.termsAccepted}
+        nextLabel={flow.isLastStep ? 'Submit Application →' : 'Continue →'}
+        securityNote={
+          flow.isLastStep ? (
+            <div className="mach-submit-security" data-testid="mach-submit-security">
+              <Lock size={14} aria-hidden="true" />
+              <span>Your information is secure and encrypted</span>
+            </div>
+          ) : undefined
+        }
+        successModal={<></>}
       />
     </div>
   )

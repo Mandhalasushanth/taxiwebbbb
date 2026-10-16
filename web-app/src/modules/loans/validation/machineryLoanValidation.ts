@@ -247,10 +247,55 @@ export function validateStep5DocumentsAndReview(data: MachineryLoanData): LoanSt
   return toStepResult(errors, errorMsg)
 }
 
-export const machineryLoanValidation = {
-  validateStep1: validateStep1KycVerification,
-  validateStep2: validateStep2MachineryDetails,
-  validateStep3: validateStep3BusinessDetails,
-  validateStep4: validateStep4Banking,
-  validateStep5: validateStep5DocumentsAndReview,
+/** Step 3: Documents */
+export function validateStep3Documents(data: Partial<MachineryLoanData>): LoanStepValidationResult {
+  const errors: Record<string, string> = {}
+  const uploaded = data.uploadedDocs || {}
+
+  const hasQuotation = Boolean(
+    uploaded.machinery_quotation ||
+    uploaded.proforma_invoice ||
+    uploaded.machinery_invoice ||
+    uploaded.quotation,
+  )
+  if (!hasQuotation) {
+    errors.machinery_quotation = 'Machinery Quotation / Proforma Invoice is required'
+  }
+
+  return toStepResult(errors, REQUIRED_FIELDS_MESSAGE)
 }
+
+/** Step 4: Review & Declaration */
+export function validateStep4ReviewAndDeclaration(data: Partial<MachineryLoanData>): LoanStepValidationResult {
+  const errors: Record<string, string> = {}
+  if (!data.termsAccepted) {
+    errors.termsAccepted = 'Please accept the declaration to submit your application.'
+  }
+  return toStepResult(errors, REQUIRED_FIELDS_MESSAGE)
+}
+
+export const validateStep3 = validateStep3Documents
+export const validateStep4 = validateStep4ReviewAndDeclaration
+
+export const machineryLoanValidation = {
+  validateStep1(data: Partial<MachineryLoanData>): LoanStepValidationResult {
+    return validateStep1KycVerification(data as Partial<KycStepData>)
+  },
+  validateStep2(data: Partial<MachineryLoanData>): LoanStepValidationResult {
+    return validateStep2MachineryDetails(data as MachineryLoanData)
+  },
+  validateStep3(data: Partial<MachineryLoanData>): LoanStepValidationResult {
+    return validateStep3Documents(data)
+  },
+  validateStep4(data: Partial<MachineryLoanData>): LoanStepValidationResult {
+    return validateStep4ReviewAndDeclaration(data)
+  },
+  validateStep5(_data: Partial<MachineryLoanData>): LoanStepValidationResult {
+    return toStepResult({})
+  },
+  // Legacy aliases
+  validateStep3BusinessDetails,
+  validateStep4Banking,
+  validateStep5DocumentsAndReview,
+}
+

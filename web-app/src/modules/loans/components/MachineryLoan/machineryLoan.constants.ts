@@ -18,6 +18,26 @@ export const MACHINERY_LOAN_STEPS: FlowStepItem[] = [
 
 export const MACHINERY_LOAN_FORM_STEP_COUNT = 4
 
+export interface MachineryLoanDocConfig {
+  id: string
+  title: string
+  description: string
+  isRequired: boolean
+  iconType: 'file' | 'receipt'
+}
+
+export const MACHINERY_REQUIRED_DOCS: readonly MachineryLoanDocConfig[] = [
+  {
+    id: 'machinery_quotation',
+    title: 'Machinery Quotation / Proforma Invoice',
+    description: 'Quotation or proforma invoice for the new machinery being financed',
+    isRequired: true,
+    iconType: 'file',
+  },
+] as const
+
+export const MACHINERY_OPTIONAL_DOCS: readonly MachineryLoanDocConfig[] = []
+
 export const EMPTY_ADDRESS: LoanAddress = {
   houseBuilding: '',
   streetLocality: '',

@@ -1,0 +1,277 @@
+/* Step 5 Application Submitted styling for Machinery Loan matching Screenshot 3 */
+.mach-submitted {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+/* Illustration matching Screenshot 3 */
+.mach-submitted__art {
+  position: relative;
+  align-self: center;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: #fef3e7;
+  margin: 0 auto var(--space-2);
+  overflow: hidden;
+}
+
+.mach-submitted__person {
+  position: absolute;
+  left: 20px;
+  bottom: 0;
+  color: var(--color-primary-navy, #041d3e);
+  fill: var(--color-primary-navy, #041d3e);
+}
+
+.mach-submitted__doc {
+  position: absolute;
+  top: 36px;
+  right: 30px;
+  color: #ffffff;
+  fill: #2563eb;
+}
+
+.mach-submitted__search {
+  position: absolute;
+  top: 86px;
+  right: 52px;
+  color: var(--color-primary, #ff7a00);
+}
+
+.mach-submitted__sparkle {
+  position: absolute;
+  top: 26px;
+  left: 36px;
+  color: var(--color-primary, #ff7a00);
+  opacity: 0.75;
+}
+
+.mach-submitted__tick {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 2.5px solid #ffffff;
+  border-radius: 50%;
+  background: var(--color-primary, #ff7a00);
+  color: #ffffff;
+}
+
+/* Header */
+.mach-submitted__header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mach-submitted__title {
+  margin: 0;
+  font-size: var(--font-size-2xl, 1.75rem);
+  font-weight: 800;
+  color: var(--color-primary-navy, #041d3e);
+  letter-spacing: -0.015em;
+}
+
+.mach-submitted__subtitle {
+  margin: 0;
+  font-size: var(--font-size-base, 1rem);
+  font-weight: 700;
+  color: var(--color-primary, #ff7a00);
+}
+
+.mach-submitted__text {
+  margin: 4px auto 0;
+  max-width: 30rem;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-text-muted, #64748b);
+  line-height: var(--line-height-relaxed, 1.5);
+}
+
+/* Summary Card */
+.mach-submitted__summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--color-surface, #ffffff);
+  border-radius: var(--radius-lg, 16px);
+  border: 1px solid var(--color-border, #e2e8f0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.mach-submitted__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+}
+
+.mach-submitted__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.mach-submitted__row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.mach-submitted__row-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #1d4ed8;
+  flex-shrink: 0;
+}
+
+.mach-submitted__row dt {
+  flex: 1;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-text-muted, #64748b);
+  margin: 0;
+}
+
+.mach-submitted__row dd {
+  margin: 0;
+  text-align: right;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  color: var(--color-primary-navy, #041d3e);
+}
+
+.mach-submitted__value--strong {
+  font-weight: 800;
+  color: var(--color-primary-navy, #041d3e);
+}
+
+.mach-submitted__status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: #fff7ed;
+  color: #ea580c;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.mach-submitted__note {
+  margin: var(--space-2) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid #f1f5f9;
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #64748b);
+  line-height: 1.4;
+  text-align: left;
+}
+
+/* What happens next Card matching Screenshot 3 */
+.mach-submitted__next-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: #f0f7ff;
+  border: 1px solid #dbeafe;
+  border-radius: var(--radius-lg, 16px);
+  text-align: left;
+}
+
+.mach-submitted__next-title {
+  margin: 0;
+  font-size: var(--font-size-base, 1rem);
+  font-weight: 700;
+  color: var(--color-primary-navy, #041d3e);
+}
+
+.mach-submitted__next-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mach-submitted__next-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: #334155;
+  line-height: 1.4;
+}
+
+.mach-submitted__next-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-primary, #ff7a00);
+  color: var(--color-primary, #ff7a00);
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Actions */
+.mach-submitted__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.mach-submitted__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  border-radius: var(--radius-md, 8px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mach-submitted__btn--primary {
+  min-height: 50px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-primary-navy, #041d3e);
+  color: #ffffff;
+  border: none;
+  font-size: var(--font-size-base, 1rem);
+}
+
+.mach-submitted__btn--primary:hover {
+  background: #020e20;
+}
+
+.mach-submitted__btn--link {
+  min-height: 44px;
+  background: transparent;
+  color: var(--color-primary-navy, #041d3e);
+  border: none;
+  font-size: 0.9375rem;
+}
+
+.mach-submitted__btn--link:hover {
+  color: var(--color-primary, #ff7a00);
+}
