@@ -20,6 +20,7 @@ const DEFAULT_TOTAL_STEPS = 4
 const DEFAULT_RESUME_ROUTES: Record<string, string> = {
   vehicle_loan: '/loans/vehicle-loan',
   machinery_loan: '/loans/machinery-loan',
+  msme_loan: '/loans/msme-loan',
 }
 const FALLBACK_RESUME_ROUTE = '/loans/home-loan'
 
