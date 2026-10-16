@@ -76,9 +76,13 @@ export const VehicleLoan: React.FC = () => {
           requestedAmount={formData.requestedLoanAmount || String(formData.loanAmount || '')}
           submittedAt={submittedApp?.createdAt}
           onTrackApplication={flow.handleTrackStatus}
+          onGoToDashboard={() => {
+            flow.markSubmitted()
+            safeNavigateTo(navigate, routePaths.dashboard)
+          }}
           onGoHome={() => {
             flow.markSubmitted()
-            safeNavigateTo(navigate, routePaths.root)
+            safeNavigateTo(navigate, routePaths.dashboard)
           }}
           onContactSupport={() => {
             flow.markSubmitted()

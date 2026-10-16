@@ -9,6 +9,7 @@ import {
   FileText,
   Headphones,
   Layers,
+  LayoutDashboard,
   Search,
   Sparkles,
   UserRound,
@@ -41,6 +42,7 @@ export interface ApplicationSubmittedProps {
   requestedAmount: string
   submittedAt?: string
   onTrackApplication?: () => void
+  onGoToDashboard?: () => void
   onGoHome?: () => void
   onContactSupport?: () => void
 }
@@ -53,17 +55,22 @@ export const ApplicationSubmitted: React.FC<ApplicationSubmittedProps> = ({
   applicationType,
   requestedAmount,
   submittedAt,
+  onGoToDashboard,
   onGoHome,
   onContactSupport,
 }) => {
   const navigate = useNavigate()
 
-  const handleGoHome = () => {
+  const handleGoDashboard = () => {
+    if (onGoToDashboard) {
+      onGoToDashboard()
+      return
+    }
     if (onGoHome) {
       onGoHome()
       return
     }
-    safeNavigateTo(navigate, routePaths.root)
+    safeNavigateTo(navigate, routePaths.dashboard)
   }
 
   const handleContactSupport = () => {
@@ -165,11 +172,12 @@ export const ApplicationSubmitted: React.FC<ApplicationSubmittedProps> = ({
         <button
           type="button"
           className="mach-submitted__btn mach-submitted__btn--primary"
-          onClick={handleGoHome}
-          data-testid="mach-go-to-home-btn"
-          aria-label="Go to Home"
+          onClick={handleGoDashboard}
+          data-testid="mach-go-to-dashboard-btn"
+          aria-label="Go to Dashboard"
         >
-          <span>Go to Home</span>
+          <LayoutDashboard size={18} aria-hidden="true" />
+          <span>Go to Dashboard</span>
           <ArrowRight size={18} aria-hidden="true" />
         </button>
 

@@ -115,6 +115,38 @@ describe('Machinery Loan – Step 4 Review & Declaration', () => {
     ).toBeInTheDocument()
   })
 
+  it('renders Machinery Quotation / Purchase Document in Documents card when condition is Used / Pre-owned', () => {
+    const usedReviewData: MachineryLoanData = {
+      ...BASE_REVIEW_DATA,
+      machineryCondition: 'Used / Pre-owned',
+      uploadedDocs: {
+        machinery_purchase_doc: {
+          id: 'machinery_purchase_doc',
+          name: 'purchase_doc.pdf',
+          size: 2048,
+          type: 'application/pdf',
+        },
+      },
+    }
+
+    render(
+      <MemoryRouter>
+        <ReviewAndDeclaration
+          data={usedReviewData}
+          customer={MOCK_CUSTOMER}
+          onChange={vi.fn()}
+          onNavigateToStep={vi.fn()}
+          errors={{}}
+        />
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByRole('heading', { level: 2, name: 'Documents' })).toBeInTheDocument()
+    expect(screen.getByText('1 of 1 required documents uploaded')).toBeInTheDocument()
+    expect(screen.getByText('Machinery Quotation / Purchase Document')).toBeInTheDocument()
+    expect(screen.getByText('Uploaded')).toBeInTheDocument()
+  })
+
   it('navigates to step 1, 2, or 3 when clicking the respective Edit buttons', () => {
     const handleNavigate = vi.fn()
     render(

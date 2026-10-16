@@ -1,27 +1,30 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { FileText, Receipt, ShieldCheck } from 'lucide-react'
 import { DocumentSection, UploadDocument } from '@shared/components'
 import { LoanDocumentGrid } from '@modules/loans/shared'
 import { loanDocumentService } from '@modules/loans/documents/loanDocumentService'
 import type { MachineryLoanStepProps } from '@modules/loans/types/machineryLoan.types'
 import {
-  MACHINERY_OPTIONAL_DOCS,
-  MACHINERY_REQUIRED_DOCS,
+  getMachineryLoanDocumentSections,
   type MachineryLoanDocConfig,
 } from '../../machineryLoan.constants'
 import './Documents.css'
 
 /**
  * Step 3: Machinery Loan Documents verification modeled after Business & Working Capital
- * Displays "Machinery Quotation / Proforma Invoice" required document matching Business & Working Capital layout
+ * Dynamically switches documents based on Step 2 machineryCondition:
+ * - If Used / Pre-owned: Shows "Machinery Quotation / Purchase Document"
+ * - If New: Shows "Machinery Quotation / Proforma Invoice"
  */
 export const Documents: React.FC<MachineryLoanStepProps> = ({
   data,
   onChange,
   errors = {},
 }) => {
-  const requiredDocs = MACHINERY_REQUIRED_DOCS
-  const optionalDocs = MACHINERY_OPTIONAL_DOCS
+  const { requiredDocs, optionalDocs } = useMemo(
+    () => getMachineryLoanDocumentSections(data.machineryCondition),
+    [data.machineryCondition],
+  )
   const uploadedDocs = data.uploadedDocs || {}
 
   const handleUpload = (id: string, file: File) => {
@@ -43,6 +46,9 @@ export const Documents: React.FC<MachineryLoanStepProps> = ({
     try {
       const next = { ...uploadedDocs }
       delete next[id]
+      // Also delete alias if toggled
+      if (id === 'machinery_purchase_doc') delete next.machinery_quotation
+      if (id === 'machinery_quotation') delete next.machinery_purchase_doc
       onChange({ uploadedDocs: next })
     } catch (err) {
       console.error('Failed to remove machinery document:', err)
@@ -60,8 +66,11 @@ export const Documents: React.FC<MachineryLoanStepProps> = ({
   }
 
   const renderDocCard = (doc: MachineryLoanDocConfig) => {
-    const uploaded = uploadedDocs[doc.id]
-    const hasError = !uploaded && Boolean(errors[doc.id])
+    const uploaded =
+      uploadedDocs[doc.id] ||
+      (doc.id === 'machinery_purchase_doc' && uploadedDocs.machinery_quotation) ||
+      (doc.id === 'machinery_quotation' && uploadedDocs.machinery_purchase_doc)
+    const hasError = !uploaded && Boolean(errors[doc.id] || errors.machinery_quotation)
 
     const badge = hasError ? (
       <span className="loan-doc-item__badge loan-doc-item__badge--error">

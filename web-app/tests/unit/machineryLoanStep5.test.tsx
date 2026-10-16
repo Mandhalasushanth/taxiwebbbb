@@ -79,8 +79,38 @@ describe('Machinery Loan – Step 5 Application Submitted', () => {
     ).toBeInTheDocument()
 
     // Actions
-    expect(screen.getByRole('button', { name: 'Go to Home' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Go to Dashboard' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Contact Support' })).toBeInTheDocument()
+  })
+
+  it('navigates to dashboard when "Go to Dashboard" button is clicked', () => {
+    render(
+      <MemoryRouter>
+        <ApplicationSubmitted
+          referenceNumber="TXE-LN-805386"
+          applicationType="Machinery Loan"
+          requestedAmount="9595989"
+        />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Go to Dashboard' }))
+    expect(mockNavigate).toHaveBeenCalledWith('/dashboard')
+  })
+
+  it('navigates to support when "Contact Support" button is clicked', () => {
+    render(
+      <MemoryRouter>
+        <ApplicationSubmitted
+          referenceNumber="TXE-LN-805386"
+          applicationType="Machinery Loan"
+          requestedAmount="9595989"
+        />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Contact Support' }))
+    expect(mockNavigate).toHaveBeenCalledWith('/support')
   })
 
   it('handles custom onGoHome and onContactSupport callbacks when provided', () => {
@@ -99,7 +129,7 @@ describe('Machinery Loan – Step 5 Application Submitted', () => {
       </MemoryRouter>,
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Go to Home' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Go to Dashboard' }))
     expect(handleGoHome).toHaveBeenCalledTimes(1)
 
     fireEvent.click(screen.getByRole('button', { name: 'Contact Support' }))

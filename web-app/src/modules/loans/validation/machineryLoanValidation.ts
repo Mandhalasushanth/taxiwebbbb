@@ -251,15 +251,24 @@ export function validateStep5DocumentsAndReview(data: MachineryLoanData): LoanSt
 export function validateStep3Documents(data: Partial<MachineryLoanData>): LoanStepValidationResult {
   const errors: Record<string, string> = {}
   const uploaded = data.uploadedDocs || {}
+  const isUsed = data.machineryCondition === 'Used / Pre-owned'
+  const docId = isUsed ? 'machinery_purchase_doc' : 'machinery_quotation'
+  const docTitle = isUsed
+    ? 'Machinery Quotation / Purchase Document'
+    : 'Machinery Quotation / Proforma Invoice'
 
   const hasQuotation = Boolean(
+    uploaded[docId] ||
     uploaded.machinery_quotation ||
+    uploaded.machinery_purchase_doc ||
     uploaded.proforma_invoice ||
+    uploaded.purchase_document ||
     uploaded.machinery_invoice ||
     uploaded.quotation,
   )
   if (!hasQuotation) {
-    errors.machinery_quotation = 'Machinery Quotation / Proforma Invoice is required'
+    errors[docId] = `${docTitle} is required`
+    errors.machinery_quotation = `${docTitle} is required`
   }
 
   return toStepResult(errors, REQUIRED_FIELDS_MESSAGE)

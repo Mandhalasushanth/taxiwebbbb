@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 import type { MachineryLoanData } from '@modules/loans/types/machineryLoan.types'
 import type { VerifiedCustomerDetails } from '@modules/loans/types'
-import { MACHINERY_REQUIRED_DOCS } from '../../machineryLoan.constants'
+import { getMachineryLoanDocumentSections } from '../../machineryLoan.constants'
 import { loadVerifiedCustomer } from '../KycVerification/loadVerifiedCustomer'
 
 export interface ReviewAndDeclarationProps {
@@ -69,9 +69,15 @@ export const ReviewAndDeclaration: React.FC<ReviewAndDeclarationProps> = ({
   const aadhaarDisplay =
     aadhaarDigits.length >= 4 ? `XXXX XXXX ${aadhaarDigits.slice(-4)}` : '—'
 
-  const requiredDocs = MACHINERY_REQUIRED_DOCS
+  const { requiredDocs } = getMachineryLoanDocumentSections(data.machineryCondition)
   const uploadedDocs = data.uploadedDocs || {}
-  const uploadedRequiredCount = requiredDocs.filter((doc) => Boolean(uploadedDocs[doc.id])).length
+  const isDocUploaded = (docId: string) =>
+    Boolean(
+      uploadedDocs[docId] ||
+      (docId === 'machinery_purchase_doc' && (uploadedDocs.machinery_quotation || uploadedDocs.purchase_document || uploadedDocs.quotation)) ||
+      (docId === 'machinery_quotation' && (uploadedDocs.machinery_purchase_doc || uploadedDocs.proforma_invoice || uploadedDocs.machinery_invoice || uploadedDocs.quotation))
+    )
+  const uploadedRequiredCount = requiredDocs.filter((doc) => isDocUploaded(doc.id)).length
   const totalRequiredCount = requiredDocs.length
 
   return (
@@ -233,7 +239,7 @@ export const ReviewAndDeclaration: React.FC<ReviewAndDeclarationProps> = ({
 
         <div className="mach-uploaded-docs-list">
           {requiredDocs.map((doc) => {
-            const uploaded = uploadedDocs[doc.id]
+            const uploaded = isDocUploaded(doc.id)
             return (
               <div key={doc.id} className="mach-review-doc-row">
                 <div className="mach-review-doc-left">

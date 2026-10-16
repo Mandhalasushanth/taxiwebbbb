@@ -38,6 +38,37 @@ export const MACHINERY_REQUIRED_DOCS: readonly MachineryLoanDocConfig[] = [
 
 export const MACHINERY_OPTIONAL_DOCS: readonly MachineryLoanDocConfig[] = []
 
+export const getMachineryLoanDocumentSections = (
+  machineryCondition?: string,
+): {
+  requiredDocs: readonly MachineryLoanDocConfig[]
+  optionalDocs: readonly MachineryLoanDocConfig[]
+} => {
+  const isUsed = machineryCondition === 'Used / Pre-owned'
+
+  const requiredDoc: MachineryLoanDocConfig = isUsed
+    ? {
+        id: 'machinery_purchase_doc',
+        title: 'Machinery Quotation / Purchase Document',
+        description:
+          'Quotation or purchase document for the used / pre-owned machinery being financed',
+        isRequired: true,
+        iconType: 'file',
+      }
+    : {
+        id: 'machinery_quotation',
+        title: 'Machinery Quotation / Proforma Invoice',
+        description: 'Quotation or proforma invoice for the new machinery being financed',
+        isRequired: true,
+        iconType: 'file',
+      }
+
+  return {
+    requiredDocs: [requiredDoc],
+    optionalDocs: [],
+  }
+}
+
 export const EMPTY_ADDRESS: LoanAddress = {
   houseBuilding: '',
   streetLocality: '',

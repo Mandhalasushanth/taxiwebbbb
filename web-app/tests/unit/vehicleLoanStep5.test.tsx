@@ -74,11 +74,11 @@ describe('Vehicle Loan – Step 5 Application Submitted', () => {
     ).toBeInTheDocument()
 
     // Action buttons
-    expect(screen.getByRole('button', { name: 'Go to Home' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Go to Dashboard' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Contact Support' })).toBeInTheDocument()
   })
 
-  it('navigates to home when "Go to Home" button is clicked', () => {
+  it('navigates to dashboard when "Go to Dashboard" button is clicked', () => {
     render(
       <MemoryRouter>
         <ApplicationSubmitted
@@ -89,8 +89,8 @@ describe('Vehicle Loan – Step 5 Application Submitted', () => {
       </MemoryRouter>,
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Go to Home' }))
-    expect(mockNavigate).toHaveBeenCalledWith('/')
+    fireEvent.click(screen.getByRole('button', { name: 'Go to Dashboard' }))
+    expect(mockNavigate).toHaveBeenCalledWith('/dashboard')
   })
 
   it('navigates to support when "Contact Support" button is clicked', () => {
@@ -124,7 +124,7 @@ describe('Vehicle Loan – Step 5 Application Submitted', () => {
       </MemoryRouter>,
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Go to Home' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Go to Dashboard' }))
     expect(handleGoHome).toHaveBeenCalledTimes(1)
 
     fireEvent.click(screen.getByRole('button', { name: 'Contact Support' }))

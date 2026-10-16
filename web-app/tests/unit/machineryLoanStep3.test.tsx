@@ -158,22 +158,82 @@ describe('Machinery Loan – Step 3 Documents', () => {
     })
   })
 
+  it('renders Machinery Quotation / Purchase Document when machineryCondition is Used / Pre-owned', () => {
+    const usedData: MachineryLoanData = {
+      ...BASE_DATA,
+      machineryCondition: 'Used / Pre-owned',
+    }
+
+    render(
+      <MemoryRouter>
+        <Documents data={usedData} onChange={vi.fn()} errors={{}} />
+      </MemoryRouter>,
+    )
+
+    // Section: REQUIRED DOCUMENTS
+    expect(screen.getByText('REQUIRED DOCUMENTS')).toBeInTheDocument()
+    expect(screen.getByText('Machinery Quotation / Purchase Document')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'Quotation or purchase document for the used / pre-owned machinery being financed',
+      ),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Required')).toBeInTheDocument()
+
+    // Upload action button
+    expect(
+      screen.getByRole('button', { name: /upload machinery quotation \/ purchase document/i }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Upload')).toBeInTheDocument()
+  })
+
   describe('validateStep3Documents', () => {
-    it('returns error when quotation is missing', () => {
-      const res = validateStep3Documents({ uploadedDocs: {} })
+    it('returns error when quotation is missing for New condition', () => {
+      const res = validateStep3Documents({ machineryCondition: 'New', uploadedDocs: {} })
       expect(res.isValid).toBe(false)
       expect(res.errors.machinery_quotation).toBe(
         'Machinery Quotation / Proforma Invoice is required',
       )
     })
 
-    it('passes when machinery_quotation is uploaded', () => {
+    it('returns error when purchase document is missing for Used / Pre-owned condition', () => {
       const res = validateStep3Documents({
+        machineryCondition: 'Used / Pre-owned',
+        uploadedDocs: {},
+      })
+      expect(res.isValid).toBe(false)
+      expect(res.errors.machinery_purchase_doc).toBe(
+        'Machinery Quotation / Purchase Document is required',
+      )
+      expect(res.errors.machinery_quotation).toBe(
+        'Machinery Quotation / Purchase Document is required',
+      )
+    })
+
+    it('passes when machinery_quotation is uploaded for New condition', () => {
+      const res = validateStep3Documents({
+        machineryCondition: 'New',
         uploadedDocs: {
           machinery_quotation: {
             id: 'machinery_quotation',
             name: 'quote.pdf',
             size: 1024,
+            type: 'application/pdf',
+          },
+        },
+      })
+      expect(res.isValid).toBe(true)
+      expect(res.errors).toEqual({})
+    })
+
+    it('passes when machinery_purchase_doc is uploaded for Used / Pre-owned condition', () => {
+      const res = validateStep3Documents({
+        machineryCondition: 'Used / Pre-owned',
+        uploadedDocs: {
+          machinery_purchase_doc: {
+            id: 'machinery_purchase_doc',
+            name: 'purchase_doc.pdf',
+            size: 2048,
             type: 'application/pdf',
           },
         },
