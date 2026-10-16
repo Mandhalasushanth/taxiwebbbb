@@ -7,3 +7,4 @@ export * from "./homeLoan.types";
 export * from "./projectFinance.types";
 export * from "./personalLoan.types";
 export * from "./propertyLoan.types";
+export * from "./msmeLoan.types";

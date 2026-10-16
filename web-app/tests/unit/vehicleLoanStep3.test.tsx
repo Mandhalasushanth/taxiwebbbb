@@ -49,9 +49,8 @@ describe('Vehicle Loan – Step 3 Documents (Dynamic by Vehicle Condition)', () 
         </MemoryRouter>,
       )
 
-      // Summary Progress Box
-      expect(screen.getByText('0 of 1 required documents uploaded')).toBeInTheDocument()
-      expect(screen.getByText('1 required document is still pending.')).toBeInTheDocument()
+      // Summary Progress Box is removed
+      expect(screen.queryByText(/required documents uploaded/i)).not.toBeInTheDocument()
 
       // Section: REQUIRED DOCUMENTS
       expect(screen.getByText('REQUIRED DOCUMENTS')).toBeInTheDocument()
@@ -99,9 +98,8 @@ describe('Vehicle Loan – Step 3 Documents (Dynamic by Vehicle Condition)', () 
         </MemoryRouter>,
       )
 
-      // Summary Box
-      expect(screen.getByText('0 of 1 required documents uploaded')).toBeInTheDocument()
-      expect(screen.getByText('1 required document is still pending.')).toBeInTheDocument()
+      // Summary Box is removed
+      expect(screen.queryByText(/required documents uploaded/i)).not.toBeInTheDocument()
 
       // Required: Vehicle Quotation / Proforma Invoice
       expect(screen.getByText('REQUIRED DOCUMENTS')).toBeInTheDocument()
@@ -159,8 +157,7 @@ describe('Vehicle Loan – Step 3 Documents (Dynamic by Vehicle Condition)', () 
         </MemoryRouter>,
       )
 
-      expect(screen.getByText('1 of 1 required documents uploaded')).toBeInTheDocument()
-      expect(screen.getByText('All required documents uploaded.')).toBeInTheDocument()
+      expect(screen.queryByText(/required documents uploaded/i)).not.toBeInTheDocument()
       expect(screen.getByText(/used_car_rc\.pdf/i)).toBeInTheDocument()
     })
 

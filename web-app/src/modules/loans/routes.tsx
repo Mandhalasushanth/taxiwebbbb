@@ -11,10 +11,11 @@ const PropertyLoan = lazy(() => import('./components/PropertyLoan/PropertyLoan')
 const VehicleLoan = lazy(() => import('./components/VehicleLoan/VehicleLoan'))
 const BusinessWorkingCapital = lazy(() => import('./components/BusinessWorkingCapital/BusinessWorkingCapital'))
 const MachineryLoan = lazy(() => import('./components/MachineryLoan/MachineryLoan'))
+const MsmeLoan = lazy(() => import('./components/MsmeLoan/MsmeLoan'))
 const ProjectFinance = lazy(() => import('./components/ProjectFinance/ProjectFinance'))
 const LoanApplicationStatus = lazy(() => import('./shared/LoanApplicationStatus/LoanApplicationStatus'))
 
-/** Old Business Loan / Working Capital / MSME links (bookmarks, saved drafts) open the combined flow */
+/** Old Business Loan / Working Capital links (bookmarks, saved drafts) open the combined flow */
 const toBusinessWorkingCapital = <Navigate to={routePaths.loansBusinessWorkingCapital} replace />
 
 export const loansRoutes: RouteObject[] = [
@@ -28,8 +29,8 @@ export const loansRoutes: RouteObject[] = [
   { path: routePaths.legacyLoans.businessLoan, element: toBusinessWorkingCapital },
   { path: routePaths.legacyLoans.workingCapitalLoan, element: toBusinessWorkingCapital },
   { path: routePaths.loansMachineryLoan, element: <MachineryLoan /> },
+  { path: routePaths.loansMsmeLoan, element: <MsmeLoan /> },
   { path: routePaths.loansProjectFinance, element: <ProjectFinance /> },
-  { path: routePaths.legacyLoans.msmeLoan, element: toBusinessWorkingCapital },
   { path: '/loans/status/:id', element: <LoanApplicationStatus /> },
   { path: '/loans/status', element: <LoanApplicationStatus /> },
 ]
