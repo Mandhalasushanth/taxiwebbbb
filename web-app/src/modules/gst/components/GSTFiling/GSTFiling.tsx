@@ -72,7 +72,6 @@ export const GSTFiling = () => {
       {currentStep === 3 && (
         <GSTFilingReview
           selectedMonth={filingData.selectedMonth}
-          baseFee={filingData.baseFee}
           filingData={filingData}
           uploadedFiles={uploadedFiles}
           notApplicableDocs={notApplicableDocs}
@@ -81,8 +80,8 @@ export const GSTFiling = () => {
           onEditFilingDetails={() => startEditingFromReview(1)}
           onEditTaxComputation={() => startEditingFromReview(1)}
           onEditDocuments={() => startEditingFromReview(2)}
-          onBack={() => goToStep(2)}
-          onRequestChange={() => goToStep(2)}
+          onBack={() => goToStep(filingData.filingType === 'nil' || filingData.returnType === 'nil' ? 1 : 2)}
+          onRequestChange={() => goToStep(filingData.filingType === 'nil' || filingData.returnType === 'nil' ? 1 : 2)}
           onApprove={handleStep3Approve}
         />
       )}

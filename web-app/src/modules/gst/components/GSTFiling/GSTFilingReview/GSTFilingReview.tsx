@@ -19,6 +19,7 @@ import {
   type UploadedFileInfo,
 } from '@modules/gst/utils/gstDocumentsData'
 import { StepActionBar } from '@shared/components'
+import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
 import './GSTFilingReview.css'
 
 export interface GSTFilingReviewProps {
@@ -52,39 +53,55 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
   onEditDocuments,
 }) => {
   const [showRequestModal, setShowRequestModal] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
-  const handleEditFilingDetails = () => {
-    if (onEditFilingDetails) {
-      onEditFilingDetails()
-    } else if (onStepClick) {
-      onStepClick(1)
-    } else {
+  const isNilReturn = filingData?.filingType === 'nil' || filingData?.returnType === 'nil'
+
+  const navigateToEdit = (step: number, customHandler?: () => void) => {
+    try {
+      if (isNilReturn && step > 1) {
+        return
+      }
+      const action = customHandler ?? (onStepClick ? () => onStepClick(step) : null)
+      if (!action) {
+        throw new Error(`No navigation target defined for step ${step}`)
+      }
+      action()
+    } catch {
       onBack()
     }
   }
 
-  const handleEditTaxComputation = () => {
-    if (onEditTaxComputation) {
-      onEditTaxComputation()
-    } else if (onStepClick) {
-      onStepClick(1)
-    } else {
-      onBack()
-    }
-  }
-
+  const handleEditFilingDetails = () => navigateToEdit(1, onEditFilingDetails)
+  const handleEditTaxComputation = () => navigateToEdit(1, onEditTaxComputation)
   const handleEditDocuments = () => {
-    if (onEditDocuments) {
-      onEditDocuments()
-    } else if (onStepClick) {
-      onStepClick(2)
-    } else {
-      onBack()
-    }
+    setSubmitError(null)
+    navigateToEdit(2, onEditDocuments)
   }
 
   const effectiveUploadedFiles = uploadedFiles ?? {}
   const effectiveNotApplicableDocs = notApplicableDocs ?? {}
+
+  const missingDocs = DEFAULT_DOCUMENT_ITEMS.filter(
+    (doc) => doc.isRequired && !effectiveUploadedFiles[doc.id] && !effectiveNotApplicableDocs[doc.id]
+  )
+  const hasMissingDocs = !isNilReturn && (missingDocs.length > 0 || Object.keys(effectiveUploadedFiles).length === 0)
+
+  // Clear submit error once missing documents are resolved
+  React.useEffect(() => {
+    if (!hasMissingDocs && submitError) {
+      setSubmitError(null)
+    }
+  }, [hasMissingDocs, submitError])
+
+  const handleSubmit = () => {
+    if (hasMissingDocs) {
+      setSubmitError('Please upload all required documents before submitting.')
+      return
+    }
+    setSubmitError(null)
+    onApprove()
+  }
 
   const docSummaryResult = calculateDocumentSummary(
     DEFAULT_DOCUMENT_ITEMS,
@@ -103,23 +120,31 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
   const taxFigures = getReconciledTaxComputation(filingData)
 
   return (
-    <div className="gst-review-page">
+    <div className="gst-review-page" data-testid="gst-filing-review-page">
       {/* Main Page Header */}
       <header className="gst-review-header">
         <h1 className="gst-review-title">Review and Summary</h1>
         <p className="gst-review-subtitle">
-          Review your filing details, uploaded documents, and computed tax figures before submission.
+          {isNilReturn
+            ? 'Review your Nil return filing details before submission.'
+            : hasMissingDocs
+            ? 'Please submit all required documents before final submission.'
+            : 'Review your filing details, uploaded documents, and computed tax figures before submission.'}
         </p>
       </header>
 
       {/* Stepper */}
       <div className="gst-review-top-bar">
         <div className="gst-review-stepper-wrap">
-          <GSTFilingStepper currentStep={3} onStepClick={onStepClick} />
+          <GSTFilingStepper
+            currentStep={3}
+            onStepClick={onStepClick}
+            isNilReturn={isNilReturn}
+          />
         </div>
       </div>
 
-      {/* 4 Review Cards in Stack */}
+      {/* Review Cards in Stack */}
       <div className="gst-review-main-content">
         {/* Section 1: Filing Details */}
         <GSTReviewFilingDetailsCard
@@ -127,29 +152,41 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
           onEdit={handleEditFilingDetails}
         />
 
-        {/* Section 2: Tax Computation (Reconciled) */}
-        <GSTReviewTaxComputationCard
-          turnover={taxFigures.turnover}
-          purchases={taxFigures.purchases}
-          outputGst={taxFigures.outputGst}
-          eligibleItc={taxFigures.eligibleItc}
-          netLiability={taxFigures.netLiability}
-          onEdit={handleEditTaxComputation}
-        />
+        {/* Section 2: Tax Computation (Omitted for Nil Return) */}
+        {!isNilReturn && (
+          <GSTReviewTaxComputationCard
+            turnover={taxFigures.turnover}
+            purchases={taxFigures.purchases}
+            outputGst={taxFigures.outputGst}
+            eligibleItc={taxFigures.eligibleItc}
+            netLiability={taxFigures.netLiability}
+            calculationMethod={filingData?.calculationMethod}
+            isPending={filingData?.calculationMethod === 'ca_calculate'}
+            onEdit={handleEditTaxComputation}
+          />
+        )}
 
-        {/* Section 3: Documents */}
-        <GSTReviewDocumentsCard
-          verifiedCount={docSummaryResult.totalVerified || 3}
-          onEdit={handleEditDocuments}
-        />
+        {/* Section 3: Documents (Omitted for Nil Return) */}
+        {!isNilReturn && (
+          <GSTReviewDocumentsCard
+            verifiedCount={docSummaryResult.totalVerified || Object.keys(effectiveUploadedFiles).length}
+            hasMissingDocs={hasMissingDocs}
+            missingCount={missingDocs.length}
+            onEdit={handleEditDocuments}
+            onSubmitDocuments={handleEditDocuments}
+          />
+        )}
       </div>
+
+      {/* Red Warning Banner when Submit is clicked without uploading required documents */}
+      <GSTStepErrorBanner message={submitError} />
 
       {/* Step Navigation Bar */}
       <StepActionBar
         onBack={onBack}
-        onNext={onApprove}
+        onNext={handleSubmit}
         onSaveDraft={onSaveDraft}
-        nextLabel="Submit Application"
+        nextLabel="Submit"
       />
 
       {/* Confirmation Modal */}

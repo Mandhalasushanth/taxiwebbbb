@@ -45,6 +45,20 @@ interface GSTFilingPeriodProps {
   onDraftChange?: (data: FilingPeriodData) => void
 }
 
+const validateEstimatedAmount = (
+  raw: string | undefined,
+  requiredMsg: string,
+  invalidMsg: string,
+  allowZero = false
+): string | undefined => {
+  if (!raw || !raw.trim()) {
+    return requiredMsg
+  }
+  const num = Number(raw.replace(/,/g, ''))
+  const isInvalid = isNaN(num) || (allowZero ? num < 0 : num <= 0)
+  return isInvalid ? invalidMsg : undefined
+}
+
 export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
   initialData,
   isEditMode = false,
@@ -110,20 +124,31 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
 
   // The form as it will be submitted; also reported to the flow for drafts
   const periodData = useMemo<FilingPeriodData>(
-    () => ({
-      gstin: gstin.toUpperCase().trim(),
-      businessName: initialData?.businessName || profile.tradeName || profile.legalName,
-      financialYear,
-      frequency,
-      selectedMonth: returnPeriod,
-      returnType: (filingType === 'nil' ? 'nil' : (returnType as FilingPeriodData['returnType'])) || 'gstr1',
-      baseFee: getFilingBaseFee(filingType, returnType),
-      filingType,
-      calculationMethod,
-      estimatedSales,
-      estimatedPurchases,
-      estimatedItc,
-    }),
+    () => {
+      const resolvedReturnType =
+        filingType === 'nil'
+          ? 'nil'
+          : (returnType && returnType !== 'nil' ? (returnType as FilingPeriodData['returnType']) : 'gstr1')
+      const resolvedCalcMethod =
+        filingType === 'nil'
+          ? ''
+          : (calculationMethod || 'ca_calculate')
+
+      return {
+        gstin: gstin.toUpperCase().trim(),
+        businessName: initialData?.businessName || profile.tradeName || profile.legalName,
+        financialYear,
+        frequency,
+        selectedMonth: returnPeriod,
+        returnType: resolvedReturnType,
+        baseFee: getFilingBaseFee(filingType, resolvedReturnType),
+        filingType,
+        calculationMethod: resolvedCalcMethod,
+        estimatedSales: filingType === 'nil' ? '' : estimatedSales,
+        estimatedPurchases: filingType === 'nil' ? '' : estimatedPurchases,
+        estimatedItc: filingType === 'nil' ? '' : estimatedItc,
+      }
+    },
     [gstin, initialData?.businessName, profile, financialYear, frequency, returnPeriod, filingType, returnType, calculationMethod, estimatedSales, estimatedPurchases, estimatedItc]
   )
 
@@ -144,15 +169,29 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
       if (!returnType) newErrors.returnType = 'Please select a return type'
       if (!calculationMethod) newErrors.calculationMethod = 'Please select a tax calculation method'
       if (calculationMethod === 'estimated_figures') {
-        if (!estimatedSales || !estimatedSales.trim()) {
-          newErrors.estimatedSales = 'Please enter estimated taxable sales'
-        }
-        if (!estimatedPurchases || !estimatedPurchases.trim()) {
-          newErrors.estimatedPurchases = 'Please enter estimated taxable purchases'
-        }
-        if (!estimatedItc || !estimatedItc.trim()) {
-          newErrors.estimatedItc = 'Please enter estimated eligible ITC'
-        }
+        const salesError = validateEstimatedAmount(
+          estimatedSales,
+          'Please enter estimated taxable sales',
+          'Please enter a valid sales amount',
+          false
+        )
+        if (salesError) newErrors.estimatedSales = salesError
+
+        const purchasesError = validateEstimatedAmount(
+          estimatedPurchases,
+          'Please enter estimated taxable purchases',
+          'Please enter a valid purchases amount',
+          true
+        )
+        if (purchasesError) newErrors.estimatedPurchases = purchasesError
+
+        const itcError = validateEstimatedAmount(
+          estimatedItc,
+          'Please enter estimated eligible ITC',
+          'Please enter a valid ITC amount',
+          true
+        )
+        if (itcError) newErrors.estimatedItc = itcError
       }
     }
 
@@ -177,7 +216,11 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
       </header>
 
       {/* Step Progress Stepper */}
-      <GSTFilingStepper currentStep={1} onStepClick={onStepClick} />
+      <GSTFilingStepper
+        currentStep={1}
+        onStepClick={onStepClick}
+        isNilReturn={filingType === 'nil'}
+      />
 
       {/* Main Content Form with Section Cards */}
       <form className="gst-filing-period__form" onSubmit={handleSubmit} noValidate>
@@ -236,6 +279,17 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
             onChange={(type) => {
               setFilingType(type)
               handleClearError('filingType')
+              if (type === 'regular') {
+                if (returnType === 'nil' || !returnType) {
+                  setReturnType('gstr1')
+                }
+                if (!calculationMethod) {
+                  setCalculationMethod('ca_calculate')
+                }
+              } else if (type === 'nil') {
+                setReturnType('nil')
+                setCalculationMethod('')
+              }
             }}
           />
         </GSTFormSection>

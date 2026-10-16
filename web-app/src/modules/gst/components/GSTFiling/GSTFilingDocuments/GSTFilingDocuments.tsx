@@ -1,4 +1,4 @@
-import { viewUploadedDocument } from '@shared/upload'
+import { viewUploadedDocument, type UploadRule } from '@shared/upload'
 import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import React, { useState } from 'react'
@@ -123,6 +123,12 @@ const getGstIconColors = (type: DocumentIconType): { bg: string; color: string }
   }
 }
 
+export const GST_FILING_UPLOAD_RULE: UploadRule = {
+  kinds: ['pdf', 'xlsx', 'xls', 'jpeg', 'png'],
+  maxBytes: 10 * 1024 * 1024, // 10 MB limit
+  label: 'PDF, Excel, JPG or PNG',
+}
+
 export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
   selectedMonth,
   uploadedFiles: externalUploadedFiles,
@@ -145,7 +151,18 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
   const completedCount = Object.keys(uploadedFiles).length
   const totalCount = DEFAULT_DOCUMENT_ITEMS.length
 
+  const [showMissing, setShowMissing] = useState(false)
+  const [fileError, setFileError] = useState<string | null>(null)
+
+  const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
+
   const handleFileUpload = (id: string, file: File) => {
+    if (file.size > MAX_FILE_SIZE) {
+      setFileError(`File "${file.name}" exceeds the 10 MB limit. Please select a file under 10 MB.`)
+      return
+    }
+    setFileError(null)
+
     if (externalOnFileUpload) {
       externalOnFileUpload(id, file)
       return
@@ -157,7 +174,8 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
       sizeText,
       uploadTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       fileUrl,
-      status: 'verified',
+      status: 'selected',
+      isLocal: true,
     }
     setInternalUploadedFiles((prev) => ({
       ...prev,
@@ -166,6 +184,7 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
   }
 
   const handleFileRemove = (id: string) => {
+    setFileError(null)
     if (externalOnFileRemove) {
       externalOnFileRemove(id)
       return
@@ -178,15 +197,15 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
   }
 
   // Required docs verification: all documents marked mandatory
-  const [showMissing, setShowMissing] = useState(false)
   const missingDocs = DEFAULT_DOCUMENT_ITEMS.filter(
     (doc) => doc.isRequired && !uploadedFiles[doc.id] && !notApplicableDocs[doc.id]
   )
   // Updates as documents are added, and disappears once nothing is missing
   const stepError =
-    showMissing && missingDocs.length > 0
+    fileError ||
+    (showMissing && missingDocs.length > 0
       ? `Please upload ${missingDocs.map((doc) => doc.title).join(', ')}.`
-      : null
+      : null)
 
   // Continue stays enabled (as in loans); pressing it names the documents still missing
   const handleNext = () => {
@@ -242,6 +261,7 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
                   title={item.title}
                   subtitle={item.subtitle}
                   isRequired={item.isRequired}
+                  rule={GST_FILING_UPLOAD_RULE}
                   icon={renderGstDocIcon(item.iconType)}
                   iconBg={colors.bg}
                   iconColor={colors.color}
@@ -249,6 +269,7 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
                   fileName={fileInfo?.name}
                   fileSize={fileInfo?.sizeText}
                   onUpload={handleFileUpload}
+                  onUploadError={(_id, msg) => setFileError(msg)}
                   onRemove={handleFileRemove}
                   onView={(doc) =>
                     viewUploadedDocument({ id: doc.id, title: item.title, fileName: fileInfo?.name, file: doc.file, fileUrl: fileInfo?.fileUrl })

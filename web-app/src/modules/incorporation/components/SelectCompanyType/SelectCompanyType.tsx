@@ -4,19 +4,33 @@ import { routePaths } from '@core/config'
 import { buildProfileCompletionPath } from '@core/auth'
 import { useAuthStore } from '@store/index'
 import { CompleteProfileModal } from '@shared/components'
-import { companyTypeOptions, companyRegistrationData } from '../../data/companyRegistrationData'
+import { companyTypeOptions, companyRegistrationData, defaultCompanyDetails, getCompanySuffix } from '../../data/companyRegistrationData'
 import type { CompanyEntityType } from '../../types/incorporation.types'
 import { useIncorporationFlow } from '../../hooks'
+import { StepActionBar } from '@shared/components'
 import './SelectCompanyType.css'
 
 export const SelectCompanyType: React.FC = () => {
   const navigate = useNavigate()
   const user = useAuthStore((state) => state.user)
-  const { updateFormData, goToStep } = useIncorporationFlow()
+  const { formData, updateFormData, goToStep, reviewEdit } = useIncorporationFlow()
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
 
   const handleStart = (typeId: CompanyEntityType) => {
-    updateFormData({ companyType: typeId })
+    const mandatorySuffix = getCompanySuffix(typeId)
+    updateFormData({
+      companyType: typeId,
+      companyDetails: {
+        ...(formData.companyDetails || defaultCompanyDetails),
+        companyType: typeId,
+        mandatorySuffix,
+      },
+    })
+
+    if (reviewEdit?.isEditMode) {
+      reviewEdit.finishEdit()
+      return
+    }
 
     if (!user?.isProfileComplete) {
       setIsProfileModalOpen(true)
@@ -155,7 +169,7 @@ export const SelectCompanyType: React.FC = () => {
               <div className="select-type-card__footer">
                 <span className="select-type-card__badge">{opt.badge}</span>
                 <span className="select-type-card__action-btn">
-                  <span>Start</span>
+                  <span>{reviewEdit?.isEditMode ? 'Update' : 'Start'}</span>
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -173,6 +187,18 @@ export const SelectCompanyType: React.FC = () => {
             </div>
           ))}
       </main>
+
+      {reviewEdit?.isEditMode && (
+        <div style={{ marginTop: '2rem' }}>
+          <StepActionBar
+            onBack={reviewEdit.finishEdit}
+            onNext={reviewEdit.finishEdit}
+            isEditMode={true}
+            nextLabel="Return to Review"
+          />
+        </div>
+      )}
+
       <CompleteProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}

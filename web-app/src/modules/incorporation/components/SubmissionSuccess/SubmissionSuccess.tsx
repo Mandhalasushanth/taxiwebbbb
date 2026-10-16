@@ -37,8 +37,9 @@ export const SubmissionSuccess: React.FC = () => {
           icon: '🏢',
           to: routePaths.applicationTrack(applicationId),
         })
-      } catch {
+      } catch (err) {
         // Storage write fallback
+        console.warn('Failed to persist user application to storage:', err)
       }
     }
   }, [applicationId, companyName, entityStructure])

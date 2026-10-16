@@ -32,7 +32,6 @@ export const routePaths = {
     filePeriod: '/gst/file-period',
     fileUpload: '/gst/file-upload',
     fileReview: '/gst/file-review',
-    filePayment: '/gst/file-payment',
     fileSuccess: '/gst/file-success',
     fileReceipt: '/gst/file-receipt',
     amendment: '/gst/amendment',

@@ -64,10 +64,11 @@ export const ReviewApplication: React.FC = () => {
   // 2. Business Activity & NIC
   const primaryActivity = formData.companyDetails?.primaryBusinessActivity || '—'
   const nicCode = formData.companyDetails?.nicCode || '—'
-  const secondaryActivity = formData.companyDetails?.secondaryBusinessActivity || '—'
+  const secondaryActivity = (formData.companyDetails?.secondaryBusinessActivity || '').trim()
 
   // 3. Proposed Company Name
   const proposedFirstName = formData.companyDetails?.firstPreferredName || '—'
+  const proposedSecondName = formData.companyDetails?.secondPreferredName || '—'
 
   // 4. Registered Office Details
   const regAddr = (formData.registeredOffice?.addressData || {}) as Record<string, any>
@@ -143,8 +144,8 @@ export const ReviewApplication: React.FC = () => {
         icon: '🏢',
         to: routePaths.applicationTrack(applicationId),
       })
-    } catch {
-      // Storage fallback
+    } catch (err) {
+      console.warn('Failed to persist user application to storage:', err)
     }
 
     navigate(routePaths.incorporation.submissionSuccess, {
@@ -168,17 +169,20 @@ export const ReviewApplication: React.FC = () => {
           <ReviewRow label="Sub-Category of Company" value={subCategoryLabel} />
         </ReviewSection>
 
-        {/* Section 2: Business Activity & NIC */}
+        {/* Section 2: Proposed Company Names */}
+        <ReviewSection title="Proposed Company Names" onEdit={() => editStep(routePaths.incorporation.companyDetails)}>
+          <ReviewRow label="Proposed Company Name" value={proposedFirstName} />
+          <ReviewRow label="Alternative Proposed Company Name" value={proposedSecondName} />
+          <ReviewRow label="Mandatory Suffix" value={entityTypeLabel} />
+        </ReviewSection>
+
+        {/* Section 3: Business Activity & NIC */}
         <ReviewSection title="Business Activity & NIC" onEdit={() => editStep(routePaths.incorporation.companyDetails)}>
           <ReviewRow label="Primary Business Activity" value={primaryActivity} />
           <ReviewRow label="NIC 5-Digit Code" value={nicCode} />
-          <ReviewRow label="Secondary Business Activity" value={secondaryActivity} />
-        </ReviewSection>
-
-        {/* Section 3: Proposed Company Name */}
-        <ReviewSection title="Proposed Company Name" onEdit={() => editStep(routePaths.incorporation.companyDetails)}>
-          <ReviewRow label="Proposed Company Name" value={proposedFirstName} />
-          <ReviewRow label="Mandatory Suffix" value={entityTypeLabel} />
+          {secondaryActivity ? (
+            <ReviewRow label="Secondary Business Activity" value={secondaryActivity} />
+          ) : null}
         </ReviewSection>
 
         {/* Section 4: Registered Office Details */}

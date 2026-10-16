@@ -8,15 +8,26 @@ const ACTIVITY_MAX_LENGTH = 500
 const COMPANY_NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9\s&.,'()-]{2,119}$/
 const ACTIVITY_PATTERN = /[A-Za-z]{3,}/
 
-type NameActivityField = 'firstPreferredName' | 'primaryBusinessActivity' | 'nicCode' | 'secondaryBusinessActivity'
+type NameActivityField = 'firstPreferredName' | 'secondPreferredName' | 'primaryBusinessActivity' | 'nicCode' | 'secondaryBusinessActivity'
 
 /** Errors for the proposed name and business activity fields, keyed by field. */
 export const getNameActivityErrors = (data: CompanyDetailsFormData): Record<string, string> => {
   const name = (data.firstPreferredName || '').trim()
+  const altName = (data.secondPreferredName || '').trim()
   const activity = (data.primaryBusinessActivity || '').trim()
   const nic = (data.nicCode || '').trim()
   const checks: Array<[NameActivityField, string]> = [
     ['firstPreferredName', !name ? 'Proposed company name is required' : !COMPANY_NAME_PATTERN.test(name) ? 'Enter a valid company name (min 3 characters, letters and numbers)' : ''],
+    [
+      'secondPreferredName',
+      !altName
+        ? 'Alternative proposed company name is required'
+        : !COMPANY_NAME_PATTERN.test(altName)
+        ? 'Enter a valid company name (min 3 characters, letters and numbers)'
+        : altName.toLowerCase() === name.toLowerCase()
+        ? 'Alternative name must be different from proposed company name'
+        : '',
+    ],
     ['primaryBusinessActivity', !activity ? 'Primary business activity is required' : !ACTIVITY_PATTERN.test(activity) ? 'Describe the business activity in words' : ''],
     ['nicCode', !nic ? 'NIC 5-digit code is required' : !isValidNicCode(nic) ? 'Enter a valid 5-digit numeric NIC code' : ''],
   ]
@@ -61,6 +72,23 @@ export const CompanyNameActivityCards: React.FC<CompanyNameActivityCardsProps> =
           onChange={(e) => onChange('firstPreferredName', e.target.value)}
         />
         <FieldError message={errors.firstPreferredName} />
+        <p className="company-details-helper">{data.mandatorySuffix}</p>
+      </div>
+
+      <div className="company-details-group">
+        <label htmlFor="company-alternative-proposed-name" className="company-details-label">
+          Alternative Proposed Company Name<span className="company-details-required"> *</span>
+        </label>
+        <input
+          id="company-alternative-proposed-name"
+          type="text"
+          maxLength={120}
+          className={`company-details-input ${errors.secondPreferredName ? 'company-input--error' : ''}`}
+          placeholder="Enter alternative proposed company name"
+          value={data.secondPreferredName}
+          onChange={(e) => onChange('secondPreferredName', e.target.value)}
+        />
+        <FieldError message={errors.secondPreferredName} />
         <p className="company-details-helper">{data.mandatorySuffix}</p>
       </div>
     </section>

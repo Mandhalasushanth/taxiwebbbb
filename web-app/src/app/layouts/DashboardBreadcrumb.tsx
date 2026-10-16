@@ -20,7 +20,6 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
     path === routePaths.gst.filePeriod ||
     path === routePaths.gst.fileUpload ||
     path === routePaths.gst.fileReview ||
-    path === routePaths.gst.filePayment ||
     path === routePaths.gst.fileSuccess ||
     path === routePaths.gst.fileReceipt ||
     path.startsWith('/gst/file')

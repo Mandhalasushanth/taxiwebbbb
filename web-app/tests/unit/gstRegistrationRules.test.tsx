@@ -17,6 +17,7 @@ import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '../../src/s
 import { useGstRegistrationState } from '../../src/modules/gst/hooks/useGstRegistrationState'
 import type { GstBusinessFormData } from '../../src/modules/gst/types/gstBusiness.types'
 import { INITIAL_DOCUMENTS } from '../../src/modules/gst/utils/gstDocuments.constants'
+import { ALL_BANKS } from '../../src/modules/gst/types/gstPayment.types'
 
 afterEach(cleanup)
 
@@ -438,5 +439,21 @@ describe('Field-type strict validations & character restrictions', () => {
     expect(gstInput.address('Plot #12, 1st Cross, $$')).toBe('Plot #12, 1st Cross, ')
     expect(gstInput.email('USER @EXAMPLE.COM!')).toBe('user@example.com')
     expect(gstInput.designation('Director 123 & CEO')).toBe('Director CEO')
+  })
+
+  it('keeps bank names in ascending alphabetical A to Z order and includes all popular banks', () => {
+    const sorted = [...ALL_BANKS].sort((a, b) => a.localeCompare(b))
+    expect(ALL_BANKS).toEqual(sorted)
+
+    // Popular banks included
+    expect(ALL_BANKS).toContain('Axis Bank')
+    expect(ALL_BANKS).toContain('Bank of Baroda')
+    expect(ALL_BANKS).toContain('Canara Bank')
+    expect(ALL_BANKS).toContain('HDFC Bank')
+    expect(ALL_BANKS).toContain('ICICI Bank')
+    expect(ALL_BANKS).toContain('Kotak Mahindra Bank')
+    expect(ALL_BANKS).toContain('Punjab National Bank')
+    expect(ALL_BANKS).toContain('State Bank of India')
+    expect(ALL_BANKS).toContain('Union Bank of India')
   })
 })

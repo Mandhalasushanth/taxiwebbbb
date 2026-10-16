@@ -13,8 +13,10 @@ export const GSTFilingTypeSelector: React.FC<GSTFilingTypeSelectorProps> = ({
 }) => {
   return (
     <div className="gst-filing-type">
-      <span className="gst-filing-type__label">Filing Type *</span>
-      <div className="gst-filing-type__grid" role="radiogroup" aria-label="Filing Type">
+      <span className="gst-filing-type__label">
+        Return Type <span className="gst-filing-period__required">*</span>
+      </span>
+      <div className="gst-filing-type__grid" role="radiogroup" aria-label="Return Type">
         {FILING_TYPE_OPTIONS.map((option) => {
           const isSelected = value === option.id
           return (
