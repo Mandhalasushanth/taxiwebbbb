@@ -5,7 +5,7 @@ export const BUSINESS_PROFILE_LIMITS = {
   operatingAddress: 250,
   pincode: 6,
   gstin: 15,
-  udyam: 19,
+  udyam: 21,
   loanAmountDigits: 10,
   minLoanAmount: 25000,
   maxLoanAmount: 500000000,
