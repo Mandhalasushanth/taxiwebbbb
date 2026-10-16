@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Lock } from 'lucide-react'
 import { FlowStepper } from '@shared/components'
+import { routePaths } from '@core/config'
+import { safeNavigateTo } from '@modules/loans/utils/loanMarketplace.utils'
 import { LoanStepErrorBanner, LoanStepFlowFooter } from '@modules/loans/shared'
 import { useLoanStepFlow } from '@modules/loans/hooks/useLoanStepFlow'
 import { msmeLoanValidation as v } from '@modules/loans/validation/msmeLoanValidation'
@@ -14,17 +17,28 @@ import {
   MSME_LOAN_TYPE,
   INITIAL_MSME_LOAN_DATA,
 } from './msmeLoan.constants'
-import { KycVerification, loadVerifiedCustomer, MsmeAndBusinessDetails } from './steps'
+import {
+  KycVerification,
+  loadVerifiedCustomer,
+  MsmeAndBusinessDetails,
+  Documents,
+  ReviewAndSubmit,
+  ApplicationSubmitted,
+} from './steps'
 import { toAmount } from '@modules/loans/validation/commonLoanValidation'
 import './msmeForm.css'
 import './MsmeLoan.css'
 
 /**
- * MSME Loan: Modernized multi-step application flow
- * Step 1: KYC Verification (verified customer read-only identity, addresses, DPDP consent)
+ * MSME Loan: Complete 5-step application flow matching user designs
+ * Step 1: KYC Verification
  * Step 2: MSME & Business Details
+ * Step 3: Documents
+ * Step 4: Review & Submit
+ * Step 5: Application Submitted
  */
 export const MsmeLoan: React.FC = () => {
+  const navigate = useNavigate()
   const customer = useMemo(loadVerifiedCustomer, [])
 
   const flow = useLoanStepFlow<MsmeLoanData>({
@@ -48,6 +62,44 @@ export const MsmeLoan: React.FC = () => {
   })
 
   const { formData, currentStep, fieldErrors, handleFieldChange, submittedApp } = flow
+
+  const hasRequiredDocs = Boolean(
+    formData.uploadedDocs?.udyam_certificate ||
+    formData.uploadedDocs?.udyamCertificate ||
+    formData.uploadedDocs?.udyam_reg_certificate
+  )
+
+  const isNextDisabled =
+    (currentStep === 3 && !hasRequiredDocs) ||
+    (flow.isLastStep && !formData.termsAccepted)
+
+  if (submittedApp || currentStep > MSME_LOAN_FORM_STEP_COUNT) {
+    return (
+      <div className="msme-loan-page" data-testid="msme-loan-page">
+        <FlowStepper steps={MSME_LOAN_STEPS} currentStep={MSME_LOAN_STEPS.length} />
+        <ApplicationSubmitted
+          referenceNumber={flow.referenceNumber}
+          applicationType={MSME_LOAN_TITLE}
+          annualTurnover={formData.annualTurnover}
+          requestedAmount={formData.requestedLoanAmount || formData.loanAmount}
+          submittedAt={submittedApp?.createdAt}
+          onTrackApplication={flow.handleTrackStatus}
+          onGoToDashboard={() => {
+            flow.markSubmitted()
+            safeNavigateTo(navigate, routePaths.dashboard)
+          }}
+          onGoHome={() => {
+            flow.markSubmitted()
+            safeNavigateTo(navigate, routePaths.dashboard)
+          }}
+          onContactSupport={() => {
+            flow.markSubmitted()
+            safeNavigateTo(navigate, routePaths.support)
+          }}
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="msme-loan-page" data-testid="msme-loan-page">
@@ -74,11 +126,22 @@ export const MsmeLoan: React.FC = () => {
         />
       )}
 
-      {currentStep > 2 && !submittedApp && (
-        <div className="msme-card" data-testid={`msme-step-${currentStep}`}>
-          <h2 className="msme-card__title">Step {currentStep}: In Progress</h2>
-          <p className="msme-card__subtitle">This step is being configured.</p>
-        </div>
+      {currentStep === 3 && (
+        <Documents
+          data={formData}
+          onChange={handleFieldChange}
+          errors={fieldErrors}
+        />
+      )}
+
+      {currentStep === 4 && (
+        <ReviewAndSubmit
+          data={formData}
+          customer={customer}
+          onChange={handleFieldChange}
+          onNavigateToStep={flow.navigateToStep}
+          errors={fieldErrors}
+        />
       )}
 
       <LoanStepFlowFooter<MsmeLoanData>
@@ -87,8 +150,8 @@ export const MsmeLoan: React.FC = () => {
         successTitle={MSME_LOAN_SUCCESS.successTitle}
         successMessage={MSME_LOAN_SUCCESS.successMessage}
         testIdPrefix="msme"
-        nextDisabled={flow.isLastStep && !formData.termsAccepted}
-        nextLabel={flow.isLastStep ? 'Submit Application →' : 'Continue'}
+        nextDisabled={isNextDisabled}
+        nextLabel={flow.isLastStep ? 'Submit Application →' : 'Continue →'}
         securityNote={
           flow.isLastStep ? (
             <div className="msme-submit-security" data-testid="msme-submit-security">
@@ -104,3 +167,4 @@ export const MsmeLoan: React.FC = () => {
 }
 
 export default MsmeLoan
+

@@ -1,0 +1,129 @@
+/* Step 4 Review & Submit styling for MSME Loan matching Screenshots 1 & 4 */
+.msme-review-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.msme-review-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.msme-review-card__header-group {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  flex: 1;
+}
+
+.msme-review-card__header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.msme-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid #dbeafe;
+  border-radius: var(--radius-md);
+  background: #eff6ff;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-primary-navy, #0a2540);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.msme-edit-btn svg {
+  color: var(--color-primary, #0284c7);
+}
+
+.msme-edit-btn:hover {
+  background: #dbeafe;
+  border-color: #bfdbfe;
+}
+
+.msme-review-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.msme-review-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.msme-review-row:last-child {
+  border-bottom: none;
+}
+
+.msme-review-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted, #64748b);
+  flex-shrink: 0;
+}
+
+.msme-review-value {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-primary-navy, #0a2540);
+  text-align: right;
+  word-break: break-word;
+}
+
+.msme-uploaded-docs-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.msme-review-doc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+}
+
+.msme-review-doc-row:last-child {
+  border-bottom: none;
+}
+
+.msme-review-doc-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.msme-review-doc-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #22c55e;
+  color: #ffffff;
+}
+
+.msme-review-doc-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.msme-review-doc-status {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted, #64748b);
+  font-weight: 500;
+}

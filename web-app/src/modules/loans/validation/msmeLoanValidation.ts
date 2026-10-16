@@ -160,12 +160,26 @@ export function validateStep2MsmeDetails(data: Partial<MsmeLoanData>): LoanStepV
   return toStepResult(errors, REQUIRED_FIELDS_MESSAGE)
 }
 
-/** Step 3: Documents (placeholder for Step 3) */
-export function validateStep3Documents(_data: Partial<MsmeLoanData>): LoanStepValidationResult {
-  return toStepResult({})
+/** Step 3: Documents */
+export function validateStep3Documents(data: Partial<MsmeLoanData>): LoanStepValidationResult {
+  const errors: Record<string, string> = {}
+  const uploaded = data.uploadedDocs || {}
+
+  const hasUdyamCert = Boolean(
+    uploaded.udyam_certificate ||
+    uploaded.udyamCertificate ||
+    uploaded.udyam_reg_certificate
+  )
+
+  if (!hasUdyamCert) {
+    errors.udyam_certificate = 'Please upload your Udyam Registration Certificate.'
+    errors._step = 'Please upload all required documents to proceed.'
+  }
+
+  return toStepResult(errors, REQUIRED_FIELDS_MESSAGE)
 }
 
-/** Step 4: Review & Declaration (placeholder for Step 4) */
+/** Step 4: Review & Declaration */
 export function validateStep4ReviewAndDeclaration(data: Partial<MsmeLoanData>): LoanStepValidationResult {
   const errors: Record<string, string> = {}
   if (!data.termsAccepted) {

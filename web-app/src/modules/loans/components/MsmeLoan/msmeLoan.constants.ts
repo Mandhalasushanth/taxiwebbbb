@@ -166,3 +166,48 @@ export const MSME_LOAN_SUCCESS = {
   successMessage:
     'Your application has been received. A TaxEdge MSME Credit Specialist will review your details and contact you shortly.',
 } as const
+
+export interface MsmeLoanDocConfig {
+  id: string
+  title: string
+  description: string
+  isRequired: boolean
+  iconType: 'award' | 'file' | 'receipt'
+}
+
+export const MSME_LOAN_DOCUMENTS: MsmeLoanDocConfig[] = [
+  {
+    id: 'udyam_certificate',
+    title: 'Udyam Registration Certificate',
+    description: 'Official Udyam Registration Certificate issued by Ministry of MSME',
+    isRequired: true,
+    iconType: 'award',
+  },
+]
+
+export const getMsmeLoanDocumentSections = (gstStatus?: string): {
+  requiredDocs: MsmeLoanDocConfig[]
+  optionalDocs: MsmeLoanDocConfig[]
+} => {
+  const requiredDocs: MsmeLoanDocConfig[] = [
+    {
+      id: 'udyam_certificate',
+      title: 'Udyam Registration Certificate',
+      description: 'Official Udyam Registration Certificate issued by Ministry of MSME',
+      isRequired: true,
+      iconType: 'award',
+    },
+  ]
+  const optionalDocs: MsmeLoanDocConfig[] = []
+  if (gstStatus === 'Registered') {
+    optionalDocs.push({
+      id: 'gst_certificate',
+      title: 'GST Registration Certificate',
+      description: 'Official GST Registration Certificate (Form GST REG-06)',
+      isRequired: false,
+      iconType: 'file',
+    })
+  }
+  return { requiredDocs, optionalDocs }
+}
+

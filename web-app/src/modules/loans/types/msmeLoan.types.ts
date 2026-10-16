@@ -21,6 +21,9 @@ export interface MsmeLoanData extends KycStepData {
   loanAmount?: string
   loanPurpose?: string
   businessVintage?: string
+  operatingDuration?: string
+  employees?: string
+  ownership?: string
   msmeCategory?: string
   enterpriseType?: string
 
