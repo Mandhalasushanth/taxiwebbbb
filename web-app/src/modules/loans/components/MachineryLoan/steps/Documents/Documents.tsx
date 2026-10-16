@@ -104,31 +104,8 @@ export const Documents: React.FC<MachineryLoanStepProps> = ({
     )
   }
 
-  const uploadedRequiredCount = requiredDocs.filter((doc) => Boolean(uploadedDocs[doc.id])).length
-  const totalRequiredCount = requiredDocs.length
-  const pendingRequiredCount = totalRequiredCount - uploadedRequiredCount
-  const progressPercent =
-    totalRequiredCount > 0 ? Math.round((uploadedRequiredCount / totalRequiredCount) * 100) : 0
-
   return (
     <div className="mach-step mach-docs" data-testid="mach-step-documents">
-      {/* Progress Card */}
-      <div className="mach-doc-summary-card" data-testid="mach-doc-summary">
-        <h3 className="mach-doc-summary-title">
-          {uploadedRequiredCount} of {totalRequiredCount} required documents uploaded
-        </h3>
-        <p className="mach-doc-summary-sub">
-          {pendingRequiredCount === 0
-            ? 'All required documents uploaded.'
-            : `${pendingRequiredCount} required document${pendingRequiredCount > 1 ? 's are' : ' is'} still pending.`}
-        </p>
-        <div className="mach-doc-summary-track" aria-hidden="true">
-          <div
-            className="mach-doc-summary-bar"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-      </div>
 
       {/* Required Documents Section */}
       <div className="mach-doc-section" data-testid="mach-required-docs-section">

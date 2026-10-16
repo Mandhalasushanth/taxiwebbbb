@@ -109,31 +109,8 @@ export const Documents: React.FC<VehicleLoanStepProps> = ({
     )
   }
 
-  const uploadedRequiredCount = requiredDocs.filter((doc) => Boolean(uploadedDocs[doc.id])).length
-  const totalRequiredCount = requiredDocs.length
-  const pendingRequiredCount = totalRequiredCount - uploadedRequiredCount
-  const progressPercent =
-    totalRequiredCount > 0 ? Math.round((uploadedRequiredCount / totalRequiredCount) * 100) : 0
-
   return (
     <div className="veh-step veh-docs" data-testid="veh-step-documents">
-      {/* Progress Card */}
-      <div className="veh-doc-summary-card" data-testid="veh-doc-summary">
-        <h3 className="veh-doc-summary-title">
-          {uploadedRequiredCount} of {totalRequiredCount} required documents uploaded
-        </h3>
-        <p className="veh-doc-summary-sub">
-          {pendingRequiredCount === 0
-            ? 'All required documents uploaded.'
-            : `${pendingRequiredCount} required document${pendingRequiredCount > 1 ? 's are' : ' is'} still pending.`}
-        </p>
-        <div className="veh-doc-summary-track" aria-hidden="true">
-          <div
-            className="veh-doc-summary-bar"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-      </div>
 
       {/* Required Documents Section */}
       <div className="veh-doc-section" data-testid="veh-required-docs-section">

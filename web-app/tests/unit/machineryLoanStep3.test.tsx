@@ -42,9 +42,8 @@ describe('Machinery Loan – Step 3 Documents', () => {
       </MemoryRouter>,
     )
 
-    // Summary Progress Box
-    expect(screen.getByText('0 of 1 required documents uploaded')).toBeInTheDocument()
-    expect(screen.getByText('1 required document is still pending.')).toBeInTheDocument()
+    // Summary Progress Box is removed
+    expect(screen.queryByText(/required documents uploaded/i)).not.toBeInTheDocument()
 
     // Section: REQUIRED DOCUMENTS
     expect(screen.getByText('REQUIRED DOCUMENTS')).toBeInTheDocument()
@@ -127,8 +126,7 @@ describe('Machinery Loan – Step 3 Documents', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.getByText('1 of 1 required documents uploaded')).toBeInTheDocument()
-    expect(screen.getByText('All required documents uploaded.')).toBeInTheDocument()
+    expect(screen.queryByText(/required documents uploaded/i)).not.toBeInTheDocument()
     expect(screen.getByText(/proforma_invoice_final\.pdf/)).toBeInTheDocument()
   })
 
