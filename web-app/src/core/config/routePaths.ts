@@ -64,10 +64,10 @@ export const routePaths = {
   legacyLoans: {
     businessLoan: '/loans/business-loan',
     workingCapitalLoan: '/loans/working-capital-loan',
-    msmeLoan: '/loans/msme-loan',
   },
   loansBusinessWorkingCapital: '/loans/business-working-capital',
   loansMachineryLoan: '/loans/machinery-loan',
+  loansMsmeLoan: '/loans/msme-loan',
   loansProjectFinance: '/loans/project-finance',
   loansStatus: (id = ':id') => `/loans/status/${id}`,
   insurance: '/insurance',

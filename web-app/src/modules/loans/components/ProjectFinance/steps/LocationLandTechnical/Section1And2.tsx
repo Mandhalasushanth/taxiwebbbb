@@ -1,6 +1,7 @@
 import React from 'react'
 import { Home, ChevronDown, FileText } from 'lucide-react'
 import type { ProjectFinanceData } from '@modules/loans/types/projectFinance.types'
+import { StateSelect } from '@modules/loans/shared/StateSelect'
 import {
   PROJECT_ZONES,
   LAND_OWNERSHIP_OPTIONS,
@@ -63,20 +64,15 @@ export const Section1And2: React.FC<Section1And2Props> = ({
               {errors.step2ProjectAddress && <span className="pf-field-error">{errors.step2ProjectAddress}</span>}
             </div>
 
-            <div className="pf-field-group">
-              <label htmlFor="step2State" className="pf-field-label">
-                State <span className="pf-req">*</span>
-              </label>
-              <input
-                id="step2State"
-                type="text"
-                className={`pf-custom-input ${errors.step2State ? 'pf-custom-input--error' : ''}`}
-                placeholder="Enter state"
-                value={data.step2State || ''}
-                onChange={(e) => onChange({ step2State: e.target.value })}
-              />
-              {errors.step2State && <span className="pf-field-error">{errors.step2State}</span>}
-            </div>
+            <StateSelect
+              id="step2State"
+              label="State"
+              placeholder="Select state"
+              value={data.step2State || ''}
+              error={errors.step2State}
+              required
+              onChange={(step2State) => onChange({ step2State })}
+            />
 
             <div className="pf-field-group">
               <label htmlFor="step2District" className="pf-field-label">

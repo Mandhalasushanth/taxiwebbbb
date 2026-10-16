@@ -61,6 +61,13 @@ export const ProjectFinanceIcon: React.FC = () => (
 )
 
 /**
+ * 9. MSME Loan: Enterprise / Small Business
+ */
+export const MsmeLoanIcon: React.FC = () => (
+  <Building size={36} className="loan-item-card__icon-svg" aria-hidden="true" />
+)
+
+/**
  * Header Wallet Icon
  */
 export const WalletIcon: React.FC = () => (

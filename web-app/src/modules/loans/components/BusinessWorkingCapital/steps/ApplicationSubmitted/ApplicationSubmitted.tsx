@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
+  ArrowRight,
   Banknote,
   CalendarDays,
   Check,
@@ -118,18 +119,21 @@ export const ApplicationSubmitted: React.FC<ApplicationSubmittedProps> = ({
           className="bwc-submitted__btn bwc-submitted__btn--primary"
           onClick={() => safeNavigateTo(navigate, routePaths.dashboard)}
           data-testid="bwc-go-to-dashboard-btn"
+          aria-label="Go to Dashboard"
         >
           <LayoutDashboard size={18} aria-hidden="true" />
-          Go to Dashboard
+          <span>Go to Dashboard</span>
+          <ArrowRight size={18} aria-hidden="true" />
         </button>
         <button
           type="button"
           className="bwc-submitted__btn bwc-submitted__btn--link"
           onClick={() => safeNavigateTo(navigate, routePaths.support)}
           data-testid="bwc-customer-support-btn"
+          aria-label="Contact Support"
         >
           <Headphones size={18} aria-hidden="true" />
-          Customer Support
+          <span>Contact Support</span>
         </button>
       </div>
     </div>

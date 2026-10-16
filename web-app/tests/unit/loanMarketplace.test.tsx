@@ -36,8 +36,8 @@ describe('LoanMarketplace Module', () => {
     cleanup()
   })
 
-  it('contains exactly 7 loans in the marketplace catalog matching the specification', () => {
-    expect(LOAN_MARKETPLACE_ITEMS).toHaveLength(7)
+  it('contains exactly 8 loans in the marketplace catalog matching the specification', () => {
+    expect(LOAN_MARKETPLACE_ITEMS).toHaveLength(8)
 
     const expectedOrder = [
       { id: 'business-working-capital', title: 'Business & Working Capital' },
@@ -46,6 +46,7 @@ describe('LoanMarketplace Module', () => {
       { id: 'property-loan', title: 'Property Loan' },
       { id: 'vehicle-loan', title: 'Vehicle Loan' },
       { id: 'machinery-loan', title: 'Machinery Loan' },
+      { id: 'msme-loan', title: 'MSME Loan' },
       { id: 'project-finance', title: 'Project Finance' },
     ]
 
@@ -56,7 +57,7 @@ describe('LoanMarketplace Module', () => {
     })
   })
 
-  it('renders all 7 loan cards and header inside LoanMarketplace without rate badges', () => {
+  it('renders all 8 loan cards and header inside LoanMarketplace without rate badges', () => {
     render(
       <MemoryRouter>
         <LoanMarketplace />
@@ -66,13 +67,14 @@ describe('LoanMarketplace Module', () => {
     expect(screen.getByText('Capital & Financing')).toBeInTheDocument()
     expect(screen.getByText('Loan Marketplace & Assistance')).toBeInTheDocument()
 
-    // Verify all 7 loan titles are rendered
+    // Verify all 8 loan titles are rendered
     expect(screen.getByText('Business & Working Capital')).toBeInTheDocument()
     expect(screen.getByText('Personal Loan')).toBeInTheDocument()
     expect(screen.getByText('Home Loan')).toBeInTheDocument()
     expect(screen.getByText('Property Loan')).toBeInTheDocument()
     expect(screen.getByText('Vehicle Loan')).toBeInTheDocument()
     expect(screen.getByText('Machinery Loan')).toBeInTheDocument()
+    expect(screen.getByText('MSME Loan')).toBeInTheDocument()
     expect(screen.getByText('Project Finance')).toBeInTheDocument()
 
     // Verify rate badges are removed

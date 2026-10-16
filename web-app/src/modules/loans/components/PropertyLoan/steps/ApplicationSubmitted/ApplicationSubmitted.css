@@ -1,8 +1,5 @@
-/* Step 5 Application Submitted view for Property Loan */
 .prop-submitted {
   align-items: stretch;
-  max-width: 680px;
-  margin: 0 auto;
   gap: var(--space-5);
   width: 100%;
 }

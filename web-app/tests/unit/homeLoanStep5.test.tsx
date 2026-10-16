@@ -71,7 +71,7 @@ describe('Home Loan – Step 5 Application Submitted', () => {
     expect(screen.getByText('You will be contacted with the next update.')).toBeInTheDocument()
 
     // Action buttons
-    const homeBtn = screen.getByRole('button', { name: /Go to Home/i })
+    const homeBtn = screen.getByRole('button', { name: /Go to Dashboard/i })
     expect(homeBtn).toBeInTheDocument()
     fireEvent.click(homeBtn)
     expect(mockNavigate).toHaveBeenCalledWith('/dashboard')

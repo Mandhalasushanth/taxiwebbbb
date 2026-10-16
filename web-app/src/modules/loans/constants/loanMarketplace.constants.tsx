@@ -8,10 +8,11 @@ import {
   ExecutivePersonIcon,
   MachineryVehicleIcon,
   ProjectFinanceIcon,
+  MsmeLoanIcon,
 } from './loanMarketplace.icons'
 
 /**
- * 3D Icon image mapping for all 7 loan categories.
+ * 3D Icon image mapping for all 8 loan categories.
  * Stored in public/assets/icons/loans/
  */
 export const LOAN_SERVICE_ICON_IMAGE_MAP: Record<string, string> = {
@@ -21,6 +22,7 @@ export const LOAN_SERVICE_ICON_IMAGE_MAP: Record<string, string> = {
   'property-loan': '/assets/icons/loans/property-loan.png',
   'vehicle-loan': '/assets/icons/loans/vehicle-loan.png',
   'machinery-loan': '/assets/icons/loans/machinery-loan.png',
+  'msme-loan': '/assets/icons/loans/msme-loan.png',
   'project-finance': '/assets/icons/loans/project-finance.png',
 }
 
@@ -81,6 +83,15 @@ export const LOAN_MARKETPLACE_ITEMS: LoanMarketplaceItem[] = [
     tileBg: '#ECFEFF',
     tileBorder: '#A5F3FC',
     icon: <MachineryVehicleIcon />,
+  },
+  {
+    id: 'msme-loan',
+    title: 'MSME Loan',
+    desc: 'Government-backed credit & business funding for MSMEs',
+    applyPath: routePaths.loansMsmeLoan,
+    tileBg: '#FEFCE8',
+    tileBorder: '#FEF08A',
+    icon: <MsmeLoanIcon />,
   },
   {
     id: 'project-finance',

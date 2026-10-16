@@ -9,6 +9,7 @@ import {
   Headphones,
   Home,
   Layers,
+  LayoutDashboard,
 } from 'lucide-react'
 import { routePaths } from '@core/config'
 import { safeNavigateTo } from '@modules/loans/utils/loanMarketplace.utils'
@@ -132,9 +133,11 @@ export const ApplicationSubmitted: React.FC<ApplicationSubmittedProps> = ({
           type="button"
           className="hl-submitted__btn hl-submitted__btn--primary"
           onClick={() => safeNavigateTo(navigate, routePaths.dashboard)}
-          data-testid="hl-go-to-home-btn"
+          data-testid="hl-go-to-dashboard-btn"
+          aria-label="Go to Dashboard"
         >
-          <span>Go to Home</span>
+          <LayoutDashboard size={18} aria-hidden="true" />
+          <span>Go to Dashboard</span>
           <ArrowRight size={18} aria-hidden="true" />
         </button>
 

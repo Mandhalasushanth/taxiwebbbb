@@ -5,6 +5,7 @@ import type {
   VehicleLoanStepProps,
 } from '@modules/loans/types/vehicleLoan.types'
 import { InlineSelect } from '../InlineSelect'
+import { StateSelect } from '@modules/loans/shared/StateSelect'
 import {
   DEALER_SELECTED_OPTIONS,
   PURCHASE_TIMELINE_OPTIONS,
@@ -306,7 +307,7 @@ export const VehicleAndLoanDetails: React.FC<VehicleLoanStepProps> = ({
         />
 
         {/* Registration State */}
-        <InlineSelect
+        <StateSelect
           id="veh-registration-state"
           label="Registration State"
           placeholder="Select State / UT"

@@ -42,15 +42,48 @@ export const InlineSelect: React.FC<InlineSelectProps> = ({
     [onChange, setIsOpen],
   )
 
+  const bufferRef = React.useRef('')
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+
   const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     const index = options.findIndex((option) => option.value === value)
     const moves: Record<string, number> = { ArrowDown: 1, ArrowUp: -1 }
     if (event.key === 'Escape') return setIsOpen(false)
-    if (!(event.key in moves)) return undefined
-    event.preventDefault()
-    const nextIndex = Math.min(Math.max(index + moves[event.key], 0), options.length - 1)
-    onChange(options[nextIndex].value)
-    return setIsOpen(true)
+    if (event.key in moves) {
+      event.preventDefault()
+      const nextIndex = Math.min(Math.max(index + moves[event.key], 0), options.length - 1)
+      onChange(options[nextIndex].value)
+      return setIsOpen(true)
+    }
+    // Alphabet navigation (type-ahead)
+    if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey && event.key !== ' ') {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      bufferRef.current += event.key.toLowerCase()
+      const query = bufferRef.current
+      const match = options.find(
+        (opt) =>
+          opt.label.toLowerCase().startsWith(query) ||
+          opt.value.toLowerCase().startsWith(query)
+      )
+      if (match) {
+        onChange(match.value)
+        setIsOpen(true)
+      } else {
+        const singleMatch = options.find(
+          (opt) =>
+            opt.label.toLowerCase().startsWith(event.key.toLowerCase()) ||
+            opt.value.toLowerCase().startsWith(event.key.toLowerCase())
+        )
+        if (singleMatch) {
+          bufferRef.current = event.key.toLowerCase()
+          onChange(singleMatch.value)
+          setIsOpen(true)
+        }
+      }
+      timeoutRef.current = setTimeout(() => {
+        bufferRef.current = ''
+      }, 700)
+    }
   }
 
   return (
