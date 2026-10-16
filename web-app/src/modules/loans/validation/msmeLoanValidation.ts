@@ -1,6 +1,6 @@
 import { validatePincodeMatchesState } from '@shared/utils'
 import type { KycStepData, LoanAddress } from '@modules/loans/types'
-import { loanFieldRules, toStepResult } from './commonLoanValidation'
+import { loanFieldRules, toStepResult, LOAN_PATTERNS } from './commonLoanValidation'
 import type { LoanStepValidationResult } from './commonLoanValidation'
 import type { MsmeLoanData } from '@modules/loans/types/msmeLoan.types'
 
@@ -80,17 +80,106 @@ export function validateStep1KycVerification(data: Partial<KycStepData>): LoanSt
   return toStepResult(errors, REQUIRED_FIELDS_MESSAGE)
 }
 
-/** Step 2: MSME & Business Details (placeholder for Step 2) */
-export function validateStep2MsmeDetails(_data: Partial<MsmeLoanData>): LoanStepValidationResult {
-  return toStepResult({})
+/** Step 2: MSME & Business Details */
+export function validateStep2MsmeDetails(data: Partial<MsmeLoanData>): LoanStepValidationResult {
+  const errors: Record<string, string> = {}
+
+  // 1. Business Details Card
+  const businessName = (data.businessName || '').trim()
+  const nameError =
+    loanFieldRules.text(businessName, 'Business / Trade Name', 2, 100) ||
+    (looksLikeJunk(businessName) ? 'Please enter a valid business name' : undefined)
+  if (nameError) {
+    errors.businessName = nameError
+  }
+
+  if (!data.businessConstitution?.trim()) {
+    errors.businessConstitution = 'Please select business constitution'
+  }
+
+  // 2. Business Activity Card
+  if (!data.businessActivity?.trim()) {
+    errors.businessActivity = 'Please select primary business activity'
+  }
+
+  const estDateError = loanFieldRules.pastDate(data.establishmentDate, 'Business establishment date')
+  if (estDateError) {
+    errors.establishmentDate = estDateError
+  }
+
+  // 3. Business Operating Address Card
+  const operatingAddress = data.operatingAddress || {
+    houseBuilding: '',
+    streetLocality: '',
+    city: '',
+    pincode: '',
+    state: '',
+  }
+  const addressErrors = validateAddress(operatingAddress, 'operatingAddress')
+  Object.assign(errors, addressErrors)
+
+  // 4. MSME Registration Card
+  if (!data.udyamStatus?.trim()) {
+    errors.udyamStatus = 'Please select registration status'
+  } else if (data.udyamStatus === 'Registered') {
+    const udyamNum = (data.udyamNumber || '').trim().toUpperCase()
+    if (!udyamNum) {
+      errors.udyamNumber = 'Udyam registration number is required'
+    } else if (!LOAN_PATTERNS.UDYAM.test(udyamNum)) {
+      errors.udyamNumber = 'Enter a valid Udyam number (e.g. UDYAM-XX-00-0000000)'
+    }
+  }
+
+  if (!data.gstStatus?.trim()) {
+    errors.gstStatus = 'Please select GST status'
+  } else if (data.gstStatus === 'Registered') {
+    const gstinVal = (data.gstin || '').trim().toUpperCase()
+    if (!gstinVal) {
+      errors.gstin = 'GSTIN is required'
+    } else if (!LOAN_PATTERNS.GSTIN.test(gstinVal)) {
+      errors.gstin = 'Enter a valid 15-character GSTIN (e.g. 27ABCDE1234F1Z5)'
+    }
+  }
+
+  // 5. Business Information Card
+  const turnoverError = loanFieldRules.amount(data.annualTurnover, 'Annual turnover', 100000, 500000000)
+  if (turnoverError) {
+    errors.annualTurnover = turnoverError
+  }
+
+  const requestedAmount = data.requestedLoanAmount || data.loanAmount
+  const amountError = loanFieldRules.amount(requestedAmount, 'Requested loan amount', 50000, 100000000)
+  if (amountError) {
+    errors.requestedLoanAmount = amountError
+  }
+
+  if (!data.loanPurpose?.trim()) {
+    errors.loanPurpose = 'Please select loan purpose'
+  }
+
+  return toStepResult(errors, REQUIRED_FIELDS_MESSAGE)
 }
 
-/** Step 3: Documents (placeholder for Step 3) */
-export function validateStep3Documents(_data: Partial<MsmeLoanData>): LoanStepValidationResult {
-  return toStepResult({})
+/** Step 3: Documents */
+export function validateStep3Documents(data: Partial<MsmeLoanData>): LoanStepValidationResult {
+  const errors: Record<string, string> = {}
+  const uploaded = data.uploadedDocs || {}
+
+  const hasUdyamCert = Boolean(
+    uploaded.udyam_certificate ||
+    uploaded.udyamCertificate ||
+    uploaded.udyam_reg_certificate
+  )
+
+  if (!hasUdyamCert) {
+    errors.udyam_certificate = 'Please upload your Udyam Registration Certificate.'
+    errors._step = 'Please upload all required documents to proceed.'
+  }
+
+  return toStepResult(errors, REQUIRED_FIELDS_MESSAGE)
 }
 
-/** Step 4: Review & Declaration (placeholder for Step 4) */
+/** Step 4: Review & Declaration */
 export function validateStep4ReviewAndDeclaration(data: Partial<MsmeLoanData>): LoanStepValidationResult {
   const errors: Record<string, string> = {}
   if (!data.termsAccepted) {
