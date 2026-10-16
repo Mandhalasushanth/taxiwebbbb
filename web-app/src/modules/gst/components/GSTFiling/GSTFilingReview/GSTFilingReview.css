@@ -24,12 +24,12 @@
 
 /* Page Header */
 .gst-review-header {
-  margin-bottom: 16px;
-  text-align: center;
+  margin-bottom: 24px;
+  text-align: left;
 }
 
 .gst-review-title {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   color: var(--palette-slate-900);
   margin: 0 0 6px;
@@ -38,8 +38,8 @@
 
 .gst-review-subtitle {
   font-size: 14px;
-  color: var(--palette-orange-600);
-  font-weight: 600;
+  color: var(--secondary-text);
+  font-weight: 400;
   margin: 0;
   line-height: 1.5;
 }

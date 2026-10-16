@@ -25,6 +25,7 @@ export const ChevronDown: React.FC = () => (
 )
 
 export interface GSTPeriodSelectionFieldsProps {
+  frequency?: string
   financialYear: string
   setFinancialYear: (fy: string) => void
   returnPeriod: string
@@ -35,6 +36,7 @@ export interface GSTPeriodSelectionFieldsProps {
 }
 
 export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> = ({
+  frequency,
   financialYear,
   setFinancialYear,
   returnPeriod,
@@ -43,6 +45,20 @@ export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> =
   errors,
   handleClearError,
 }) => {
+  const periodLabel =
+    frequency === 'Monthly'
+      ? 'Filing Month'
+      : frequency === 'Quarterly'
+        ? 'Filing Quarter'
+        : 'Filing Period'
+
+  const periodPlaceholder =
+    frequency === 'Monthly'
+      ? 'Select filing month'
+      : frequency === 'Quarterly'
+        ? 'Select filing quarter'
+        : 'Select return period'
+
   return (
     <>
       {/* Financial Year */}
@@ -54,7 +70,13 @@ export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> =
           <select
             id="gst-fy"
             className={`gst-filing-period__select ${!financialYear ? 'gst-filing-period__select--placeholder' : ''}`}
-            value={financialYear}
+            value={
+              FINANCIAL_YEAR_OPTIONS.some((o) => o.value === financialYear)
+                ? financialYear
+                : FINANCIAL_YEAR_OPTIONS.some((o) => o.value === `FY ${financialYear}`)
+                  ? `FY ${financialYear}`
+                  : financialYear
+            }
             onChange={(e) => {
               setFinancialYear(e.target.value)
               handleClearError('financialYear')
@@ -80,7 +102,7 @@ export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> =
       {/* Filing Period / Return Period */}
       <div className="gst-filing-period__field">
         <label htmlFor="gst-return-period" className="gst-filing-period__label">
-          Filing Period / Return Period <span className="gst-filing-period__required">*</span>
+          {periodLabel} <span className="gst-filing-period__required">*</span>
         </label>
         <div className="gst-filing-period__select-wrap">
           <select
@@ -92,7 +114,7 @@ export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> =
               handleClearError('returnPeriod')
             }}
           >
-            <option value="">Select return period</option>
+            <option value="">{periodPlaceholder}</option>
             {periodOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
@@ -202,6 +224,7 @@ export const GSTPeriodFields: React.FC<GSTPeriodFieldsProps> = (props) => {
   return (
     <>
       <GSTPeriodSelectionFields
+        frequency={props.frequency}
         financialYear={props.financialYear}
         setFinancialYear={props.setFinancialYear}
         returnPeriod={props.returnPeriod}

@@ -22,28 +22,14 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
     path === routePaths.gst.fileReview ||
     path === routePaths.gst.filePayment ||
     path === routePaths.gst.fileSuccess ||
-    path === routePaths.gst.fileReceipt
+    path === routePaths.gst.fileReceipt ||
+    path.startsWith('/gst/file')
   ) {
-    const stepLabel =
-      path === routePaths.gst.fileUpload
-        ? 'Documents'
-        : path === routePaths.gst.fileReview
-          ? 'Review'
-          : path === routePaths.gst.filePayment
-            ? 'Payment'
-            : path === routePaths.gst.fileSuccess
-              ? 'Confirmation'
-              : path === routePaths.gst.fileReceipt
-                ? 'Receipt'
-                : 'Period'
-
     return (
       <nav className="shell__breadcrumb" aria-label="Breadcrumb">
         <Link to={routePaths.gst.root}>GST</Link>
         <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
-        <Link to={routePaths.gst.filing}>Filing</Link>
-        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
-        <span className="shell__breadcrumb-current">{stepLabel}</span>
+        <span className="shell__breadcrumb-current">Filing</span>
       </nav>
     )
   }

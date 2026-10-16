@@ -25,7 +25,7 @@ export const GST_PATTERNS = {
   PERSON_NAME: /^[A-Za-z][A-Za-z .'-]*$/,
   CITY_DISTRICT: /^[A-Za-z][A-Za-z -]*$/,
   PLACE_NAME: /^[A-Za-z][A-Za-z -]*$/,
-  BRANCH: /^[A-Za-z0-9][A-Za-z0-9 .'-]*$/,
+  BRANCH: /^[A-Za-z0-9][A-Za-z0-9\s.&'()/#,-]*$/,
   BANK_NAME: /^[A-Za-z][A-Za-z .&'()-]*$/,
   DESIGNATION: /^[A-Za-z][A-Za-z /'-]*$/,
   BUSINESS_NAME: /^[A-Za-z0-9][A-Za-z0-9 .&'()/,-]*$/,

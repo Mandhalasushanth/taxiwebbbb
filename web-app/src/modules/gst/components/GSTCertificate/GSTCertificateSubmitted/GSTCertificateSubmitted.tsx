@@ -18,7 +18,6 @@ interface GSTCertificateSubmittedProps {
  * (Go to Dashboard, My Applications, Chat with CA) using TaxEdge color codes.
  */
 export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = ({
-
   gstin = '',
 }) => {
   const navigate = useNavigate()
@@ -55,7 +54,7 @@ export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = (
 
   return (
     <div className="gst-cert-ready-container">
-      {/* ── Top Bar Header ── */}
+      {/* ── Top Bar Header (Standard Web Desktop) ── */}
       <div className="gst-cert-ready-top-bar">
         <h2 className="gst-cert-top-title">GST Certificate (REG-06)</h2>
       </div>

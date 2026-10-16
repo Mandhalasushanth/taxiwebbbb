@@ -12,7 +12,7 @@ export const GSTStepErrorBanner: FC<GSTStepErrorBannerProps> = ({ message }) => 
 
   // Bring the message into view, since Continue sits at the bottom of a long step
   useEffect(() => {
-    if (message) bannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    if (message) bannerRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' })
   }, [message])
 
   if (!message) return null

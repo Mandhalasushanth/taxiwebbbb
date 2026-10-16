@@ -1,10 +1,11 @@
-/* GST Notice Response Card & Header */
-.gst-notice-card {
+/* GST Notice & Reconciliation Cards & Header */
+.gst-notice-card,
+.gst-recon-card {
   background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1.5rem 1.75rem;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  border: 1px solid var(--color-border, var(--grey-200, #e2e8f0));
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  box-shadow: var(--shadow-md);
   box-sizing: border-box;
 }
 
@@ -19,7 +20,7 @@
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  background-color: var(--palette-blue-50);
+  background-color: rgba(249, 115, 22, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -355,6 +356,11 @@
 }
 
 @media (max-width: 640px) {
+  .gst-notice-card,
+  .gst-recon-card {
+    padding: 1.25rem 1rem;
+    border-radius: 16px;
+  }
   .gst-notice-grid-row {
     grid-template-columns: 1fr;
   }

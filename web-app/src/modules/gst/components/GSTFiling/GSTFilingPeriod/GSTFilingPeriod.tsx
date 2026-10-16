@@ -13,10 +13,8 @@ import { GSTPeriodSelectionFields, GSTTaxpayerReturnFields } from './GSTPeriodFi
 import {
   CURRENT_FINANCIAL_YEAR,
   FINANCIAL_YEAR_OPTIONS,
-  MONTHLY_PERIOD_OPTIONS,
-  QUARTERLY_PERIOD_OPTIONS,
-  ANNUAL_PERIOD_OPTIONS,
-  RETURN_PERIOD_OPTIONS,
+  getPeriodOptionsByFrequencyAndYear,
+  remapPeriodToFinancialYear,
   type SelectOption,
 } from '@modules/gst/utils/gstPeriodOptions'
 import { StepActionBar } from '@shared/components'
@@ -85,14 +83,30 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
     }
   }
 
-  const periodOptions: SelectOption[] =
-    frequency === 'Quarterly'
-      ? QUARTERLY_PERIOD_OPTIONS
-      : frequency === 'Annual'
-      ? ANNUAL_PERIOD_OPTIONS
-      : frequency === 'Monthly'
-      ? MONTHLY_PERIOD_OPTIONS
-      : RETURN_PERIOD_OPTIONS
+  const periodOptions = useMemo<SelectOption[]>(
+    () => getPeriodOptionsByFrequencyAndYear(frequency, financialYear),
+    [frequency, financialYear]
+  )
+
+  const handleFinancialYearChange = (newYear: string) => {
+    setFinancialYear(newYear)
+    handleClearError('financialYear')
+    if (returnPeriod) {
+      const remapped = remapPeriodToFinancialYear(returnPeriod, newYear, frequency)
+      setReturnPeriod(remapped)
+    }
+  }
+
+  const handleFrequencyChange = (newFreq: string) => {
+    setFrequency(newFreq)
+    handleClearError('frequency')
+    if (newFreq === 'Annual') {
+      const annualOptions = getPeriodOptionsByFrequencyAndYear('Annual', financialYear)
+      setReturnPeriod(annualOptions[0]?.value || '')
+    } else {
+      setReturnPeriod('')
+    }
+  }
 
   // The form as it will be submitted; also reported to the flow for drafts
   const periodData = useMemo<FilingPeriodData>(
@@ -129,6 +143,17 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
     if (filingType === 'regular') {
       if (!returnType) newErrors.returnType = 'Please select a return type'
       if (!calculationMethod) newErrors.calculationMethod = 'Please select a tax calculation method'
+      if (calculationMethod === 'estimated_figures') {
+        if (!estimatedSales || !estimatedSales.trim()) {
+          newErrors.estimatedSales = 'Please enter estimated taxable sales'
+        }
+        if (!estimatedPurchases || !estimatedPurchases.trim()) {
+          newErrors.estimatedPurchases = 'Please enter estimated taxable purchases'
+        }
+        if (!estimatedItc || !estimatedItc.trim()) {
+          newErrors.estimatedItc = 'Please enter estimated eligible ITC'
+        }
+      }
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -145,7 +170,7 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
     <div className="gst-filing-period-container">
       {/* Main Page Title and Subtitle */}
       <header className="gst-filing-period__header">
-        <h1 className="gst-filing-period__title">GST Filing Period</h1>
+        <h1 className="gst-filing-period__title">Filing Period</h1>
         <p className="gst-filing-period__subtitle">
           Provide the filing details to proceed with your GST return.
         </p>
@@ -167,18 +192,15 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
         >
           <GSTFilingFrequency
             value={frequency}
-            onChange={(newFreq) => {
-              setFrequency(newFreq)
-              handleClearError('frequency')
-              setReturnPeriod('')
-            }}
+            onChange={handleFrequencyChange}
             error={errors.frequency}
           />
 
           <div className="gst-filing-period__row">
             <GSTPeriodSelectionFields
+              frequency={frequency}
               financialYear={financialYear}
-              setFinancialYear={setFinancialYear}
+              setFinancialYear={handleFinancialYearChange}
               returnPeriod={returnPeriod}
               setReturnPeriod={setReturnPeriod}
               periodOptions={periodOptions}
@@ -225,7 +247,7 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
             icon={<Calculator />}
             title="Tax Calculation Method"
             subtitle="Choose how tax calculations should be handled"
-            fields={['calculationMethod']}
+            fields={['calculationMethod', 'estimatedSales', 'estimatedPurchases', 'estimatedItc']}
             errors={errors}
           >
             <GSTCalculationMethod
@@ -233,14 +255,29 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
               onChange={(method) => {
                 setCalculationMethod(method)
                 handleClearError('calculationMethod')
+                if (method !== 'estimated_figures') {
+                  handleClearError('estimatedSales')
+                  handleClearError('estimatedPurchases')
+                  handleClearError('estimatedItc')
+                }
               }}
               error={errors.calculationMethod}
+              errors={errors}
               estimatedSales={estimatedSales}
-              onSalesChange={setEstimatedSales}
+              onSalesChange={(val) => {
+                setEstimatedSales(val)
+                handleClearError('estimatedSales')
+              }}
               estimatedPurchases={estimatedPurchases}
-              onPurchasesChange={setEstimatedPurchases}
+              onPurchasesChange={(val) => {
+                setEstimatedPurchases(val)
+                handleClearError('estimatedPurchases')
+              }}
               estimatedItc={estimatedItc}
-              onItcChange={setEstimatedItc}
+              onItcChange={(val) => {
+                setEstimatedItc(val)
+                handleClearError('estimatedItc')
+              }}
             />
           </GSTFormSection>
         )}

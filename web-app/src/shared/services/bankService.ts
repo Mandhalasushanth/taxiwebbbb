@@ -118,15 +118,20 @@ const SAMPLE_KNOWN_IFSC_MAP: Record<string, { bankName: string; branch: string; 
  */
 const SAMPLE_BRANCH_AREAS = [
   'Main Branch',
-  'Commercial Hub',
+  'Commercial Hub Branch',
   'MG Road Branch',
-  'City Centre',
-  'Civil Lines',
-  'Industrial Area',
-  'Financial District',
-  'Retail Hub',
+  'City Centre Branch',
+  'Civil Lines Branch',
+  'Industrial Area Branch',
+  'Financial District Branch',
+  'Retail Hub Branch',
   'Sector 18 Branch',
-  'Central Market',
+  'Central Market Branch',
+  'Connaught Place Branch',
+  'Banjara Hills Branch',
+  'Koramangala Branch',
+  'Bandra Kurla Complex Branch',
+  'Park Street Branch',
 ]
 
 /**
@@ -136,8 +141,7 @@ function generateSampleBranch(_prefix: string, suffix: string): string {
   // Use numeric hash from suffix to deterministically pick a realistic branch name
   const num = parseInt(suffix.replace(/\D/g, '') || '1', 10)
   const area = SAMPLE_BRANCH_AREAS[num % SAMPLE_BRANCH_AREAS.length]
-  const cleanSuffix = suffix.replace(/^0+/, '') || suffix
-  return `${area} (#${cleanSuffix})`
+  return area.endsWith('Branch') ? area : `${area} Branch`
 }
 
 /**

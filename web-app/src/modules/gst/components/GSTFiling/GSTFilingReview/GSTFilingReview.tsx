@@ -106,8 +106,10 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
     <div className="gst-review-page">
       {/* Main Page Header */}
       <header className="gst-review-header">
-        <h1 className="gst-review-title">GST Filing</h1>
-        <p className="gst-review-subtitle">Step 3 of 3 • Review &amp; Summary</p>
+        <h1 className="gst-review-title">Review and Summary</h1>
+        <p className="gst-review-subtitle">
+          Review your filing details, uploaded documents, and computed tax figures before submission.
+        </p>
       </header>
 
       {/* Stepper */}
@@ -128,6 +130,7 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
         {/* Section 2: Tax Computation (Reconciled) */}
         <GSTReviewTaxComputationCard
           turnover={taxFigures.turnover}
+          purchases={taxFigures.purchases}
           outputGst={taxFigures.outputGst}
           eligibleItc={taxFigures.eligibleItc}
           netLiability={taxFigures.netLiability}
