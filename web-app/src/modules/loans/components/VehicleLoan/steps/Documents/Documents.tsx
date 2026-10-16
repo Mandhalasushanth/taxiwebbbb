@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
-import { Car, FileText, Receipt } from 'lucide-react'
-import { UploadDocument } from '@shared/components'
+import { Car, FileText, Receipt, ShieldCheck } from 'lucide-react'
+import { DocumentSection, UploadDocument } from '@shared/components'
 import { LoanDocumentGrid } from '@modules/loans/shared'
 import { loanDocumentService } from '@modules/loans/documents/loanDocumentService'
 import type { VehicleLoanStepProps } from '@modules/loans/types/vehicleLoan.types'
@@ -11,7 +11,7 @@ import {
 import './Documents.css'
 
 /**
- * Step 3: Vehicle Loan Documents verification
+ * Step 3: Vehicle Loan Documents verification modeled after Business & Working Capital
  * Dynamically switches documents based on Step 2 vehicleCondition:
  * - If Used Vehicle: Shows "RC Copy" (Required)
  * - If New Vehicle: Shows "Vehicle Quotation / Proforma Invoice" (Required) + "Booking Receipt" (Optional)
@@ -101,7 +101,6 @@ export const Documents: React.FC<VehicleLoanStepProps> = ({
         icon={renderDocIcon(doc.iconType)}
         iconBg="#eff6ff"
         iconColor="#2563eb"
-        uploadLabel="Upload Document →"
         className={hasError ? 'loan-doc-item--error' : ''}
         onUpload={handleUpload}
         onRemove={handleRemove}
@@ -111,19 +110,22 @@ export const Documents: React.FC<VehicleLoanStepProps> = ({
 
   return (
     <div className="veh-step veh-docs" data-testid="veh-step-documents">
-
       {/* Required Documents Section */}
-      <div className="veh-doc-section" data-testid="veh-required-docs-section">
-        <h4 className="veh-doc-section__title">REQUIRED DOCUMENTS</h4>
+      <DocumentSection
+        title="REQUIRED DOCUMENTS"
+        icon={<ShieldCheck size={20} aria-hidden="true" />}
+      >
         <LoanDocumentGrid>{requiredDocs.map(renderDocCard)}</LoanDocumentGrid>
-      </div>
+      </DocumentSection>
 
       {/* Optional Documents Section */}
       {optionalDocs.length > 0 && (
-        <div className="veh-doc-section" data-testid="veh-optional-docs-section">
-          <h4 className="veh-doc-section__title">OPTIONAL DOCUMENTS</h4>
+        <DocumentSection
+          title="OPTIONAL DOCUMENTS"
+          icon={<ShieldCheck size={20} aria-hidden="true" />}
+        >
           <LoanDocumentGrid>{optionalDocs.map(renderDocCard)}</LoanDocumentGrid>
-        </div>
+        </DocumentSection>
       )}
     </div>
   )

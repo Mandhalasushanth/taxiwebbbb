@@ -53,11 +53,11 @@ describe('Machinery Loan – Step 3 Documents', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('Required')).toBeInTheDocument()
 
-    // Full-width action button
+    // Upload action button
     expect(
       screen.getByRole('button', { name: /upload machinery quotation/i }),
     ).toBeInTheDocument()
-    expect(screen.getByText(/Upload Document →/)).toBeInTheDocument()
+    expect(screen.getByText('Upload')).toBeInTheDocument()
   })
 
   it('shows error badge when document is missing and step was submitted with errors', () => {

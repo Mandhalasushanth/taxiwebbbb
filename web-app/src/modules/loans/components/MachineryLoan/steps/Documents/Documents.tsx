@@ -1,6 +1,6 @@
 import React from 'react'
-import { FileText, Receipt } from 'lucide-react'
-import { UploadDocument } from '@shared/components'
+import { FileText, Receipt, ShieldCheck } from 'lucide-react'
+import { DocumentSection, UploadDocument } from '@shared/components'
 import { LoanDocumentGrid } from '@modules/loans/shared'
 import { loanDocumentService } from '@modules/loans/documents/loanDocumentService'
 import type { MachineryLoanStepProps } from '@modules/loans/types/machineryLoan.types'
@@ -12,8 +12,8 @@ import {
 import './Documents.css'
 
 /**
- * Step 3: Machinery Loan Documents verification
- * Displays "Machinery Quotation / Proforma Invoice" required document matching User Screenshot
+ * Step 3: Machinery Loan Documents verification modeled after Business & Working Capital
+ * Displays "Machinery Quotation / Proforma Invoice" required document matching Business & Working Capital layout
  */
 export const Documents: React.FC<MachineryLoanStepProps> = ({
   data,
@@ -96,7 +96,6 @@ export const Documents: React.FC<MachineryLoanStepProps> = ({
         icon={renderDocIcon(doc.iconType)}
         iconBg="#eff6ff"
         iconColor="#2563eb"
-        uploadLabel="Upload Document →"
         className={hasError ? 'loan-doc-item--error' : ''}
         onUpload={handleUpload}
         onRemove={handleRemove}
@@ -106,19 +105,22 @@ export const Documents: React.FC<MachineryLoanStepProps> = ({
 
   return (
     <div className="mach-step mach-docs" data-testid="mach-step-documents">
-
       {/* Required Documents Section */}
-      <div className="mach-doc-section" data-testid="mach-required-docs-section">
-        <h4 className="mach-doc-section__title">REQUIRED DOCUMENTS</h4>
+      <DocumentSection
+        title="REQUIRED DOCUMENTS"
+        icon={<ShieldCheck size={20} aria-hidden="true" />}
+      >
         <LoanDocumentGrid>{requiredDocs.map(renderDocCard)}</LoanDocumentGrid>
-      </div>
+      </DocumentSection>
 
       {/* Optional Documents Section */}
       {optionalDocs.length > 0 && (
-        <div className="mach-doc-section" data-testid="mach-optional-docs-section">
-          <h4 className="mach-doc-section__title">OPTIONAL DOCUMENTS</h4>
+        <DocumentSection
+          title="OPTIONAL DOCUMENTS"
+          icon={<ShieldCheck size={20} aria-hidden="true" />}
+        >
           <LoanDocumentGrid>{optionalDocs.map(renderDocCard)}</LoanDocumentGrid>
-        </div>
+        </DocumentSection>
       )}
     </div>
   )
