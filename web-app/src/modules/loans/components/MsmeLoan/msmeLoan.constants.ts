@@ -10,7 +10,7 @@ export const MSME_LOAN_RESUME_ROUTE = routePaths.loansMsmeLoan
 
 export const MSME_LOAN_STEPS: FlowStepItem[] = [
   { stepNumber: 1, title: 'KYC Verification', shortLabel: 'KYC' },
-  { stepNumber: 2, title: 'Business & Loan Details', shortLabel: 'Business' },
+  { stepNumber: 2, title: 'MSME & Business Details', shortLabel: 'Business' },
   { stepNumber: 3, title: 'Documents', shortLabel: 'Documents' },
   { stepNumber: 4, title: 'Review', shortLabel: 'Review' },
   { stepNumber: 5, title: 'Submit', shortLabel: 'Submit' },
@@ -31,16 +31,69 @@ export const INITIAL_MSME_LOAN_DATA: MsmeLoanData = {
   permanentSameAsCurrent: 'yes',
   permanentAddress: EMPTY_ADDRESS,
   kycConsent: false,
+  businessName: '',
+  businessConstitution: '',
+  businessActivity: '',
+  establishmentDate: '',
+  operatingAddress: EMPTY_ADDRESS,
+  udyamStatus: '',
+  udyamNumber: '',
+  gstStatus: '',
+  gstin: '',
+  annualTurnover: '',
+  avgMonthlySales: '',
   requestedLoanAmount: '',
+  loanAmount: '',
+  loanPurpose: '',
   msmeCategory: '',
   enterpriseType: '',
-  businessName: '',
-  udyamNumber: '',
   businessVintage: '',
-  annualTurnover: '',
   uploadedDocs: {},
   termsAccepted: false,
 }
+
+export const BUSINESS_CONSTITUTION_OPTIONS = [
+  { value: 'Proprietorship', label: 'Proprietorship' },
+  { value: 'Partnership', label: 'Partnership' },
+  { value: 'LLP', label: 'LLP' },
+  { value: 'Private Limited Company', label: 'Private Limited Company' },
+  { value: 'Public Limited Company', label: 'Public Limited Company' },
+  { value: 'Other', label: 'Other' },
+] as const
+
+export const PRIMARY_BUSINESS_ACTIVITY_OPTIONS = [
+  { value: 'Manufacturing', label: 'Manufacturing' },
+  { value: 'Service Provider', label: 'Service Provider' },
+  { value: 'Wholesale Trading', label: 'Wholesale Trading' },
+  { value: 'Retail Trading', label: 'Retail Trading' },
+  { value: 'IT / Software Services', label: 'IT / Software Services' },
+  { value: 'Food & Agro Processing', label: 'Food & Agro Processing' },
+  { value: 'Textiles & Apparel', label: 'Textiles & Apparel' },
+  { value: 'Automotive & Engineering', label: 'Automotive & Engineering' },
+  { value: 'Other', label: 'Other' },
+] as const
+
+export const UDYAM_REGISTRATION_STATUS_OPTIONS = [
+  { value: 'Registered', label: 'Registered' },
+  { value: 'Not Registered', label: 'Not Registered' },
+  { value: 'Applied / Pending', label: 'Applied / Pending' },
+] as const
+
+export const GST_REGISTRATION_STATUS_OPTIONS = [
+  { value: 'Registered', label: 'Registered' },
+  { value: 'Not Registered', label: 'Not Registered' },
+  { value: 'Exempt', label: 'Exempt' },
+] as const
+
+export const LOAN_PURPOSE_OPTIONS = [
+  { value: 'Working Capital', label: 'Working Capital' },
+  { value: 'Business Expansion', label: 'Business Expansion' },
+  { value: 'Machinery / Equipment Purchase', label: 'Machinery / Equipment Purchase' },
+  { value: 'Inventory / Raw Material', label: 'Inventory / Raw Material' },
+  { value: 'Technology / Infrastructure Upgrade', label: 'Technology / Infrastructure Upgrade' },
+  { value: 'Debt Consolidation', label: 'Debt Consolidation' },
+  { value: 'Other', label: 'Other' },
+] as const
 
 export const STATE_OPTIONS = INDIAN_STATE_DROPDOWN_OPTIONS
 

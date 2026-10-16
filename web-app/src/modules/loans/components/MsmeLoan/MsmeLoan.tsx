@@ -14,7 +14,7 @@ import {
   MSME_LOAN_TYPE,
   INITIAL_MSME_LOAN_DATA,
 } from './msmeLoan.constants'
-import { KycVerification, loadVerifiedCustomer } from './steps'
+import { KycVerification, loadVerifiedCustomer, MsmeAndBusinessDetails } from './steps'
 import { toAmount } from '@modules/loans/validation/commonLoanValidation'
 import './msmeForm.css'
 import './MsmeLoan.css'
@@ -22,6 +22,7 @@ import './MsmeLoan.css'
 /**
  * MSME Loan: Modernized multi-step application flow
  * Step 1: KYC Verification (verified customer read-only identity, addresses, DPDP consent)
+ * Step 2: MSME & Business Details
  */
 export const MsmeLoan: React.FC = () => {
   const customer = useMemo(loadVerifiedCustomer, [])
@@ -65,7 +66,15 @@ export const MsmeLoan: React.FC = () => {
         />
       )}
 
-      {currentStep > 1 && !submittedApp && (
+      {currentStep === 2 && (
+        <MsmeAndBusinessDetails
+          data={formData}
+          onChange={handleFieldChange}
+          errors={fieldErrors}
+        />
+      )}
+
+      {currentStep > 2 && !submittedApp && (
         <div className="msme-card" data-testid={`msme-step-${currentStep}`}>
           <h2 className="msme-card__title">Step {currentStep}: In Progress</h2>
           <p className="msme-card__subtitle">This step is being configured.</p>

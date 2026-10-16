@@ -192,6 +192,47 @@
   color: var(--color-danger);
 }
 
+/* Input Prefix (e.g. ₹) */
+.msme-input-prefix-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.msme-input-prefix {
+  position: absolute;
+  left: var(--space-4);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-navy);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.msme-input-with-prefix {
+  padding-left: calc(var(--space-4) + 18px);
+}
+
+/* Date input with icon */
+.msme-date-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.msme-date-input-wrap input[type="date"] {
+  width: 100%;
+  cursor: pointer;
+}
+
+.msme-date-icon {
+  position: absolute;
+  right: var(--space-4);
+  color: var(--color-primary, #0284c7);
+  pointer-events: none;
+}
+
 /* Address Section */
 .msme-address {
   display: flex;
