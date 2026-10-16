@@ -28,23 +28,26 @@ export const GSTAmendment = () => {
     gstin,
     setGstin,
     selectedOption,
-    setSelectedOption,
     formData,
-    setFormData,
     isReviewing,
     isEditMode,
-    returnToReview,
     isSubmitting,
     submittedRecord,
     openDraftModal,
     handleDetailFormSubmit,
     handleEdit,
     handleReviewBack,
+    handleFormBack,
+    handleSelectOption,
     handleFormChange,
     handleFormSaveDraft,
     handleFinalSubmit,
     handleBackToDashboard,
   } = flow
+
+  const handleSelectionBack = () => {
+    navigate(routePaths.gst.root)
+  }
 
   if (submittedRecord) {
     const sectionTitle = selectedOption
@@ -104,15 +107,6 @@ export const GSTAmendment = () => {
 
     const isAddressType =
       selectedOption.id === 'principal_place' || selectedOption.id === 'additional_place'
-
-    const handleFormBack = () => {
-      if (isEditMode) {
-        returnToReview()
-      } else {
-        setSelectedOption(null)
-        setFormData(null)
-      }
-    }
 
     return (
       <div className="gst-amendment-page">
@@ -205,11 +199,9 @@ export const GSTAmendment = () => {
       <GSTAmendmentSelection
         gstin={gstin}
         onGstinChange={setGstin}
-        onSelectOption={(option) => {
-          setSelectedOption(option)
-          window.scrollTo({ top: 0, behavior: 'smooth' })
-        }}
+        onSelectOption={handleSelectOption}
         onSaveDraft={openDraftModal}
+        onBack={handleSelectionBack}
       />
       <ServiceDraftModal draft={flow} serviceTitle="GST Amendment" />
     </div>

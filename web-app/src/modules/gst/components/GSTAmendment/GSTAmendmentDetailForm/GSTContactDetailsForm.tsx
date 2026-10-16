@@ -125,6 +125,27 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
     })
   }
 
+  const handleBackClick = () => {
+    const hasData = Boolean(mobileNumber.trim() || emailAddress.trim() || selectedFile || effectiveFileName)
+    if (hasData && onSaveDraft) {
+      const formattedMobile = `+91 ${mobileNumber.trim()}`
+      const formattedEmail = emailAddress.trim()
+      const formattedNewValue = `${formattedMobile} · ${formattedEmail}`
+      onSaveDraft({
+        newValue: formattedNewValue,
+        file: selectedFile,
+        fileName: effectiveFileName,
+        fileSizeText: initialFileSize,
+        contactDetails: {
+          mobile: formattedMobile,
+          email: formattedEmail,
+        },
+      })
+    } else {
+      onBack()
+    }
+  }
+
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
   const proofs = [
@@ -292,7 +313,7 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
 
         {/* Bottom Actions Row (Left: Back, Right: Review Changes) */}
         <div className="gst-amend-detail-actions-row">
-          <button type="button" onClick={onBack} className="gst-amend-back-pill-btn">
+          <button type="button" onClick={handleBackClick} className="gst-amend-back-pill-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6" />
             </svg>

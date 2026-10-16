@@ -155,6 +155,40 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
     })
   }
 
+  const handleBackClick = () => {
+    const hasEnteredData = Boolean(
+      address.trim() ||
+      city.trim() ||
+      district.trim() ||
+      pinCode.trim() ||
+      stateUt ||
+      natureOfPremises ||
+      selectedFile ||
+      effectiveFileName
+    )
+    if (hasEnteredData && onSaveDraft) {
+      const formattedVal = isAdditionalPlace
+        ? `${address.trim()}, ${city.trim()} - ${pinCode} (${natureOfPremises})`
+        : `${address.trim()}, ${city.trim()}, ${district.trim()}, ${stateUt} - ${pinCode} (${natureOfPremises})`
+      onSaveDraft({
+        newValue: formattedVal,
+        file: selectedFile,
+        fileName: effectiveFileName,
+        fileSizeText: initialFileSize,
+        addressDetails: {
+          address: address.trim(),
+          city: city.trim(),
+          district: district.trim(),
+          state: stateUt,
+          pinCode: pinCode.trim(),
+          natureOfPremises,
+        },
+      })
+    } else {
+      onBack()
+    }
+  }
+
   return (
     <div className="gst-amend-detail-container">
       {/* Header */}
@@ -376,7 +410,7 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
 
         {/* Bottom Actions Row */}
         <div className="gst-amend-detail-actions-row">
-          <button type="button" onClick={onBack} className="gst-amend-back-pill-btn">
+          <button type="button" onClick={handleBackClick} className="gst-amend-back-pill-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6" />
             </svg>

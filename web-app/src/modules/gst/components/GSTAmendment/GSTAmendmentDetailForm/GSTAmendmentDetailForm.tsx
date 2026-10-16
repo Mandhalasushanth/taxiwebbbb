@@ -1,6 +1,6 @@
 import { SaveDraftButton } from '@shared/saveDraft'
 import { UpdateAndReviewButton } from '@shared/edit'
-import { GST_FILE_MESSAGES } from '@modules/gst/utils/gstFile'
+import { GST_FILE_MESSAGES, formatGstFileSize } from '@modules/gst/utils/gstFile'
 import React, { useState, useEffect, type FormEvent } from 'react'
 import { detectGstFieldKind, gstRuleForField } from '@modules/gst/validation/gstFieldRules'
 import { gstInputForKind } from '@modules/gst/utils/gstInputFormatters'
@@ -70,11 +70,23 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
     setSelectedFile(file)
     setRemovedInitialFile(false)
     setErrors((prev) => ({ ...prev, file: undefined }))
+    onChange?.({
+      newValue,
+      file,
+      fileName: file.name,
+      fileSizeText: formatGstFileSize(file.size),
+    })
   }
 
   const handleRemoveFile = () => {
     setSelectedFile(null)
     setRemovedInitialFile(true)
+    onChange?.({
+      newValue,
+      file: null,
+      fileName: undefined,
+      fileSizeText: undefined,
+    })
   }
 
   // Validation and input filtering chosen from what the field asks for (label first, then placeholder)
@@ -107,6 +119,20 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
       fileName: effectiveFileName,
       fileSizeText: initialFileSize,
     })
+  }
+
+  const handleBackClick = () => {
+    const hasEnteredData = Boolean(newValue.trim() || selectedFile || effectiveFileName)
+    if (hasEnteredData && onSaveDraft) {
+      onSaveDraft({
+        newValue: newValue.trim(),
+        file: selectedFile,
+        fileName: effectiveFileName,
+        fileSizeText: initialFileSize,
+      })
+    } else {
+      onBack()
+    }
   }
 
   return (
@@ -248,7 +274,7 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
         <div className="gst-amend-detail-actions-row">
           <button
             type="button"
-            onClick={onBack}
+            onClick={handleBackClick}
             className="gst-amend-back-pill-btn"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
