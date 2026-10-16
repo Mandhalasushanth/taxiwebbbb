@@ -2,6 +2,7 @@ import React from 'react'
 import { Banknote, Home } from 'lucide-react'
 import type { PropertyLoanStepProps } from '@modules/loans/types/propertyLoan.types'
 import { InlineSelect } from '../InlineSelect'
+import { StateSelect } from '@modules/loans/shared/StateSelect'
 import {
   CONSTRUCTION_STAGE_OPTIONS,
   PROPERTY_OWNERSHIP_OPTIONS,
@@ -200,7 +201,7 @@ export const PropertyAndLoanDetails: React.FC<PropertyLoanStepProps> = ({
         </div>
 
         {/* State */}
-        <InlineSelect
+        <StateSelect
           id="prop-state"
           label="State"
           placeholder="Select state / UT"

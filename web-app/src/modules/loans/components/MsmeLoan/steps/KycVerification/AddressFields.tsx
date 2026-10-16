@@ -1,6 +1,6 @@
 import React from 'react'
 import type { ChangeEvent } from 'react'
-import { InlineSelect } from '../InlineSelect'
+import { StateSelect } from '@modules/loans/shared/StateSelect'
 import type { LoanAddress, LoanAddressField } from '@modules/loans/types'
 import { addressErrorKey } from '@modules/loans/validation/msmeLoanValidation'
 import { ADDRESS_INPUT_FILTERS, ADDRESS_LIMITS, STATE_OPTIONS } from '../../msmeLoan.constants'
@@ -96,7 +96,7 @@ export const AddressFields: React.FC<AddressFieldsProps> = ({ prefix, copy, valu
         })}
       </div>
 
-      <InlineSelect
+      <StateSelect
         id={id('state')}
         label="State / Union Territory"
         value={value.state}

@@ -1,6 +1,6 @@
 import React from 'react'
 import type { ChangeEvent } from 'react'
-import { InlineSelect } from '../InlineSelect'
+import { StateSelect } from '@modules/loans/shared/StateSelect'
 import type { LoanAddress, LoanAddressField } from '@modules/loans/types/businessWorkingCapital.types'
 import { addressErrorKey } from '@modules/loans/validation/businessWorkingCapitalValidation'
 import { ADDRESS_INPUT_FILTERS, ADDRESS_LIMITS, STATE_OPTIONS } from '../../businessWorkingCapital.constants'
@@ -71,7 +71,7 @@ export const AddressFields: React.FC<AddressFieldsProps> = ({ prefix, copy, valu
         {renderText({ field: 'pincode', label: 'PIN Code', placeholder: copy.pincodePlaceholder, inputMode: 'numeric', autoComplete: 'postal-code' })}
       </div>
 
-      <InlineSelect
+      <StateSelect
         id={id('state')}
         label="State"
         placeholder={copy.statePlaceholder}

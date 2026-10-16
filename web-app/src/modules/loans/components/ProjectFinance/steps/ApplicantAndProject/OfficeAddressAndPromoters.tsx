@@ -1,6 +1,7 @@
 import React from 'react'
 import { Home, Users, ChevronDown } from 'lucide-react'
 import type { ProjectFinanceData } from '@modules/loans/types/projectFinance.types'
+import { StateSelect } from '@modules/loans/shared/StateSelect'
 
 export interface OfficeAddressAndPromotersProps {
   data: ProjectFinanceData
@@ -77,20 +78,15 @@ export const OfficeAddressAndPromoters: React.FC<OfficeAddressAndPromotersProps>
             </div>
 
             {/* State */}
-            <div className="pf-field-group">
-              <label htmlFor="officeState" className="pf-field-label">
-                State <span className="pf-req">*</span>
-              </label>
-              <input
-                id="officeState"
-                type="text"
-                className={`pf-custom-input ${errors.officeState ? 'pf-custom-input--error' : ''}`}
-                placeholder="Enter state"
-                value={data.officeState || ''}
-                onChange={(e) => onChange({ officeState: e.target.value })}
-              />
-              {errors.officeState && <span className="pf-field-error">{errors.officeState}</span>}
-            </div>
+            <StateSelect
+              id="officeState"
+              label="State"
+              placeholder="Select state"
+              value={data.officeState || ''}
+              error={errors.officeState}
+              required
+              onChange={(officeState) => onChange({ officeState })}
+            />
 
             {/* District / City */}
             <div className="pf-field-group">
