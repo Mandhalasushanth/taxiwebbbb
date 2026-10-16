@@ -1,0 +1,1 @@
+export { PropertyAndLoanDetails } from './PropertyAndLoanDetails'

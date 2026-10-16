@@ -142,6 +142,7 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
       <FileInput
         ref={fileInputRef}
         rule={rule}
+        id={`file-input-${id}`}
         className="supporting-doc-item__file-input"
         onFileSelected={handleFileSelected}
         onFileError={onUploadError ? (message) => onUploadError(id, message) : undefined}

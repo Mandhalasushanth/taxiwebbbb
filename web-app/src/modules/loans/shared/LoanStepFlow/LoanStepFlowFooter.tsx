@@ -13,6 +13,8 @@ export interface LoanStepFlowFooterProps<T extends object> {
   /** Prefix for the action bar test ids, e.g. "personal" → "personal-step-continue-btn" */
   testIdPrefix?: string
   nextDisabled?: boolean
+  nextLabel?: string
+  securityNote?: React.ReactNode
   /** Replaces the standard success modal (e.g. Project Finance has its own) */
   successModal?: React.ReactNode
 }
@@ -25,25 +27,30 @@ export function LoanStepFlowFooter<T extends object>({
   successMessage,
   testIdPrefix,
   nextDisabled = false,
+  nextLabel,
+  securityNote,
   successModal,
 }: LoanStepFlowFooterProps<T>) {
   const prefix = testIdPrefix ? `${testIdPrefix}-` : ''
+  const effectiveNextLabel = nextLabel ?? (flow.isLastStep ? 'Submit Application →' : 'Continue')
 
   return (
-    <>
+    <div className="loan-flow-footer-container">
       <StepActionBar
         showBack={true}
         onBack={flow.handleBack}
         onNext={flow.handleNext}
         onSaveDraft={() => flow.setIsDraftModalOpen(true)}
         saveDraftLabel="Save Draft & Exit"
-        nextLabel="Continue"
+        nextLabel={effectiveNextLabel}
         isEditMode={flow.isEditMode}
         isSubmitting={flow.isSubmitting}
         nextDisabled={flow.isSubmitting || nextDisabled}
         nextTestId={flow.isLastStep ? `${prefix}submit-application-btn` : `${prefix}step-continue-btn`}
         nextAriaLabel={flow.isLastStep ? 'Submit Application' : undefined}
       />
+
+      {securityNote}
 
       <ServiceDraftModal draft={flow} serviceTitle={serviceTitle} />
 
@@ -57,7 +64,7 @@ export function LoanStepFlowFooter<T extends object>({
           onTrackStatus={flow.handleTrackStatus}
         />
       )}
-    </>
+    </div>
   )
 }
 

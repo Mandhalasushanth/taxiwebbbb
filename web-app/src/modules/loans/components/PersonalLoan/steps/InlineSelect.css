@@ -1,0 +1,111 @@
+.pl-inline-select {
+  position: relative;
+}
+
+.pl-inline-select__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 48px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.pl-inline-select__trigger:focus-visible,
+.pl-inline-select__trigger--open {
+  border-color: var(--color-primary);
+  background: var(--color-surface);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+  outline: none;
+}
+
+.pl-inline-select__trigger--error {
+  border-color: var(--color-danger);
+}
+
+.pl-inline-select__trigger--error:focus-visible {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px var(--color-danger-soft);
+}
+
+.pl-inline-select__value {
+  color: var(--color-text);
+}
+
+.pl-inline-select__placeholder {
+  color: var(--grey-400);
+}
+
+.pl-inline-select__chevron {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  transition: transform var(--transition-fast);
+}
+
+.pl-inline-select__trigger--open .pl-inline-select__chevron {
+  transform: rotate(180deg);
+}
+
+/* Dropdown list */
+.pl-inline-select__list {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 260px;
+  margin: 0;
+  padding: var(--space-1);
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+  list-style: none;
+  animation: pl-select-in 140ms ease;
+}
+
+.pl-inline-select__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.pl-inline-select__option:hover {
+  background: var(--color-bg);
+}
+
+.pl-inline-select__option--selected {
+  background: var(--color-primary-soft);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+@keyframes pl-select-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

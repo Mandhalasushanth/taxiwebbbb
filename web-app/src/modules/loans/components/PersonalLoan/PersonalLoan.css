@@ -1,36 +1,28 @@
 .personal-loan-page {
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding: 0.5rem 0 3.5rem 0;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  width: 100%;
+  max-width: var(--service-page-max-width);
+  margin: 0 auto;
+  padding: 0.5rem 0 3.5rem;
   box-sizing: border-box;
 }
 
-.personal-loan-page__title {
+.pl-page__title {
   margin: 0;
   font-size: 1.85rem;
   font-weight: 800;
   letter-spacing: -0.015em;
-  color: var(--palette-sky-900-041d3e);
-}
-
-.personal-loan-page__card {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  box-sizing: border-box;
+  color: var(--color-primary-navy);
 }
 
 @media (max-width: 640px) {
   .personal-loan-page {
-    padding: 0.5rem 0 2rem 0;
+    padding-bottom: 2rem;
   }
 
-  .personal-loan-page__title {
+  .pl-page__title {
     font-size: 1.5rem;
   }
 }

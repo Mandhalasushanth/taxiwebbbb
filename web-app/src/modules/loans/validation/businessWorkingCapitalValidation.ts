@@ -8,12 +8,6 @@ import type { LoanStepValidationResult } from './commonLoanValidation'
 
 const REQUIRED_FIELDS_MESSAGE = 'Please complete all required fields marked with *.'
 
-/** Udyam state codes (UDYAM-<STATE>-<district>-<serial>) */
-const UDYAM_STATE_CODES = new Set([
-  'AN', 'AP', 'AR', 'AS', 'BR', 'CH', 'CG', 'DD', 'DL', 'DN', 'GA', 'GJ', 'HP', 'HR', 'JH', 'JK', 'KA', 'KL',
-  'LA', 'LD', 'MH', 'ML', 'MN', 'MP', 'MZ', 'NL', 'OD', 'PB', 'PY', 'RJ', 'SK', 'TN', 'TR', 'TS', 'UK', 'UP', 'WB',
-])
-
 const EARLIEST_ESTABLISHMENT = '1900-01-01'
 
 /**
@@ -107,14 +101,13 @@ const validatePurposeDescription = (value: string): string | undefined => {
   return looksLikeJunk(v) ? 'Please enter a meaningful description of the purpose' : undefined
 }
 
-/** Optional Udyam number: format, a real state code and a non-zero serial */
+/** Optional Udyam number: format UDYAM-XX-00-0000000 or UDYAM-00-XX-00000000 */
 const validateUdyam = (value: string): string | undefined => {
   const v = value.trim().toUpperCase()
   if (!v) return undefined
-  const match = /^UDYAM-([A-Z]{2})-(\d{2})-(\d{7})$/.exec(v)
+  const match = /^UDYAM-([A-Z0-9]{2})-([A-Z0-9]{2})-([A-Z0-9]{6,8})$/.exec(v)
   if (!match) return 'Enter Udyam number as UDYAM-XX-00-0000000'
-  if (!UDYAM_STATE_CODES.has(match[1])) return 'Udyam number has an invalid state code'
-  return /^0+$/.test(match[3]) ? 'Enter a valid Udyam registration number' : undefined
+  return undefined
 }
 
 const validateEstablishmentDate = (value: string): string | undefined =>

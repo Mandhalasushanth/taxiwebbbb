@@ -40,11 +40,14 @@ describe('Business & Working Capital – stricter validation', () => {
     expect(errors.purposeDescription).toBeTruthy()
   })
 
-  it('rejects placeholder or invalid Udyam numbers and accepts a real one', () => {
+  it('accepts Udyam numbers in UDYAM-XX-00-0000000 and udyam-00-xx-00000000 formats and rejects bad ones', () => {
     const check = (udyamNumber: string) => validateStep2BusinessProfile({ ...VALID_STEP2, udyamNumber }).errors.udyamNumber
-    expect(check('UDYAM-XX-00-0000000')).toMatch(/state code/)
-    expect(check('UDYAM-KA-03-0000000')).toBeTruthy()
+    expect(check('UDYAM-XX-00-0000000')).toBeUndefined()
+    expect(check('UDYAM-00-XX-00000000')).toBeUndefined()
+    expect(check('udyam-00-xx-00000000')).toBeUndefined()
     expect(check('UDYAM-KA-03-0012345')).toBeUndefined()
+    expect(check('UDYAM-12')).toMatch(/Enter Udyam number as UDYAM-XX-00-0000000/)
+    expect(check('INVALID')).toMatch(/Enter Udyam number as UDYAM-XX-00-0000000/)
   })
 
   it('rejects an establishment date before 1900', () => {

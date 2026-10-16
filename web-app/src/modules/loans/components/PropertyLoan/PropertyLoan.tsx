@@ -1,118 +1,43 @@
-import React from 'react'
+import React, { useMemo } from 'react'
+import { Lock } from 'lucide-react'
 import { FlowStepper } from '@shared/components'
 import { LoanStepErrorBanner, LoanStepFlowFooter } from '@modules/loans/shared'
 import { useLoanStepFlow } from '@modules/loans/hooks/useLoanStepFlow'
-import type { FlowStepItem } from '@shared/components'
 import { toAmount } from '@modules/loans/validation/commonLoanValidation'
-import { propertyLoanValidation } from '@modules/loans/validation/propertyLoanValidation'
 import type { PropertyLoanData } from '@modules/loans/types/propertyLoan.types'
+import { propertyLoanValidation } from '@modules/loans/validation/propertyLoanValidation'
 import {
-  LoanRequirement,
-  ApplicantIncome,
-  PropertyDetails,
-  Ownership,
+  PROPERTY_LOAN_FORM_STEP_COUNT,
+  PROPERTY_LOAN_RESUME_ROUTE,
+  PROPERTY_LOAN_STEPS,
+  PROPERTY_LOAN_SUCCESS,
+  PROPERTY_LOAN_TITLE,
+  PROPERTY_LOAN_TYPE,
+  INITIAL_PROPERTY_LOAN_DATA,
+} from './propertyLoan.constants'
+import {
+  ApplicationSubmitted,
   Documents,
-  Review,
+  KycVerification,
+  PropertyAndLoanDetails,
+  ReviewAndSubmit,
+  loadVerifiedCustomer,
 } from './steps'
+import './propForm.css'
 import './PropertyLoan.css'
 
-const INITIAL_PROPERTY_LOAN_DATA: PropertyLoanData = {
-  // Step 1: Loan Requirement
-  titleHolderName: '',
-  titleHolderMobile: '',
-  titleHolderEmail: '',
-  titleHolderPan: '',
-  titleHolderAadhaar: '',
-  titleHolderDob: '',
-  titleHolderAddress: '',
-
-  loanPurpose: '',
-  requiredAmount: '',
-  tenureYears: '',
-  applicantType: '',
-  isExistingCustomer: null,
-
-  // Step 2: Applicant & Income
-  personalFullName: '',
-  personalPan: '',
-  personalMobile: '',
-  personalDob: '',
-  personalAddress: '',
-
-  gender: '',
-  maritalStatus: '',
-  residenceType: '',
-  yearsAtCurrentAddress: '',
-
-  employerCategory: '',
-  employerName: '',
-  totalExperience: '',
-  yearsInCurrentJob: '',
-  annualIncome: '',
-
-  hasExistingLoans: null,
-  bankName: '',
-  accountNumber: '',
-  ifscCode: '',
-
-  // Step 3: Property Details
-  propertyPincode: '',
-  propertyCity: '',
-  propertyDistrict: '',
-  propertyState: '',
-  propertyAddress: '',
-  propertyLandmark: '',
-
-  propertyType: '',
-  propertySubType: '',
-  constructionStatus: '',
-  currentUsage: '',
-  areaType: '',
-  propertyArea: '',
-  propertyAge: '',
-  approvingAuthority: '',
-  estimatedMarketValue: '',
-
-  // Step 4: Ownership
-  ownershipType: 'sole',
-  coOwnerFullName: '',
-  coOwnerRelationship: '',
-  coOwnerPan: '',
-  coOwnerMobile: '',
-
-  currentLender: '',
-  existingLoanType: '',
-  outstandingLoanAmount: '',
-  ownershipConfirmed: false,
-
-  // Step 5: Documents
-  uploadedDocs: {},
-
-  // Step 6: Review & Declaration
-  declarationAgreed: false,
-  inspectionAgreed: false,
-  cibilConsentAgreed: false,
-}
-
-const PROPERTY_LOAN_STEPS: FlowStepItem[] = [
-  { stepNumber: 1, title: 'Loan Requirement', shortLabel: 'Loan Requirement' },
-  { stepNumber: 2, title: 'Applicant & Income', shortLabel: 'Applicant & Income' },
-  { stepNumber: 3, title: 'Property Details', shortLabel: 'Property Details' },
-  { stepNumber: 4, title: 'Ownership', shortLabel: 'Ownership' },
-  { stepNumber: 5, title: 'Documents', shortLabel: 'Documents' },
-  { stepNumber: 6, title: 'Review', shortLabel: 'Review' },
-]
-
 export const PropertyLoan: React.FC = () => {
+  const customer = useMemo(loadVerifiedCustomer, [])
+
   const flow = useLoanStepFlow<PropertyLoanData>({
-    loanType: 'property_loan',
-    loanTitle: 'Loan Against Property',
+    loanType: PROPERTY_LOAN_TYPE,
+    loanTitle: PROPERTY_LOAN_TITLE,
     initialValues: INITIAL_PROPERTY_LOAN_DATA,
     application: {
-      serviceTitle: 'Loan Against Property',
-      totalSteps: 6,
-      stepLabels: PROPERTY_LOAN_STEPS.map((s) => s.title ?? ''),
-      resumeRoute: '/loans/property-loan',
+      serviceTitle: PROPERTY_LOAN_TITLE,
+      totalSteps: PROPERTY_LOAN_FORM_STEP_COUNT,
+      stepLabels: PROPERTY_LOAN_STEPS.slice(0, PROPERTY_LOAN_FORM_STEP_COUNT).map((s) => s.title ?? ''),
+      resumeRoute: PROPERTY_LOAN_RESUME_ROUTE,
     },
     validators: [
       propertyLoanValidation.validateStep1,
@@ -120,53 +45,91 @@ export const PropertyLoan: React.FC = () => {
       propertyLoanValidation.validateStep3,
       propertyLoanValidation.validateStep4,
       propertyLoanValidation.validateStep5,
-      propertyLoanValidation.validateStep6,
     ],
     buildSubmission: (data) => ({
-      title: 'Loan Against Property Application',
+      title: 'Property Loan Application',
       category: 'Mortgage & Secured Finance',
-      requestedAmount: toAmount(data.requiredAmount),
-      tenureMonths: (parseInt(data.tenureYears, 10) || 0) * 12,
-      details: {
-        ...data,
-        purposeOfLoan: data.loanPurpose || 'Loan Against Property',
-        propertyEstimatedValue: data.estimatedMarketValue,
-      },
+      requestedAmount: toAmount(data.requestedLoanAmount || data.requiredAmount),
+      tenureMonths: 180,
+      details: { ...data },
     }),
-    firstStepBack: 'draft',
   })
-  const { formData, currentStep, fieldErrors, handleFieldChange } = flow
+
+  const { formData, currentStep, fieldErrors, handleFieldChange, submittedApp } = flow
+
+  if (submittedApp || currentStep === PROPERTY_LOAN_STEPS.length) {
+    return (
+      <div className="property-loan-page" data-testid="property-loan-page">
+        <FlowStepper steps={PROPERTY_LOAN_STEPS} currentStep={PROPERTY_LOAN_STEPS.length} />
+        <ApplicationSubmitted
+          referenceNumber={flow.referenceNumber}
+          applicationType={PROPERTY_LOAN_TITLE}
+          requestedAmount={formData.requestedLoanAmount || formData.requiredAmount || ''}
+          submittedAt={submittedApp?.createdAt}
+          onTrackApplication={flow.handleTrackStatus}
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="property-loan-page" data-testid="property-loan-page">
-      <h1 className="property-loan-page__title">Loan Against Property</h1>
+      <h1 className="property-loan-page__title">{PROPERTY_LOAN_TITLE}</h1>
 
       <FlowStepper steps={PROPERTY_LOAN_STEPS} currentStep={currentStep} onStepClick={flow.handleStepClick} />
 
       <LoanStepErrorBanner message={flow.stepError} />
 
-      <div className="property-loan-page__card">
-        {currentStep === 1 && <LoanRequirement data={formData} onChange={handleFieldChange} errors={fieldErrors} />}
-        {currentStep === 2 && <ApplicantIncome data={formData} onChange={handleFieldChange} errors={fieldErrors} />}
-        {currentStep === 3 && <PropertyDetails data={formData} onChange={handleFieldChange} errors={fieldErrors} />}
-        {currentStep === 4 && <Ownership data={formData} onChange={handleFieldChange} errors={fieldErrors} />}
-        {currentStep === 5 && <Documents data={formData} onChange={handleFieldChange} errors={fieldErrors} />}
-        {currentStep === 6 && (
-          <Review
-            data={formData}
-            onChange={handleFieldChange}
-            onNavigateToStep={flow.navigateToStep}
-            errors={fieldErrors}
-          />
-        )}
-      </div>
+      {currentStep === 1 && (
+        <KycVerification
+          data={formData}
+          customer={customer}
+          onChange={handleFieldChange}
+          errors={fieldErrors}
+        />
+      )}
+
+      {currentStep === 2 && (
+        <PropertyAndLoanDetails
+          data={formData}
+          onChange={handleFieldChange}
+          errors={fieldErrors}
+        />
+      )}
+
+      {currentStep === 3 && (
+        <Documents
+          data={formData}
+          onChange={handleFieldChange}
+          errors={fieldErrors}
+        />
+      )}
+
+      {currentStep === 4 && (
+        <ReviewAndSubmit
+          data={formData}
+          customer={customer}
+          onChange={handleFieldChange}
+          onNavigateToStep={flow.navigateToStep}
+          errors={fieldErrors}
+        />
+      )}
 
       <LoanStepFlowFooter
         flow={flow}
-        serviceTitle="Loan Against Property Application"
-        successTitle="Loan Against Property Submitted"
-        successMessage="Your Loan Against Property application has been successfully received. A TaxEdge Loan Advisor will review your property dossier and contact you shortly."
+        {...PROPERTY_LOAN_SUCCESS}
         testIdPrefix="property"
+        nextDisabled={flow.isLastStep && !formData.termsAccepted}
+        nextLabel={flow.isLastStep ? 'Submit Application →' : 'Continue'}
+        securityNote={
+          flow.isLastStep ? (
+            <div className="prop-submit-security" data-testid="prop-submit-security">
+              <Lock size={14} aria-hidden="true" />
+              <span>Your information is secure and encrypted</span>
+            </div>
+          ) : undefined
+        }
+        successModal={<></>}
       />
     </div>
   )

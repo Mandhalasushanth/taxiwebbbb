@@ -96,7 +96,7 @@ export const LOAN_PATTERNS = {
   MOBILE: REGEX.mobile,
   PAN: REGEX.pan,
   GSTIN: REGEX.gstin,
-  UDYAM: /^UDYAM-[A-Z]{2}-(\d{2}-\d{7}|\d{6,8})$/,
+  UDYAM: /^UDYAM-[A-Z0-9]{2}-([A-Z0-9]{2}-[A-Z0-9]{6,8}|[A-Z0-9]{6,8})$/i,
   PINCODE: REGEX.pincode,
   ITR_ACK: /^\d{15}$/,
   EMAIL: REGEX.email,
