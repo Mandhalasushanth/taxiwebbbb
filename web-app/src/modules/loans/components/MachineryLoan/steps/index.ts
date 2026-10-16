@@ -1,6 +1,7 @@
 export { KycVerification, loadVerifiedCustomer } from './KycVerification'
 export type { KycVerificationProps } from './KycVerification'
 
+export { MachineryAndLoanDetails } from './MachineryAndLoanDetails'
 export { LoanDetails } from './LoanDetails/LoanDetails'
 export type { LoanDetailsProps } from './LoanDetails/LoanDetails'
 

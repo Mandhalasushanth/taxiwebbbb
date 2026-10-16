@@ -58,13 +58,21 @@
   transform: rotate(180deg);
 }
 
-/* Dropdown list */
-.mach-inline-select__list {
+/* Dropdown container */
+.mach-inline-select__dropdown-container {
   position: absolute;
   z-index: 20;
   top: calc(100% + 6px);
   left: 0;
   right: 0;
+}
+
+.mach-inline-select__modal-header {
+  display: none;
+}
+
+/* Dropdown list */
+.mach-inline-select__list {
   max-height: 260px;
   margin: 0;
   padding: var(--space-1);
@@ -75,6 +83,69 @@
   box-shadow: var(--shadow-lg);
   list-style: none;
   animation: mach-select-in 140ms ease;
+}
+
+@media (max-width: 640px) {
+  .mach-inline-select__dropdown-container {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.45);
+    padding: var(--space-4);
+  }
+
+  .mach-inline-select__modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 380px;
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-surface);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    border: 1px solid var(--color-border);
+    border-bottom: none;
+    box-sizing: border-box;
+  }
+
+  .mach-inline-select__modal-title {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-navy);
+  }
+
+  .mach-inline-select__close-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .mach-inline-select__close-btn:hover {
+    background: var(--color-bg);
+  }
+
+  .mach-inline-select__list {
+    width: 100%;
+    max-width: 380px;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    border: 1px solid var(--color-border);
+    border-top: none;
+    max-height: 55vh;
+    box-shadow: var(--shadow-xl);
+    box-sizing: border-box;
+  }
 }
 
 .mach-inline-select__option {

@@ -10,13 +10,13 @@ export const MACHINERY_LOAN_RESUME_ROUTE = routePaths.loansMachineryLoan
 
 export const MACHINERY_LOAN_STEPS: FlowStepItem[] = [
   { stepNumber: 1, title: 'KYC Verification', shortLabel: 'KYC' },
-  { stepNumber: 2, title: 'Loan Details', shortLabel: 'Loan Details' },
-  { stepNumber: 3, title: 'Business Details', shortLabel: 'Business' },
-  { stepNumber: 4, title: 'Banking', shortLabel: 'Banking' },
-  { stepNumber: 5, title: 'Documents & Review', shortLabel: 'Documents' },
+  { stepNumber: 2, title: 'Machinery & Loan Details', shortLabel: 'Machinery Details' },
+  { stepNumber: 3, title: 'Documents', shortLabel: 'Documents' },
+  { stepNumber: 4, title: 'Review & Submit', shortLabel: 'Review' },
+  { stepNumber: 5, title: 'Application Submitted', shortLabel: 'Submitted' },
 ]
 
-export const MACHINERY_LOAN_FORM_STEP_COUNT = 5
+export const MACHINERY_LOAN_FORM_STEP_COUNT = 4
 
 export const EMPTY_ADDRESS: LoanAddress = {
   houseBuilding: '',
@@ -33,9 +33,19 @@ export const INITIAL_MACHINERY_LOAN_DATA: MachineryLoanData = {
   permanentAddress: EMPTY_ADDRESS,
   kycConsent: false,
 
-  // Step 2: Loan Details
+  // Step 2: Machinery & Loan Details
+  requestedLoanAmount: '',
   loanAmount: '',
   machineryType: '',
+  machineryNameDescription: '',
+  machineryName: '',
+  machineryCondition: '',
+  machineryPurchaseType: '',
+  purchaseType: '',
+  approximateMachineryCost: '',
+  machineryCost: '',
+  dealerSupplierName: '',
+  dealerName: '',
   repaymentTenure: '',
 
   // Step 3: Business Details
@@ -56,6 +66,30 @@ export const INITIAL_MACHINERY_LOAN_DATA: MachineryLoanData = {
   uploadedDocs: {},
   termsAccepted: false,
 }
+
+export const MACHINERY_TYPE_OPTIONS = [
+  { value: 'Manufacturing Machinery', label: 'Manufacturing Machinery' },
+  { value: 'Construction Machinery', label: 'Construction Machinery' },
+  { value: 'Agricultural Machinery', label: 'Agricultural Machinery' },
+  { value: 'Medical Equipment', label: 'Medical Equipment' },
+  { value: 'Printing Machinery', label: 'Printing Machinery' },
+  { value: 'Packaging Machinery', label: 'Packaging Machinery' },
+  { value: 'Textile Machinery', label: 'Textile Machinery' },
+  { value: 'Food Processing Machinery', label: 'Food Processing Machinery' },
+  { value: 'CNC / Industrial Machinery', label: 'CNC / Industrial Machinery' },
+  { value: 'Other', label: 'Other' },
+] as const
+
+export const MACHINERY_CONDITION_OPTIONS = [
+  { value: 'New', label: 'New' },
+  { value: 'Used / Pre-owned', label: 'Used / Pre-owned' },
+] as const
+
+export const MACHINERY_PURCHASE_TYPE_OPTIONS = [
+  { value: 'Direct from Manufacturer', label: 'Direct from Manufacturer' },
+  { value: 'Authorized Dealer', label: 'Authorized Dealer' },
+  { value: 'Other Supplier', label: 'Other Supplier' },
+] as const
 
 export const STATE_OPTIONS = INDIAN_STATE_DROPDOWN_OPTIONS
 

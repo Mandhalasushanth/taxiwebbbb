@@ -90,27 +90,65 @@ export function validateStep1KycVerification(data: Partial<KycStepData>): LoanSt
   return toStepResult(errors, REQUIRED_FIELDS_MESSAGE)
 }
 
-/** Step 2: Loan Details */
-export function validateStep2LoanDetails(data: MachineryLoanData): LoanStepValidationResult {
+/** Step 2: Machinery & Loan Details (matching screenshots) */
+export function validateStep2MachineryDetails(data: MachineryLoanData): LoanStepValidationResult {
   const errors: Record<string, string> = {}
 
-  const loanAmountNum = Number(String(data.loanAmount || '').replace(/[^\d]/g, ''))
-  if (!loanAmountNum || isNaN(loanAmountNum)) {
-    errors.loanAmount = 'Please enter your required loan amount (Min ₹1 Lakh)'
-  } else if (loanAmountNum < 100000 || loanAmountNum > 200000000) {
-    errors.loanAmount = 'Loan amount must be between ₹1 Lakh and ₹20 Crores'
+  // 1. Requested Loan Amount
+  const amountStr = data.requestedLoanAmount || (data.loanAmount ? String(data.loanAmount) : '')
+  const amountNum = Number(String(amountStr).replace(/\D/g, ''))
+  if (!amountStr || !amountNum) {
+    errors.requestedLoanAmount = 'Please enter your required loan amount (Min ₹50,000)'
+  } else if (amountNum < 50000 || amountNum > 200000000) {
+    errors.requestedLoanAmount = 'Loan amount must be between ₹50,000 and ₹20 Crores'
   }
 
+  // 2. Machinery Type
   if (!data.machineryType || !data.machineryType.trim()) {
-    errors.machineryType = 'Please select machinery / equipment type'
+    errors.machineryType = 'Please select machinery type'
   }
 
-  if (!data.repaymentTenure || !data.repaymentTenure.trim()) {
-    errors.repaymentTenure = 'Please select repayment tenure'
+  // 3. Machinery Name / Description
+  const nameDesc = (data.machineryNameDescription || data.machineryName || '').trim()
+  if (!nameDesc) {
+    errors.machineryNameDescription = 'Please enter machinery name or description'
+  } else if (nameDesc.length < 2) {
+    errors.machineryNameDescription = 'Machinery name/description must be at least 2 characters'
+  } else if (looksLikeJunk(nameDesc)) {
+    errors.machineryNameDescription = 'Please enter a valid machinery name/description'
   }
 
-  return toStepResult(errors)
+  // 4. Machinery Condition
+  if (!data.machineryCondition || !data.machineryCondition.trim()) {
+    errors.machineryCondition = 'Please select machinery condition'
+  }
+
+  // 5. Machinery Purchase Type
+  const purchaseType = (data.machineryPurchaseType || data.purchaseType || '').trim()
+  if (!purchaseType) {
+    errors.machineryPurchaseType = 'Please select machinery purchase type'
+  }
+
+  // 6. Approximate Machinery Cost
+  const costStr = data.approximateMachineryCost || (data.machineryCost ? String(data.machineryCost) : '')
+  const costNum = Number(String(costStr).replace(/\D/g, ''))
+  if (!costStr || !costNum) {
+    errors.approximateMachineryCost = 'Please enter approximate machinery cost'
+  } else if (costNum < 10000) {
+    errors.approximateMachineryCost = 'Approximate cost must be at least ₹10,000'
+  }
+
+  // 7. Dealer / Supplier Name (optional)
+  const dealer = (data.dealerSupplierName || data.dealerName || '').trim()
+  if (dealer && dealer.length < 2) {
+    errors.dealerSupplierName = 'Dealer/supplier name must be at least 2 characters'
+  } else if (dealer && looksLikeJunk(dealer)) {
+    errors.dealerSupplierName = 'Please enter a valid dealer/supplier name'
+  }
+
+  return toStepResult(errors, REQUIRED_FIELDS_MESSAGE)
 }
+
 
 /** Step 3: Business Details */
 export function validateStep3BusinessDetails(data: MachineryLoanData): LoanStepValidationResult {
@@ -211,7 +249,7 @@ export function validateStep5DocumentsAndReview(data: MachineryLoanData): LoanSt
 
 export const machineryLoanValidation = {
   validateStep1: validateStep1KycVerification,
-  validateStep2: validateStep2LoanDetails,
+  validateStep2: validateStep2MachineryDetails,
   validateStep3: validateStep3BusinessDetails,
   validateStep4: validateStep4Banking,
   validateStep5: validateStep5DocumentsAndReview,

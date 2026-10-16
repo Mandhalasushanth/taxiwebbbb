@@ -1,14 +1,30 @@
 import type { LoanAddress, YesNoChoice } from '@modules/loans/types'
 import type { UploadedLoanDocument } from '@modules/loans/documents/loanDocument.types'
 
-export type MachineryEquipmentType =
-  | 'CNC / Automation Machinery'
-  | 'Medical Equipment'
-  | 'Printing / Packaging Machinery'
+export type MachineryType =
+  | 'Manufacturing Machinery'
   | 'Construction Machinery'
-  | 'Food Processing Machinery'
+  | 'Agricultural Machinery'
+  | 'Medical Equipment'
+  | 'Printing Machinery'
+  | 'Packaging Machinery'
   | 'Textile Machinery'
+  | 'Food Processing Machinery'
+  | 'CNC / Industrial Machinery'
   | 'Other'
+  | ''
+
+export type MachineryEquipmentType =
+  | MachineryType
+  | 'CNC / Automation Machinery'
+  | 'Printing / Packaging Machinery'
+
+export type MachineryCondition = 'New' | 'Used / Pre-owned' | ''
+
+export type MachineryPurchaseType =
+  | 'Direct from Manufacturer'
+  | 'Authorized Dealer'
+  | 'Other Supplier'
   | ''
 
 export type MachineryLoanRepaymentTenure =
@@ -50,23 +66,33 @@ export interface MachineryLoanData {
   permanentAddress: LoanAddress
   kycConsent: boolean
 
-  // Step 2: Loan Details
+  // Step 2: Machinery & Loan Details
+  requestedLoanAmount?: string
   loanAmount: number | string
-  machineryType: MachineryEquipmentType
-  repaymentTenure: MachineryLoanRepaymentTenure
+  machineryType: MachineryType | string
+  machineryNameDescription?: string
+  machineryName?: string
+  machineryCondition?: MachineryCondition
+  machineryPurchaseType?: MachineryPurchaseType
+  purchaseType?: string
+  approximateMachineryCost?: string | number
+  machineryCost?: string | number
+  dealerSupplierName?: string
+  dealerName?: string
+  repaymentTenure?: MachineryLoanRepaymentTenure
 
   // Step 3: Business Details
-  businessName: string
-  businessType: MachineryBusinessType
-  businessVintage: MachineryBusinessVintage
-  annualTurnover: string
-  isGstRegistered: boolean
+  businessName?: string
+  businessType?: MachineryBusinessType
+  businessVintage?: MachineryBusinessVintage
+  annualTurnover?: string
+  isGstRegistered?: boolean
   gstin?: string
 
   // Step 4: Banking
-  bankName: string
-  accountNumber: string
-  ifscCode: string
+  bankName?: string
+  accountNumber?: string
+  ifscCode?: string
   branchName?: string
 
   // Step 5: Documents & Review

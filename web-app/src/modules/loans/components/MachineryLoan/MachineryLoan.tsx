@@ -17,7 +17,7 @@ import {
 import {
   KycVerification,
   loadVerifiedCustomer,
-  LoanDetails,
+  MachineryAndLoanDetails,
   BusinessDetails,
   Banking,
   DocumentsAndReview,
@@ -48,8 +48,8 @@ export const MachineryLoan: React.FC = () => {
     buildSubmission: (data) => ({
       title: 'Machinery Loan Application',
       category: 'Capital & Financing',
-      requestedAmount: toAmount(data.loanAmount),
-      tenureMonths: toAmount(data.repaymentTenure),
+      requestedAmount: toAmount(data.requestedLoanAmount || data.loanAmount),
+      tenureMonths: toAmount(data.repaymentTenure) || 36,
       details: { ...data },
     }),
   })
@@ -73,9 +73,11 @@ export const MachineryLoan: React.FC = () => {
       )}
 
       {currentStep === 2 && (
-        <div className="machinery-loan-page__card">
-          <LoanDetails data={formData} onChange={handleFieldChange} errors={fieldErrors} />
-        </div>
+        <MachineryAndLoanDetails
+          data={formData}
+          onChange={handleFieldChange}
+          errors={fieldErrors}
+        />
       )}
 
       {currentStep === 3 && (

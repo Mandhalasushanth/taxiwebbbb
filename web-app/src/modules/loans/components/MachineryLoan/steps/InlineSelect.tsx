@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import type { KeyboardEvent } from 'react'
-import { Check, ChevronDown } from 'lucide-react'
+import { Check, ChevronDown, X } from 'lucide-react'
 import { useDropdown } from '@modules/loans/hooks/useDropdown'
 import './InlineSelect.css'
 
@@ -20,7 +20,7 @@ export interface InlineSelectProps {
   onChange: (value: string) => void
 }
 
-/** Dropdown whose list opens directly below the field */
+/** Dropdown whose list opens directly below the field or in a bottom modal on mobile */
 export const InlineSelect: React.FC<InlineSelectProps> = ({
   id,
   label,
@@ -86,24 +86,40 @@ export const InlineSelect: React.FC<InlineSelectProps> = ({
         </button>
 
         {isOpen && (
-          <ul id={listId} className="mach-inline-select__list" role="listbox" aria-labelledby={labelId}>
-            {options.map((opt) => {
-              const isSelected = opt.value === value
-              return (
-                <li
-                  key={opt.value}
-                  id={`${id}-option-${opt.value.replace(/\W+/g, '-')}`}
-                  role="option"
-                  aria-selected={isSelected}
-                  className={`mach-inline-select__option${isSelected ? ' mach-inline-select__option--selected' : ''}`}
-                  onClick={() => choose(opt.value)}
-                >
-                  <span>{opt.label}</span>
-                  {isSelected && <Check size={16} aria-hidden="true" />}
-                </li>
-              )
-            })}
-          </ul>
+          <div className="mach-inline-select__dropdown-container">
+            <div className="mach-inline-select__modal-header">
+              <span className="mach-inline-select__modal-title">{label}</span>
+              <button
+                type="button"
+                className="mach-inline-select__close-btn"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIsOpen(false)
+                }}
+                aria-label={`Close ${label}`}
+              >
+                <X size={18} aria-hidden="true" />
+              </button>
+            </div>
+            <ul id={listId} className="mach-inline-select__list" role="listbox" aria-labelledby={labelId}>
+              {options.map((opt) => {
+                const isSelected = opt.value === value
+                return (
+                  <li
+                    key={opt.value}
+                    id={`${id}-option-${opt.value.replace(/\W+/g, '-')}`}
+                    role="option"
+                    aria-selected={isSelected}
+                    className={`mach-inline-select__option${isSelected ? ' mach-inline-select__option--selected' : ''}`}
+                    onClick={() => choose(opt.value)}
+                  >
+                    <span>{opt.label}</span>
+                    {isSelected && <Check size={16} aria-hidden="true" />}
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
         )}
       </div>
 
