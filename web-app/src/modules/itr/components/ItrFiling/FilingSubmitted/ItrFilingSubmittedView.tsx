@@ -23,25 +23,19 @@ export interface ItrFilingSubmittedViewProps {
   docCount: number
 }
 
-const resolveSuccessApplicableForm = (selectedSources: string[]): string => {
-  try {
-    if (selectedSources.includes('business')) return 'ITR-3'
-    if (selectedSources.includes('capital_gains')) return 'ITR-2'
-    return 'ITR-1'
-  } catch {
-    return 'ITR-1'
-  }
+const resolveSuccessApplicableForm = (selectedSources?: string[]): string => {
+  if (!Array.isArray(selectedSources)) return 'ITR-1'
+  if (selectedSources.includes('business')) return 'ITR-3'
+  if (selectedSources.includes('capital_gains')) return 'ITR-2'
+  return 'ITR-1'
 }
 
-const resolveSuccessIncomeLabel = (selectedSources: string[]): string => {
-  try {
-    if (selectedSources.includes('capital_gains')) return 'Capital Gains'
-    if (selectedSources.includes('business')) return 'Business / Profession'
-    if (selectedSources.includes('house_property')) return 'Salary + House Property'
-    return 'Salary / Pension'
-  } catch {
-    return 'Salary / Pension'
-  }
+const resolveSuccessIncomeLabel = (selectedSources?: string[]): string => {
+  if (!Array.isArray(selectedSources)) return 'Salary / Pension'
+  if (selectedSources.includes('capital_gains')) return 'Capital Gains'
+  if (selectedSources.includes('business')) return 'Business / Profession'
+  if (selectedSources.includes('house_property')) return 'Salary + House Property'
+  return 'Salary / Pension'
 }
 
 export const ItrFilingSubmittedView: React.FC<ItrFilingSubmittedViewProps> = ({

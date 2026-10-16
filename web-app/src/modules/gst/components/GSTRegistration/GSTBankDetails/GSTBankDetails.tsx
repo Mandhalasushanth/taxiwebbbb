@@ -37,9 +37,11 @@ const BANK_FIELDS: readonly BankField[] = [
 const IFSC_LENGTH = 11
 const IFSC_LOOKUP_MIN_LENGTH = 4
 
-/** Bank list for the dropdown, keeping an IFSC-fetched bank that is not in the list */
+/** Bank list for the dropdown, keeping an IFSC-fetched bank that is not in the list, sorted in ascending A to Z order */
 const bankOptions = (current: string): readonly string[] =>
-  current && !ALL_BANKS.includes(current) ? [...ALL_BANKS, current] : ALL_BANKS
+  current && !ALL_BANKS.includes(current)
+    ? [...ALL_BANKS, current].sort((a, b) => a.localeCompare(b))
+    : ALL_BANKS
 
 export const GSTBankDetails = ({
   data,

@@ -24,6 +24,7 @@ export interface ReviewDetailsData {
   frequency: string
   filingType: string
   returnForm: string
+  calculationMethod?: string
   attachedDocsCount: number
 }
 
@@ -48,7 +49,7 @@ export const getTaxComputationRows = (isNilReturn: boolean): { items: TaxComputa
 
 export const WHAT_HAPPENS_NEXT_STEPS = [
   { step: 1, text: 'Review your details and tax computation' },
-  { step: 2, text: 'Approve and proceed to payment' },
+  { step: 2, text: 'Submit your filing application' },
   { step: 3, text: 'We will file your GST return with the government' },
   { step: 4, text: 'You will receive a confirmation and ARN' },
 ]
@@ -64,7 +65,7 @@ export interface ReconciledTaxFigures {
 export const getReconciledTaxComputation = (
   filingData?: Partial<FilingPeriodData>
 ): ReconciledTaxFigures => {
-  if (filingData?.filingType === 'nil') {
+  if (filingData?.filingType === 'nil' || filingData?.returnType === 'nil') {
     return {
       turnover: 0,
       purchases: 0,
@@ -100,6 +101,7 @@ export const getResolvedReviewDetails = (
   filingData?: Partial<FilingPeriodData>,
   attachedDocsCount?: number
 ): ReviewDetailsData => {
+  const isNil = filingData?.filingType === 'nil' || (filingData?.filingType !== 'regular' && filingData?.returnType === 'nil')
   const fy = filingData?.financialYear?.trim() || '2025-26'
   const startYearMatch = fy.match(/\d{4}/)
   const startYear = startYearMatch ? startYearMatch[0] : '2025'
@@ -109,13 +111,18 @@ export const getResolvedReviewDetails = (
     period = `${period} ${startYear}`
   }
 
-  const rawForm = filingData?.returnType?.toLowerCase() || ''
-  const returnForm =
-    rawForm === 'gstr1'
-      ? 'GSTR-1'
-      : rawForm === 'gstr3b'
-        ? 'GSTR-3B'
-        : 'GSTR-3B'
+  const rawForm = (filingData?.returnType?.toLowerCase() || '') === 'nil' ? 'gstr1' : (filingData?.returnType?.toLowerCase() || 'gstr1')
+  const returnForm = isNil
+    ? 'N/A (Nil Return)'
+    : rawForm === 'gstr3b'
+      ? 'GSTR-3B'
+      : 'GSTR-1'
+
+  const calculationMethod = isNil
+    ? 'N/A (Nil Return)'
+    : filingData?.calculationMethod === 'estimated_figures'
+      ? 'I already have estimated figures'
+      : 'Let TaxEdge CA calculate from documents'
 
   return {
     gstin: filingData?.gstin?.trim() || '29AAAAA0000A1Z5',
@@ -124,9 +131,10 @@ export const getResolvedReviewDetails = (
     filingPeriod: period,
     scheme: DEFAULT_REVIEW_DETAILS.scheme,
     frequency: filingData?.frequency?.trim() || DEFAULT_REVIEW_DETAILS.frequency,
-    filingType: filingData?.filingType === 'nil' ? 'Nil Return' : DEFAULT_REVIEW_DETAILS.filingType,
+    filingType: isNil ? 'Nil Return' : 'Regular Return',
     returnForm,
-    attachedDocsCount: attachedDocsCount && attachedDocsCount > 0 ? attachedDocsCount : 3,
+    calculationMethod,
+    attachedDocsCount: isNil ? 0 : (attachedDocsCount !== undefined ? attachedDocsCount : 0),
   }
 }
 

@@ -2,6 +2,7 @@ import type {
   CompanyRegistrationDetails,
   CompanyTypeOption,
   CompanyDetailsFormData,
+  CompanyEntityType,
 } from '../types/incorporation.types'
 
 export const companyRegistrationData: CompanyRegistrationDetails = {
@@ -102,4 +103,12 @@ export const defaultCompanyDetails: CompanyDetailsFormData = {
   firstPreferredName: '',
   secondPreferredName: '',
   mandatorySuffix: '',
+}
+
+export const getCompanySuffix = (type: CompanyEntityType): string => {
+  if (type === 'public_ltd') return 'Legal Suffix: Limited'
+  if (type === 'opc') return 'Legal Suffix: (OPC) Private Limited'
+  if (type === 'llp') return 'Legal Suffix: LLP'
+  if (type === 'section_8') return 'Legal Suffix: Foundation / Section 8'
+  return 'Legal Suffix: Private Limited'
 }

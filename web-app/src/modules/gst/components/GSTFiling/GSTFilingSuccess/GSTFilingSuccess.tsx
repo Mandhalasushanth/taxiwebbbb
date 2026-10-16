@@ -116,8 +116,9 @@ export const GSTFilingSuccess: React.FC<GSTFilingSuccessProps> = ({
           to: routePaths.applicationTrack(displayAppId),
         })
       }
-    } catch {
+    } catch (err) {
       // Storage write fallback
+      console.warn('Failed to persist GST filing application to storage:', err)
     }
   }, [displayAppId, displayBusiness])
 

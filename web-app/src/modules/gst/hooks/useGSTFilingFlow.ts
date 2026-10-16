@@ -37,7 +37,6 @@ const FILING_PATH_BY_STEP: Record<FilingStep, string> = {
 /** Filing step for each filing route */
 const FILING_STEP_BY_PATH: Record<string, FilingStep> = {
   [routePaths.gst.filing]: 1,
-  [routePaths.gst.filePayment]: 3,
   ...Object.fromEntries(Object.entries(FILING_PATH_BY_STEP).map(([step, path]) => [path, Number(step) as FilingStep])),
 }
 
@@ -119,12 +118,16 @@ export const useGSTFilingFlow = () => {
   }
 
   const handleFileUpload = (id: string, file: File) => {
+    const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
+    if (file.size > MAX_FILE_SIZE) return
+
     const fileInfo: UploadedFileInfo = {
       name: file.name,
       sizeText: formatGstFileSize(file.size),
       uploadTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       fileUrl: URL.createObjectURL(file),
-      status: 'verified',
+      status: 'selected',
+      isLocal: true,
     }
     setUploadedFiles((prev) => ({ ...prev, [id]: fileInfo }))
     setNotApplicableDocs((prev) => (prev[id] ? withoutKey(prev, id) : prev))
@@ -136,6 +139,8 @@ export const useGSTFilingFlow = () => {
     setNotApplicableDocs((prev) => (prev[id] ? withoutKey(prev, id) : { ...prev, [id]: true }))
 
   const handleStepClick = (stepId: number) => {
+    const isNil = filingData.filingType === 'nil' || filingData.returnType === 'nil'
+    if (isNil && stepId === 2) return // Documents step is skipped for Nil Return
     if (stepId >= 1 && stepId <= TOTAL_STEPS) goToStep(stepId as FilingStep)
   }
 
@@ -157,7 +162,9 @@ export const useGSTFilingFlow = () => {
 
   const handleStep1Continue = (data: FilingPeriodData) => {
     setFilingData(data)
-    reviewEdit.nextOrReview(() => goToStep(2))()
+    const isNil = data.filingType === 'nil' || data.returnType === 'nil'
+    const nextStep: FilingStep = isNil ? REVIEW_STEP : 2
+    reviewEdit.nextOrReview(() => goToStep(nextStep))()
   }
 
   const submitFiling = () => {
@@ -168,30 +175,12 @@ export const useGSTFilingFlow = () => {
       id: `app-gst-filing-${Date.now()}`,
       code: filingRef,
       title: `GST Filing — ${filingData.selectedMonth || 'Return'}`,
-      meta: `${filingData.businessName || 'Business'} · ${filingData.returnType || 'GSTR-3B'}`,
+      meta: `${filingData.businessName || 'Business'} · ${filingData.filingType === 'nil' ? 'Nil Return' : (filingData.returnType || 'Regular')}`,
       statusLabel: 'Submitted',
       statusTone: 'info',
       progress: 25,
       icon: '📄',
       to: routePaths.gst.detail(filingRef),
-    })
-    goToStep(STATUS_STEP)
-  }
-
-  const handleStep4Success = (res: PaymentResult) => {
-    setPaymentResult(res)
-    const finalRef = res.applicationRef || filingRef
-    draft.clearDraft()
-    userStorage.saveUserApplication({
-      id: `app-gst-filing-${Date.now()}`,
-      code: finalRef,
-      title: `GST Filing — ${filingData.selectedMonth || 'Return'}`,
-      meta: `${filingData.businessName || 'Business'} · ${filingData.returnType || 'GSTR-3B'}`,
-      statusLabel: 'Submitted',
-      statusTone: 'info',
-      progress: 25,
-      icon: '📄',
-      to: routePaths.gst.detail(finalRef),
     })
     goToStep(STATUS_STEP)
   }
@@ -217,7 +206,6 @@ export const useGSTFilingFlow = () => {
     handleStep2Back,
     handleStep2Next: reviewEdit.nextOrReview(() => goToStep(REVIEW_STEP)),
     handleStep3Approve: submitFiling,
-    handleStep4Success,
     handleFileUpload,
     handleFileRemove,
     handleToggleNotApplicable,

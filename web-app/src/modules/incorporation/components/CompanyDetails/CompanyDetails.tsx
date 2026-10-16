@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { routePaths } from '@core/config'
-import { defaultCompanyDetails } from '../../data/companyRegistrationData'
-import type { CompanyDetailsFormData, CompanyEntityType } from '../../types/incorporation.types'
+import { defaultCompanyDetails, getCompanySuffix as getSuffix } from '../../data/companyRegistrationData'
+import type { CompanyDetailsFormData } from '../../types/incorporation.types'
 import { StepActionBar } from '@shared/components'
 import { useIncorporationFlow } from '../../hooks'
 import { CompanyNameActivityCards, getNameActivityErrors, normalizeNameActivityValue } from './CompanyNameActivityCards'
 import './CompanyDetails.css'
-
-const getSuffix = (type: CompanyEntityType) => {
-  if (type === 'public_ltd') return 'Legal Suffix: Limited'
-  if (type === 'opc') return 'Legal Suffix: (OPC) Private Limited'
-  if (type === 'llp') return 'Legal Suffix: LLP'
-  if (type === 'section_8') return 'Legal Suffix: Foundation / Section 8'
-  return 'Legal Suffix: Private Limited'
-}
 
 export const CompanyDetails: React.FC = () => {
   const { formData, updateFormData, draft, reviewEdit, goToStep } = useIncorporationFlow()

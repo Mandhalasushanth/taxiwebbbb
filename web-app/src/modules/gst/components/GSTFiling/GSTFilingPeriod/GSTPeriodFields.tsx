@@ -186,34 +186,36 @@ export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = (
         )}
       </div>
 
-      {/* Filing Return Type */}
-      <div className="gst-filing-period__field">
-        <label htmlFor="gst-return-type" className="gst-filing-period__label">
-          Filing Return Type <span className="gst-filing-period__required">*</span>
-        </label>
-        <div className="gst-filing-period__select-wrap">
-          <select
-            id="gst-return-type"
-            className={`gst-filing-period__select ${!returnType ? 'gst-filing-period__select--placeholder' : ''}`}
-            value={returnType}
-            onChange={(e) => {
-              setReturnType(e.target.value)
-              handleClearError('returnType')
-            }}
-          >
-            <option value="">Select return type</option>
-            {RETURN_TYPE_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-          <ChevronDown />
+      {/* Filing Return Type (shown for Regular Return) */}
+      {filingType === 'regular' && (
+        <div className="gst-filing-period__field">
+          <label htmlFor="gst-return-type" className="gst-filing-period__label">
+            Filing Return Type <span className="gst-filing-period__required">*</span>
+          </label>
+          <div className="gst-filing-period__select-wrap">
+            <select
+              id="gst-return-type"
+              className={`gst-filing-period__select ${!returnType ? 'gst-filing-period__select--placeholder' : ''}`}
+              value={returnType}
+              onChange={(e) => {
+                setReturnType(e.target.value)
+                handleClearError('returnType')
+              }}
+            >
+              <option value="">Select return type</option>
+              {RETURN_TYPE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            <ChevronDown />
+          </div>
+          {errors.returnType && (
+            <span className="gst-filing-period__error-text">{errors.returnType}</span>
+          )}
         </div>
-        {errors.returnType && (
-          <span className="gst-filing-period__error-text">{errors.returnType}</span>
-        )}
-      </div>
+      )}
     </>
   )
 }

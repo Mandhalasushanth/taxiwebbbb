@@ -10,6 +10,7 @@ import { localStore } from '../../src/core/storage/localStorage'
 import { useReviewEdit } from '../../src/shared/edit'
 import { StepActionBar } from '../../src/shared/components'
 import { IncorporationFlowSteps as IncorporationWizardLayout } from '../../src/modules/incorporation/components/IncorporationFlowSteps/IncorporationFlowSteps'
+import { SelectCompanyType } from '../../src/modules/incorporation/components/SelectCompanyType/SelectCompanyType'
 import { useIncorporationFlow } from '../../src/modules/incorporation/hooks'
 import { useLoanStepFlow } from '../../src/modules/loans/hooks/useLoanStepFlow'
 
@@ -59,11 +60,13 @@ describe('Incorporation: Edit from the review returns with "Update & Review"', (
   })
 
   const Review = () => {
-    const { reviewEdit } = useIncorporationFlow()
+    const { formData, reviewEdit } = useIncorporationFlow()
     return (
       <>
         <span>REVIEW</span>
+        <span data-testid="review-company-type">{formData.companyType}</span>
         <button onClick={() => reviewEdit.startEdit(() => router.navigate('/incorporation/company-details'))}>edit-company</button>
+        <button onClick={() => reviewEdit.startEdit(() => router.navigate('/incorporation/select-type'))}>edit-type</button>
       </>
     )
   }
@@ -87,6 +90,7 @@ describe('Incorporation: Edit from the review returns with "Update & Review"', (
           element: <IncorporationWizardLayout />,
           children: [
             { path: 'review-application', element: <Review /> },
+            { path: 'select-type', element: <SelectCompanyType /> },
             { path: 'company-details', element: <Step /> },
             { path: 'registered-office', element: <span>NEXT STEP</span> },
           ],
@@ -112,6 +116,20 @@ describe('Incorporation: Edit from the review returns with "Update & Review"', (
     await act(async () => fireEvent.click(screen.getByText('edit-company')))
     await act(async () => fireEvent.click(screen.getByTestId('step-back-btn')))
     expect(router.state.location.pathname).toBe('/incorporation/review-application')
+  })
+
+  it('Edit company type directly redirects to review page upon selecting new company type', async () => {
+    renderWizard()
+    await act(async () => fireEvent.click(screen.getByText('edit-type')))
+    expect(router.state.location.pathname).toBe('/incorporation/select-type')
+
+    // Click on LLP option
+    const llpCard = screen.getByText('Limited Liability Partnership (LLP)')
+    await act(async () => fireEvent.click(llpCard))
+
+    // Directly redirects to review page and updates company type
+    expect(router.state.location.pathname).toBe('/incorporation/review-application')
+    expect(screen.getByTestId('review-company-type')).toHaveTextContent('llp')
   })
 })
 

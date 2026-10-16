@@ -34,7 +34,8 @@ export interface UploadedFileInfo {
   sizeText: string
   uploadTime: string
   fileUrl?: string
-  status?: 'verified' | 'pending' | 'rejected'
+  status?: 'verified' | 'pending' | 'rejected' | 'selected'
+  isLocal?: boolean
 }
 
 

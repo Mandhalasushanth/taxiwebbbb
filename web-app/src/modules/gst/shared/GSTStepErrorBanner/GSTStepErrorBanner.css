@@ -18,9 +18,46 @@
   flex-shrink: 0;
 }
 
+.gst-step-error-banner__message {
+  flex: 1;
+}
+
+.gst-step-error-banner__action {
+  margin-left: auto;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: var(--error, #dc2626);
+  border: 1px solid var(--error, #dc2626);
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.gst-step-error-banner__action:hover {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.gst-step-error-banner__action:active {
+  transform: translateY(1px);
+}
+
 @media (max-width: 640px) {
   .gst-step-error-banner {
     padding: 0.75rem 1rem;
     font-size: 0.8125rem;
+    flex-wrap: wrap;
+  }
+
+  .gst-step-error-banner__action {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0.5rem;
   }
 }

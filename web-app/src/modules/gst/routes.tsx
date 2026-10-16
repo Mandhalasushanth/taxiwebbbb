@@ -31,7 +31,6 @@ export const gstRoutes: RouteObject[] = [
   { path: '/gst/file-period', element: <GSTFiling /> },
   { path: '/gst/file-upload', element: <GSTFiling /> },
   { path: '/gst/file-review', element: <GSTFiling /> },
-  { path: '/gst/file-payment', element: <GSTFiling /> },
   { path: '/gst/file-success', element: <GSTFiling /> },
   { path: '/gst/file-receipt', element: <GSTFiling /> },
   { path: routePaths.gst.detail(), element: <GSTDetails /> },

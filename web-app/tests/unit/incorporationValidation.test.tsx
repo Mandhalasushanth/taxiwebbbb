@@ -63,6 +63,7 @@ describe('Incorporation Required Fields Validation on Continue', () => {
     expect(screen.getByText(/Sub-category of company is required/i)).toBeInTheDocument()
     expect(screen.queryByText(/Class of company/i)).not.toBeInTheDocument()
     expect(screen.getByText('Proposed company name is required')).toBeInTheDocument()
+    expect(screen.getByText('Alternative proposed company name is required')).toBeInTheDocument()
     expect(screen.getByText('Primary business activity is required')).toBeInTheDocument()
     expect(screen.getByText('NIC 5-digit code is required')).toBeInTheDocument()
 
@@ -185,6 +186,7 @@ describe('Incorporation Required Fields Validation on Continue', () => {
     fireEvent.click(continueBtn)
 
     expect(screen.getByText(/PAN Card is required/i)).toBeInTheDocument()
+    expect(screen.getByText(/Owner NOC is required/i)).toBeInTheDocument()
   })
 
   it('PromoterDetails requires adding Director #1, shows red warning for min 2 directors on continue, then succeeds with Director #2', () => {

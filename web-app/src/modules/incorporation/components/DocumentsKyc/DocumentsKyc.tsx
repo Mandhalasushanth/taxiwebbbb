@@ -41,29 +41,42 @@ export const DocumentsKyc: React.FC = () => {
     },
   ]
 
-  const officeDocs: KycDocumentItem[] = formData.documentsKyc?.officeDocs || [
-    {
-      id: 'office-address',
-      title: 'Office Address Proof',
-      subtitle: 'Lease / Rent Agreement / Ownership Proof',
-      isRequired: true,
-      isUploaded: false,
-    },
-    {
-      id: 'office-utility',
-      title: 'Office Utility Bill',
-      subtitle: 'Electricity / Water / applicable utility bill',
-      isRequired: true,
-      isUploaded: false,
-    },
-    {
-      id: 'owner-noc',
-      title: 'Owner NOC',
-      subtitle: 'Required only if applicable',
-      isRequired: false,
-      isUploaded: false,
-    },
-  ]
+  const officeDocs: KycDocumentItem[] = (
+    formData.documentsKyc?.officeDocs || [
+      {
+        id: 'office-address',
+        title: 'Office Address Proof',
+        subtitle: 'Lease / Rent Agreement / Ownership Proof',
+        isRequired: true,
+        isUploaded: false,
+      },
+      {
+        id: 'office-utility',
+        title: 'Office Utility Bill',
+        subtitle: 'Electricity / Water / applicable utility bill',
+        isRequired: true,
+        isUploaded: false,
+      },
+      {
+        id: 'owner-noc',
+        title: 'Owner NOC',
+        subtitle: 'No Objection Certificate from property owner',
+        isRequired: true,
+        isUploaded: false,
+      },
+    ]
+  ).map((doc) =>
+    doc.id === 'owner-noc'
+      ? {
+          ...doc,
+          isRequired: true,
+          subtitle:
+            doc.subtitle === 'Required only if applicable'
+              ? 'No Objection Certificate from property owner'
+              : doc.subtitle,
+        }
+      : doc
+  )
 
   const statutoryDocs: KycDocumentItem[] = formData.documentsKyc?.statutoryDocs || [
     {

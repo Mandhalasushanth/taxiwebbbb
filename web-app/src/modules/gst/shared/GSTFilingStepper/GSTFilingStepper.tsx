@@ -9,6 +9,7 @@ interface Step {
 interface GSTFilingStepperProps {
   currentStep?: number
   onStepClick?: (step: number) => void
+  isNilReturn?: boolean
 }
 
 const STEPS: Step[] = [
@@ -20,13 +21,17 @@ const STEPS: Step[] = [
 export const GSTFilingStepper: React.FC<GSTFilingStepperProps> = ({
   currentStep = 1,
   onStepClick,
+  isNilReturn = false,
 }) => {
+  const steps = STEPS
+
   return (
     <nav className="gst-filing-stepper" aria-label="Filing Progress">
-      {STEPS.map((step, index) => {
+      {steps.map((step, index) => {
         const isCompleted = step.id < currentStep
         const isActive = step.id === currentStep
-        const isLast = index === STEPS.length - 1
+        const isLast = index === steps.length - 1
+        const displayNumber = index + 1
 
         let badgeClass = 'gst-filing-stepper__badge--pending'
         let labelClass = 'gst-filing-stepper__label--pending'
@@ -39,13 +44,15 @@ export const GSTFilingStepper: React.FC<GSTFilingStepperProps> = ({
           labelClass = 'gst-filing-stepper__label--active'
         }
 
+        const isClickable = isCompleted && onStepClick && !(isNilReturn && step.id === 2)
+
         return (
           <React.Fragment key={step.id}>
             <div
-              className={`gst-filing-stepper__item ${isCompleted && onStepClick ? 'clickable' : ''}`}
+              className={`gst-filing-stepper__item ${isClickable ? 'clickable' : ''}`}
               aria-current={isActive ? 'step' : undefined}
               onClick={() => {
-                if (isCompleted && onStepClick) {
+                if (isClickable && onStepClick) {
                   onStepClick(step.id)
                 }
               }}
@@ -64,7 +71,7 @@ export const GSTFilingStepper: React.FC<GSTFilingStepperProps> = ({
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 ) : (
-                  step.id
+                  displayNumber
                 )}
               </div>
               <span className={`gst-filing-stepper__label ${labelClass}`}>{step.label}</span>
@@ -83,3 +90,5 @@ export const GSTFilingStepper: React.FC<GSTFilingStepperProps> = ({
     </nav>
   )
 }
+
+export default GSTFilingStepper
