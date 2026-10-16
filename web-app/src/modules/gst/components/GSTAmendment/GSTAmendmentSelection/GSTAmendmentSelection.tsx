@@ -13,6 +13,8 @@ interface GSTAmendmentSelectionProps {
   onSelectOption: (option: AmendmentCardItem) => void
   /** Opens the save / discard / keep-editing dialog (same as every loan step) */
   onSaveDraft?: () => void
+  /** Back button handler to navigate to GST root */
+  onBack?: () => void
 }
 
 export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
@@ -20,6 +22,7 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
   onGstinChange,
   onSelectOption,
   onSaveDraft,
+  onBack,
 }) => {
   const [errorText, setErrorText] = useState<string>('')
 
@@ -220,9 +223,23 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
         </div>
       </section>
 
-      {onSaveDraft && gstin && (
+      {(onBack || (onSaveDraft && gstin)) && (
         <div className="gst-amend-select-footer">
-          <SaveDraftButton onClick={onSaveDraft} />
+          {onBack && (
+            <button
+              type="button"
+              onClick={onBack}
+              className="gst-amend-back-pill-btn"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+              Back
+            </button>
+          )}
+          {onSaveDraft && gstin && (
+            <SaveDraftButton onClick={onSaveDraft} />
+          )}
         </div>
       )}
     </div>

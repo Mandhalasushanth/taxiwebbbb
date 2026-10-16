@@ -142,6 +142,28 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
     })
   }
 
+  const handleBackClick = () => {
+    const hasData = Boolean(name.trim() || designation.trim() || pan.trim() || mobile.trim() || email.trim() || selectedFile || effectiveFileName)
+    if (hasData && onSaveDraft) {
+      onSaveDraft({
+        newValue: `${name.trim()} (${designation.trim()}) · PAN: ${pan.toUpperCase().trim()}`,
+        file: selectedFile,
+        fileName: effectiveFileName,
+        fileSizeText: initialFileSize,
+        signatoryDetails: {
+          name: name.trim(),
+          designation: designation.trim(),
+          pan: pan.toUpperCase().trim(),
+          mobile: mobile.trim(),
+          dob: dob.trim(),
+          email: email.trim(),
+        },
+      })
+    } else {
+      onBack()
+    }
+  }
+
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
   const proofs = [
@@ -409,7 +431,7 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
 
             {/* Bottom Actions Row (Left: Back, Right: Review Changes) */}
             <div className="gst-amend-detail-actions-row">
-              <button type="button" onClick={onBack} className="gst-amend-back-pill-btn">
+              <button type="button" onClick={handleBackClick} className="gst-amend-back-pill-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="15 18 9 12 15 6" />
                 </svg>

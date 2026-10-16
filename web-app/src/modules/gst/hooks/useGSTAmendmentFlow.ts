@@ -6,7 +6,6 @@ import { useAppStore } from '@store/index'
 import { userStorage } from '@core/storage/userStorage'
 import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '@shared/saveDraft'
 import { useReviewEdit } from '@shared/edit'
-import { AMENDMENT_OPTIONS } from '@modules/gst/constants/gstAmendmentOptions'
 import { getAmendmentConfig } from '@modules/gst/components/GSTAmendment/amendmentConfigs'
 import { gstService } from '@modules/gst/services/gstService'
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
@@ -14,6 +13,7 @@ import type { GstAmendmentPayload, GstAmendmentRecord, GstAmendmentFieldKey } fr
 import type { AmendmentCardItem, AddressDetailsItem } from '../components/GSTAmendment/index'
 
 export interface GSTAmendmentFormData {
+  selectedOptionId?: string
   newValue: string
   file: File | null
   fileName?: string
@@ -48,25 +48,10 @@ export const useGSTAmendmentFlow = () => {
 
   const [restored] = useState(() => readServiceDraft<AmendmentDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst)?.formData)
   const [gstin, setGstin] = useState(restored?.gstin || '')
-  const [selectedOption, setSelectedOption] = useState<AmendmentCardItem | null>(
-    () => AMENDMENT_OPTIONS.find((option) => option.id === restored?.selectedOptionId) || null
-  )
-  const [formData, setFormData] = useState<GSTAmendmentFormData | null>(() => {
-    if (restored?.savedFormData) {
-      return {
-        newValue: restored.savedFormData.newValue || '',
-        file: null,
-        fileName: restored.savedFormData.fileName,
-        fileSizeText: restored.savedFormData.fileSizeText,
-        addressDetails: restored.savedFormData.addressDetails,
-        bankDetails: restored.savedFormData.bankDetails,
-        signatoryDetails: restored.savedFormData.signatoryDetails,
-        contactDetails: restored.savedFormData.contactDetails,
-      }
-    }
-    return null
-  })
-  const [isReviewing, setIsReviewing] = useState<boolean>(() => Boolean(restored?.isReviewing && restored?.savedFormData))
+  // After saving draft, if user comes again, always show the core and non-core services page first
+  const [selectedOption, setSelectedOption] = useState<AmendmentCardItem | null>(null)
+  const [formData, setFormData] = useState<GSTAmendmentFormData | null>(null)
+  const [isReviewing, setIsReviewing] = useState<boolean>(false)
   // "Edit" from the review: shared behaviour (Update & Review / Back return to the review)
   const reviewEdit = useReviewEdit(() => {
     setIsReviewing(true)
@@ -111,12 +96,17 @@ export const useGSTAmendmentFlow = () => {
       (formData && (formData.newValue || formData.fileName || formData.addressDetails || formData.bankDetails || formData.signatoryDetails || formData.contactDetails))
     ),
     isComplete: Boolean(submittedRecord),
+    onDiscard: () => {
+      setSelectedOption(null)
+      setFormData(null)
+    },
   })
 
   const handleDetailFormSubmit = (data: GSTAmendmentFormData) => {
     setFormData((prev) => ({
       ...prev,
       ...data,
+      selectedOptionId: selectedOption?.id,
       fileName: data.fileName || data.file?.name || prev?.fileName,
       fileSizeText:
         data.fileSizeText ||
@@ -134,12 +124,48 @@ export const useGSTAmendmentFlow = () => {
     })
   }
 
-  const handleReviewBack = handleEdit
+  const handleReviewBack = () => {
+    reviewEdit.cancelEdit()
+    setIsReviewing(false)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleFormBack = () => {
+    reviewEdit.cancelEdit()
+    setSelectedOption(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleSelectOption = (option: AmendmentCardItem) => {
+    if (restored?.selectedOptionId === option.id && restored.savedFormData) {
+      setFormData({
+        selectedOptionId: option.id,
+        newValue: restored.savedFormData.newValue || '',
+        file: null,
+        fileName: restored.savedFormData.fileName,
+        fileSizeText: restored.savedFormData.fileSizeText,
+        addressDetails: restored.savedFormData.addressDetails,
+        bankDetails: restored.savedFormData.bankDetails,
+        signatoryDetails: restored.savedFormData.signatoryDetails,
+        contactDetails: restored.savedFormData.contactDetails,
+      })
+      setIsReviewing(Boolean(restored.isReviewing))
+    } else if (formData?.selectedOptionId === option.id) {
+      // Re-selecting the option worked on in the active session: preserve data
+    } else {
+      // Any other service: start fresh from starting
+      setFormData(null)
+      setIsReviewing(false)
+    }
+    setSelectedOption(option)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   const handleFormChange = (data: Partial<GSTAmendmentFormData>) => {
     setFormData((prev) => ({
       ...prev,
       ...data,
+      selectedOptionId: selectedOption?.id,
       newValue: data.newValue ?? prev?.newValue ?? '',
       file: data.file !== undefined ? data.file : (prev?.file ?? null),
       fileName: data.fileName || data.file?.name || prev?.fileName,
@@ -154,6 +180,7 @@ export const useGSTAmendmentFlow = () => {
       setFormData((prev) => ({
         ...prev,
         ...data,
+        selectedOptionId: selectedOption?.id,
         newValue: data.newValue ?? prev?.newValue ?? '',
         file: data.file !== undefined ? data.file : (prev?.file ?? null),
         fileName: data.fileName || data.file?.name || prev?.fileName,
@@ -233,8 +260,10 @@ export const useGSTAmendmentFlow = () => {
     isReviewing,
     setIsReviewing,
     isEditMode,
+    handleSelectOption,
     /** Leaves edit mode and shows the review again (Back on an edit form) */
     returnToReview: reviewEdit.finishEdit,
+    cancelEdit: reviewEdit.cancelEdit,
     isSubmitting,
     submittedRecord,
     isModalOpen: draft.isDraftModalOpen,
@@ -245,6 +274,7 @@ export const useGSTAmendmentFlow = () => {
     handleDetailFormSubmit,
     handleEdit,
     handleReviewBack,
+    handleFormBack,
     handleFormChange,
     handleFormSaveDraft,
     handleFinalSubmit,

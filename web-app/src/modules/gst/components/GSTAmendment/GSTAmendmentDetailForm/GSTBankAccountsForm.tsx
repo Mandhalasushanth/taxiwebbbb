@@ -133,6 +133,35 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
     })
   }
 
+  const handleBackClick = () => {
+    const hasEnteredData = Boolean(
+      bankName.trim() ||
+      accountNumber.trim() ||
+      confirmAccountNumber.trim() ||
+      ifscCode.trim() ||
+      accountType ||
+      selectedFile ||
+      effectiveFileName
+    )
+    if (hasEnteredData && onSaveDraft) {
+      const formattedNewValue = `${bankName.trim()} · A/C ${accountNumber.trim()} · ${ifscCode.toUpperCase().trim()} (${accountType})`
+      onSaveDraft({
+        newValue: formattedNewValue,
+        file: selectedFile,
+        fileName: effectiveFileName,
+        fileSizeText: initialFileSize,
+        bankDetails: {
+          bankName: bankName.trim(),
+          accountNumber: accountNumber.trim(),
+          ifscCode: ifscCode.toUpperCase().trim(),
+          accountType,
+        },
+      })
+    } else {
+      onBack()
+    }
+  }
+
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
   const proofs = [
@@ -383,7 +412,7 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
         <div className="gst-amend-detail-actions-row">
           <button
             type="button"
-            onClick={onBack}
+            onClick={handleBackClick}
             className="gst-amend-back-pill-btn"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
