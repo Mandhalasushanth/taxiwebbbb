@@ -31,7 +31,7 @@ import './MachineryLoan.css'
 
 export const MachineryLoan: React.FC = () => {
   const navigate = useNavigate()
-  const customer = useMemo(loadVerifiedCustomer, [])
+  const customer = useMemo(() => loadVerifiedCustomer(), [])
 
   const flow = useLoanStepFlow<MachineryLoanData>({
     loanType: MACHINERY_LOAN_TYPE,

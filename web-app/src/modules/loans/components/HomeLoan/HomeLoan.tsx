@@ -27,7 +27,7 @@ import './hlForm.css'
 import './HomeLoan.css'
 
 export const HomeLoan: React.FC = () => {
-  const customer = useMemo(loadVerifiedCustomer, [])
+  const customer = useMemo(() => loadVerifiedCustomer(), [])
 
   const flow = useLoanStepFlow<HomeLoanData>({
     loanType: HOME_LOAN_TYPE,

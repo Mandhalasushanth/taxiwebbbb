@@ -27,7 +27,7 @@ import './propForm.css'
 import './PropertyLoan.css'
 
 export const PropertyLoan: React.FC = () => {
-  const customer = useMemo(loadVerifiedCustomer, [])
+  const customer = useMemo(() => loadVerifiedCustomer(), [])
 
   const flow = useLoanStepFlow<PropertyLoanData>({
     loanType: PROPERTY_LOAN_TYPE,

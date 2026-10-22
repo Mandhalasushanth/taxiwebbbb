@@ -35,7 +35,7 @@ import './PersonalLoan.css'
  * Step 5: Submit / Application Received
  */
 export const PersonalLoan: React.FC = () => {
-  const customer = useMemo(loadVerifiedCustomer, [])
+  const customer = useMemo(() => loadVerifiedCustomer(), [])
 
   const flow = useLoanStepFlow<PersonalLoanFormData>({
     loanType: PERSONAL_LOAN_TYPE,
