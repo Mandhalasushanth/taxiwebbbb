@@ -2,7 +2,7 @@ import { SaveDraftButton } from '@shared/saveDraft'
 import { UpdateAndReviewButton } from '@shared/edit'
 import { GST_FILE_MESSAGES } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
-import React, { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
+import React, { useState, type ChangeEvent, type FormEvent } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
 import GSTAmendmentAddressFields from './GSTAmendmentAddressFields'
@@ -80,7 +80,9 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
-  useEffect(() => {
+  const [prevDetails, setPrevDetails] = useState(initialDetails)
+  if (prevDetails !== initialDetails) {
+    setPrevDetails(initialDetails)
     if (initialDetails) {
       if (initialDetails.address !== undefined) setAddress(initialDetails.address)
       if (initialDetails.city !== undefined) setCity(initialDetails.city)
@@ -89,14 +91,16 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
       if (initialDetails.pinCode !== undefined) setPinCode(initialDetails.pinCode)
       if (initialDetails.natureOfPremises !== undefined) setNatureOfPremises(initialDetails.natureOfPremises)
     }
-  }, [initialDetails])
+  }
 
-  useEffect(() => {
+  const [prevInitialFile, setPrevInitialFile] = useState(initialFile)
+  if (prevInitialFile !== initialFile) {
+    setPrevInitialFile(initialFile)
     if (initialFile !== undefined) {
       setSelectedFile(initialFile)
       if (initialFile) setRemovedInitialFile(false)
     }
-  }, [initialFile])
+  }
 
   const effectiveFileName = !removedInitialFile ? (selectedFile?.name || initialFileName) : selectedFile?.name
 

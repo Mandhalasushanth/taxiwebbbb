@@ -2,7 +2,7 @@ import { SaveDraftButton } from '@shared/saveDraft'
 import { UpdateAndReviewButton } from '@shared/edit'
 import { GST_FILE_MESSAGES } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
-import React, { useState, useEffect, type FormEvent } from 'react'
+import React, { useState, type FormEvent } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
 import { lookupSampleBankByIfsc } from '@shared/services'
@@ -71,7 +71,9 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
   const [removedInitialFile, setRemovedInitialFile] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  useEffect(() => {
+  const [prevBankDetails, setPrevBankDetails] = useState(initialBankDetails)
+  if (prevBankDetails !== initialBankDetails) {
+    setPrevBankDetails(initialBankDetails)
     if (initialBankDetails) {
       if (initialBankDetails.bankName !== undefined) setBankName(initialBankDetails.bankName)
       if (initialBankDetails.accountNumber !== undefined) {
@@ -81,14 +83,16 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
       if (initialBankDetails.ifscCode !== undefined) setIfscCode(initialBankDetails.ifscCode)
       if (initialBankDetails.accountType !== undefined) setAccountType(initialBankDetails.accountType)
     }
-  }, [initialBankDetails])
+  }
 
-  useEffect(() => {
+  const [prevInitialFile, setPrevInitialFile] = useState(initialFile)
+  if (prevInitialFile !== initialFile) {
+    setPrevInitialFile(initialFile)
     if (initialFile !== undefined) {
       setSelectedFile(initialFile)
       if (initialFile) setRemovedInitialFile(false)
     }
-  }, [initialFile])
+  }
 
   const effectiveFileName = !removedInitialFile ? (selectedFile?.name || initialFileName) : selectedFile?.name
 

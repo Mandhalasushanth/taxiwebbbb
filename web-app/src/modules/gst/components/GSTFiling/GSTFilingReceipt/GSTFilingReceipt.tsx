@@ -25,6 +25,10 @@ export const GSTFilingReceipt = ({ details, onBack }: GSTFilingReceiptProps) => 
   const baseFee = Math.round(details.amount / 1.18)
   const cgst = Math.round(baseFee * 0.09)
   const sgst = details.amount - baseFee - cgst
+  const defaultDateText = useMemo(
+    () => new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
+    []
+  )
 
   return (
     <div className="gst-receipt-wrapper">
@@ -69,7 +73,7 @@ export const GSTFilingReceipt = ({ details, onBack }: GSTFilingReceiptProps) => 
                 <div className="gst-receipt-info-row">
                   <span className="gst-receipt-info-k">Date:</span>
                   <span className="gst-receipt-info-v">
-                    {details.dateText || new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date())}
+                    {details.dateText || defaultDateText}
                   </span>
                 </div>
                 <div className="gst-receipt-info-row">

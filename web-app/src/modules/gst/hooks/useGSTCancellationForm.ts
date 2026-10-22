@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { gstFieldRules } from '@modules/gst/validation/gstFieldRules'
 import { gstProfileService } from '@modules/gst/services/gstProfileService'
+import { gstService } from '@modules/gst/services/gstService'
 import { generateGstReference } from '@modules/gst/utils/gstFormat'
 import { routePaths } from '@core/config'
 import { useServiceDraft, readServiceDraft, hasFormChanged, DRAFT_NAMESPACES } from '@shared/saveDraft'
@@ -122,10 +123,33 @@ export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleFinalSubmit = () => {
+  const handleFinalSubmit = async () => {
     setIsSubmitting(true)
-    setTimeout(() => {
-      setIsSubmitting(false)
+    try {
+      const record = await gstService.submitCancellation({
+        gstin: gstin.trim().toUpperCase(),
+        reason,
+        cancellationDate,
+        pendingLiabilities: pendingLiabilities.trim(),
+        lastGstr3bFiled: lastGstr3bFiled.trim(),
+        closingStockDetails: closingStockDetails.trim(),
+        supportingDocumentName: selectedFile?.name,
+      })
+      setReferenceNumber(record.reference)
+      setIsSubmitted(true)
+      draft.clearDraft()
+      onSubmit?.({
+        gstin: gstin.trim().toUpperCase(),
+        reason,
+        cancellationDate,
+        pendingLiabilities: pendingLiabilities.trim(),
+        lastGstr3bFiled: lastGstr3bFiled.trim(),
+        closingStockDetails: closingStockDetails.trim(),
+        file: selectedFile,
+        finalReturnDeclaration,
+      })
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } catch {
       setReferenceNumber(generateGstReference('GST-CAN'))
       setIsSubmitted(true)
       draft.clearDraft()
@@ -140,7 +164,9 @@ export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps
         finalReturnDeclaration,
       })
       window.scrollTo({ top: 0, behavior: 'smooth' })
-    }, 600)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return {

@@ -6,7 +6,7 @@ export interface CancellationStepItem {
   label: string
 }
 
-export const CANCELLATION_STEPS: CancellationStepItem[] = [
+const CANCELLATION_STEPS: CancellationStepItem[] = [
   { id: 1, label: 'Cancellation Details' },
   { id: 2, label: 'Review & Submit' },
 ]

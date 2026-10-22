@@ -123,7 +123,7 @@ const getGstIconColors = (type: DocumentIconType): { bg: string; color: string }
   }
 }
 
-export const GST_FILING_UPLOAD_RULE: UploadRule = {
+const GST_FILING_UPLOAD_RULE: UploadRule = {
   kinds: ['pdf', 'xlsx', 'xls', 'jpeg', 'png'],
   maxBytes: 10 * 1024 * 1024, // 10 MB limit
   label: 'PDF, Excel, JPG or PNG',

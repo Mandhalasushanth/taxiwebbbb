@@ -24,15 +24,16 @@ const previewKindOf = (file: File): PreviewKind => {
 const useObjectUrl = (file?: File): string | null => {
   const [url, setUrl] = useState<string | null>(null)
   useEffect(() => {
-    if (!file) {
-      setUrl(null)
-      return undefined
-    }
+    if (!file) return undefined
     const objectUrl = URL.createObjectURL(file)
+    // oxlint-disable-next-line react/set-state-in-effect
     setUrl(objectUrl)
-    return () => URL.revokeObjectURL(objectUrl)
+    return () => {
+      URL.revokeObjectURL(objectUrl)
+      setUrl(null)
+    }
   }, [file])
-  return url
+  return file ? url : null
 }
 
 const PreviewUnavailable = ({ message }: { message: string }) => (

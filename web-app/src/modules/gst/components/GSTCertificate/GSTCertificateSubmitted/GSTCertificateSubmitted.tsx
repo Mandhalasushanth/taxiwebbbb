@@ -24,11 +24,18 @@ export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = (
   const pushToast = useAppStore((state) => state.pushToast)
 
   const handleShareOrDownload = () => {
-    // Generate simulated download
     const filename = gstin ? `GST-Certificate-${gstin}.pdf` : 'GST-Certificate.pdf'
+    const certificateText = `GOVERNMENT OF INDIA\nREGISTRATION CERTIFICATE (Form GST REG-06)\n\nGSTIN: ${gstin || '—'}\nForm: Form GST REG-06\nStatus: Active & Verified\nDate of Issue: ${new Date().toLocaleDateString('en-IN')}\n\nThis is an official computer-generated Registration Certificate issued under the Goods and Services Tax Act.`
+    const blob = new Blob([certificateText], { type: 'application/pdf' })
+    const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
-    link.href = '#download-cert'
+    link.href = url
     link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+
     pushToast(`Certificate ${filename} saved successfully!`, 'success')
 
     if (navigator.share) {
@@ -36,7 +43,9 @@ export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = (
         title: 'GST Registration Certificate (REG-06)',
         text: gstin ? `GST Certificate for ${gstin}` : 'GST Certificate',
         url: window.location.href,
-      }).catch(() => {})
+      }).catch(() => {
+        // Share dismissed or unsupported
+      })
     }
   }
 

@@ -2,7 +2,7 @@ import { SaveDraftButton } from '@shared/saveDraft'
 import { UpdateAndReviewButton } from '@shared/edit'
 import { GST_FILE_MESSAGES } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
-import React, { useState, useEffect, type FormEvent } from 'react'
+import React, { useState, type FormEvent } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
 import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
@@ -65,7 +65,9 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
   const [removedInitialFile, setRemovedInitialFile] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  useEffect(() => {
+  const [prevContactDetails, setPrevContactDetails] = useState(initialContactDetails)
+  if (prevContactDetails !== initialContactDetails) {
+    setPrevContactDetails(initialContactDetails)
     if (initialContactDetails) {
       if (initialContactDetails.mobile !== undefined) {
         setMobileNumber(initialContactDetails.mobile.replace(/^\+91\s*/, ''))
@@ -74,14 +76,16 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
         setEmailAddress(initialContactDetails.email)
       }
     }
-  }, [initialContactDetails])
+  }
 
-  useEffect(() => {
+  const [prevInitialFile, setPrevInitialFile] = useState(initialFile)
+  if (prevInitialFile !== initialFile) {
+    setPrevInitialFile(initialFile)
     if (initialFile !== undefined) {
       setSelectedFile(initialFile)
       if (initialFile) setRemovedInitialFile(false)
     }
-  }, [initialFile])
+  }
 
   const effectiveFileName = !removedInitialFile ? (selectedFile?.name || initialFileName) : selectedFile?.name
 

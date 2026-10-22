@@ -2,7 +2,7 @@ import { SaveDraftButton } from '@shared/saveDraft'
 import { UpdateAndReviewButton } from '@shared/edit'
 import { GST_FILE_MESSAGES } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
-import React, { useState, useEffect, useRef, type FormEvent } from 'react'
+import React, { useState, useRef, type FormEvent } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
 import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
@@ -70,7 +70,9 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
   const [removedInitialFile, setRemovedInitialFile] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  useEffect(() => {
+  const [prevSignatoryDetails, setPrevSignatoryDetails] = useState(initialSignatoryDetails)
+  if (prevSignatoryDetails !== initialSignatoryDetails) {
+    setPrevSignatoryDetails(initialSignatoryDetails)
     if (initialSignatoryDetails) {
       if (initialSignatoryDetails.name !== undefined) setName(initialSignatoryDetails.name)
       if (initialSignatoryDetails.designation !== undefined) setDesignation(initialSignatoryDetails.designation)
@@ -79,14 +81,16 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
       if (initialSignatoryDetails.dob !== undefined) setDob(initialSignatoryDetails.dob)
       if (initialSignatoryDetails.email !== undefined) setEmail(initialSignatoryDetails.email)
     }
-  }, [initialSignatoryDetails])
+  }
 
-  useEffect(() => {
+  const [prevInitialFile, setPrevInitialFile] = useState(initialFile)
+  if (prevInitialFile !== initialFile) {
+    setPrevInitialFile(initialFile)
     if (initialFile !== undefined) {
       setSelectedFile(initialFile)
       if (initialFile) setRemovedInitialFile(false)
     }
-  }, [initialFile])
+  }
 
   const effectiveFileName = !removedInitialFile ? (selectedFile?.name || initialFileName) : selectedFile?.name
 

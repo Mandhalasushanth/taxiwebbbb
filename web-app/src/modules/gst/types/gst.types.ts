@@ -113,6 +113,29 @@ export interface GstCertificateRecord extends Timestamped {
   downloadUrl?: string
 }
 
+export interface GstCancellationPayload {
+  gstin: string
+  reason: string
+  cancellationDate: string
+  closingStockDetails?: string
+  pendingLiabilities?: string
+  lastGstr3bFiled?: string
+  supportingDocumentName?: string
+}
+
+export interface GstCancellationRecord extends Timestamped {
+  id: string
+  reference: string
+  gstin: string
+  reason: string
+  cancellationDate: string
+  status: ApplicationStatus
+  closingStockDetails?: string
+  pendingLiabilities?: string
+  lastGstr3bFiled?: string
+  supportingDocument?: string
+}
+
 export interface PaymentResult {
   transactionId: string
   receiptNumber: string

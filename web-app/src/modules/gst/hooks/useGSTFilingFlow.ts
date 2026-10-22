@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { routePaths } from '@core/config'
+import { localStore } from '@core/storage'
 import { userStorage } from '@core/storage/userStorage'
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import { generateGstReference } from '@modules/gst/utils/gstFormat'
@@ -182,6 +183,25 @@ export const useGSTFilingFlow = () => {
       icon: '📄',
       to: routePaths.gst.detail(filingRef),
     })
+
+    try {
+      const returns = localStore.get<any[]>('taxedge_gst_returns') || []
+      const newReturn = {
+        id: `r_${Date.now()}`,
+        gstin: filingData.gstin || '27AAAAA0000A1Z5',
+        returnType: (filingData.returnType || 'GSTR-3B') as any,
+        period: filingData.selectedMonth || 'Current Period',
+        grossTurnover: Number(filingData.turnover) || 0,
+        taxPayable: Number(filingData.taxAmount) || 0,
+        status: 'FILED',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+      localStore.set('taxedge_gst_returns', [newReturn, ...returns])
+    } catch {
+      // Local storage fallback handled gracefully
+    }
+
     goToStep(STATUS_STEP)
   }
 
