@@ -132,6 +132,11 @@
   gap: 0.375rem;
 }
 
+.gst-amend-requested-edit-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
 .gst-amend-requested-edit-btn:hover {
   background-color: var(--palette-orange-50);
   border-color: var(--palette-orange-600);

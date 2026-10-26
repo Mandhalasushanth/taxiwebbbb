@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { routePaths } from '@core/config'
+import { localStore } from '@core/storage'
 import { userStorage } from '@core/storage/userStorage'
 import { useAppStore } from '@store/index'
 import { formatRupees, generateGstReference } from '@modules/gst/utils/gstFormat'
@@ -214,6 +215,30 @@ export const useGstRegistrationState = () => {
       icon: '📄',
       to: routePaths.applicationTrack(appCode),
     })
+
+    try {
+      const apps = localStore.get<any[]>('taxedge_gst_applications') || []
+      const newApp = {
+        id: `gst_${Date.now()}`,
+        reference: appCode,
+        legalName: applicant,
+        businessType: businessData.businessType || 'proprietorship',
+        state: businessData.state || 'India',
+        pan: businessData.pan || '',
+        status: 'SUBMITTED',
+        timeline: [
+          { id: 't1', label: 'Application submitted', occurredAt: new Date().toISOString(), isComplete: true },
+          { id: 't2', label: 'ARN generated', occurredAt: new Date().toISOString(), isComplete: true },
+          { id: 't3', label: 'Field verification', occurredAt: '', isComplete: false },
+          { id: 't4', label: 'GSTIN issued', occurredAt: '', isComplete: false },
+        ],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+      localStore.set('taxedge_gst_applications', [newApp, ...apps])
+    } catch {
+      // Local storage fallback handled gracefully
+    }
   }
 
   const submitApplication = () => {

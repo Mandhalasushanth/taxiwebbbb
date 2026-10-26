@@ -16,6 +16,7 @@ import type { DocPreviewState } from '@modules/gst/types/gstDocuments.types'
 import { StepActionBar } from '@shared/components'
 import './GSTStepReview.css'
 import { errorTracker } from '@core/errors'
+import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
 
 export const GSTStepReview: FC<GSTStepReviewProps> = ({
   businessData,
@@ -72,44 +73,13 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
       }
     }
     try {
-      const htmlContent = `<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>${title} - ${fileName || title}</title>
-    <style>
-      body { font-family: system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #f8fafc; color: #1e293b; }
-      .card { background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); text-align: center; max-width: 480px; width: 90%; border: 1px solid #e2e8f0; }
-      .icon-circle { width: 64px; height: 64px; margin: 0 auto 1.25rem; background: #eff6ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2563eb; }
-      .icon { width: 32px; height: 32px; }
-      h2 { margin: 0 0 0.5rem; font-size: 1.35rem; font-weight: 600; color: #0f172a; }
-      p { margin: 0; color: #64748b; font-size: 0.95rem; word-break: break-all; }
-      .badge { display: inline-flex; align-items: center; gap: 6px; margin-top: 1.25rem; padding: 0.4rem 1rem; background: #ecfdf5; color: #059669; border-radius: 9999px; font-weight: 500; font-size: 0.85rem; border: 1px solid #a7f3d0; }
-      .badge-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; }
-      .note { margin-top: 1.5rem; font-size: 0.85rem; color: #94a3b8; line-height: 1.5; }
-    </style>
-  </head>
-  <body>
-    <div class="card">
-      <div class="icon-circle">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-          <polyline points="14 2 14 8 20 8"></polyline>
-        </svg>
-      </div>
-      <h2>${title}</h2>
-      <p>${fileName || 'Uploaded Document'}</p>
-      <div class="badge"><span class="badge-dot"></span>Uploaded & Verified</div>
-      <p class="note">This document is securely attached to your application.</p>
-    </div>
-  </body>
-</html>`;
-      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' })
-      const previewUrl = URL.createObjectURL(blob)
-      window.open(previewUrl, '_blank')
+      openGstDocumentPreview({
+        title,
+        fileName,
+      })
       return
-    } catch {
-      // Fallback
+    } catch (e) {
+      errorTracker.captureException(e, { tags: { area: 'gst-review-preview-fallback' } })
     }
   }
 

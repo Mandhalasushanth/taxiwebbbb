@@ -19,7 +19,7 @@ export const Documents: React.FC<HomeLoanStepProps> = ({
   onChange,
   errors = {},
 }) => {
-  const { requiredDocs, optionalDocs } = useMemo(getHomeLoanDocumentSections, [])
+  const { requiredDocs, optionalDocs } = useMemo(() => getHomeLoanDocumentSections(), [])
   const uploadedDocs = data.uploadedDocs || {}
 
   const handleUpload = (id: string, file: File) => {

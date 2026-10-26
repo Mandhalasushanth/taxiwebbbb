@@ -33,7 +33,7 @@ import './BusinessWorkingCapital.css'
  * come from the shared loan step flow.
  */
 export const BusinessWorkingCapital: React.FC = () => {
-  const customer = useMemo(loadVerifiedCustomer, [])
+  const customer = useMemo(() => loadVerifiedCustomer(), [])
   const flow = useLoanStepFlow<BusinessWorkingCapitalFormData>({
     loanType: BWC_LOAN_TYPE,
     loanTitle: BWC_TITLE,

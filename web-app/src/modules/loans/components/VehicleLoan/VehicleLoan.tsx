@@ -37,7 +37,7 @@ const toTenureMonths = (tenure?: string): number => {
 
 export const VehicleLoan: React.FC = () => {
   const navigate = useNavigate()
-  const customer = useMemo(loadVerifiedCustomer, [])
+  const customer = useMemo(() => loadVerifiedCustomer(), [])
 
   const flow = useLoanStepFlow<VehicleLoanData>({
     loanType: VEHICLE_LOAN_TYPE,

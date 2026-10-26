@@ -87,12 +87,7 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
   )
   const hasMissingDocs = !isNilReturn && (missingDocs.length > 0 || Object.keys(effectiveUploadedFiles).length === 0)
 
-  // Clear submit error once missing documents are resolved
-  React.useEffect(() => {
-    if (!hasMissingDocs && submitError) {
-      setSubmitError(null)
-    }
-  }, [hasMissingDocs, submitError])
+  const displayedError = hasMissingDocs ? submitError : null
 
   const handleSubmit = () => {
     if (hasMissingDocs) {
@@ -179,7 +174,7 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
       </div>
 
       {/* Red Warning Banner when Submit is clicked without uploading required documents */}
-      <GSTStepErrorBanner message={submitError} />
+      <GSTStepErrorBanner message={displayedError} />
 
       {/* Step Navigation Bar */}
       <StepActionBar

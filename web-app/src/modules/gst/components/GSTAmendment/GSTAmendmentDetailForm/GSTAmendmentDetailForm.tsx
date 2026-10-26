@@ -1,7 +1,7 @@
 import { SaveDraftButton } from '@shared/saveDraft'
 import { UpdateAndReviewButton } from '@shared/edit'
 import { GST_FILE_MESSAGES, formatGstFileSize } from '@modules/gst/utils/gstFile'
-import React, { useState, useEffect, type FormEvent } from 'react'
+import React, { useState, type FormEvent } from 'react'
 import { detectGstFieldKind, gstRuleForField } from '@modules/gst/validation/gstFieldRules'
 import { gstInputForKind } from '@modules/gst/utils/gstInputFormatters'
 import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
@@ -52,16 +52,20 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
   const [errors, setErrors] = useState<{ newValue?: string; file?: string }>({})
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
-  useEffect(() => {
+  const [prevInitialValue, setPrevInitialValue] = useState(initialValue)
+  if (prevInitialValue !== initialValue) {
+    setPrevInitialValue(initialValue)
     if (initialValue !== undefined) setNewValue(initialValue)
-  }, [initialValue])
+  }
 
-  useEffect(() => {
+  const [prevInitialFile, setPrevInitialFile] = useState(initialFile)
+  if (prevInitialFile !== initialFile) {
+    setPrevInitialFile(initialFile)
     if (initialFile !== undefined) {
       setSelectedFile(initialFile)
       if (initialFile) setRemovedInitialFile(false)
     }
-  }, [initialFile])
+  }
 
   const effectiveFileName = !removedInitialFile ? (selectedFile?.name || initialFileName) : selectedFile?.name
 

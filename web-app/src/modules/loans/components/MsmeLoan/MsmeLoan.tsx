@@ -39,7 +39,7 @@ import './MsmeLoan.css'
  */
 export const MsmeLoan: React.FC = () => {
   const navigate = useNavigate()
-  const customer = useMemo(loadVerifiedCustomer, [])
+  const customer = useMemo(() => loadVerifiedCustomer(), [])
 
   const flow = useLoanStepFlow<MsmeLoanData>({
     loanType: MSME_LOAN_TYPE,
