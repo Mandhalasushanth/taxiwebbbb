@@ -78,9 +78,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const [errors, setErrors] = useState<RegistrationFormErrors>({})
   const [touched, setTouched] = useState<TouchedMap>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
-  const isFormValid = checkIsFormValid(values)
+  const isFormValid = checkIsFormValid({ ...values, district: values.district || values.city })
 
   // Persist every change so going back to "Customer Type" and continuing keeps the data
   useEffect(() => {
@@ -107,7 +106,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     const next = { ...values, dob: formattedDate }
     setValues(next)
     if (touched.dob) setErrors((prev) => ({ ...prev, dob: validateField('dob', next) }))
-    setIsCalendarOpen(false)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -115,7 +113,11 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     if (key === 'mobile' && isMobileVerified) return
 
     const formatted = key === 'mobile' ? formatMobile(e.target.value) : formatRegistrationField(key, e.target.value, values)
-    const nextValues = { ...values, [key]: formatted }
+    const nextValues = {
+      ...values,
+      [key]: formatted,
+      ...(key === 'city' ? { district: formatted } : {}),
+    }
     setValues(nextValues)
 
     if (key === 'aadhaar') {
@@ -140,11 +142,16 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     setTouched((prev) => ({ ...prev, agreeTerms: true }))
   }
 
-  const validateAll = (): RegistrationFormErrors =>
-    (Object.keys(values) as FieldKey[]).reduce<RegistrationFormErrors>((acc, key) => {
-      const err = validateWithUniqueness(key, values)
+  const validateAll = (): RegistrationFormErrors => {
+    const effectiveValues = {
+      ...values,
+      district: values.district || values.city,
+    }
+    return (Object.keys(values) as FieldKey[]).reduce<RegistrationFormErrors>((acc, key) => {
+      const err = validateWithUniqueness(key, effectiveValues)
       return err ? { ...acc, [key]: err } : acc
     }, {})
+  }
 
   /** Moves focus to the first field (in page order) that has an error, e.g. the Terms checkbox. */
   const focusFirstInvalidField = (fieldErrors: RegistrationFormErrors) => {
@@ -168,7 +175,11 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     setErrors((prev) => ({ ...prev, form: undefined }))
 
     try {
-      const registeredUser = buildRegisteredUser(values, verifiedMobile, user)
+      const finalValues = {
+        ...values,
+        district: values.district || values.city,
+      }
+      const registeredUser = buildRegisteredUser(finalValues, verifiedMobile, user)
 
       await authFlowService.saveRegistrationStep1({
         mobile: verifiedMobile,
@@ -225,10 +236,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         }}
         onChange={handleChange}
         onBlur={handleBlur}
-        onOpenCalendar={() => setIsCalendarOpen(true)}
-        isCalendarOpen={isCalendarOpen}
-        onToggleCalendar={() => setIsCalendarOpen((prev) => !prev)}
-        onCloseCalendar={() => setIsCalendarOpen(false)}
         onApplyDate={handleApplyDate}
       />
       <RegistrationIdentityFields
@@ -295,7 +302,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         }}
         isFormValid={isFormValid}
         isSubmitting={isSubmitting}
-        submitLabel="Complete Registration"
+        submitLabel="Create Account"
         onChange={handleChange}
         onBlur={handleBlur}
         onToggleTerms={handleToggleTerms}

@@ -8,6 +8,10 @@ export const CONSTITUTION_OF_BUSINESS_OPTIONS = [
   "Public Limited Company",
   "HUF",
   "Society / Trust / Club",
+  "AOP / BOI",
+  "Government Department",
+  "Foreign Company",
+  "One Person Company (OPC)",
 ];
 
 export const NATURE_OF_BUSINESS_OPTIONS = [

@@ -100,6 +100,8 @@ export const routePaths = {
   profile: '/profile',
   profilePersonal: '/profile/personal',
   profileKyc: '/profile/kyc',
+  profileSettings: '/profile/settings',
+  settings: '/settings',
   support: '/support',
   legal: {
     terms: '/legal/terms',

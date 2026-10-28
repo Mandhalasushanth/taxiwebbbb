@@ -35,7 +35,7 @@ export const RegistrationSecurityFields: React.FC<RegistrationSecurityFieldsProp
   errors,
   isFormValid,
   isSubmitting,
-  submitLabel = 'Complete Registration',
+  submitLabel = 'Create Account',
   onChange,
   onBlur,
   onToggleTerms,
@@ -70,7 +70,7 @@ export const RegistrationSecurityFields: React.FC<RegistrationSecurityFieldsProp
       <div className="reg-security-fields__row">
         <div className="reg-field">
           <label className="reg-field__label" htmlFor="reg-password">
-            Create Passcode <span className="reg-field__required">*</span>
+            Passcode <span className="reg-field__required">*</span>
           </label>
           <div className={`reg-field__control ${errors.password ? 'reg-field__control--error' : ''}`}>
             <span className="reg-field__icon">
@@ -84,7 +84,7 @@ export const RegistrationSecurityFields: React.FC<RegistrationSecurityFieldsProp
               pattern="[0-9]*"
               maxLength={PASSCODE_LENGTH}
               className="reg-field__input"
-              placeholder={`Set your ${PASSCODE_LENGTH}-digit passcode`}
+              placeholder="Passcode"
               value={values.password}
               onChange={onChange}
               onBlur={onBlur}
@@ -119,7 +119,7 @@ export const RegistrationSecurityFields: React.FC<RegistrationSecurityFieldsProp
               pattern="[0-9]*"
               maxLength={PASSCODE_LENGTH}
               className="reg-field__input"
-              placeholder={`Confirm ${PASSCODE_LENGTH}-digit passcode`}
+              placeholder="Confirm Passcode"
               value={values.confirmPassword}
               onChange={onChange}
               onBlur={onBlur}

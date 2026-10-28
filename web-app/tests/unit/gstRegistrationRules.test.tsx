@@ -119,6 +119,11 @@ describe('BUG-GST-005: constitution vs PAN type', () => {
     expect(validateBusinessPan('AAAFT1234A', 'Partnership Firm')).toBeUndefined()
     expect(validateBusinessPan('AAAHK1234A', 'HUF')).toBeUndefined()
     expect(validateBusinessPan('AAATA1234A', 'Society / Trust / Club')).toBeUndefined()
+    expect(validateBusinessPan('AAAAA1234A', 'AOP / BOI')).toBeUndefined()
+    expect(validateBusinessPan('AAABK1234A', 'AOP/BOI')).toBeUndefined()
+    expect(validateBusinessPan('AAAGK1234A', 'Government Department')).toBeUndefined()
+    expect(validateBusinessPan('AAACK1234A', 'Foreign Company')).toBeUndefined()
+    expect(validateBusinessPan('AAACK1234A', 'One Person Company (OPC)')).toBeUndefined()
     expect(validateBusinessPan('ABCPK1234F', 'Proprietorship')).toBeUndefined()
   })
   it('requires the signatory PAN to be an individual PAN', () => {

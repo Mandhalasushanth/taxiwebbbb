@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import type { AuthUser } from '@core/auth'
 import { FileInput, PHOTO_UPLOAD_RULE } from '@shared/upload'
+import { isPlaceholderCustomerName, compactRupees, getCustomerId, getCustomerDisplayName } from '../../utils/profileProgress'
 import './ProfileHeader.css'
 
 export interface ProfileHeaderProps {
@@ -20,11 +21,39 @@ const EditIcon = () => (
 
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   user,
+  activeAppsCount = 0,
+  completedAppsCount = 0,
+  totalPaidAmount = 0,
   onEditAvatar
 }) => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (!isDropdownOpen) return
+
+    const handleDocumentClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      if (!target.closest('.profile-hero__avatar-wrapper')) {
+        setIsDropdownOpen(false)
+      }
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener('click', handleDocumentClick)
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('click', handleDocumentClick)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isDropdownOpen])
 
   const handleEditClick = () => {
     setIsDropdownOpen((prev) => !prev)
@@ -46,10 +75,24 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     setAvatarUrl(URL.createObjectURL(file))
   }
 
+  const isProfileComplete = Boolean(
+    user?.isProfileComplete &&
+    user?.fullName &&
+    !isPlaceholderCustomerName(user.fullName)
+  )
 
-  const customerId = user?.id?.replace('usr_', 'CI').toUpperCase() || 'CI000000'
-  const customerType = user?.customerType?.toUpperCase() || 'INDIVIDUAL'
-  const initials = user?.fullName?.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase() || 'U'
+  const kycVerified = Boolean(
+    isProfileComplete &&
+    user?.pan &&
+    user?.aadhaar
+  )
+
+  const customerId = getCustomerId(user)
+  const displayName = getCustomerDisplayName(user)
+  const customerType = user?.customerType ? user.customerType.toUpperCase() : 'INDIVIDUAL'
+  const initials = isProfileComplete && user?.fullName
+    ? user.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+    : 'U'
 
   return (
     <div className="profile-hero">
@@ -96,11 +139,22 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           </div>
 
           <div className="profile-hero__user-info">
-            <h2 className="profile-hero__name">{user?.fullName || 'Guest User'}</h2>
+            <h2 className="profile-hero__name">{displayName}</h2>
             <p className="profile-hero__id">Customer ID: {customerId}</p>
             <div className="profile-hero__badges">
-              <span className="profile-hero__badge profile-hero__badge--type">{customerType}</span>
-              <span className="profile-hero__badge profile-hero__badge--verified">KYC Verified ✓</span>
+              {isProfileComplete ? (
+                <>
+                  <span className="profile-hero__badge profile-hero__badge--type">{customerType}</span>
+                  <span className={`profile-hero__badge ${kycVerified ? 'profile-hero__badge--verified' : 'profile-hero__badge--pending'}`}>
+                    {kycVerified ? 'KYC Verified ✓' : 'KYC Pending'}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="profile-hero__badge profile-hero__badge--incomplete">Profile Incomplete</span>
+                  <span className="profile-hero__badge profile-hero__badge--pending">KYC Pending</span>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -115,6 +169,24 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           </svg>
         </div>
 
+      </div>
+
+      {/* Floating stats card matching Image 1 */}
+      <div className="profile-hero__stats-card">
+        <div className="profile-hero__stat-item">
+          <span className="profile-hero__stat-value">{activeAppsCount}</span>
+          <span className="profile-hero__stat-label">Active Apps</span>
+        </div>
+        <div className="profile-hero__stat-divider" />
+        <div className="profile-hero__stat-item">
+          <span className="profile-hero__stat-value profile-hero__stat-value--completed">{completedAppsCount}</span>
+          <span className="profile-hero__stat-label">Completed</span>
+        </div>
+        <div className="profile-hero__stat-divider" />
+        <div className="profile-hero__stat-item">
+          <span className="profile-hero__stat-value profile-hero__stat-value--amount">{compactRupees(totalPaidAmount)}</span>
+          <span className="profile-hero__stat-label">Total Paid</span>
+        </div>
       </div>
     </div>
   )

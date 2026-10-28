@@ -47,7 +47,6 @@ export const profileSectionsConfig: ProfileSectionData[] = [
     title: 'Services',
     items: [
       { id: 'apps', label: 'My Applications', to: routePaths.applications, icon: <IconFolder />, iconBgClass: 'profile-menu-item__icon-wrapper--amber' },
-      { id: 'docs', label: 'My Documents', to: routePaths.documents, icon: <IconDoc color="#3b82f6" />, iconBgClass: 'profile-menu-item__icon-wrapper--blue' },
       { id: 'payments', label: 'Payments & Invoices', to: routePaths.payments, icon: <IconCard />, iconBgClass: 'profile-menu-item__icon-wrapper--teal' },
       { id: 'notifications', label: 'Notifications', to: routePaths.notifications, icon: <IconBell />, iconBgClass: 'profile-menu-item__icon-wrapper--orange' },
     ]
@@ -55,7 +54,7 @@ export const profileSectionsConfig: ProfileSectionData[] = [
   {
     title: 'Preferences',
     items: [
-      { id: 'appearance', label: 'Appearance & Settings', to: routePaths.profile, icon: <IconPalette />, iconBgClass: 'profile-menu-item__icon-wrapper--orange' },
+      { id: 'appearance', label: 'Appearance & Settings', to: routePaths.profileSettings, icon: <IconPalette />, iconBgClass: 'profile-menu-item__icon-wrapper--orange' },
     ]
   },
   {

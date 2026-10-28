@@ -175,6 +175,42 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
     )
   }
 
+  if (path === routePaths.profileSettings || path === '/profile/settings' || path === '/settings') {
+    return (
+      <nav className="shell__breadcrumb" aria-label="Breadcrumb">
+        <Link to={routePaths.dashboard}>Home</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
+        <Link to={routePaths.profile}>Profile</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
+        <span className="shell__breadcrumb-current">Settings</span>
+      </nav>
+    )
+  }
+
+  if (path === routePaths.profilePersonal) {
+    return (
+      <nav className="shell__breadcrumb" aria-label="Breadcrumb">
+        <Link to={routePaths.dashboard}>Home</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
+        <Link to={routePaths.profile}>Profile</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
+        <span className="shell__breadcrumb-current">Personal Information</span>
+      </nav>
+    )
+  }
+
+  if (path === routePaths.profileKyc) {
+    return (
+      <nav className="shell__breadcrumb" aria-label="Breadcrumb">
+        <Link to={routePaths.dashboard}>Home</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
+        <Link to={routePaths.profile}>Profile</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
+        <span className="shell__breadcrumb-current">KYC Details</span>
+      </nav>
+    )
+  }
+
   if (path.startsWith('/applications')) {
     const isTracker = path.includes('/track') || path !== routePaths.applications
     return (

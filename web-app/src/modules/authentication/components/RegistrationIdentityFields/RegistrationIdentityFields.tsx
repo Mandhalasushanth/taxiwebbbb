@@ -4,7 +4,6 @@ import {
   IdCardIcon,
   DocumentIcon,
 } from '../RegistrationIcons/RegistrationIcons'
-import { RegistrationMobileField } from '../RegistrationMobileField/RegistrationMobileField'
 import './RegistrationIdentityFields.css'
 
 export interface RegistrationIdentityValues {
@@ -32,39 +31,40 @@ export interface RegistrationIdentityFieldsProps {
 export const RegistrationIdentityFields: React.FC<RegistrationIdentityFieldsProps> = ({
   values,
   errors,
-  isMobileVerified,
+  isMobileVerified: _isMobileVerified,
   onChange,
   onBlur,
 }) => {
   return (
     <div className="reg-identity-fields">
-      {/* Row 3: Father's / Spouse Name & PAN Number */}
-      <div className="reg-identity-fields__row">
-        <div className="reg-field">
-          <label className="reg-field__label" htmlFor="reg-fatherSpouseName">
-            Father's / Spouse Name
-          </label>
-          <div className={`reg-field__control ${errors.fatherSpouseName ? 'reg-field__control--error' : ''}`}>
-            <span className="reg-field__icon">
-              <UsersIcon />
-            </span>
-            <input
-              id="reg-fatherSpouseName"
-              name="fatherSpouseName"
-              type="text"
-              pattern="[a-zA-Z\s.'-]*"
-              className="reg-field__input"
-              placeholder="Enter Father's / Spouse Name"
-              value={values.fatherSpouseName}
-              onChange={onChange}
-              onBlur={onBlur}
-            />
-          </div>
-          {errors.fatherSpouseName && (
-            <p className="reg-field__error">{errors.fatherSpouseName}</p>
-          )}
+      {/* Father's / Spouse Name */}
+      <div className="reg-field">
+        <label className="reg-field__label" htmlFor="reg-fatherSpouseName">
+          Father's / Spouse Name <span className="reg-field__required">*</span>
+        </label>
+        <div className={`reg-field__control ${errors.fatherSpouseName ? 'reg-field__control--error' : ''}`}>
+          <span className="reg-field__icon">
+            <UsersIcon />
+          </span>
+          <input
+            id="reg-fatherSpouseName"
+            name="fatherSpouseName"
+            type="text"
+            pattern="[a-zA-Z\s.'-]*"
+            className="reg-field__input"
+            placeholder="Father's / Spouse Name"
+            value={values.fatherSpouseName}
+            onChange={onChange}
+            onBlur={onBlur}
+          />
         </div>
+        {errors.fatherSpouseName && (
+          <p className="reg-field__error">{errors.fatherSpouseName}</p>
+        )}
+      </div>
 
+      {/* Row: PAN Number & Aadhaar Number */}
+      <div className="reg-identity-fields__row">
         <div className="reg-field">
           <label className="reg-field__label" htmlFor="reg-pan">
             PAN Number <span className="reg-field__required">*</span>
@@ -88,10 +88,7 @@ export const RegistrationIdentityFields: React.FC<RegistrationIdentityFieldsProp
           </div>
           {errors.pan && <p className="reg-field__error">{errors.pan}</p>}
         </div>
-      </div>
 
-      {/* Row 4: Aadhaar Number & Mobile Number */}
-      <div className="reg-identity-fields__row">
         <div className="reg-field">
           <label className="reg-field__label" htmlFor="reg-aadhaar">
             Aadhaar Number <span className="reg-field__required">*</span>
@@ -115,15 +112,14 @@ export const RegistrationIdentityFields: React.FC<RegistrationIdentityFieldsProp
           </div>
           {errors.aadhaar && <p className="reg-field__error">{errors.aadhaar}</p>}
         </div>
-
-        <RegistrationMobileField
-          value={values.mobile}
-          error={errors.mobile}
-          isVerified={isMobileVerified}
-          onChange={onChange}
-          onBlur={onBlur}
-        />
       </div>
+
+      <input
+        id="reg-mobile"
+        name="mobile"
+        type="hidden"
+        value={values.mobile}
+      />
     </div>
   )
 }

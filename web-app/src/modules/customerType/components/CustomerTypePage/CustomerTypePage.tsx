@@ -49,8 +49,8 @@ export const CustomerTypePage = () => {
 
           {/* Heading & Subtitle */}
           <header className="customer-type-page__header">
-            <h1 className="customer-type-page__title">What describes you best?</h1>
-            <p className="customer-type-page__subtitle">Step 1 of 2 — Select entity type.</p>
+            <h1 className="customer-type-page__title">Select Account Type</h1>
+            <p className="customer-type-page__subtitle">Select your account or entity type to continue.</p>
           </header>
 
           {/* Customer Type Selection Cards List */}
@@ -65,7 +65,7 @@ export const CustomerTypePage = () => {
           {/* Bottom Action CTA */}
           <footer className="customer-type-page__footer">
             <CreateAccountButton
-              label="Continue to Registration →"
+              label="Continue"
               onClick={handleProceed}
               disabled={!selectedId}
             />
