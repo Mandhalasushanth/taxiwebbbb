@@ -1,50 +1,21 @@
 .profile-details-page {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 32px 24px;
-}
-
-.profile-details-page__header {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 32px;
-}
-
-.profile-details-page__back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: none;
-  border: none;
-  color: var(--secondary-text);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.2s;
-  width: fit-content;
-}
-
-.profile-details-page__back-btn svg {
-  width: 18px;
-  height: 18px;
-}
-
-.profile-details-page__back-btn:hover {
-  color: var(--palette-sky-500);
-}
-
-.profile-details-page__title {
+  width: 100%;
+  max-width: 100%;
   margin: 0;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--palette-slate-900);
-  letter-spacing: -0.02em;
+  padding: 24px clamp(16px, 3.5vw, 48px) 64px;
+  box-sizing: border-box;
 }
 
 .profile-details-page__content {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .profile-details-page {
+    padding: 16px 16px 48px;
+  }
 }

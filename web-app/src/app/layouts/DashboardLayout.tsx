@@ -9,6 +9,7 @@ import { useAuthStore, useNotificationStore } from '@store/index'
 import { navSections } from './navigation'
 import { useDashboardSummary } from '@modules/dashboard'
 import { DashboardBreadcrumb } from './DashboardBreadcrumb'
+import { getCustomerId, getCustomerDisplayName, isPlaceholderCustomerName } from '@modules/profile'
 import './DashboardLayout.css'
 
 const MenuIcon = () => (
@@ -88,7 +89,13 @@ export const DashboardLayout = () => {
     notifications: notificationsCount > 0 ? String(notificationsCount) : undefined,
   }
 
-  const customerCode = user ? `TE-CUS-${user.id.slice(-5).toUpperCase()}` : ''
+  const isProfileComplete = Boolean(
+    user?.isProfileComplete &&
+    user?.fullName &&
+    !isPlaceholderCustomerName(user.fullName)
+  )
+  const customerCode = getCustomerId(user)
+  const displayName = getCustomerDisplayName(user)
 
   return (
     <div className="shell">
@@ -180,10 +187,10 @@ export const DashboardLayout = () => {
         <div className="shell__sidebar-footer">
           <div className="shell__user">
             <span className="shell__avatar" aria-hidden="true">
-              {initialsOf(user?.fullName || 'User')}
+              {isProfileComplete && user?.fullName ? initialsOf(user.fullName) : 'U'}
             </span>
             <div className="shell__user-meta">
-              <span className="shell__user-name">{user?.fullName || 'Guest'}</span>
+              <span className="shell__user-name" title={displayName}>{displayName}</span>
               {customerCode && <span className="shell__user-code">{customerCode}</span>}
             </div>
           </div>
@@ -225,7 +232,7 @@ export const DashboardLayout = () => {
 
             <NavLink className="shell__header-profile" to={routePaths.profile} title="View profile" aria-label="View profile">
               <span className="shell__header-avatar">
-                {user?.fullName ? user.fullName.trim().charAt(0).toUpperCase() : 'S'}
+                {isProfileComplete && user?.fullName ? user.fullName.trim().charAt(0).toUpperCase() : 'U'}
               </span>
             </NavLink>
           </div>

@@ -38,9 +38,9 @@ export const RegistrationCard: React.FC = () => {
       {step === 1 ? (
         <>
           <header className="reg-card__header">
-            <h2 className="reg-card__title">What describes you best?</h2>
+            <h2 className="reg-card__title">Select Account Type</h2>
             <p className="reg-card__subtitle">
-              Select your customer or entity type. Your tax checklists and filing forms will adapt automatically.
+              Select your account or entity type. Your tax checklists and filing forms will adapt automatically.
             </p>
           </header>
 

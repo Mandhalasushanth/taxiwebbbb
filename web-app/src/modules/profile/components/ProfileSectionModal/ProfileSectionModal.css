@@ -1,0 +1,223 @@
+.profile-section-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+  animation: profileModalFadeIn 0.2s ease-out;
+}
+
+@keyframes profileModalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.profile-section-modal-box {
+  background: var(--surface, #ffffff);
+  border-radius: 20px;
+  border: 1px solid var(--border, #e2e8f0);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
+  width: 100%;
+  max-width: 500px;
+  padding: 28px;
+  position: relative;
+  animation: profileModalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes profileModalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.profile-section-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.profile-section-modal__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.profile-section-modal__close-icon-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.profile-section-modal__close-icon-btn:hover {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.profile-section-modal__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px 8px;
+}
+
+.profile-section-modal__icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.profile-section-modal__empty-heading {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 10px 0;
+}
+
+.profile-section-modal__empty-desc {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #64748b;
+  margin: 0;
+  max-width: 420px;
+}
+
+.profile-section-modal__apps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 260px;
+  overflow-y: auto;
+  margin: 12px 0 16px;
+  padding: 2px;
+}
+
+.profile-section-modal__app-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  background: #f8fafc;
+}
+
+.profile-section-modal__app-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-section-modal__app-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.profile-section-modal__app-status {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.profile-section-modal__app-date {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.profile-section-modal__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+  width: 100%;
+}
+
+.profile-section-modal__btn-secondary {
+  flex: 0 0 auto;
+  min-width: 110px;
+  padding: 12px 26px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.profile-section-modal__btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.profile-section-modal__btn-primary {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 26px;
+  border-radius: 12px;
+  border: none;
+  background: #f97316;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.25);
+  transition: all 0.2s ease;
+}
+
+.profile-section-modal__btn-primary:hover {
+  background: #ea580c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+}
+
+@media (max-width: 520px) {
+  .profile-section-modal-box {
+    padding: 20px;
+  }
+
+  .profile-section-modal__actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .profile-section-modal__btn-secondary,
+  .profile-section-modal__btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+}

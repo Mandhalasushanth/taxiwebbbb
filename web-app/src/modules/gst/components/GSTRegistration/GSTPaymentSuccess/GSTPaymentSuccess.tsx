@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { userStorage } from '@core/storage/userStorage'
 import type { PaymentResult } from '@modules/gst/types/gstPayment.types'
-import { GSTStatusTimeline } from './GSTStatusTimeline'
 import './GSTPaymentSuccess.css'
 import './GSTPaymentSuccess.timeline.css'
 
@@ -133,11 +132,6 @@ export const GSTPaymentSuccess: React.FC<GSTPaymentSuccessProps> = ({
           </div>
         </div>
       </section>
-
-      {/* 3. Full-Width Application Progress Tracker */}
-      <div className="gst-status-tracker-fullwidth">
-        <GSTStatusTimeline />
-      </div>
 
       {/* 4. Bottom Action Buttons in ONE Full-Width Row: Left: Dashboard, Middle: Support/CA, Right: Track */}
       <div className="gst-status-bottom-actions-row">

@@ -5,7 +5,7 @@ import './ProfileMenuItem.css'
 export interface ProfileMenuItemProps {
   label: string
   to?: string
-  onClick?: () => void
+  onClick?: (e?: React.MouseEvent) => void
   icon: React.ReactNode
   iconBg?: string
   iconBgClass?: string

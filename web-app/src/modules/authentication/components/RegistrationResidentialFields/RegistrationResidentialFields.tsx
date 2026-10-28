@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   BuildingIcon,
   PinIcon,
@@ -39,45 +39,111 @@ export const RegistrationResidentialFields: React.FC<RegistrationResidentialFiel
   onChange,
   onBlur,
 }) => {
+  const [showAddressLine2, setShowAddressLine2] = useState<boolean>(() => Boolean(values.areaLocality))
+
   return (
     <div className="reg-address-section">
-      {/* Section Header */}
-      <div className="reg-address-section__header">
-        <div className="reg-address-section__title-group">
-          <h3 className="reg-address-section__title">Residential Details</h3>
-        </div>
-      </div>
-
-      {/* Row 1: Address Line 1 + PIN Code */}
-      <div className="reg-address-section__two-col">
-        {/* Address Line 1 */}
-        <div className="reg-field">
+      {/* Address Line 1 */}
+      <div className="reg-field">
+        <div className="reg-field__label-row">
           <label className="reg-field__label" htmlFor="reg-addressLine1">
             Address Line 1 <span className="reg-field__required">*</span>
           </label>
+          {!showAddressLine2 && (
+            <button
+              type="button"
+              className="reg-address-section__add-btn"
+              onClick={() => setShowAddressLine2(true)}
+            >
+              + Add Line 2
+            </button>
+          )}
+        </div>
+        <div
+          className={`reg-field__control ${
+            errors.addressLine1 ? 'reg-field__control--error' : ''
+          }`}
+        >
+          <span className="reg-field__icon">
+            <BuildingIcon />
+          </span>
+          <input
+            id="reg-addressLine1"
+            name="addressLine1"
+            type="text"
+            className="reg-field__input"
+            placeholder="House / Building / Street"
+            value={values.addressLine1}
+            onChange={onChange}
+            onBlur={onBlur}
+            autoComplete="address-line1"
+          />
+        </div>
+        {errors.addressLine1 && (
+          <p className="reg-field__error">{errors.addressLine1}</p>
+        )}
+      </div>
+
+      {/* Address Line 2 (Optional) - Shown when toggled */}
+      {showAddressLine2 && (
+        <div className="reg-field">
+          <label className="reg-field__label" htmlFor="reg-areaLocality">
+            Address Line 2 (Optional)
+          </label>
           <div
             className={`reg-field__control ${
-              errors.addressLine1 ? 'reg-field__control--error' : ''
+              errors.areaLocality ? 'reg-field__control--error' : ''
+            }`}
+          >
+            <span className="reg-field__icon">
+              <MapIcon />
+            </span>
+            <input
+              id="reg-areaLocality"
+              name="areaLocality"
+              type="text"
+              className="reg-field__input"
+              placeholder="Locality, Landmark"
+              value={values.areaLocality}
+              onChange={onChange}
+              onBlur={onBlur}
+              autoFocus
+            />
+          </div>
+          {errors.areaLocality && (
+            <p className="reg-field__error">{errors.areaLocality}</p>
+          )}
+        </div>
+      )}
+
+      {/* City & PIN Code in side-by-side row */}
+      <div className="reg-address-section__two-col">
+        {/* City */}
+        <div className="reg-field">
+          <label className="reg-field__label" htmlFor="reg-city">
+            City <span className="reg-field__required">*</span>
+          </label>
+          <div
+            className={`reg-field__control ${
+              errors.city ? 'reg-field__control--error' : ''
             }`}
           >
             <span className="reg-field__icon">
               <BuildingIcon />
             </span>
             <input
-              id="reg-addressLine1"
-              name="addressLine1"
+              id="reg-city"
+              name="city"
               type="text"
               className="reg-field__input"
-              placeholder="House No, Building, Street"
-              value={values.addressLine1}
+              placeholder="City"
+              value={values.city}
               onChange={onChange}
               onBlur={onBlur}
-              autoComplete="address-line1"
+              autoComplete="address-level2"
             />
           </div>
-          {errors.addressLine1 && (
-            <p className="reg-field__error">{errors.addressLine1}</p>
-          )}
+          {errors.city && <p className="reg-field__error">{errors.city}</p>}
         </div>
 
         {/* PIN Code */}
@@ -99,7 +165,7 @@ export const RegistrationResidentialFields: React.FC<RegistrationResidentialFiel
               type="text"
               inputMode="numeric"
               className="reg-field__input"
-              placeholder="6-digit PIN code"
+              placeholder="PIN Code"
               maxLength={6}
               value={values.pincode}
               onChange={onChange}
@@ -113,119 +179,34 @@ export const RegistrationResidentialFields: React.FC<RegistrationResidentialFiel
         </div>
       </div>
 
-      {/* Row 2: Area / Locality + City */}
-      <div className="reg-address-section__two-col">
-        {/* Area / Locality */}
-        <div className="reg-field">
-          <label className="reg-field__label" htmlFor="reg-areaLocality">
-            Area / Locality
-          </label>
-          <div
-            className={`reg-field__control ${
-              errors.areaLocality ? 'reg-field__control--error' : ''
-            }`}
-          >
-            <span className="reg-field__icon">
-              <MapIcon />
-            </span>
-            <input
-              id="reg-areaLocality"
-              name="areaLocality"
-              type="text"
-              className="reg-field__input"
-              placeholder="e.g. Shivajinagar, HSR Layout"
-              value={values.areaLocality}
-              onChange={onChange}
-              onBlur={onBlur}
-            />
-          </div>
-          {errors.areaLocality && (
-            <p className="reg-field__error">{errors.areaLocality}</p>
-          )}
-        </div>
-
-        {/* City */}
-        <div className="reg-field">
-          <label className="reg-field__label" htmlFor="reg-city">
-            City <span className="reg-field__required">*</span>
-          </label>
-          <div
-            className={`reg-field__control ${
-              errors.city ? 'reg-field__control--error' : ''
-            }`}
-          >
-            <span className="reg-field__icon">
-              <BuildingIcon />
-            </span>
-            <input
-              id="reg-city"
-              name="city"
-              type="text"
-              className="reg-field__input"
-              placeholder="e.g. Pune, Hyderabad, Mumbai"
-              value={values.city}
-              onChange={onChange}
-              onBlur={onBlur}
-              autoComplete="address-level2"
-            />
-          </div>
-          {errors.city && <p className="reg-field__error">{errors.city}</p>}
-        </div>
+      {/* State / UT */}
+      <div className="reg-field">
+        <label className="reg-field__label" htmlFor="reg-state">
+          State / UT <span className="reg-field__required">*</span>
+        </label>
+        <RegistrationSelect
+          id="reg-state"
+          name="state"
+          value={values.state}
+          placeholder="State / UT"
+          options={CANONICAL_INDIAN_STATES_AND_UTS}
+          icon={<MapIcon />}
+          hasError={Boolean(errors.state)}
+          align="left"
+          searchable={true}
+          onChange={onChange}
+          onBlur={onBlur}
+        />
+        {errors.state && <p className="reg-field__error">{errors.state}</p>}
       </div>
 
-      {/* Row 3: District + State / UT */}
-      <div className="reg-address-section__two-col">
-        {/* District */}
-        <div className="reg-field">
-          <label className="reg-field__label" htmlFor="reg-district">
-            District <span className="reg-field__required">*</span>
-          </label>
-          <div
-            className={`reg-field__control ${
-              errors.district ? 'reg-field__control--error' : ''
-            }`}
-          >
-            <span className="reg-field__icon">
-              <BuildingIcon />
-            </span>
-            <input
-              id="reg-district"
-              name="district"
-              type="text"
-              className="reg-field__input"
-              placeholder="e.g. Pune, Warangal, Thane"
-              value={values.district}
-              onChange={onChange}
-              onBlur={onBlur}
-              autoComplete="address-level2"
-            />
-          </div>
-          {errors.district && (
-            <p className="reg-field__error">{errors.district}</p>
-          )}
-        </div>
-
-        {/* State / UT */}
-        <div className="reg-field">
-          <label className="reg-field__label" htmlFor="reg-state">
-            State / UT <span className="reg-field__required">*</span>
-          </label>
-          <RegistrationSelect
-            id="reg-state"
-            name="state"
-            value={values.state}
-            placeholder="Select your State / UT"
-            options={CANONICAL_INDIAN_STATES_AND_UTS}
-            icon={<MapIcon />}
-            hasError={Boolean(errors.state)}
-            align="right"
-            searchable={true}
-            onChange={onChange}
-            onBlur={onBlur}
-          />
-          {errors.state && <p className="reg-field__error">{errors.state}</p>}
-        </div>
-      </div>
+      {/* Hidden District field to maintain complete data compatibility */}
+      <input
+        id="reg-district"
+        name="district"
+        type="hidden"
+        value={values.district || values.city}
+      />
     </div>
   )
 }

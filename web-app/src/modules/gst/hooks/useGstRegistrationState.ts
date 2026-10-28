@@ -222,9 +222,9 @@ export const useGstRegistrationState = () => {
         id: `gst_${Date.now()}`,
         reference: appCode,
         legalName: applicant,
-        businessType: businessData.businessType || 'proprietorship',
+        businessType: businessData.constitution || 'proprietorship',
         state: businessData.state || 'India',
-        pan: businessData.pan || '',
+        pan: businessData.businessPan || '',
         status: 'SUBMITTED',
         timeline: [
           { id: 't1', label: 'Application submitted', occurredAt: new Date().toISOString(), isComplete: true },

@@ -32,6 +32,8 @@ export interface FilingPeriodData {
   estimatedSales?: string
   estimatedPurchases?: string
   estimatedItc?: string
+  turnover?: string | number
+  taxAmount?: string | number
 }
 
 interface GSTFilingPeriodProps {

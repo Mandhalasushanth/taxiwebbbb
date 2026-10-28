@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import {
   UserIcon,
   MailIcon,
@@ -6,22 +6,7 @@ import {
   CalendarIcon,
 } from '../RegistrationIcons/RegistrationIcons'
 import { RegistrationSelect } from '../RegistrationSelect/RegistrationSelect'
-import { DobDatePickerModal } from '../DobDatePickerModal/DobDatePickerModal'
-import { AGE_LIMITS } from '@shared/utils'
 import './RegistrationPersonalFields.css'
-
-const yearsAgo = (years: number, extraDays = 0): Date => {
-  const date = new Date()
-  date.setFullYear(date.getFullYear() - years)
-  date.setDate(date.getDate() + extraDays)
-  return date
-}
-
-/** Calendar only offers birth dates for ages AGE_LIMITS.min to AGE_LIMITS.max */
-const DOB_PICKER_RANGE = {
-  min: yearsAgo(AGE_LIMITS.max + 1, 1),
-  max: yearsAgo(AGE_LIMITS.min),
-}
 
 export interface RegistrationPersonalValues {
   fullName: string
@@ -49,17 +34,55 @@ export interface RegistrationPersonalFieldsProps {
   onApplyDate?: (formattedDate: string) => void
 }
 
+/** Convert DD-MM-YYYY to YYYY-MM-DD for native date picker */
+const toIsoDate = (dmy: string): string => {
+  if (!dmy) return ''
+  const parts = dmy.split('-')
+  if (parts.length === 3 && parts[2]?.length === 4) {
+    return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`
+  }
+  return ''
+}
+
+/** Convert YYYY-MM-DD to DD-MM-YYYY */
+const toDmyDate = (iso: string): string => {
+  if (!iso) return ''
+  const parts = iso.split('-')
+  if (parts.length === 3) {
+    return `${parts[2]}-${parts[1]}-${parts[0]}`
+  }
+  return iso
+}
+
 export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProps> = ({
   values,
   errors,
   onChange,
   onBlur,
-  onOpenCalendar,
-  isCalendarOpen = false,
-  onToggleCalendar,
-  onCloseCalendar,
   onApplyDate,
 }) => {
+  const nativeDateRef = useRef<HTMLInputElement>(null)
+
+  const handleOpenPicker = () => {
+    try {
+      nativeDateRef.current?.showPicker?.()
+    } catch {
+      nativeDateRef.current?.focus()
+    }
+  }
+
+  const handleNativeDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const dmy = toDmyDate(e.target.value)
+    if (!dmy) return
+    if (onApplyDate) {
+      onApplyDate(dmy)
+    } else {
+      onChange({
+        target: { name: 'dob', value: dmy },
+      } as React.ChangeEvent<HTMLInputElement>)
+    }
+  }
+
   return (
     <div className="reg-personal-fields">
       {/* Row 1: Full Name & Email */}
@@ -78,7 +101,7 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
               type="text"
               pattern="[a-zA-Z\s.'-]*"
               className="reg-field__input"
-              placeholder="Enter your name"
+              placeholder="Full Name"
               value={values.fullName}
               onChange={onChange}
               onBlur={onBlur}
@@ -101,7 +124,7 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
               name="email"
               type="email"
               className="reg-field__input"
-              placeholder="Enter your email"
+              placeholder="Email"
               value={values.email}
               onChange={onChange}
               onBlur={onBlur}
@@ -122,7 +145,7 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
             id="reg-gender"
             name="gender"
             value={values.gender}
-            placeholder="Select Gender"
+            placeholder="Gender"
             options={['Male', 'Female', 'Other']}
             icon={<GenderIcon />}
             hasError={Boolean(errors.gender)}
@@ -151,25 +174,25 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
               onBlur={onBlur}
               autoComplete="bday"
             />
+            <input
+              ref={nativeDateRef}
+              type="date"
+              tabIndex={-1}
+              aria-hidden="true"
+              className="reg-field__hidden-date"
+              max={new Date().toISOString().slice(0, 10)}
+              value={toIsoDate(values.dob)}
+              onChange={handleNativeDateChange}
+            />
             <button
               type="button"
               className="reg-field__picker-btn"
-              onClick={onToggleCalendar || onOpenCalendar}
+              onClick={handleOpenPicker}
               title="Open calendar"
               aria-label="Open calendar"
             >
               <CalendarIcon size={18} color="#F97316" />
             </button>
-            {onApplyDate && onCloseCalendar && (
-              <DobDatePickerModal
-                isOpen={Boolean(isCalendarOpen)}
-                minDate={DOB_PICKER_RANGE.min}
-                maxDate={DOB_PICKER_RANGE.max}
-                value={values.dob}
-                onApply={onApplyDate}
-                onClose={onCloseCalendar}
-              />
-            )}
           </div>
           {errors.dob && <p className="reg-field__error">{errors.dob}</p>}
         </div>

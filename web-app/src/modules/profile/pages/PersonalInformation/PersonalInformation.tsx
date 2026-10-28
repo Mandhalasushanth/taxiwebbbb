@@ -1,10 +1,14 @@
-
+import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@store/index'
-import { authStorage } from '@core/auth'
+import { authStorage, buildProfileCompletionPath } from '@core/auth'
+import { routePaths } from '@core/config'
+import { formatMobile } from '@shared/utils'
 import { DetailCard } from '../../components/DetailCard/DetailCard'
+import { formatCustomerType, formatGender, isPlaceholderCustomerName, isMockEmail } from '../../utils/profileProgress'
 import './ProfileDetails.css'
 
 export const PersonalInformation = () => {
+  const navigate = useNavigate()
   const storeUser = useAuthStore((state) => state.user)
   const user = storeUser || authStorage.getUser()
 
@@ -18,36 +22,48 @@ export const PersonalInformation = () => {
     )
   }
 
+  const handleEdit = () => {
+    navigate(buildProfileCompletionPath(routePaths.profilePersonal), {
+      state: { returnTo: routePaths.profilePersonal, mobile: user.mobile },
+    })
+  }
+
+  const cleanMobile = formatMobile(user.mobile || '')
+  const hasValidName = user.fullName && !isPlaceholderCustomerName(user.fullName) ? user.fullName : null
+  const hasValidEmail = user.email && !isMockEmail(user.email) ? user.email : null
+
   const personalItems = [
-    { label: 'Full Name', value: user.fullName },
-    { label: 'Email Address', value: user.email },
-    { label: 'Mobile Number', value: user.mobile ? `+91 ${user.mobile}` : null },
-    { label: 'Customer Type', value: user.customerType },
-    { label: 'Gender', value: user.gender },
-    { label: 'Date of Birth', value: user.dob },
-    { label: 'Father/Spouse Name', value: user.fatherSpouseName },
+    { label: 'FULL NAME', value: hasValidName },
+    { label: 'EMAIL ADDRESS', value: hasValidEmail },
+    {
+      label: 'MOBILE NUMBER',
+      value: cleanMobile ? `+91 ${cleanMobile}` : null,
+      isVerified: Boolean(cleanMobile),
+    },
+    { label: 'CUSTOMER TYPE', value: formatCustomerType(user.customerType) },
+    { label: 'GENDER', value: formatGender(user.gender) },
+    { label: 'DATE OF BIRTH', value: user.dob },
+    { label: 'FATHER/SPOUSE NAME', value: user.fatherSpouseName },
   ]
 
   const addressItems = [
-    { label: 'Address Line 1', value: user.addressLine1, isFullWidth: true },
-    { label: 'Address Line 2', value: user.addressLine2, isFullWidth: true },
-    { label: 'Area / Locality', value: user.areaLocality },
-    { label: 'City / Town', value: user.city },
-    { label: 'District', value: user.district },
-    { label: 'State', value: user.state },
-    { label: 'PIN Code', value: user.pincode },
+    { label: 'ADDRESS LINE 1', value: user.addressLine1, isFullWidth: true },
+    { label: 'ADDRESS LINE 2', value: user.addressLine2, isFullWidth: true },
+    { label: 'AREA / LOCALITY', value: user.areaLocality },
+    { label: 'CITY / TOWN', value: user.city },
+    { label: 'DISTRICT', value: user.district },
+    { label: 'STATE', value: user.state },
+    { label: 'PIN CODE', value: user.pincode },
   ]
 
   return (
-    <div className="profile-details-page">
-      <div className="profile-details-page__header">
-        <h1 className="profile-details-page__title">Personal Information</h1>
-      </div>
-
+    <div className="profile-details-page" data-testid="personal-information-page">
       <div className="profile-details-page__content">
+        {/* Personal Information Card matching Image 4 */}
         <DetailCard
-          title="Basic Details"
+          title="Personal Information"
           items={personalItems}
+          onEdit={handleEdit}
           icon={
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -56,9 +72,11 @@ export const PersonalInformation = () => {
           }
         />
 
+        {/* Residential Address Card */}
         <DetailCard
           title="Residential Address"
           items={addressItems}
+          onEdit={handleEdit}
           icon={
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>

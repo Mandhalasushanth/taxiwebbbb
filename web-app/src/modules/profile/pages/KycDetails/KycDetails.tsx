@@ -1,11 +1,14 @@
-
+import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@store/index'
-import { authStorage } from '@core/auth'
+import { authStorage, buildProfileCompletionPath } from '@core/auth'
+import { routePaths } from '@core/config'
 import { maskAadhaar } from '@shared/utils'
 import { DetailCard } from '../../components/DetailCard/DetailCard'
+import { formatFullAddress } from '../../utils/profileProgress'
 import '../PersonalInformation/ProfileDetails.css'
 
 export const KycDetails = () => {
+  const navigate = useNavigate()
   const storeUser = useAuthStore((state) => state.user)
   const user = storeUser || authStorage.getUser()
 
@@ -19,22 +22,26 @@ export const KycDetails = () => {
     )
   }
 
+  const handleEdit = () => {
+    navigate(buildProfileCompletionPath(routePaths.profileKyc), {
+      state: { returnTo: routePaths.profileKyc, mobile: user.mobile },
+    })
+  }
+
   const identityItems = [
-    { label: 'PAN Number', value: user.pan },
+    { label: 'PAN NUMBER', value: user.pan ? user.pan.toUpperCase() : null },
     // Never show the full Aadhaar number: only the last 4 digits (XXXX XXXX 1234)
-    { label: 'Aadhaar Number', value: maskAadhaar(user.aadhaar) },
+    { label: 'AADHAAR NUMBER', value: user.aadhaar ? maskAadhaar(user.aadhaar) : null },
+    { label: 'ADDRESS', value: formatFullAddress(user), isFullWidth: true },
   ]
 
   return (
-    <div className="profile-details-page">
-      <div className="profile-details-page__header">
-        <h1 className="profile-details-page__title">KYC Details</h1>
-      </div>
-
+    <div className="profile-details-page" data-testid="kyc-details-page">
       <div className="profile-details-page__content">
         <DetailCard
-          title="Identity Information"
+          title="KYC Details"
           items={identityItems}
+          onEdit={handleEdit}
           icon={
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>

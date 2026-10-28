@@ -2,14 +2,18 @@ import type { ReactNode } from 'react'
 
 export type CustomerTypeId =
   | 'individual'
-  | 'salaried'
-  | 'business'
   | 'proprietorship'
   | 'partnership'
   | 'llp'
   | 'private_limited'
-  | 'company'
+  | 'public_limited'
+  | 'huf'
+  | 'aop_boi'
   | 'freelancer'
+  | 'ngo_trust'
+  | 'salaried'
+  | 'business'
+  | 'company'
 
 export interface CustomerTypeOption {
   id: CustomerTypeId

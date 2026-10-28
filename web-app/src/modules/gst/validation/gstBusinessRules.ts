@@ -19,6 +19,14 @@ export const CONSTITUTION_PAN_TYPES: Record<string, readonly PanHolderCode[]> = 
   'Hindu Undivided Family (HUF)': ['H'],
   'Society / Trust / Club': ['A', 'T', 'B'],
   'Society / Club / Trust / AOP': ['A', 'T', 'B'],
+  'AOP / BOI': ['A', 'B'],
+  'AOP/BOI': ['A', 'B'],
+  'Government Department': ['G'],
+  'Foreign Company': ['C'],
+  'Foreign company': ['C'],
+  'One Person Company (OPC)': ['C'],
+  'One person Company(OPC)': ['C'],
+  'One person Company (OPC)': ['C'],
 }
 
 const PAN_HOLDER_INDEX = 3

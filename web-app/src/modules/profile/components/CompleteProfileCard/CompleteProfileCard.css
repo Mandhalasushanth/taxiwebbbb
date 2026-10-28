@@ -1,0 +1,154 @@
+.complete-profile-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background: linear-gradient(180deg, #fffaf5 0%, #fff6ed 100%);
+  border: 1px solid #fed7aa;
+  border-radius: 16px;
+  padding: 24px 28px;
+  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.05);
+  margin-bottom: 24px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.complete-profile-card:hover {
+  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.09);
+  border-color: #fdba74;
+}
+
+.complete-profile-card__left {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  flex: 1;
+}
+
+.complete-profile-card__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #ffedd5;
+  color: #ea580c;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.complete-profile-card__icon-svg {
+  width: 26px;
+  height: 26px;
+}
+
+.complete-profile-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 640px;
+}
+
+.complete-profile-card__title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.complete-profile-card__description {
+  margin: 0;
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.complete-profile-card__progress-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.complete-profile-card__progress-track {
+  width: 240px;
+  max-width: 100%;
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.complete-profile-card__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f97316 0%, #ea580c 100%);
+  border-radius: 9999px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.complete-profile-card__progress-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.complete-profile-card__right {
+  flex-shrink: 0;
+}
+
+.complete-profile-card__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #f97316;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.28);
+  transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.complete-profile-card__action-btn:hover {
+  background: #ea580c;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35);
+}
+
+.complete-profile-card__action-btn:active {
+  transform: translateY(0);
+}
+
+.complete-profile-card__action-btn:focus-visible {
+  outline: 3px solid #fdba74;
+  outline-offset: 2px;
+}
+
+@media (max-width: 840px) {
+  .complete-profile-card {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
+    gap: 18px;
+  }
+
+  .complete-profile-card__right {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .complete-profile-card__action-btn {
+    width: 100%;
+  }
+
+  .complete-profile-card__progress-track {
+    width: 180px;
+  }
+}
