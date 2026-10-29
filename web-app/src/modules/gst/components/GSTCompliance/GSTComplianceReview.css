@@ -1,0 +1,243 @@
+/* GST Compliance Review - Web Screen Layout */
+.gst-compliance-review-wrapper {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-sizing: border-box;
+}
+
+/* Top Status Callout Banner (Full Width) */
+.gst-compliance-review-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 16px;
+  padding: 1.1rem 1.5rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.gst-compliance-review-banner-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background-color: #d1fae5;
+  color: #059669;
+  flex-shrink: 0;
+}
+
+.gst-compliance-review-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.gst-compliance-review-banner-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #065f46;
+  margin: 0;
+}
+
+.gst-compliance-review-banner-desc {
+  font-size: 0.9rem;
+  font-weight: 450;
+  color: #047857;
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Section Cards (Full Width Web Cards) */
+.gst-compliance-review-card {
+  background-color: var(--surface, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  box-shadow: var(--shadow-md, 0 1px 3px rgba(0, 0, 0, 0.04));
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.gst-compliance-review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.gst-compliance-review-card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--palette-indigo-950, #1e293b);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* Edit Button */
+.gst-compliance-review-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #ea580c;
+  border-radius: 8px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.gst-compliance-review-edit-btn:hover {
+  background-color: #ffedd5;
+  border-color: #fdba74;
+}
+
+/* Card Body & Rows */
+.gst-compliance-review-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.gst-compliance-review-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  gap: 1.5rem;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.gst-compliance-review-row:last-child {
+  border-bottom: none;
+}
+
+.gst-compliance-review-label {
+  font-size: 0.925rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.gst-compliance-review-value {
+  font-size: 0.95rem;
+  color: #0f172a;
+  font-weight: 700;
+  text-align: right;
+  word-break: break-word;
+}
+
+/* Attached Documents List */
+.gst-compliance-review-docs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gst-review-doc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 0;
+  gap: 1rem;
+}
+
+.gst-review-doc-row:not(:last-child) {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.gst-review-doc-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.gst-review-doc-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background-color: #ecfdf5;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.gst-review-doc-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.gst-review-doc-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.gst-review-doc-meta {
+  font-size: 0.825rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 600px;
+}
+
+.gst-review-doc-empty {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0.5rem 0;
+}
+
+/* View Button */
+.gst-review-view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #ffffff;
+  border: 1.5px solid #93c5fd;
+  color: #2563eb;
+  border-radius: 8px;
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.gst-review-view-btn:hover {
+  background-color: #eff6ff;
+  border-color: #3b82f6;
+}
+
+/* Action Bar */
+.gst-compliance-review-action-bar {
+  margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+  .gst-compliance-review-card {
+    padding: 1.25rem 1rem;
+    border-radius: 16px;
+  }
+
+  .gst-review-doc-meta {
+    max-width: 190px;
+  }
+}

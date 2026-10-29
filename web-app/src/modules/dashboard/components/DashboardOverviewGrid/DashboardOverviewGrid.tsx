@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import type { RecentApplication, UpcomingDeadlineItem } from '../../types/dashboard.types'
@@ -53,8 +52,7 @@ export const DashboardOverviewGrid = ({
   applications = [],
   deadlines = [],
 }: DashboardOverviewGridProps) => {
-  const [showAllApplications, setShowAllApplications] = useState(false)
-  const displayedApplications = showAllApplications ? applications : applications.slice(0, 3)
+  const displayedApplications = applications.slice(0, 3)
 
   return (
     <section className="dashboard-overview-grid" aria-label="Dashboard Overview">
@@ -113,23 +111,14 @@ export const DashboardOverviewGrid = ({
               <p className="overview-card__subtitle">Track and manage all your applications</p>
             </div>
           </div>
-          {applications.length > 3 ? (
-            <button
-              type="button"
-              className="overview-card__view-all overview-card__view-all--btn"
-              onClick={() => setShowAllApplications((prev) => !prev)}
-              aria-expanded={showAllApplications}
-              aria-label={showAllApplications ? 'Show fewer applications' : 'View all applications'}
-            >
-              <span>{showAllApplications ? 'Show Less' : 'View All'}</span>
-              <span aria-hidden="true">{showAllApplications ? '↑' : '→'}</span>
-            </button>
-          ) : (
-            <Link className="overview-card__view-all" to={routePaths.applications}>
-              <span>View All</span>
-              <span aria-hidden="true">→</span>
-            </Link>
-          )}
+          <Link
+            className="overview-card__view-all"
+            to={routePaths.applications}
+            aria-label="View all applications"
+          >
+            <span>View All</span>
+            <span aria-hidden="true">→</span>
+          </Link>
         </div>
 
         <div className="overview-card__body">
@@ -152,11 +141,6 @@ export const DashboardOverviewGrid = ({
                   </div>
                 </Link>
               ))}
-              {showAllApplications && applications.length > 3 && (
-                <Link to={routePaths.applications} className="overview-card__manage-link">
-                  Open Applications Manager <span aria-hidden="true">→</span>
-                </Link>
-              )}
             </div>
           ) : (
             <div className="overview-card__empty-box">
@@ -180,4 +164,3 @@ export const DashboardOverviewGrid = ({
 }
 
 export default DashboardOverviewGrid
-

@@ -127,7 +127,7 @@ export const buildUserDashboardSummary = (): DashboardSummary => {
     brief: {
       dateLabel,
       message,
-      activeApplications: activeApps.length,
+      activeApplications: applications.length,
       paymentDue: formatCurrency(totalPaymentDue),
     },
     deadline: null,
@@ -135,7 +135,7 @@ export const buildUserDashboardSummary = (): DashboardSummary => {
       {
         id: 'active',
         label: 'Active applications',
-        value: String(activeApps.length),
+        value: String(applications.length),
         hint: activeApps.length > 0 ? `${activeApps.length} in progress` : 'No active applications',
         tone: 'info',
         icon: '🗎',

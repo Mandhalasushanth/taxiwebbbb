@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
-import { Loader } from '@shared/components'
+import { Loader, ScrollToTop } from '@shared/components'
 import { ScrollIndicators } from '../components/ScrollIndicators/ScrollIndicators'
 import { useHashScroll } from '../hooks/useHashScroll'
 import { MarketingFooter } from './MarketingFooter'
@@ -15,6 +15,7 @@ export const MarketingLayout = () => {
 
   return (
     <div className="mk-site">
+      <ScrollToTop />
       <a href={`#${MAIN_CONTENT_ID}`} className="mk-skip-link">
         Skip to content
       </a>

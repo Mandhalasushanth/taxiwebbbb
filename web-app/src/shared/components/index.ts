@@ -32,3 +32,5 @@ export { LogoutConfirmModal } from './LogoutConfirmModal/LogoutConfirmModal'
 export type { LogoutConfirmModalProps } from './LogoutConfirmModal/LogoutConfirmModal'
 export { LogoutIcon } from './LogoutConfirmModal/LogoutIcon'
 export type { LogoutIconProps } from './LogoutConfirmModal/LogoutIcon'
+
+export * from './ScrollToTop'

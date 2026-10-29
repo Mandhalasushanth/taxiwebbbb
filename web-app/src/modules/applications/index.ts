@@ -1,4 +1,5 @@
 export { applicationsRoutes } from './routes'
 export { useApplications } from './hooks/useApplications'
+export { useApplicationsCount } from './hooks/useApplicationsCount'
 export { applicationsService } from './services/applicationsService'
 export type { ApplicationsFilters, ApplicationsItem } from './types/applications.types'

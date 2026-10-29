@@ -1339,3 +1339,581 @@
   background: var(--subtle-border);
   color: var(--palette-slate-900);
 }
+
+
+/* ==========================================================================
+   CLEAN WEB APP VIEW REPRESENTATION (Matching Mobile Tracker Steps)
+   ========================================================================== */
+
+.app-tracker-web-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.app-tracker-section-heading {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.app-tracker-clean-card {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+}
+
+.app-tracker-card-subtitle {
+  margin: 0 0 1.25rem 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+/* Overview Details List */
+.app-tracker-details-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-tracker-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f1f5f9;
+  gap: 1rem;
+}
+
+.app-tracker-detail-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0.25rem;
+}
+
+.app-tracker-detail-label-group {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.app-tracker-detail-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.app-tracker-detail-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.app-tracker-detail-value {
+  font-size: 0.96rem;
+  font-weight: 600;
+  color: #0f172a;
+  text-align: right;
+}
+
+.app-tracker-detail-value--bold {
+  font-weight: 800;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+}
+
+.app-tracker-detail-value--hash {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.88rem;
+  letter-spacing: 0.02em;
+  color: #475569;
+  word-break: break-all;
+}
+
+.app-tracker-detail-status-green {
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: #16a34a;
+}
+
+/* What Happens Next Card */
+.app-tracker-clean-card--next {
+  border: 1px solid #fed7aa;
+  background: linear-gradient(180deg, #fffaf5 0%, #ffffff 100%);
+}
+
+.app-tracker-next-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.15rem;
+  margin-bottom: 1.25rem;
+}
+
+.app-tracker-clock-icon-circle {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ffedd5;
+  border: 1.5px solid #fdba74;
+  color: #ea580c;
+  flex-shrink: 0;
+}
+
+.app-tracker-next-body {
+  flex: 1;
+}
+
+.app-tracker-next-title {
+  margin: 0 0 0.35rem 0;
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.app-tracker-next-desc {
+  margin: 0;
+  font-size: 0.94rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.app-tracker-next-chat-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ea580c;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.app-tracker-next-chat-link:hover {
+  color: #c2410c;
+  text-decoration: underline;
+  transform: translateX(2px);
+}
+
+/* Submitted Banner */
+.app-tracker-submitted-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 1.25rem 1.75rem;
+}
+
+.app-tracker-submitted-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-tracker-submitted-icon-circle {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.app-tracker-submitted-title {
+  margin: 0 0 0.2rem 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.app-tracker-submitted-subtitle {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #64748b;
+}
+
+/* Stepper Timeline */
+.app-tracker-stepper-card {
+  padding: 2rem 2.25rem;
+}
+
+.app-tracker-stepper {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-tracker-stepper-row {
+  display: flex;
+  gap: 1.25rem;
+  position: relative;
+}
+
+.app-tracker-stepper-indicator-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 44px;
+  flex-shrink: 0;
+}
+
+.app-tracker-stepper-icon-circle {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.app-tracker-stepper-icon-circle--completed {
+  background: #ecfdf5;
+  border: 2px solid #10b981;
+  color: #10b981;
+}
+
+.app-tracker-stepper-icon-circle--current {
+  background: #fff7ed;
+  border: 2px solid #f97316;
+  color: #f97316;
+}
+
+.app-tracker-stepper-icon-circle--pending {
+  background: #f8fafc;
+  border: 2px solid #cbd5e1;
+  color: #94a3b8;
+}
+
+.app-tracker-stepper-line {
+  width: 2px;
+  flex: 1;
+  min-height: 48px;
+  background: #e2e8f0;
+  margin: 4px 0;
+}
+
+.app-tracker-stepper-line--active {
+  background: #10b981;
+}
+
+.app-tracker-stepper-content {
+  flex: 1;
+  padding-bottom: 2rem;
+}
+
+.app-tracker-stepper-row:last-child .app-tracker-stepper-content {
+  padding-bottom: 0.5rem;
+}
+
+.app-tracker-stepper-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.app-tracker-stepper-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.app-tracker-stepper-title--pending {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.app-tracker-stepper-date {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 600;
+  display: block;
+  margin-top: 0.2rem;
+}
+
+.app-tracker-stepper-desc {
+  margin: 0.35rem 0 0;
+  font-size: 0.92rem;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+/* Pill Badges */
+.app-tracker-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.28rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.app-tracker-pill-badge--submitted {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.app-tracker-pill-badge--completed {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.app-tracker-pill-badge--progress {
+  background: #ffedd5;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+.app-tracker-pill-badge--pending {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+/* Info Banner */
+.app-tracker-info-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 1.15rem 1.5rem;
+}
+
+.app-tracker-info-icon-circle {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #e0f2fe;
+  color: #0284c7;
+  flex-shrink: 0;
+}
+
+.app-tracker-info-banner-title {
+  margin: 0 0 0.15rem 0;
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #0369a1;
+}
+
+.app-tracker-info-banner-desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #0284c7;
+  line-height: 1.4;
+}
+
+/* Documents Tab */
+.app-tracker-docs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.app-tracker-doc-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1.15rem 1.4rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  transition: all 0.18s ease;
+}
+
+.app-tracker-doc-item:hover {
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+  border-color: #cbd5e1;
+}
+
+.app-tracker-doc-item-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-tracker-doc-thumb-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #ef4444;
+  flex-shrink: 0;
+}
+
+.app-tracker-doc-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.app-tracker-doc-item-title {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.app-tracker-doc-item-meta {
+  font-size: 0.82rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.app-tracker-doc-item-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.app-tracker-doc-view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 1.1rem;
+  border-radius: 8px;
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.app-tracker-doc-view-btn:hover {
+  border-color: #0284c7;
+  color: #0284c7;
+  background: #f0f9ff;
+  transform: translateY(-1px);
+}
+
+/* Payments Tab */
+.app-tracker-pay-summary-card {
+  border: 1px solid #fed7aa;
+  background: linear-gradient(180deg, #fffaf5 0%, #ffffff 100%);
+}
+
+.app-tracker-pay-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-tracker-pay-summary-left {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.app-tracker-rupee-circle {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #ffedd5;
+  border: 1.5px solid #fdba74;
+  color: #ea580c;
+  font-size: 1.35rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.app-tracker-pay-summary-label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.app-tracker-pay-summary-value {
+  display: block;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.app-tracker-paid-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  padding: 1.15rem 1.5rem;
+}
+
+.app-tracker-paid-success-circle {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #16a34a;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.app-tracker-paid-success-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #15803d;
+}
+
+/* Common Support Chat Card inside Application Tracker */
+.app-tracker-common-chat-card {
+  padding: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border, #e2e8f0);
+  background: var(--surface, #ffffff);
+  box-shadow: 0 4px 20px rgba(15, 40, 76, 0.05);
+  height: 680px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-tracker-common-chat-card .common-chat-support {
+  height: 100%;
+}

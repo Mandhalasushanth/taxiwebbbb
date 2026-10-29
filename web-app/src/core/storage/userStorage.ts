@@ -20,6 +20,16 @@ export interface ApplicationDraft {
   userId?: string
 }
 
+const emitApplicationsUpdated = () => {
+  if (typeof window !== 'undefined') {
+    try {
+      window.dispatchEvent(new Event('taxedge:applications-updated'))
+    } catch {
+      // Safe fallback
+    }
+  }
+}
+
 export const userStorage = {
   getUserApplications(): RecentApplication[] {
     const raw = localStore.get<RecentApplication[]>(USER_APPLICATIONS_KEY) || []
@@ -86,6 +96,7 @@ export const userStorage = {
       raw.unshift(appWithUser)
     }
     localStore.set(USER_APPLICATIONS_KEY, raw)
+    emitApplicationsUpdated()
 
     try {
       useNotificationStore.getState().addNotification({
@@ -129,6 +140,7 @@ export const userStorage = {
 
     raw[index] = updated
     localStore.set(USER_APPLICATIONS_KEY, raw)
+    emitApplicationsUpdated()
 
     try {
       useNotificationStore.getState().addNotification({
@@ -172,6 +184,7 @@ export const userStorage = {
 
     raw[index] = updated
     localStore.set(USER_APPLICATIONS_KEY, raw)
+    emitApplicationsUpdated()
 
     try {
       useNotificationStore.getState().addNotification({
@@ -189,6 +202,7 @@ export const userStorage = {
 
   clearUserApplications(): void {
     localStore.remove(USER_APPLICATIONS_KEY)
+    emitApplicationsUpdated()
   },
 
   /* Drafts Management */
@@ -278,6 +292,7 @@ export const userStorage = {
       // Safe fallback
     }
     localStore.remove(USER_APPLICATIONS_KEY)
+    emitApplicationsUpdated()
     localStore.remove(APPLICATION_DRAFTS_KEY)
     localStore.remove(USER_DEADLINES_KEY)
     localStore.remove('taxedge.notifications')

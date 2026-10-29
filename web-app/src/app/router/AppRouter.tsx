@@ -1,7 +1,7 @@
 import { Suspense, useEffect } from 'react'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { useAppStore, useAuthStore } from '@store/index'
-import { Loader } from '@shared/components'
+import { Loader, resetScrollToTop } from '@shared/components'
 
 import { SessionTimeoutManager } from '../providers/SessionTimeoutManager'
 
@@ -15,6 +15,7 @@ router.subscribe((state) => {
   if (state.location.pathname !== currentPath) {
     currentPath = state.location.pathname
     useAppStore.getState().clearToasts()
+    resetScrollToTop()
   }
 })
 

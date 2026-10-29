@@ -5,11 +5,14 @@ import { ChatMessageInput } from '../ChatMessageInput/ChatMessageInput'
 import { QuickPrompts } from '../QuickPrompts/QuickPrompts'
 import './ChatWindow.css'
 
-interface ChatWindowProps {
+export interface ChatWindowProps {
   conversation: SupportConversation | null
   isLoading?: boolean
   isSending?: boolean
   onSendMessage: (text: string, attachments?: SupportAttachment[]) => void
+  title?: string
+  subtitle?: string
+  placeholder?: string
 }
 
 export const ChatWindow = ({
@@ -17,11 +20,16 @@ export const ChatWindow = ({
   isLoading = false,
   isSending = false,
   onSendMessage,
+  title = 'TaxEdge Support',
+  subtitle = 'Online · replies in a few minutes',
+  placeholder = 'Type your message...',
 }: ChatWindowProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (typeof messagesEndRef.current?.scrollIntoView === 'function') {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
   }
 
   useEffect(() => {
@@ -52,8 +60,8 @@ export const ChatWindow = ({
           </div>
 
           <div className="cs-window__header-text">
-            <h2 className="cs-window__header-title">TaxEdge Support</h2>
-            <p className="cs-window__header-subtitle">Online · replies in a few minutes</p>
+            <h2 className="cs-window__header-title">{title}</h2>
+            <p className="cs-window__header-subtitle">{subtitle}</p>
           </div>
         </div>
 
@@ -88,7 +96,7 @@ export const ChatWindow = ({
         <ChatMessageInput
           onSendMessage={onSendMessage}
           disabled={isSending}
-          placeholder="Type your message..."
+          placeholder={placeholder}
         />
       </footer>
     </div>

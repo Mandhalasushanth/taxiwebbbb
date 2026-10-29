@@ -18,37 +18,39 @@ export const DashboardHero = ({ userName }: DashboardHeroProps) => {
 
   return (
     <section className="dashboard-hero" aria-label="TaxEdge Overview Banner">
-      {/* Left Column: Greeting & Question */}
-      <div className="dashboard-hero__left">
-        <h1 className="dashboard-hero__greeting">
-          {getGreeting()}, {firstName} <span className="dashboard-hero__wave">👋</span>
-        </h1>
+      {/* Foreground Content Container with Three Responsive Visual Zones */}
+      <div className="dashboard-hero__content">
+        {/* Zone 1 (Left): Welcome Heading, Subtitle & Orange Accent Line */}
+        <div className="dashboard-hero__left">
+          <h1 className="dashboard-hero__greeting">
+            {getGreeting()}, {firstName} <span className="dashboard-hero__wave">👋</span>
+          </h1>
 
-        <h2 className="dashboard-hero__question">
-          What can we help you with today?
-        </h2>
-      </div>
-
-      {/* Center Column: High-Res 3D Tax Document & Calculator Illustration */}
-      <div className="dashboard-hero__center">
-        <img
-          src="/assets/images/dashboard/tax-calculator-hero.png"
-          alt="Tax Filing & Calculation Illustration"
-          className="dashboard-hero__tax-img"
-          loading="eager"
-        />
-      </div>
-
-      {/* Right Column: Slogan Quote with Badge & Underline Accent */}
-      <div className="dashboard-hero__right">
-        <div className="dashboard-hero__quote-block">
-          <p className="dashboard-hero__quote-text">
-            &ldquo;Simplifying<br />
-            Taxes for a<br />
-            Brighter Tomorrow&rdquo;
+          <p className="dashboard-hero__question">
+            What can we help you with today?
           </p>
-          <span className="dashboard-hero__quote-badge">100% Compliant &bull; Secure</span>
-          <div className="dashboard-hero__quote-line" aria-hidden="true" />
+
+          <div className="dashboard-hero__welcome-line" aria-hidden="true" />
+        </div>
+
+        {/* Zone 2 (Center): Unobstructed Area for the 3D Tax Illustration in Background */}
+        <div className="dashboard-hero__center" aria-hidden="true" />
+
+        {/* Zone 3 (Right): Slogan Quote, Compliance Badge & Orange Accent Line */}
+        <div className="dashboard-hero__right">
+          <div className="dashboard-hero__quote-block">
+            <p className="dashboard-hero__quote-text">
+              &ldquo;Simplifying <br />
+              Taxes for a <br />
+              Brighter Tomorrow&rdquo;
+            </p>
+
+            <span className="dashboard-hero__quote-badge">
+              100% Compliant &bull; Secure
+            </span>
+
+            <div className="dashboard-hero__quote-line" aria-hidden="true" />
+          </div>
         </div>
       </div>
     </section>
@@ -56,5 +58,3 @@ export const DashboardHero = ({ userName }: DashboardHeroProps) => {
 }
 
 export default DashboardHero
-
-

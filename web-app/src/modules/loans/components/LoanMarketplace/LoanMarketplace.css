@@ -19,29 +19,34 @@
 
 /* Top Section: Navy Blue Hero Header Banner */
 .loan-marketplace__header-banner {
-  background: linear-gradient(135deg, var(--palette-sky-900-041d3e) 0%, var(--palette-sky-800-073b75) 60%, var(--palette-sky-800-032b5b) 100%);
-  border-radius: 20px;
-  padding: 1.75rem 2rem;
+  background-color: #01244d;
+  background-image: 
+    linear-gradient(90deg, #01244d 0%, #01244d 44%, rgba(1, 36, 77, 0.95) 54%, rgba(1, 36, 77, 0.2) 70%, transparent 100%),
+    url('/images/loan-banner.png');
+  background-repeat: no-repeat;
+  background-position: left center, right center;
+  background-size: 100% 100%, auto 116%;
+  border-radius: 16px;
+  padding: 2.25rem 2.5rem;
   color: var(--surface);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
+  min-height: 175px;
   margin-bottom: 0;
-  box-shadow: 0 10px 25px rgba(7, 59, 117, 0.2);
+  box-shadow: 0 8px 24px rgba(3, 43, 105, 0.15);
+  box-sizing: border-box;
   position: relative;
   overflow: hidden;
 }
 
 .loan-marketplace__header-banner::after {
-  content: '';
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 220px;
-  height: 220px;
-  background: radial-gradient(circle, rgba(255, 122, 0, 0.22) 0%, transparent 70%);
-  pointer-events: none;
+  display: none;
+}
+
+.loan-marketplace__header-content {
+  position: relative;
+  z-index: 2;
+  max-width: 490px;
 }
 
 .loan-marketplace__header-main {
@@ -76,16 +81,53 @@
 .loan-marketplace__eyebrow {
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--palette-blue-300);
+  color: rgba(147, 197, 253, 0.95);
   letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .loan-marketplace__heading {
   margin: 0;
-  font-size: 1.65rem;
+  font-size: 1.85rem;
   font-weight: 800;
-  letter-spacing: -0.015em;
-  color: var(--surface);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 1024px) {
+  .loan-marketplace__header-banner {
+    padding: 1.6rem 1.75rem;
+    background-size: 100% 100%, auto 100%;
+  }
+
+  .loan-marketplace__header-content {
+    max-width: 420px;
+  }
+
+  .loan-marketplace__heading {
+    font-size: 1.55rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .loan-marketplace__header-banner {
+    padding: 1.5rem 1.25rem;
+    background-image: 
+      linear-gradient(180deg, rgba(1, 36, 77, 0.92) 0%, rgba(1, 36, 77, 0.82) 100%),
+      url('/images/loan-banner.png');
+    background-size: 100% 100%, cover;
+    background-position: center;
+  }
+
+  .loan-marketplace__header-content {
+    max-width: 100%;
+  }
+
+  .loan-marketplace__heading {
+    font-size: 1.45rem;
+  }
 }
 
 /* Loan Catalog Grid (GST-style box cards) */

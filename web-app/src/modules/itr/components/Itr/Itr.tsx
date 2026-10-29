@@ -90,13 +90,17 @@ export const renderItrServiceCard = (
 };
 
 export const renderHeroBanner = () => (
-  <section className="itr-hero-banner">
-    <h1 className="itr-hero-banner__title">Returns, refunds and notices</h1>
-    <p className="itr-hero-banner__subtitle">
-      Filed by a CA, not a form wizard. We pull your AIS and TIS, reconcile them
-      against your books, and show you the computation before anything is
-      submitted.
-    </p>
+  <section className="itr-hero-banner" aria-labelledby="itr-hero-title">
+    <div className="itr-hero-banner__content">
+      <h1 id="itr-hero-title" className="itr-hero-banner__title">
+        Returns, refunds and notices
+      </h1>
+      <p className="itr-hero-banner__subtitle">
+        Filed by a CA, not a form wizard. We pull your AIS and TIS, reconcile them
+        against your books, and show you the computation before anything is
+        submitted.
+      </p>
+    </div>
   </section>
 );
 

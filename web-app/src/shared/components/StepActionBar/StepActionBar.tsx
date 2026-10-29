@@ -1,6 +1,7 @@
 import React from 'react'
 import { UPDATE_AND_REVIEW_LABEL } from '@shared/edit'
 import { SAVE_DRAFT_LABEL } from '@shared/saveDraft'
+import { resetScrollToTop } from '../ScrollToTop'
 import './StepActionBar.css'
 
 export interface StepActionBarProps {
@@ -55,6 +56,7 @@ export const StepActionBar: React.FC<StepActionBarProps> = ({
 
   const handleBackClick = () => {
     if (isSubmitting) return
+    resetScrollToTop(false)
     if (onBack) {
       onBack()
       return
@@ -110,6 +112,7 @@ export const StepActionBar: React.FC<StepActionBarProps> = ({
     }
 
     if (nextType === 'button') {
+      resetScrollToTop(false)
       onNext?.()
     }
   }
