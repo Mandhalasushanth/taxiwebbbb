@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
-import { CompleteProfileCard } from './CompleteProfileCard'
+import { CompleteProfileCard } from '../../src/modules/profile/components/CompleteProfileCard/CompleteProfileCard'
 
 describe('CompleteProfileCard component', () => {
   afterEach(() => {
@@ -39,3 +39,4 @@ describe('CompleteProfileCard component', () => {
     expect(screen.getByText('100% Completed')).toBeDefined()
   })
 })
+

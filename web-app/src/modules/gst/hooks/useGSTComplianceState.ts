@@ -77,6 +77,7 @@ export const useGSTComplianceState = () => {
 
   const [previewDoc, setPreviewDoc] = useState<{ file: File; title: string } | null>(null)
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+  const [isReviewing, setIsReviewing] = useState(false)
   const [errors, setErrors] = useState<ComplianceErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -89,9 +90,9 @@ export const useGSTComplianceState = () => {
     storageNamespace: DRAFT_NAMESPACES.gst,
     serviceId: SERVICE_ID,
     serviceTitle: SERVICE_TITLE,
-    totalSteps: 1,
-    currentStep: 1,
-    stepLabel: fields.requestType || 'Business & Filing Details',
+    totalSteps: 2,
+    currentStep: isReviewing ? 2 : 1,
+    stepLabel: isReviewing ? 'Review & Submit' : (fields.requestType || 'Business & Filing Details'),
     resumeRoute: routePaths.gst.compliance,
     exitRoute: routePaths.gst.root,
     formData: fields,
@@ -131,11 +132,29 @@ export const useGSTComplianceState = () => {
 
   const hasErrors = Object.values(errors).some(Boolean)
 
-  const handleSubmit = (e?: FormEvent) => {
+  const handleProceedToReview = (e?: FormEvent): boolean => {
     e?.preventDefault()
     const newErrors = validateCompliance(fields, { purchaseFile, salesFile, noticeFile })
     setErrors(newErrors)
-    if (Object.keys(newErrors).length === 0) setIsConfirmModalOpen(true)
+    if (Object.keys(newErrors).length === 0) {
+      setIsReviewing(true)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return true
+    }
+    return false
+  }
+
+  const handleEdit = () => {
+    setIsReviewing(false)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleSubmitReview = () => {
+    setIsConfirmModalOpen(true)
+  }
+
+  const handleSubmit = (e?: FormEvent) => {
+    return handleProceedToReview(e)
   }
 
   const handleConfirmSubmit = () => {
@@ -157,6 +176,7 @@ export const useGSTComplianceState = () => {
     setSalesFile(null)
     setNoticeFile(null)
     setErrors({})
+    setIsReviewing(false)
     setIsSubmitted(false)
   }
 
@@ -174,6 +194,11 @@ export const useGSTComplianceState = () => {
     setPreviewDoc,
     isConfirmModalOpen,
     setIsConfirmModalOpen,
+    isReviewing,
+    setIsReviewing,
+    handleProceedToReview,
+    handleEdit,
+    handleSubmitReview,
     errors,
     setErrors,
     stepError: hasErrors ? GST_STEP_ERROR : null,

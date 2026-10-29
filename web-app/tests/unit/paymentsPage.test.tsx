@@ -2,7 +2,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { Payments } from './Payments'
+import { Payments } from '../../src/modules/payments/pages/Payments/Payments'
 import { userStorage } from '@core/storage/userStorage'
 
 const mockNavigate = vi.fn()

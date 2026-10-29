@@ -3,11 +3,12 @@ import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { buildProfileCompletionPath } from '@core/auth'
 import { initialsOf } from '@shared/utils'
-import { CompleteProfileModal, LogoutConfirmModal, LogoutIcon } from '@shared/components'
+import { CompleteProfileModal, LogoutConfirmModal, LogoutIcon, ScrollToTop } from '@shared/components'
 import { BackNavigationLogoutGuard, useLogoutConfirm } from '@modules/authentication'
 import { useAuthStore, useNotificationStore } from '@store/index'
 import { navSections } from './navigation'
 import { useDashboardSummary } from '@modules/dashboard'
+import { useApplicationsCount } from '@modules/applications/hooks/useApplicationsCount'
 import { DashboardBreadcrumb } from './DashboardBreadcrumb'
 import { getCustomerId, getCustomerDisplayName, isPlaceholderCustomerName } from '@modules/profile'
 import './DashboardLayout.css'
@@ -82,7 +83,8 @@ export const DashboardLayout = () => {
 
   const notifications = useNotificationStore((state) => state.notifications)
   const notificationsCount = notifications.length
-  const applicationsCount = data?.brief?.activeApplications ?? 0
+  const liveApplicationsCount = useApplicationsCount()
+  const applicationsCount = liveApplicationsCount > 0 ? liveApplicationsCount : (data?.brief?.activeApplications ?? 0)
 
   const badges: Partial<Record<'applications' | 'notifications', string>> = {
     applications: applicationsCount > 0 ? String(applicationsCount) : undefined,
@@ -99,6 +101,7 @@ export const DashboardLayout = () => {
 
   return (
     <div className="shell">
+      <ScrollToTop />
       {/* Mobile Drawer Overlay Backdrop */}
       {isMobileNavOpen && (
         <div

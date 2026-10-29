@@ -97,7 +97,7 @@ describe('DashboardOverviewGrid Recent Applications', () => {
     { id: 'app-5', code: 'LOAN-2026-200', title: 'Business Loan', meta: 'Submitted 2 days ago', statusLabel: 'Verification', statusTone: 'warning', progress: 75, to: '/loans' },
   ]
 
-  it('keeps 3 applications visible by default and hides the rest', () => {
+  it('keeps 3 applications visible by default and renders View All link pointing to applications manager', () => {
     render(
       <MemoryRouter>
         <DashboardOverviewGrid applications={sampleApps} />
@@ -108,38 +108,31 @@ describe('DashboardOverviewGrid Recent Applications', () => {
     expect(screen.getByText('GST Return Filing')).toBeTruthy()
     expect(screen.getByText('Tax Notice Assistance')).toBeTruthy()
 
-    // 4th and 5th should not be visible initially
+    // 4th and 5th should not be visible on the dashboard card
     expect(screen.queryByText('ITR-1 Filing')).toBeNull()
     expect(screen.queryByText('Business Loan')).toBeNull()
 
-    // View All button should be visible
-    expect(screen.getByRole('button', { name: /view all applications/i })).toBeTruthy()
+    // View All link should point to /applications
+    const viewAllLink = screen.getByRole('link', { name: /view all applications/i })
+    expect(viewAllLink).toBeTruthy()
+    expect(viewAllLink.getAttribute('href')).toBe('/applications')
   })
 
-  it('shows all applications when View All is clicked, and collapses on Show Less', () => {
+  it('does not stretch or expand in place and keeps 3 applications visible', () => {
     render(
       <MemoryRouter>
         <DashboardOverviewGrid applications={sampleApps} />
       </MemoryRouter>
     )
 
-    const viewAllBtn = screen.getByRole('button', { name: /view all applications/i })
-    fireEvent.click(viewAllBtn)
-
-    // Now all 5 should be visible
+    // The dashboard card should stay compact and not expand inline
     expect(screen.getByText('GST Registration')).toBeTruthy()
     expect(screen.getByText('GST Return Filing')).toBeTruthy()
     expect(screen.getByText('Tax Notice Assistance')).toBeTruthy()
-    expect(screen.getByText('ITR-1 Filing')).toBeTruthy()
-    expect(screen.getByText('Business Loan')).toBeTruthy()
-
-    // Button should now say Show Less
-    const showLessBtn = screen.getByRole('button', { name: /show fewer applications/i })
-    expect(showLessBtn).toBeTruthy()
-
-    // Click Show Less to collapse back to 3
-    fireEvent.click(showLessBtn)
     expect(screen.queryByText('ITR-1 Filing')).toBeNull()
     expect(screen.queryByText('Business Loan')).toBeNull()
+
+    // There should be no "Show Less" toggle button stretching the card
+    expect(screen.queryByRole('button', { name: /show fewer applications/i })).toBeNull()
   })
 })

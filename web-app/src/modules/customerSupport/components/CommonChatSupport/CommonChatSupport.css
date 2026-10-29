@@ -1,0 +1,23 @@
+/* Common Chat Support Shared Container */
+.common-chat-support {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Embedded Variant: Used inside application tracker cards and page sections */
+.common-chat-support--embedded {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(15, 40, 76, 0.06);
+  border: 1px solid var(--border, #e2e8f0);
+  background-color: var(--surface, #ffffff);
+}
+
+.common-chat-support--embedded .cs-window {
+  border-radius: 16px;
+  height: 100%;
+}
+

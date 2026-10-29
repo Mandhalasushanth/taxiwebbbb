@@ -31,6 +31,7 @@ export const PersonalInformation = () => {
   const cleanMobile = formatMobile(user.mobile || '')
   const hasValidName = user.fullName && !isPlaceholderCustomerName(user.fullName) ? user.fullName : null
   const hasValidEmail = user.email && !isMockEmail(user.email) ? user.email : null
+  const addressLine2 = (user.addressLine2 || user.areaLocality || '').trim()
 
   const personalItems = [
     { label: 'FULL NAME', value: hasValidName },
@@ -47,11 +48,9 @@ export const PersonalInformation = () => {
   ]
 
   const addressItems = [
-    { label: 'ADDRESS LINE 1', value: user.addressLine1, isFullWidth: true },
-    { label: 'ADDRESS LINE 2', value: user.addressLine2, isFullWidth: true },
-    { label: 'AREA / LOCALITY', value: user.areaLocality },
+    { label: 'ADDRESS LINE 1', value: user.addressLine1 || user.address, isFullWidth: true },
+    ...(addressLine2 ? [{ label: 'ADDRESS LINE 2', value: addressLine2, isFullWidth: true }] : []),
     { label: 'CITY / TOWN', value: user.city },
-    { label: 'DISTRICT', value: user.district },
     { label: 'STATE', value: user.state },
     { label: 'PIN CODE', value: user.pincode },
   ]

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { UnavailableModal } from './UnavailableModal'
+import { UnavailableModal } from '../../src/modules/profile/components/UnavailableModal/UnavailableModal'
 
 describe('UnavailableModal component', () => {
   afterEach(() => {
@@ -63,3 +63,4 @@ describe('UnavailableModal component', () => {
     expect(handleClose).toHaveBeenCalledTimes(1)
   })
 })
+

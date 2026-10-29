@@ -13,15 +13,17 @@ export const LoanMarketplaceHeader: React.FC<LoanMarketplaceHeaderProps> = ({
   return (
     <div className="loan-marketplace__header-wrapper">
       {/* Hero Header Banner */}
-      <section className="loan-marketplace__header-banner">
-        <div className="loan-marketplace__header-main">
-          <div className="loan-marketplace__wallet-icon-box">
-            <WalletIcon />
-          </div>
+      <section className="loan-marketplace__header-banner" aria-labelledby="loan-banner-title">
+        <div className="loan-marketplace__header-content">
+          <div className="loan-marketplace__header-main">
+            <div className="loan-marketplace__wallet-icon-box" aria-hidden="true">
+              <WalletIcon />
+            </div>
 
-          <div className="loan-marketplace__header-text">
-            <span className="loan-marketplace__eyebrow">{eyebrow}</span>
-            <h1 className="loan-marketplace__heading">{title}</h1>
+            <div className="loan-marketplace__header-text">
+              <span className="loan-marketplace__eyebrow">{eyebrow}</span>
+              <h1 id="loan-banner-title" className="loan-marketplace__heading">{title}</h1>
+            </div>
           </div>
         </div>
       </section>

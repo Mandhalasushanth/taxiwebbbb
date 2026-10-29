@@ -5,6 +5,7 @@ import { GSTNoticeResponseFields } from '@modules/gst/shared/GSTComplianceCard/G
 import { ComplianceDocPreviewModal } from '@modules/gst/shared/GSTComplianceCard/GSTComplianceDocPreviewModal'
 import { GSTSubmitConfirmModal } from './GSTSubmitConfirmModal'
 import { GSTSuccessView } from './GSTSuccessView'
+import { GSTComplianceReview } from './GSTComplianceReview'
 import { useGSTComplianceState, type ComplianceRequestOption } from '@modules/gst/hooks/useGSTComplianceState'
 import { FINANCIAL_YEAR_OPTIONS } from '@modules/gst/utils/gstPeriodOptions'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
@@ -34,6 +35,10 @@ export const GSTCompliance: React.FC = () => {
     setPreviewDoc,
     isConfirmModalOpen,
     setIsConfirmModalOpen,
+    isReviewing,
+    handleProceedToReview,
+    handleEdit,
+    handleSubmitReview,
     errors,
     setErrors,
     stepError,
@@ -58,6 +63,47 @@ export const GSTCompliance: React.FC = () => {
             onReset={handleReset}
           />
         </div>
+      </div>
+    )
+  }
+
+  if (isReviewing) {
+    return (
+      <div className="gst-compliance-page">
+        <div className="gst-compliance-wrapper">
+          <GSTComplianceReview
+            fields={fields}
+            purchaseFile={purchaseFile}
+            salesFile={salesFile}
+            noticeFile={noticeFile}
+            isSubmitting={isSubmitting}
+            onEdit={handleEdit}
+            onSaveDraft={openDraftModal}
+            onViewDoc={(file, title) => setPreviewDoc({ file, title })}
+            onSubmit={handleSubmitReview}
+          />
+        </div>
+
+        {/* Document Preview Modal */}
+        {previewDoc && (
+          <ComplianceDocPreviewModal
+            file={previewDoc.file}
+            title={previewDoc.title}
+            onClose={() => setPreviewDoc(null)}
+          />
+        )}
+
+        {/* Confirmation Modal */}
+        <GSTSubmitConfirmModal
+          isOpen={isConfirmModalOpen}
+          requestType={requestType}
+          gstin={gstin}
+          onClose={() => setIsConfirmModalOpen(false)}
+          onConfirm={handleConfirmSubmit}
+          isSubmitting={isSubmitting}
+        />
+
+        <ServiceDraftModal draft={flow} serviceTitle="GST Compliance" />
       </div>
     )
   }
@@ -202,7 +248,7 @@ export const GSTCompliance: React.FC = () => {
 
               <GSTStepErrorBanner message={stepError} />
 
-              {/* Standard Step Action Bar (Back, Save Draft & Exit, Submit Request) */}
+              {/* Step Action Bar */}
               <StepActionBar
                 onBack={() => {
                   if (window.history.state && window.history.state.idx > 0) {
@@ -212,8 +258,8 @@ export const GSTCompliance: React.FC = () => {
                   }
                 }}
                 onSaveDraft={openDraftModal}
-                onNext={() => handleSubmit()}
-                nextLabel="Submit Request"
+                onNext={() => handleProceedToReview()}
+                nextLabel="Proceed to Review"
                 isSubmitting={isSubmitting}
                 nextTestId="gst-compliance-submit-btn"
               />

@@ -7,6 +7,7 @@ export interface DetailCardItem {
   value: React.ReactNode | string | number | boolean | undefined | null
   isFullWidth?: boolean
   isVerified?: boolean
+  isOptional?: boolean
 }
 
 export interface DetailCardProps {
@@ -80,8 +81,12 @@ export const DetailCard: React.FC<DetailCardProps> = ({
 
       <div className="profile-detail-card__body">
         {items.map((item, index) => {
-          const { value, isVerified, isFullWidth, label } = item
+          const { value, isVerified, isFullWidth, isOptional, label } = item
           const hasValue = isFieldValuePresent(value)
+
+          if (isOptional && !hasValue) {
+            return null
+          }
 
           return (
             <div

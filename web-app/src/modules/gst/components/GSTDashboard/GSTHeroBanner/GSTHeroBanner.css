@@ -1,48 +1,89 @@
 /* TaxEdge GST Dashboard Hero Banner */
 .gst-hero-banner {
-  background-color: var(--palette-blue-800-032b69);
-  background-image: url('/assets/images/dashboard-banner-bg.png');
-  background-size: cover;
-  background-position: center right;
+  background-color: #01244d;
+  background-image: 
+    linear-gradient(90deg, #01244d 0%, #01244d 44%, rgba(1, 36, 77, 0.95) 54%, rgba(1, 36, 77, 0.2) 70%, transparent 100%),
+    url('/images/gst-banner.png');
   background-repeat: no-repeat;
+  background-position: left center, right center;
+  background-size: 100% 100%, auto 116%;
   border-radius: 16px;
-  padding: 2rem 2.25rem;
+  padding: 2.25rem 2.5rem;
   color: var(--surface);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 6px 20px rgba(3, 43, 105, 0.2);
+  box-shadow: 0 8px 24px rgba(3, 43, 105, 0.15);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  min-height: 175px;
   margin-bottom: 1.75rem;
 }
 
 .gst-hero-banner__header {
   position: relative;
   z-index: 2;
+  max-width: 490px;
   margin-bottom: 0;
 }
 
 .gst-hero-banner__title {
-  font-size: 2rem;
+  font-size: 2.05rem;
   font-weight: 800;
-  color: var(--surface);
+  color: #ffffff;
   margin: 0 0 0.65rem 0;
-  line-height: 1.2;
+  line-height: 1.25;
   letter-spacing: -0.02em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 
 .gst-hero-banner__description {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: rgba(241, 245, 249, 0.92);
-  max-width: 680px;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: rgba(248, 250, 252, 0.95);
   margin: 0;
+  font-weight: 400;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 1024px) {
+  .gst-hero-banner {
+    padding: 1.6rem 1.75rem;
+    background-size: 100% 100%, auto 100%;
+  }
+
+  .gst-hero-banner__header {
+    max-width: 420px;
+  }
+
+  .gst-hero-banner__title {
+    font-size: 1.65rem;
+  }
+
+  .gst-hero-banner__description {
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: 768px) {
   .gst-hero-banner {
     padding: 1.5rem 1.25rem;
+    background-image: 
+      linear-gradient(180deg, rgba(1, 36, 77, 0.92) 0%, rgba(1, 36, 77, 0.82) 100%),
+      url('/images/gst-banner.png');
+    background-size: 100% 100%, cover;
+    background-position: center;
+  }
+
+  .gst-hero-banner__header {
+    max-width: 100%;
   }
 
   .gst-hero-banner__title {
-    font-size: 1.5rem;
+    font-size: 1.45rem;
+  }
+
+  .gst-hero-banner__description {
+    font-size: 0.88rem;
   }
 }

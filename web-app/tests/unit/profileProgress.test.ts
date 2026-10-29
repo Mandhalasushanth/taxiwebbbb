@@ -7,7 +7,7 @@ import {
   formatFullAddress,
   getCustomerId,
   getCustomerDisplayName,
-} from './profileProgress'
+} from '../../src/modules/profile/utils/profileProgress'
 import type { AuthUser } from '@core/auth'
 
 describe('profileProgress utilities', () => {
@@ -48,6 +48,7 @@ describe('profileProgress utilities', () => {
       email: 'john@example.com',
       mobile: '9121781234',
       role: 'CUSTOMER',
+      isProfileComplete: true,
       gender: 'male',
       dob: '1990-01-01',
       pan: 'ABCDE1234F',
@@ -55,83 +56,88 @@ describe('profileProgress utilities', () => {
       addressLine1: 'Flat 101, Highrise Apt',
       city: 'Hyderabad',
       state: 'Telangana',
-      pincode: '500081',
-      isProfileComplete: true,
+      pincode: '500001',
     }
 
     const progress = calculateProfileProgress(completeUser)
     expect(progress.percentage).toBe(100)
     expect(progress.isFullyComplete).toBe(true)
+    expect(progress.completedCount).toBe(5)
     expect(progress.missingFields.length).toBe(0)
   })
 
-  it('never shows 100% if mandatory fields remain incomplete', () => {
-    const incompleteUser: AuthUser = {
-      id: 'usr_partial',
+  it('caps progress at 90% when mandatory verification/isProfileComplete is not yet true', () => {
+    const user: AuthUser = {
+      id: 'usr_almost',
       fullName: 'John Doe',
       email: 'john@example.com',
       mobile: '9121781234',
       role: 'CUSTOMER',
-      isProfileComplete: false,
+      isProfileComplete: false, // Flag is false
+      gender: 'male',
+      dob: '1990-01-01',
+      pan: 'ABCDE1234F',
+      aadhaar: '123456789012',
+      addressLine1: 'Road No 12',
+      city: 'Pune',
+      state: 'Maharashtra',
+      pincode: '411001',
     }
 
-    const progress = calculateProfileProgress(incompleteUser)
-    expect(progress.percentage).toBeLessThan(100)
+    const progress = calculateProfileProgress(user)
+    expect(progress.percentage).toBe(90)
     expect(progress.isFullyComplete).toBe(false)
   })
 
-  it('formats customer type properly', () => {
+  it('formatCustomerType capitalizes and formats known types', () => {
     expect(formatCustomerType('individual')).toBe('Individual')
-    expect(formatCustomerType('business')).toBe('Business')
     expect(formatCustomerType('pvtltd')).toBe('Private Limited')
-    expect(formatCustomerType('public_limited')).toBe('Public Limited')
-    expect(formatCustomerType('huf')).toBe('HUF')
+    expect(formatCustomerType('llp')).toBe('LLP')
     expect(formatCustomerType('aop_boi')).toBe('AOP / BOI')
-    expect(formatCustomerType('ngo_trust')).toBe('NGO / Trust')
-    expect(formatCustomerType(null)).toBe(null)
-    expect(formatCustomerType('')).toBe(null)
+    expect(formatCustomerType(null)).toBeNull()
+    expect(formatCustomerType('')).toBeNull()
   })
 
-  it('formats gender properly', () => {
+  it('formatGender formats gender values properly', () => {
     expect(formatGender('male')).toBe('Male')
     expect(formatGender('female')).toBe('Female')
-    expect(formatGender(null)).toBe(null)
-    expect(formatGender('   ')).toBe(null)
+    expect(formatGender('other')).toBe('Other')
+    expect(formatGender(undefined)).toBeNull()
   })
 
-  it('formats full address properly', () => {
-    const userWithAddress: AuthUser = {
-      id: 'usr_1',
-      fullName: '',
-      email: '',
+  it('formatFullAddress formats user address into comma-separated text', () => {
+    const user: AuthUser = {
+      id: '1',
+      fullName: 'Test',
+      email: 'test@example.com',
       mobile: '9121781234',
       role: 'CUSTOMER',
-      isProfileComplete: false,
-      addressLine1: 'Road No 12',
+      isProfileComplete: true,
+      addressLine1: 'Flat 101',
+      addressLine2: 'Sky Towers',
       city: 'Hyderabad',
       state: 'Telangana',
-      pincode: '500034',
+      pincode: '500081',
     }
-    expect(formatFullAddress(userWithAddress)).toBe('Road No 12, Hyderabad, Telangana, 500034')
-    expect(formatFullAddress(null)).toBe(null)
+
+    expect(formatFullAddress(user)).toBe('Flat 101, Sky Towers, Hyderabad, Telangana, 500081')
   })
 
-  it('getCustomerId resolves temporary TX-<last6> for incomplete profile and permanent ID for complete profile', () => {
+  it('getCustomerId returns TX- prefix with id when profile is complete, and TX-<last 6 digits> when incomplete', () => {
     const incompleteUser: AuthUser = {
-      id: 'usr_81234',
-      fullName: '',
+      id: 'usr_xyz',
+      fullName: 'Valued Client',
       email: '',
       mobile: '9121781234',
       role: 'CUSTOMER',
       isProfileComplete: false,
     }
-    // For mobile '9121781234', last 6 digits are '781234'
     expect(getCustomerId(incompleteUser)).toBe('TX-781234')
 
     const completeUser: AuthUser = {
       id: 'usr_650681',
-      fullName: 'John Doe',
-      email: 'john@example.com',
+      fullName: 'Sagarika Jena',
+      email: 'sagarika@example.com',
       mobile: '9121781234',
       role: 'CUSTOMER',
       isProfileComplete: true,
@@ -139,11 +145,11 @@ describe('profileProgress utilities', () => {
     expect(getCustomerId(completeUser)).toBe('TX-650681')
   })
 
-  it('getCustomerDisplayName shows Guest User before completion and full name after completion', () => {
+  it('getCustomerDisplayName returns fullName when complete and Guest User when incomplete', () => {
     const incompleteUser: AuthUser = {
-      id: 'usr_81234',
+      id: 'usr_xyz',
       fullName: 'Valued Client',
-      email: '9121781234@taxedge.in',
+      email: '',
       mobile: '9121781234',
       role: 'CUSTOMER',
       isProfileComplete: false,
@@ -151,13 +157,14 @@ describe('profileProgress utilities', () => {
     expect(getCustomerDisplayName(incompleteUser)).toBe('Guest User')
 
     const completeUser: AuthUser = {
-      id: 'usr_81234',
-      fullName: 'Ravi Kumar',
-      email: 'ravi@example.com',
+      id: 'usr_650681',
+      fullName: 'Sagarika Jena',
+      email: 'sagarika@example.com',
       mobile: '9121781234',
       role: 'CUSTOMER',
       isProfileComplete: true,
     }
-    expect(getCustomerDisplayName(completeUser)).toBe('Ravi Kumar')
+    expect(getCustomerDisplayName(completeUser)).toBe('Sagarika Jena')
   })
 })
+

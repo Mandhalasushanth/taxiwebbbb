@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { receiptService } from './receiptService'
+import { receiptService } from '../../src/modules/payments/services/receiptService'
 import { authStorage } from '@core/auth'
 import { userStorage } from '@core/storage/userStorage'
 

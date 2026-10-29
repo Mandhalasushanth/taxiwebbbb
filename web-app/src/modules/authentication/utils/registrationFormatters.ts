@@ -57,7 +57,7 @@ export const buildRegisteredUser = (
   customerType: values.customerType,
   pan: values.pan.trim(),
   addressLine1: values.addressLine1.trim(),
-  addressLine2: '',
+  addressLine2: (values.areaLocality || '').trim(),
   areaLocality: values.areaLocality.trim(),
   city: values.city.trim(),
   district: values.district.trim(),

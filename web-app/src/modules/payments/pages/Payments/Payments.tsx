@@ -7,7 +7,6 @@ import {
   FileText,
   ChevronRight,
   ArrowRight,
-  X,
   ExternalLink,
 } from 'lucide-react'
 import { routePaths } from '@core/config'
@@ -15,8 +14,9 @@ import { authStorage } from '@core/auth'
 import { userStorage } from '@core/storage/userStorage'
 import { useAppStore } from '@store/index'
 import { useApplications } from '@modules/applications'
-import { PaymentCheckout } from '@shared/components/PaymentCheckout'
 import type { PaymentResult } from '@shared/components/PaymentCheckout/payment.types'
+import { PaymentQuickLinksModal } from './components/PaymentQuickLinksModal'
+import { PaymentCheckoutModal } from './components/PaymentCheckoutModal'
 import './Payments.css'
 
 export interface PaymentItem {
@@ -375,159 +375,20 @@ export const Payments: React.FC = () => {
       </section>
 
       {/* Quick Links Dialog Modal */}
-      {activeModal && (
-        <div className="payments-modal-overlay" onClick={() => setActiveModal(null)} role="dialog" aria-modal="true">
-          <div
-            className="payments-modal-dialog"
-            onClick={(e) => e.stopPropagation()}
-            aria-labelledby="payments-modal-title"
-          >
-            <div className="payments-modal-dialog__header">
-              <div className="payments-modal-dialog__title-row">
-                <div className="payments-modal-dialog__icon-circle">
-                  {activeModal === 'history' ? (
-                    <Clock size={20} className="text-sky-600" />
-                  ) : (
-                    <FileText size={20} className="text-sky-600" />
-                  )}
-                </div>
-                <h3 id="payments-modal-title" className="payments-modal-dialog__title">
-                  {activeModal === 'history' ? 'Payment History' : 'Invoices & Receipts'}
-                </h3>
-              </div>
-              <button
-                type="button"
-                className="payments-modal-dialog__close-btn"
-                onClick={() => setActiveModal(null)}
-                aria-label="Close dialog"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <div className="payments-modal-dialog__body">
-              {activeModal === 'history' ? (
-                paidApps.length === 0 ? (
-                  <div className="payments-modal-dialog__empty-msg">
-                    <p>
-                      You have no completed payments yet. Once you make a payment, your full transaction history will appear here.
-                    </p>
-                  </div>
-                ) : (
-                  <div>
-                    <div className="payments-modal-dialog__summary-banner">
-                      <span>
-                        You have <strong>{paidApps.length}</strong> completed transaction{paidApps.length > 1 ? 's' : ''} totaling{' '}
-                        <strong>₹{totalPaid.toLocaleString('en-IN')}</strong>.
-                      </span>
-                    </div>
-                    <ul className="payments-modal-dialog__list">
-                      {paidApps.map((app) => (
-                        <li key={app.id} className="payments-modal-dialog__item">
-                          <div>
-                            <p className="payments-modal-dialog__item-title">{app.title}</p>
-                            <p className="payments-modal-dialog__item-meta">
-                              App #{app.code} • {app.paidAt || app.date}
-                            </p>
-                          </div>
-                          <div className="payments-modal-dialog__item-right">
-                            <span className="payments-modal-dialog__item-amount">
-                              ₹{Number(app.amount).toLocaleString('en-IN')}
-                            </span>
-                            <span className="payments-modal-dialog__item-badge">Paid ✓</span>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )
-              ) : paidApps.length === 0 ? (
-                <div className="payments-modal-dialog__empty-msg">
-                  <p>
-                    No invoices or payment receipts are available yet. Invoices are generated automatically upon successful payment.
-                  </p>
-                </div>
-              ) : (
-                <div>
-                  <div className="payments-modal-dialog__summary-banner">
-                    <span>
-                      <strong>{paidApps.length}</strong> tax invoice receipt{paidApps.length > 1 ? 's' : ''} available for download.
-                    </span>
-                  </div>
-                  <ul className="payments-modal-dialog__list">
-                    {paidApps.map((app) => (
-                      <li key={app.id} className="payments-modal-dialog__item">
-                        <div>
-                          <p className="payments-modal-dialog__item-title">{app.title}</p>
-                          <p className="payments-modal-dialog__item-meta">
-                            Invoice for #{app.code} • ₹{Number(app.amount).toLocaleString('en-IN')}
-                          </p>
-                        </div>
-                        <Link
-                          to={routePaths.paymentReceipt(app.code || app.id)}
-                          className="payments-modal-dialog__action-btn"
-                          onClick={() => setActiveModal(null)}
-                        >
-                          <span>View Invoice</span>
-                          <ExternalLink size={14} />
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            <div className="payments-modal-dialog__footer">
-              <button
-                type="button"
-                className="payments-modal-dialog__dismiss-btn"
-                onClick={() => setActiveModal(null)}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <PaymentQuickLinksModal
+        activeModal={activeModal}
+        onClose={() => setActiveModal(null)}
+        paidApps={paidApps}
+        totalPaid={totalPaid}
+      />
 
       {/* Pay Now Checkout Modal */}
-      {checkoutApp && (
-        <div className="payments-checkout-overlay" role="dialog" aria-modal="true">
-          <div className="payments-checkout-modal">
-            <div className="payments-checkout-modal__header">
-              <div className="payments-checkout-modal__title-box">
-                <h3 className="payments-checkout-modal__title">Complete Payment</h3>
-                <p className="payments-checkout-modal__subtitle">
-                  {checkoutApp.title} (App #{checkoutApp.code})
-                </p>
-              </div>
-              <button
-                type="button"
-                className="payments-checkout-modal__close-btn"
-                onClick={() => setCheckoutApp(null)}
-                aria-label="Close checkout"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className="payments-checkout-modal__body">
-              <PaymentCheckout
-                amount={checkoutApp.amount}
-                serviceId={checkoutApp.id}
-                serviceTitle={checkoutApp.title}
-                applicationRef={checkoutApp.code}
-                applicantName={user?.fullName || 'Client'}
-                onBack={() => setCheckoutApp(null)}
-                onSuccess={handlePaymentSuccess}
-                showTrustBadges={true}
-                enablePromoCode={true}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      <PaymentCheckoutModal
+        checkoutApp={checkoutApp}
+        onClose={() => setCheckoutApp(null)}
+        onSuccess={handlePaymentSuccess}
+        applicantName={user?.fullName || 'Client'}
+      />
     </div>
   )
 }

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
-import { DetailCard } from './DetailCard'
+import { DetailCard } from '../../src/modules/profile/components/DetailCard/DetailCard'
 
 describe('DetailCard component', () => {
   afterEach(() => {
@@ -77,4 +77,39 @@ describe('DetailCard component', () => {
     fireEvent.click(editBtn)
     expect(handleEdit).toHaveBeenCalledTimes(1)
   })
+
+  it('does not render optional item and does not render Pending badge when optional item is missing', () => {
+    render(
+      <DetailCard
+        title="Residential Address"
+        items={[
+          { label: 'ADDRESS LINE 1', value: '123 Main St' },
+          { label: 'ADDRESS LINE 2', value: '', isOptional: true },
+          { label: 'CITY / TOWN', value: 'Hyderabad' },
+        ]}
+      />
+    )
+
+    expect(screen.getByText('123 Main St')).toBeDefined()
+    expect(screen.getByText('Hyderabad')).toBeDefined()
+    expect(screen.queryByText('ADDRESS LINE 2')).toBeNull()
+    expect(screen.queryByText('Pending')).toBeNull()
+  })
+
+  it('renders optional item when value is present', () => {
+    render(
+      <DetailCard
+        title="Residential Address"
+        items={[
+          { label: 'ADDRESS LINE 1', value: '123 Main St' },
+          { label: 'ADDRESS LINE 2', value: 'Suite 400', isOptional: true },
+        ]}
+      />
+    )
+
+    expect(screen.getByText('123 Main St')).toBeDefined()
+    expect(screen.getByText('ADDRESS LINE 2')).toBeDefined()
+    expect(screen.getByText('Suite 400')).toBeDefined()
+  })
 })
+
