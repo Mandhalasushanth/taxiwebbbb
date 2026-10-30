@@ -1,4 +1,4 @@
-export type PaymentMethodType = 'upi' | 'card' | 'netbanking'
+export type PaymentMethodType = 'upi' | 'debit' | 'credit' | 'netbanking' | 'card'
 
 export interface CardDetails {
   cardNumber: string
@@ -35,6 +35,7 @@ export interface PaymentCheckoutProps {
   serviceTitle?: string
   applicationRef?: string
   applicantName?: string
+  summaryTitle?: string
   onBack?: () => void
   onSuccess: (result: PaymentResult) => void
   showTrustBadges?: boolean

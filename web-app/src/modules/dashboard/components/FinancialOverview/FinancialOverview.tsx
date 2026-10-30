@@ -54,12 +54,11 @@ export const FinancialOverview = ({
   const completedStat = stats.find((s) => s.id === 'completed')
 
   const pendingPaymentApp = userStorage.getUserApplications().find((a) => {
-    const isTds = (a.title || '').toLowerCase().includes('tds') || (a.code || '').startsWith('TDS-')
-    return isTds && a.chargesFinalized && a.paymentStatus === 'Pending'
+    return a.paymentStatus === 'Pending'
   })
 
   const paymentDueLink = pendingPaymentApp
-    ? `${routePaths.applicationTrack(pendingPaymentApp.code || pendingPaymentApp.id)}?tab=payments`
+    ? `/payments/checkout/${pendingPaymentApp.code || pendingPaymentApp.id}`
     : routePaths.payments
 
   const items = [
@@ -101,6 +100,9 @@ export const FinancialOverview = ({
     <section className="financial-overview" aria-label="Your Financial Overview">
       <div className="financial-overview__header">
         <h2 className="financial-overview__title">Your Financial Overview</h2>
+        <Link to={routePaths.applications} className="financial-overview__view-all">
+          View All &rarr;
+        </Link>
       </div>
 
       <div className="financial-overview__grid">

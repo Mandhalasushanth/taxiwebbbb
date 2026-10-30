@@ -125,7 +125,7 @@ export const getResolvedReviewDetails = (
       : 'Let TaxEdge CA calculate from documents'
 
   return {
-    gstin: filingData?.gstin?.trim() || '29AAAAA0000A1Z5',
+    gstin: filingData?.gstin?.trim() || '',
     businessName: filingData?.businessName?.trim() || 'Shree Deshmukh Traders',
     financialYear: fy,
     filingPeriod: period,

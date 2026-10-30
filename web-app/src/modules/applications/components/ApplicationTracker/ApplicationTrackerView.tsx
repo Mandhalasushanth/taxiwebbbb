@@ -66,7 +66,7 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
   const [mgrGovFees, setMgrGovFees] = useState('0')
   const [mgrSuccess, setMgrSuccess] = useState('')
   const [mgrError, setMgrError] = useState('')
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false)
+  const isProcessingPayment = false
 
   if (!data) {
     return (
@@ -230,22 +230,7 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
 
   const handlePayNow = () => {
     if (isPaid || !data) return
-    setIsProcessingPayment(true)
-
-    setTimeout(() => {
-      const totalAmount = data.finalizedCharges?.total || 999
-      const txnId = `TXN-${Date.now().toString().slice(-6)}`
-
-      userStorage.recordApplicationPayment(data.appId, {
-        transactionId: txnId,
-        paidAmount: totalAmount,
-        paymentMethod: 'UPI / NetBanking',
-      })
-
-      setData(getApplicationTrackerData(appId))
-      setIsProcessingPayment(false)
-      pushToast(`Payment of ₹${totalAmount.toLocaleString('en-IN')} completed successfully!`, 'success')
-    }, 600)
+    navigate(`/payments/checkout/${data.appId}`)
   }
 
   return (

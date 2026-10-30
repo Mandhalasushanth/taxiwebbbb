@@ -30,13 +30,7 @@ const MOCK_ACTIVE_COUPONS: Record<string, MockCoupon> = {
   WELCOME20: { kind: 'percent', value: 20, expiresOn: '2026-01-31', minAmount: 0 },
 }
 
-/** UPI handles of real PSP banks; anything else (e.g. name@fakebank) cannot be verified */
-const MOCK_KNOWN_UPI_HANDLES = new Set([
-  'upi', 'ybl', 'ibl', 'axl', 'paytm', 'apl', 'okaxis', 'okhdfcbank', 'okicici', 'oksbi',
-  'icici', 'hdfcbank', 'sbi', 'axisbank', 'kotak', 'freecharge', 'jupiteraxis', 'waaxis',
-])
-
-const MOCK_LATENCY_MS = 500
+const MOCK_LATENCY_MS = 400
 const delay = (ms = MOCK_LATENCY_MS) => new Promise((resolve) => setTimeout(resolve, ms))
 const randomId = (prefix: string) => `${prefix}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`
 const today = () => new Date().toISOString().slice(0, 10)
@@ -59,28 +53,9 @@ const mockValidateCoupon = ({ code, amount }: CouponValidationRequest): CouponVa
   return { valid: true, code: normalized, discountAmount, message: 'Promo code applied' }
 }
 
-/** Luhn checksum used by every card network */
-const passesLuhn = (digits: string): boolean =>
-  digits
-    .split('')
-    .reverse()
-    .map(Number)
-    .reduce((sum, digit, index) => {
-      if (index % 2 === 0) return sum + digit
-      const doubled = digit * 2
-      return sum + (doubled > 9 ? doubled - 9 : doubled)
-    }, 0) % 10 === 0
-
-const mockDeclineReason = (instrument: PaymentInstrument): string | undefined => {
-  if (instrument.method === 'upi') {
-    const handle = (instrument.upiId ?? '').split('@')[1]?.toLowerCase() ?? ''
-    return MOCK_KNOWN_UPI_HANDLES.has(handle) ? undefined : 'UPI ID could not be verified with any bank. Please check and try again.'
-  }
-  if (instrument.method === 'card') {
-    const digits = (instrument.cardNumber ?? '').replace(/\D/g, '')
-    return digits.length >= 13 && passesLuhn(digits) ? undefined : 'Card was declined by the issuing bank.'
-  }
-  return instrument.bank ? undefined : 'Bank authorisation was not completed.'
+const mockDeclineReason = (_instrument: PaymentInstrument): string | undefined => {
+  // In demo / frontend mock mode, all valid payment attempts succeed
+  return undefined
 }
 
 /* ------------------------------------------------------------------ */

@@ -59,7 +59,7 @@ export const GSTAmendment = () => {
         arnNumber={submittedRecord.reference}
         submissionDateText={new Date(submittedRecord.createdAt).toLocaleDateString('en-US')}
         requestedSection={sectionTitle}
-        gstin={gstin || '29AAAAA0000F1Z2'}
+        gstin={gstin || ''}
         estimatedCompletion={selectedOption?.type === 'non_core' ? 'Immediate / 1 Working Day' : '15 Working Days'}
         onTrackAmendment={() => navigate(routePaths.applications)}
         onGoToDashboard={handleBackToDashboard}

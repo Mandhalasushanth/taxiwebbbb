@@ -216,7 +216,7 @@ export const RevisionReviewSummary: React.FC<RevisionReviewSummaryProps> = ({
       <div className="step5-content-grid">
         <div className="step5-col-left">
           {renderCard('Original Return', 'Edit Original Return', 1, [
-            { label: 'Ack Number', value: ackNumber || '987654321012345', isMono: true },
+            { label: 'Ack Number', value: ackNumber || 'Pending Submission', isMono: true },
             { label: 'Assessment Year', value: selectedAy || 'AY 2025-26' },
             { label: 'ITR Form', value: returnDetails?.itrForm || 'ITR-1' },
             { label: 'Gross Total Income', value: returnDetails?.grossTotalIncome || '₹8,12,400' },

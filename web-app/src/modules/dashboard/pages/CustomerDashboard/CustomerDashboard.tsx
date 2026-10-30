@@ -44,7 +44,9 @@ export const CustomerDashboard = () => {
       <FinancialOverview
         stats={data.stats}
         activeCount={data.brief?.activeApplications}
+        pendingDocsCount={data.brief?.pendingDocuments}
         paymentDue={data.brief?.paymentDue}
+        completedCount={data.brief?.completedServices}
       />
 
       {/* 4. Incomplete Application Drafts (Supports Multiple Drafts matching Mobile View) */}

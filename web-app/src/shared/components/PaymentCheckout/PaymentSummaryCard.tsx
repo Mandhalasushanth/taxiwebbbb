@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { FileText, ArrowRight } from 'lucide-react'
 import type { CouponValidationResult } from '@core/payments'
 import type { PaymentBreakdown } from './payment.types'
 import { formatCurrency } from '@shared/utils'
@@ -6,6 +7,7 @@ import { formatCurrency } from '@shared/utils'
 interface PaymentSummaryCardProps {
   breakdown: PaymentBreakdown
   serviceTitle?: string
+  summaryTitle?: string
   applicationRef?: string
   applicantName?: string
   isProcessing: boolean
@@ -21,6 +23,7 @@ interface PaymentSummaryCardProps {
 export const PaymentSummaryCard: React.FC<PaymentSummaryCardProps> = ({
   breakdown,
   serviceTitle = 'Service Filing',
+  summaryTitle = 'Order Summary',
   applicationRef,
   applicantName,
   isProcessing,
@@ -57,68 +60,76 @@ export const PaymentSummaryCard: React.FC<PaymentSummaryCardProps> = ({
   }
 
   return (
-    <aside className="payment-summary-card" data-testid="payment-summary-card">
-      <div className="payment-summary-header">
-        <h3 className="payment-summary-title">Fee Summary</h3>
-        {applicationRef && <span className="payment-summary-ref">{applicationRef}</span>}
-      </div>
+    <div className="payment-summary-wrapper">
+      {/* 1. Header aligned with left section title */}
+      <h3 className="payment-section-title">{summaryTitle}</h3>
 
-      <div className="payment-summary-details">
-        <div className="payment-summary-service">
-          <span className="payment-summary-label">Service</span>
-          <span className="payment-summary-val">{serviceTitle}</span>
-        </div>
-        {applicantName && (
-          <div className="payment-summary-service">
-            <span className="payment-summary-label">Applicant</span>
-            <span className="payment-summary-val">{applicantName}</span>
+      <aside className="payment-summary-card" data-testid="payment-summary-card">
+        {/* 2. Service Row with Icon & Reference */}
+        <div className="payment-summary-service-row">
+          <div className="payment-summary-icon-box">
+            <FileText size={20} className="payment-summary-file-icon" />
           </div>
-        )}
-      </div>
-
-      <div className="payment-summary-divider" />
-
-      <div className="payment-breakdown-rows">
-        <div className="payment-breakdown-row">
-          <span>Professional Fee</span>
-          <strong>{formatCurrency(breakdown.baseAmount)}</strong>
-        </div>
-        <div className="payment-breakdown-row">
-          <span>GST @ 18%</span>
-          <strong>{formatCurrency(breakdown.gstAmount)}</strong>
-        </div>
-        {breakdown.discountAmount > 0 && (
-          <div className="payment-breakdown-row payment-breakdown-row--discount">
-            <span>Promo {appliedPromoCode ? `(${appliedPromoCode})` : 'Discount'}</span>
-            <strong>-{formatCurrency(breakdown.discountAmount)}</strong>
+          <div className="payment-summary-service-col">
+            <span className="payment-summary-service-name">{serviceTitle}</span>
+            {applicationRef && (
+              <span className="payment-summary-service-ref">• {applicationRef}</span>
+            )}
+            {applicantName && !applicationRef && (
+              <span className="payment-summary-service-ref">• {applicantName}</span>
+            )}
           </div>
-        )}
+        </div>
+
+      {/* 3. Fee Breakdown List */}
+      <div className="payment-summary-calc-list">
+        <div className="payment-summary-calc-row">
+          <span className="payment-summary-calc-label">Professional Fee</span>
+          <span className="payment-summary-calc-val">{formatCurrency(breakdown.baseAmount)}</span>
+        </div>
+
+        <div className="payment-summary-calc-row">
+          <span className="payment-summary-calc-label">GST (18%)</span>
+          <span className="payment-summary-calc-val">{formatCurrency(breakdown.gstAmount)}</span>
+        </div>
+
+        <div className="payment-summary-calc-row">
+          <span className="payment-summary-calc-label">Discount</span>
+          <span className="payment-summary-calc-val">
+            {breakdown.discountAmount > 0
+              ? `-${formatCurrency(breakdown.discountAmount)}`
+              : '₹0'}
+          </span>
+        </div>
       </div>
 
+      {/* Optional Promo Code Input */}
       {enablePromoCode && !promoApplied && (
         <form className="payment-promo-form" onSubmit={handleApply} noValidate>
           <input
             type="text"
             className={`payment-promo-input ${promoError ? 'payment-input--error' : ''}`}
-            placeholder="Coupon / Promo code"
+            placeholder="Promo code"
             value={promoInput}
             maxLength={20}
             onChange={(e) => {
               setPromoInput(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))
               setPromoError(null)
             }}
-            aria-invalid={Boolean(promoError)}
-            aria-describedby={promoError ? 'payment-promo-error' : undefined}
             aria-label="Promo code"
           />
-          <button type="submit" className="payment-promo-btn" disabled={!promoInput.trim() || isCheckingPromo}>
-            {isCheckingPromo ? 'Checking…' : 'Apply'}
+          <button
+            type="submit"
+            className="payment-promo-btn"
+            disabled={!promoInput.trim() || isCheckingPromo}
+          >
+            {isCheckingPromo ? '…' : 'Apply'}
           </button>
         </form>
       )}
 
       {promoError && (
-        <p id="payment-promo-error" className="payment-field-error payment-promo-error" role="alert">
+        <p className="payment-field-error payment-promo-error" role="alert">
           {promoError}
         </p>
       )}
@@ -126,23 +137,30 @@ export const PaymentSummaryCard: React.FC<PaymentSummaryCardProps> = ({
       {promoApplied && breakdown.discountAmount > 0 && (
         <div className="payment-promo-success">
           <span>
-            {appliedPromoCode} applied! You saved {formatCurrency(breakdown.discountAmount)}.
+            {appliedPromoCode} applied! Saved {formatCurrency(breakdown.discountAmount)}
           </span>
           {onRemovePromo && (
-            <button type="button" className="payment-promo-remove" onClick={handleRemove} disabled={isProcessing}>
+            <button
+              type="button"
+              className="payment-promo-remove"
+              onClick={handleRemove}
+              disabled={isProcessing}
+            >
               Remove
             </button>
           )}
         </div>
       )}
 
-      <div className="payment-summary-total">
-        <div className="payment-total-label">Total Payable</div>
-        <div className="payment-total-val" data-testid="payment-total-amount">
+      {/* 4. Total Amount Banner matching Image */}
+      <div className="payment-summary-total-banner">
+        <span className="payment-summary-total-label">Total Amount</span>
+        <span className="payment-summary-total-value" data-testid="payment-total-amount">
           {formatCurrency(breakdown.totalAmount)}
-        </div>
+        </span>
       </div>
 
+      {/* 5. Complete Payment Action Button */}
       <button
         type="button"
         className="payment-pay-btn"
@@ -153,28 +171,26 @@ export const PaymentSummaryCard: React.FC<PaymentSummaryCardProps> = ({
         {isProcessing ? (
           <>
             <span className="payment-btn-spinner" aria-hidden="true" />
-            <span>Processing securely...</span>
+            <span>Processing Payment...</span>
           </>
         ) : (
           <>
             <span>Pay {formatCurrency(breakdown.totalAmount)}</span>
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
+            <ArrowRight size={16} />
           </>
         )}
       </button>
 
+      {/* Trust reassurance */}
       {showTrustBadges && (
-        <div className="payment-security-box">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#16a34a" strokeWidth="2">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        <div className="payment-summary-trust-sub">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
+            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
           </svg>
-          <span>256-Bit SSL Encrypted • RBI &amp; PCI-DSS Compliant</span>
+          <span>100% Secure & RBI Regulated</span>
         </div>
       )}
-    </aside>
+      </aside>
+    </div>
   )
 }

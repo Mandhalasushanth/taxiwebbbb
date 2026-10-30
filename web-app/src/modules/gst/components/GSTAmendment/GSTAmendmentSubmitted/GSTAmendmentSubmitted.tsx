@@ -19,7 +19,7 @@ export const GSTAmendmentSubmitted: React.FC<GSTAmendmentSubmittedProps> = ({
   arnNumber = 'AA2993436247',
   submissionDateText = '',
   requestedSection = 'Legal Business Name',
-  gstin = '29AAAAA0000F1Z2',
+  gstin = '',
   estimatedCompletion = '15 Working Days',
   onTrackAmendment,
   onOpenMyApplications,

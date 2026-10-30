@@ -9,8 +9,8 @@ interface PaymentUpiFormProps {
 }
 
 const UPI_APPS = [
-  { name: 'Google Pay', handle: '@okaxis' },
   { name: 'PhonePe', handle: '@ybl' },
+  { name: 'GPay', handle: '@okaxis' },
   { name: 'Paytm', handle: '@paytm' },
   { name: 'BHIM', handle: '@upi' },
 ]
@@ -22,57 +22,47 @@ export const PaymentUpiForm: React.FC<PaymentUpiFormProps> = ({
   onUpiIdChange,
   onSelectApp,
 }) => {
+  const handlePillClick = (appName: string, handle: string) => {
+    onSelectApp(appName)
+    const rawBase = upiId.includes('@') ? upiId.split('@')[0] : upiId
+    const base = rawBase?.trim() || 'user'
+    onUpiIdChange(`${base}${handle}`)
+  }
+
   return (
-    <div className="payment-form-card" data-testid="payment-upi-form">
-      <div className="payment-form-header">
-        <h4 className="payment-form-title">Pay via UPI</h4>
-        <span className="payment-badge-zero-fee">Zero Surcharge</span>
-      </div>
-
-      <div className="payment-upi-apps">
-        <span className="payment-label-sm">Fast select popular UPI app:</span>
-        <div className="payment-upi-apps-row">
-          {UPI_APPS.map((app) => {
-            const isSelected = selectedApp === app.name
-            return (
-              <button
-                key={app.name}
-                type="button"
-                className={`payment-upi-app-btn ${isSelected ? 'payment-upi-app-btn--active' : ''}`}
-                onClick={() => {
-                  onSelectApp(app.name)
-                  if (!upiId || upiId.includes('@')) {
-                    const prefix = upiId.split('@')[0] || 'user'
-                    onUpiIdChange(`${prefix}${app.handle}`)
-                  }
-                }}
-              >
-                {app.name}
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
-      <div className="payment-form-group">
-        <label htmlFor="upi-id-input" className="payment-input-label">
-          Enter Virtual Payment Address (VPA / UPI ID)
+    <div className="payment-upi-subcard" data-testid="payment-upi-form">
+      <div className="payment-upi-field-group">
+        <label htmlFor="upi-id-input" className="payment-upi-label">
+          Enter UPI ID / VPA
         </label>
         <input
           id="upi-id-input"
           type="text"
-          className={`payment-input ${error ? 'payment-input--error' : ''}`}
-          placeholder="e.g. mobile@upi or username@okhdfcbank"
+          className={`payment-upi-input ${error ? 'payment-upi-input--error' : ''}`}
+          placeholder="username@bank"
           value={upiId}
           onChange={(e) => onUpiIdChange(e.target.value.trim().toLowerCase())}
           data-testid="upi-id-input"
+          autoComplete="off"
         />
         {error && <span className="payment-field-error" role="alert">{error}</span>}
       </div>
 
-      <p className="payment-helper-text">
-        A payment request will be securely dispatched to your chosen UPI app. Accept it to complete filing instantly.
-      </p>
+      <div className="payment-upi-pills-row">
+        {UPI_APPS.map((app) => {
+          const isSelected = selectedApp === app.name || upiId.endsWith(app.handle)
+          return (
+            <button
+              key={app.name}
+              type="button"
+              className={`payment-upi-pill ${isSelected ? 'payment-upi-pill--active' : ''}`}
+              onClick={() => handlePillClick(app.name, app.handle)}
+            >
+              {app.name}
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }

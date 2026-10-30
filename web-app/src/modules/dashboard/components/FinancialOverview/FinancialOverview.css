@@ -4,13 +4,27 @@
   width: 100%;
   margin-bottom: 2rem;
 }
-
 .financial-overview__header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 1rem;
 }
-
+.financial-overview__view-all {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary-navy);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+.financial-overview__view-all:hover {
+  color: var(--primary-orange);
+  transform: translateX(2px);
+}
 .financial-overview__title {
   margin: 0;
   font-family: var(--font-sans);
@@ -19,13 +33,11 @@
   color: var(--primary-navy);
   letter-spacing: -0.015em;
 }
-
 .financial-overview__grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 }
-
 .financial-card {
   display: flex;
   flex-direction: column;
@@ -45,7 +57,6 @@
   box-shadow: 0 10px 24px rgba(8, 59, 117, 0.08);
   border-color: var(--grey-300);
 }
-
 .financial-card__top {
   display: flex;
   align-items: flex-start;
@@ -53,7 +64,6 @@
   gap: 0.5rem;
   margin-bottom: 0.75rem;
 }
-
 .financial-card__label {
   font-family: var(--font-sans);
   font-size: 0.88rem;
@@ -61,7 +71,6 @@
   color: var(--secondary-text);
   line-height: 1.3;
 }
-
 .financial-card__icon-wrap {
   display: grid;
   place-items: center;
@@ -74,7 +83,6 @@
 .financial-card:hover .financial-card__icon-wrap {
   transform: scale(1.06);
 }
-
 .financial-card__icon-wrap--green {
   background: var(--palette-green-100-e6f9f0);
   color: var(--palette-emerald-500);
@@ -91,17 +99,14 @@
   background: var(--palette-blue-50-eaf2fe);
   color: var(--palette-blue-500);
 }
-
 .financial-card__svg {
   width: 18px;
   height: 18px;
 }
-
 .financial-card__bottom {
   display: flex;
   align-items: baseline;
 }
-
 .financial-card__value {
   font-family: var(--font-sans);
   font-size: 1.65rem;
@@ -109,7 +114,6 @@
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
-
 .financial-card__value--green {
   color: var(--palette-emerald-500);
 }
@@ -122,14 +126,12 @@
 .financial-card__value--blue {
   color: var(--palette-blue-500);
 }
-
 @media (max-width: 1100px) {
   .financial-overview__grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
 }
-
 @media (max-width: 560px) {
   .financial-overview__grid {
     grid-template-columns: repeat(2, 1fr);

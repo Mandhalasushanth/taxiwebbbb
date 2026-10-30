@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { EmptyState, Loader } from '@shared/components'
 import { useSafeBack } from '@shared/hooks'
@@ -55,37 +55,6 @@ export const Receipt = () => {
 
   return (
     <div className="receipt-view-page">
-      {/* Breadcrumb Navigation */}
-      <nav className="receipt-view-page__breadcrumb" aria-label="Breadcrumb">
-        <span className="receipt-view-page__breadcrumb-muted">My Account</span>
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="receipt-view-page__breadcrumb-arrow"
-        >
-          <polyline points="9 18 15 12 9 6" />
-        </svg>
-        <Link to={routePaths.payments} className="receipt-view-page__breadcrumb-link">
-          Payment
-        </Link>
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="receipt-view-page__breadcrumb-arrow"
-        >
-          <polyline points="9 18 15 12 9 6" />
-        </svg>
-        <span className="receipt-view-page__breadcrumb-current">Receipt</span>
-      </nav>
-
       {/* Main Receipt Card */}
       <main className="receipt-view-page__content">
         <ReceiptCard receipt={receipt} />

@@ -2,10 +2,8 @@ import { env, routePaths } from '@core/config'
 import { authStorage } from '@core/auth'
 import { userStorage } from '@core/storage/userStorage'
 import { formatCurrency } from '@shared/utils'
-
 import { dashboardApi } from '../api/dashboardApi'
 import type { DashboardSummary, QuickService, RecentApplication, PendingTask } from '../types/dashboard.types'
-
 export const quickServices: QuickService[] = [
   {
     id: 'gst',
@@ -53,19 +51,16 @@ export const quickServices: QuickService[] = [
     priceUnit: 'from',
   },
 ]
-
 export const buildUserDashboardSummary = (): DashboardSummary => {
   const user = authStorage.getUser()
   const applications = userStorage.getUserApplications()
   const drafts = userStorage.getAllDrafts()
-
   const draftApps: RecentApplication[] = drafts.map((d) => {
     const prefix = d.serviceId
       .replace(/^gst-/, 'GST-')
       .replace(/^itr-/, 'ITR-')
       .toUpperCase()
     const code = `DRAFT-${prefix}-${String(d.savedTimestamp || Date.now()).slice(-4)}`
-
     return {
       id: `draft-${d.serviceId}`,
       code,
@@ -78,89 +73,107 @@ export const buildUserDashboardSummary = (): DashboardSummary => {
       to: d.resumeRoute,
     }
   })
-
   const combinedRecentApps = [...draftApps, ...applications]
-  const activeApps = applications.filter((a) => a.statusLabel !== 'Completed')
-  const completedApps = applications.filter((a) => a.statusLabel === 'Completed')
-
-  // Dynamic payment due calculation
-  // For TDS refund: include only when charges are finalized and paymentStatus is 'Pending'
-  const pendingPaymentApps = applications.filter((app) => {
-    const isTds = (app.title || '').toLowerCase().includes('tds') || (app.code || '').startsWith('TDS-')
-    if (isTds) {
-      return Boolean(app.chargesFinalized && app.paymentStatus === 'Pending' && app.finalizedCharges?.total)
+  // Active applications = active submitted applications + incomplete drafts
+  const activeSubmittedApps = applications.filter(
+    (a) => a.statusLabel !== 'Completed' && (a as any).status !== 'Completed'
+  )
+  const activeCount = activeSubmittedApps.length + drafts.length
+  // Pending documents: calculated strictly from submitted applications (drafts excluded)
+  const pendingDocsCount = activeSubmittedApps.reduce((sum, a) => {
+    if (Array.isArray((a as any).documents) && (a as any).documents.length > 0) {
+      const pending = (a as any).documents.filter(
+        (d: any) => d?.status === 'Pending' || d?.status === 'pending'
+      ).length
+      return sum + pending
     }
-    return app.paymentStatus === 'Pending' && Boolean(app.finalizedCharges?.total)
-  })
-
-  const totalPaymentDue = pendingPaymentApps.reduce((sum, app) => {
-    return sum + (app.finalizedCharges?.total || 0)
+    // Each active submitted application under verification has pending documents
+    return sum + 1
   }, 0)
+  const completedApps = applications.filter(
+    (a) => a.statusLabel === 'Completed' || (a as any).status === 'Completed'
+  )
+  const completedCount = completedApps.length
+  // Dynamic payment due calculation matching mobile app
+  const pendingPaymentApps = applications.filter((app) => {
+    const isPending =
+      app.paymentStatus === 'Pending' ||
+      (app as any).paymentStatus === 'Charges Pending'
+    if (!isPending) return false
 
+    const isTds =
+      (app.title || '').toLowerCase().includes('tds') ||
+      (app.code || '').startsWith('TDS-')
+    if (isTds) {
+      return Boolean(app.chargesFinalized && app.finalizedCharges?.total)
+    }
+    return Boolean(app.finalizedCharges?.total || (app as any).paymentAmount)
+  })
+  const totalPaymentDue = pendingPaymentApps.reduce((sum, app) => {
+    return sum + (app.finalizedCharges?.total || (app as any).paymentAmount || 0)
+  }, 0)
   const pendingPaymentTasks: PendingTask[] = pendingPaymentApps.map((app) => ({
     id: `pay-${app.code || app.id}`,
     title: `Payment Due: ${app.title}`,
-    meta: `${app.code || app.id} · Due amount: ${formatCurrency(app.finalizedCharges?.total || 0)}`,
+    meta: `${app.code || app.id} · Due amount: ${formatCurrency(app.finalizedCharges?.total || (app as any).paymentAmount || 0)}`,
     statusLabel: 'Payment Due',
     statusTone: 'danger',
     actionLabel: 'Pay Now',
-    actionTo: `${routePaths.applicationTrack(app.code || app.id)}?tab=payments`,
+    actionTo: `/payments/checkout/${app.code || app.id}`,
     icon: '💳',
     iconTone: 'danger',
   }))
-
   const dateLabel = new Intl.DateTimeFormat('en-IN', {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
     year: 'numeric',
   }).format(new Date())
-
   const firstName = user?.fullName ? user.fullName.split(' ')[0] : 'there'
-
   const message =
-    activeApps.length === 0
+    activeCount === 0
       ? `Welcome to TaxEdge, ${firstName}! Your account is active. Choose a service below to begin your GST, ITR, or loan application.`
-      : `You have ${activeApps.length} active application(s) in progress. Your documents and filings are up to date.`
-
+      : `You have ${activeCount} active application(s) in progress. Your documents and filings are up to date.`
   return {
     brief: {
       dateLabel,
       message,
-      activeApplications: applications.length,
-      paymentDue: formatCurrency(totalPaymentDue),
+      activeApplications: activeCount,
+      pendingDocuments: pendingDocsCount,
+      paymentDue: totalPaymentDue > 0 ? `₹${totalPaymentDue.toLocaleString('en-IN')}` : '₹0',
+      completedServices: completedCount,
     },
     deadline: null,
     stats: [
       {
         id: 'active',
-        label: 'Active applications',
-        value: String(applications.length),
-        hint: activeApps.length > 0 ? `${activeApps.length} in progress` : 'No active applications',
+        label: 'Active Applications',
+        value: String(activeCount),
+        hint: activeCount > 0 ? `${activeCount} in progress` : 'No active applications',
         tone: 'info',
         icon: '🗎',
       },
       {
         id: 'pending-docs',
-        label: 'Pending documents',
-        value: '0',
-        hint: 'All documents clear',
-        tone: 'success',
+        label: 'Pending Documents',
+        value: String(pendingDocsCount),
+        hint: pendingDocsCount > 0 ? `${pendingDocsCount} documents pending` : 'All documents clear',
+        tone: 'warning',
         icon: '✓',
       },
       {
         id: 'payment-due',
-        label: 'Payment due',
-        value: formatCurrency(totalPaymentDue),
+        label: 'Payment Due',
+        value: totalPaymentDue > 0 ? `₹${totalPaymentDue.toLocaleString('en-IN')}` : '₹0',
         hint: totalPaymentDue > 0 ? `${pendingPaymentApps.length} payment(s) pending` : 'No dues pending',
         tone: totalPaymentDue > 0 ? 'danger' : 'success',
         icon: '₹',
       },
       {
         id: 'completed',
-        label: 'Completed services',
-        value: String(completedApps.length),
-        hint: completedApps.length > 0 ? `${completedApps.length} completed` : 'Get started today',
+        label: 'Completed Services',
+        value: String(completedCount),
+        hint: completedCount > 0 ? `${completedCount} completed` : 'Get started today',
         tone: 'info',
         icon: '✓',
       },
@@ -172,13 +185,19 @@ export const buildUserDashboardSummary = (): DashboardSummary => {
     upcomingDeadlines: [],
   }
 }
-
 export const dashboardService = {
   async getSummary(): Promise<DashboardSummary> {
-    if (env.enableMocks) {
-      await new Promise((resolve) => setTimeout(resolve, 200))
-      return buildUserDashboardSummary()
+    if (!env.enableMocks) {
+      try {
+        const response = await dashboardApi.getSummary()
+        if (response) {
+          return response
+        }
+      } catch {
+        // Fall back to user storage calculation
+      }
     }
-    return dashboardApi.getSummary()
+    await new Promise((resolve) => setTimeout(resolve, 150))
+    return buildUserDashboardSummary()
   },
 }

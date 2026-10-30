@@ -78,7 +78,7 @@ export const DashboardLayout = () => {
       })
       .find(Boolean)
 
-    return matchedSection || { sectionTitle: 'Overview', label: 'Dashboard' }
+    return matchedSection || { sectionTitle: 'Dashboard', label: 'Dashboard' }
   }, [location.pathname])
 
   const notifications = useNotificationStore((state) => state.notifications)
@@ -162,7 +162,13 @@ export const DashboardLayout = () => {
                       navigate({ pathname: routePaths.dashboard, hash: routePaths.dashboardServicesAnchor })
                     }}
                   >
-                    <span className="shell__nav-icon" aria-hidden="true">{item.icon}</span>
+                    <span className="shell__nav-icon" aria-hidden="true">
+                      {item.iconImg ? (
+                        <img src={item.iconImg} alt="" className="shell__nav-icon-img" />
+                      ) : (
+                        item.icon
+                      )}
+                    </span>
                     <span>{item.label}</span>
                   </a>
                 ) : (
@@ -175,7 +181,13 @@ export const DashboardLayout = () => {
                       setIsMobileNavOpen(false)
                     }}
                   >
-                    <span className="shell__nav-icon" aria-hidden="true">{item.icon}</span>
+                    <span className="shell__nav-icon" aria-hidden="true">
+                      {item.iconImg ? (
+                        <img src={item.iconImg} alt="" className="shell__nav-icon-img" />
+                      ) : (
+                        item.icon
+                      )}
+                    </span>
                     <span>{item.label}</span>
                     {item.badgeKey && badges[item.badgeKey] && (
                       <span className="shell__nav-badge">{badges[item.badgeKey]}</span>

@@ -6,6 +6,7 @@ import {
   GstDocIcon,
   ItrDocIcon,
   LoansIcon,
+  CompanyIcon,
   BusinessIcon,
   InsuranceIcon,
 } from './ApplicationIcons'
@@ -31,6 +32,8 @@ export const ApplicationCategoryTabs: React.FC<ApplicationCategoryTabsProps> = (
         return <ItrDocIcon />
       case 'Loans':
         return <LoansIcon />
+      case 'Company Registration':
+        return <CompanyIcon />
       case 'Business':
         return <BusinessIcon />
       case 'Insurance':
@@ -63,7 +66,6 @@ export const ApplicationCategoryTabs: React.FC<ApplicationCategoryTabsProps> = (
               {count > 0 && (
                 <span className="app-cat-tab-count">{count}</span>
               )}
-              {isActive && <div className="app-cat-tab-active-bar" />}
             </button>
           )
         })}
