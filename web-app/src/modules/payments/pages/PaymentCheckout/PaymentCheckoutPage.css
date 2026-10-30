@@ -1,0 +1,19 @@
+/* Complete Payment / Checkout Page Styles */
+.payment-checkout-page {
+  width: 100%;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0.25rem 1.25rem 2.5rem;
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+}
+
+.payment-checkout-page__body {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .payment-checkout-page {
+    padding: 0.25rem 0.75rem 2rem;
+  }
+}

@@ -59,7 +59,7 @@ interface GSTAmendmentReviewProps {
 }
 
 export const GSTAmendmentReview: React.FC<GSTAmendmentReviewProps> = ({
-  gstin = '29AAAAA0000F1Z2',
+  gstin = '',
   sectionTitle = 'Legal Business Name',
   amendmentType = 'core',
   currentValue: _currentValue,

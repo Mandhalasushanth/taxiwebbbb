@@ -170,7 +170,34 @@ export const userStorage = {
         return Boolean(cleanDigits && cleanDigits.length >= 5 && aDigits === cleanDigits)
       })
     }
-    if (index < 0) return null
+    if (index < 0) {
+      const codeUpper = (codeOrId || '').toUpperCase()
+      const title = codeUpper.includes('TDS')
+        ? 'TDS Refund'
+        : codeUpper.includes('GST')
+        ? 'GST Registration'
+        : codeUpper.includes('ITR')
+        ? 'ITR Filing'
+        : 'Service Application'
+      const newApp: RecentApplication = {
+        id: cleanId,
+        code: codeOrId,
+        title,
+        meta: `Application #${codeOrId} • Recently submitted`,
+        icon: 'FileText',
+        to: `/applications/${cleanId}`,
+        statusLabel: 'Under Processing',
+        statusTone: 'info',
+        progress: 50,
+        paymentStatus: 'Paid',
+        transactionId: txnDetails.transactionId,
+        paidAt: new Date().toISOString(),
+      }
+      raw.unshift(newApp)
+      localStore.set(USER_APPLICATIONS_KEY, raw)
+      emitApplicationsUpdated()
+      return newApp
+    }
 
     const updated: RecentApplication = {
       ...raw[index],
@@ -292,15 +319,19 @@ export const userStorage = {
       // Safe fallback
     }
     localStore.remove(USER_APPLICATIONS_KEY)
-    emitApplicationsUpdated()
     localStore.remove(APPLICATION_DRAFTS_KEY)
     localStore.remove(USER_DEADLINES_KEY)
     localStore.remove('taxedge.notifications')
+    localStore.remove('taxedge_gst_applications')
+    localStore.remove('taxedge_gst_returns')
+    localStore.remove('taxedge_gst_amendments')
+    localStore.remove('taxedge_gst_certificates')
+    localStore.remove('taxedge_gst_cancellations')
+    localStore.remove('taxedge_loan_latest')
+    emitApplicationsUpdated()
   },
 }
 
 if (typeof window !== 'undefined') {
   ;(window as unknown as Record<string, unknown>).__taxedge_clear_user_data__ = () => userStorage.clearAllUserData()
 }
-
-

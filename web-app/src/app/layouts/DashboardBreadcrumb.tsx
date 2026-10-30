@@ -240,7 +240,7 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
     )
   }
 
-  if (currentNav.label === 'Dashboard' || path === routePaths.dashboard) {
+  if (currentNav.label === 'Dashboard' || currentNav.label === 'Overview' || path === routePaths.dashboard) {
     return (
       <nav className="shell__breadcrumb" aria-label="Breadcrumb">
         <span className="shell__breadcrumb-current">Dashboard</span>

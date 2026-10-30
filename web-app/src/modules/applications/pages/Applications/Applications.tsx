@@ -10,8 +10,22 @@ import type {
 import { ApplicationCategoryTabs } from '../../components/ApplicationCategoryTabs'
 import { ApplicationOverviewCards } from '../../components/ApplicationOverviewCards'
 import { ApplicationCard } from '../../components/ApplicationCard'
+import {
+  normalizeApplicationStatus,
+  matchesStatusFilter,
+} from '../../utils/applicationStatusUtils'
 import './Applications.css'
 import './Applications.part2.css'
+
+const VALID_CATEGORIES: ApplicationCategory[] = [
+  'All',
+  'GST',
+  'ITR',
+  'Loans',
+  'Company Registration',
+  'Business',
+  'Insurance',
+]
 
 export const Applications: React.FC = () => {
   const { data, isLoading } = useApplications()
@@ -20,7 +34,7 @@ export const Applications: React.FC = () => {
   const [searchParams] = useSearchParams()
   const categoryParam = searchParams.get('category')
   const [activeCategory, setActiveCategory] = useState<ApplicationCategory>(() => {
-    if (categoryParam && ['All', 'GST', 'ITR', 'Loans', 'Business', 'Insurance'].includes(categoryParam)) {
+    if (categoryParam && VALID_CATEGORIES.includes(categoryParam as ApplicationCategory)) {
       return categoryParam as ApplicationCategory
     }
     return 'All'
@@ -28,7 +42,7 @@ export const Applications: React.FC = () => {
 
   useEffect(() => {
     const cat = searchParams.get('category')
-    if (cat && ['All', 'GST', 'ITR', 'Loans', 'Business', 'Insurance'].includes(cat)) {
+    if (cat && VALID_CATEGORIES.includes(cat as ApplicationCategory)) {
       setActiveCategory(cat as ApplicationCategory)
     }
   }, [searchParams])
@@ -51,6 +65,7 @@ export const Applications: React.FC = () => {
         GST: 0,
         ITR: 0,
         Loans: 0,
+        'Company Registration': 0,
         Business: 0,
         Insurance: 0,
       }
@@ -65,10 +80,14 @@ export const Applications: React.FC = () => {
 
     return {
       total: relevant.length,
-      inProgress: relevant.filter((item) => item.status === 'IN_PROGRESS').length,
-      completed: relevant.filter((item) => item.status === 'COMPLETED').length,
+      inProgress: relevant.filter(
+        (item) => normalizeApplicationStatus(item.status, item.statusLabel) === 'IN_PROGRESS'
+      ).length,
+      completed: relevant.filter(
+        (item) => normalizeApplicationStatus(item.status, item.statusLabel) === 'COMPLETED'
+      ).length,
       underVerification: relevant.filter(
-        (item) => item.status === 'UNDER_VERIFICATION' || item.statusLabel.toLowerCase().includes('verification')
+        (item) => normalizeApplicationStatus(item.status, item.statusLabel) === 'UNDER_VERIFICATION'
       ).length,
     }
   }, [allApplications, activeCategory])
@@ -81,18 +100,8 @@ export const Applications: React.FC = () => {
         return false
       }
 
-      // Overview status filter
-      if (activeOverviewFilter === 'IN_PROGRESS' && item.status !== 'IN_PROGRESS') {
-        return false
-      }
-      if (activeOverviewFilter === 'COMPLETED' && item.status !== 'COMPLETED') {
-        return false
-      }
-      if (
-        activeOverviewFilter === 'UNDER_VERIFICATION' &&
-        item.status !== 'UNDER_VERIFICATION' &&
-        !item.statusLabel.toLowerCase().includes('verification')
-      ) {
+      // Overview status filter matching mobile app logic
+      if (!matchesStatusFilter(item.status, activeOverviewFilter, item.statusLabel)) {
         return false
       }
 
@@ -127,7 +136,14 @@ export const Applications: React.FC = () => {
         </div>
       </header>
 
-      {/* Category Navigation Tabs */}
+      {/* 1st: Application Overview Metric Cards */}
+      <ApplicationOverviewCards
+        stats={stats}
+        activeFilter={activeOverviewFilter}
+        onSelectFilter={setActiveOverviewFilter}
+      />
+
+      {/* 2nd: Category Navigation Tabs */}
       <ApplicationCategoryTabs
         activeCategory={activeCategory}
         onSelectCategory={(cat) => {
@@ -135,13 +151,6 @@ export const Applications: React.FC = () => {
           setActiveOverviewFilter('ALL')
         }}
         categoryCounts={categoryCounts}
-      />
-
-      {/* Application Overview Metric Cards */}
-      <ApplicationOverviewCards
-        stats={stats}
-        activeFilter={activeOverviewFilter}
-        onSelectFilter={setActiveOverviewFilter}
       />
 
       {/* Recent Applications Section */}

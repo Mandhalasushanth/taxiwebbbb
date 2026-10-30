@@ -2,14 +2,14 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-bottom: 1.85rem;
+  margin-bottom: 2rem;
 }
 
 .quick-services__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.95rem;
+  margin-bottom: 1.15rem;
 }
 
 .quick-services__header-left {
@@ -18,115 +18,385 @@
 }
 
 .quick-services__title {
-  margin: 0 0 2px;
-  font-family: var(--font-sans);
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: var(--primary-navy);
-  letter-spacing: -0.015em;
+  margin: 0 0 4px;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #081a36;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 .quick-services__subtitle {
   margin: 0;
-  font-size: 0.82rem;
-  color: var(--secondary-text);
+  font-family: var(
+    --font-sans,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif
+  );
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #64748b;
+  line-height: 1.35;
 }
 
+/* 4 equal columns on all laptops, desktops, and large screens:
+   Row 1 (4 cards: Incorporation, GST, ITR, Projects),
+   Row 2 (3 cards: Loan, Insurance, Business; 4th slot empty) */
 .quick-services__grid {
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 0.65rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(10px, 1.2vw, 14px);
+  align-items: stretch;
   width: 100%;
 }
 
-.quick-service {
+/* Reduced Height Card: Horizontal flex layout (Text on left, Image beside on right) */
+.quick-service-card {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 116px;
+  padding: 0.85rem clamp(0.55rem, 0.8vw, 0.75rem) 0.85rem
+    clamp(0.75rem, 0.9vw, 0.95rem);
+  border-radius: 18px;
+  border: 1.5px solid transparent;
+  text-decoration: none;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition:
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s ease;
+  box-shadow: 0 2px 6px rgba(8, 26, 54, 0.02);
+  cursor: pointer;
+}
+
+.quick-service-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -4px rgba(8, 26, 54, 0.08);
+}
+
+.quick-service-card:focus-visible {
+  outline: 2px solid #081a36;
+  outline-offset: 2px;
+}
+
+/* Left Content Column (Title, Description, and Bottom Arrow) */
+.quick-service-card__content {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 1.4rem 0.5rem 1.25rem;
-  min-height: 125px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: 0 1px 4px rgba(8, 59, 117, 0.04);
-  text-decoration: none;
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-sizing: border-box;
+  justify-content: space-between;
+  height: 100%;
+  flex: 1 1 auto;
   min-width: 0;
-}
-.quick-service:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(8, 59, 117, 0.1);
-  border-color: var(--grey-300);
+  padding-right: 0.4rem;
+  z-index: 2;
 }
 
-.quick-service__icon-wrap {
+.quick-service-card__text-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.quick-service-card__title {
+  margin: 0;
+  font-family: var(
+    --font-sans,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif
+  );
+  font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+  font-weight: 700;
+  color: #081a36;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+}
+
+.quick-service-card__desc {
+  margin: 2px 0 0;
+  font-family: var(
+    --font-sans,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif
+  );
+  font-size: 0.74rem;
+  font-weight: 400;
+  color: #64748b;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Circular Arrow Button at bottom-left */
+.quick-service-card__arrow-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--card-theme-color);
+  border: 1.5px solid var(--card-theme-border, currentColor);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+  margin-top: 0.65rem;
+  align-self: flex-start;
+  transition:
+    background-color 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.22s ease;
+  flex-shrink: 0;
+}
+
+/* Hover: Arrow button fills with respective theme color, icon turns white */
+.quick-service-card:hover .quick-service-card__arrow-btn,
+.quick-service-card__arrow-btn:hover {
+  background: var(--card-theme-color);
+  border-color: var(--card-theme-color);
+  color: #ffffff;
+  transform: translateX(3px) scale(1.04);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.quick-service-card__arrow-svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  display: block;
+  transition: stroke 0.22s ease;
+}
+
+/* Right Image Wrap: Sits Beside the text */
+.quick-service-card__image-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background: var(--palette-sky-50);
-  border: 1.5px solid var(--palette-sky-100-e2eaf4);
-  padding: 3px;
-  margin-bottom: 0.75rem;
-  box-shadow: 0 2px 8px rgba(8, 59, 117, 0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.quick-service:hover .quick-service__icon-wrap {
-  transform: scale(1.08);
-  box-shadow: 0 4px 12px rgba(8, 59, 117, 0.12);
+  flex: 0 0 clamp(66px, 5.8vw, 80px);
+  width: clamp(66px, 5.8vw, 80px);
+  height: clamp(66px, 5.8vw, 80px);
+  margin-left: 0.15rem;
+  z-index: 1;
 }
 
-.quick-service__icon-img {
+.quick-service-card__image {
   width: 100%;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
-  display: block;
-  border-radius: 50%;
+  object-position: center;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  mix-blend-mode: multiply;
+  filter: drop-shadow(0 2px 6px rgba(8, 26, 54, 0.04));
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
 }
 
-.quick-service__label {
-  margin: 0;
-  font-family: var(--font-sans);
-  font-size: 0.88rem;
-  font-weight: 800;
-  color: var(--primary-navy);
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 100%;
+.quick-service-card:hover .quick-service-card__image {
+  transform: scale(1.06);
 }
 
-@media (max-width: 1100px) {
+/* Card 1: Incorporation (Peach / Orange) */
+.quick-service-card--incorporation {
+  --card-theme-color: #ea580c;
+  --card-theme-border: #fed7aa;
+  background: #fff8f2;
+  border-color: #fed7aa;
+}
+.quick-service-card--incorporation:hover {
+  border-color: #fdba74;
+}
+
+/* Card 2: GST (Soft Light Blue) */
+.quick-service-card--gst {
+  --card-theme-color: #0284c7;
+  --card-theme-border: #bfdbfe;
+  background: #edf6ff;
+  border-color: #dbeafe;
+}
+.quick-service-card--gst:hover {
+  border-color: #bfdbfe;
+}
+
+/* Card 3: ITR (Fresh Emerald / Leaf Green) */
+.quick-service-card--itr {
+  --card-theme-color: #16a34a;
+  --card-theme-border: #86efac;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+.quick-service-card--itr:hover {
+  border-color: #86efac;
+}
+
+/* Card 4: Projects (Soft Cream / Warm Yellow) */
+.quick-service-card--projects {
+  --card-theme-color: #d97706;
+  --card-theme-border: #fde68a;
+  background: #fffbeb;
+  border-color: #fef3c7;
+}
+.quick-service-card--projects:hover {
+  border-color: #fde68a;
+}
+
+/* Card 5: Loan (Soft Lavender / Purple) */
+.quick-service-card--loans {
+  --card-theme-color: #7c3aed;
+  --card-theme-border: #ddd6fe;
+  background: #f4f2ff;
+  border-color: #ede9fe;
+}
+.quick-service-card--loans:hover {
+  border-color: #ddd6fe;
+}
+
+/* Card 6: Insurance (Soft Pink / Rose) */
+.quick-service-card--insurance {
+  --card-theme-color: #e11d48;
+  --card-theme-border: #fecdd3;
+  background: #fff1f2;
+  border-color: #ffe4e6;
+}
+.quick-service-card--insurance:hover {
+  border-color: #fecdd3;
+}
+
+/* Card 7: Business (Royal Indigo / Deep Sapphire) */
+.quick-service-card--business {
+  --card-theme-color: #4338ca;
+  --card-theme-border: #a5b4fc;
+  background: #eef2ff;
+  border-color: #c7d2fe;
+}
+.quick-service-card--business:hover {
+  border-color: #a5b4fc;
+}
+
+/* Mobile Screen Layout: exactly 2 cards per row (2 + 2 + 2 + 1) */
+@media (max-width: 768px) {
+  .quick-services__header {
+    margin-bottom: 0.9rem;
+  }
+
+  .quick-services__title {
+    font-size: 1.35rem;
+  }
+
+  .quick-services__subtitle {
+    font-size: 0.82rem;
+  }
+
   .quick-services__grid {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 0.65rem;
-    padding-bottom: 0.4rem;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(8, 59, 117, 0.15) transparent;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   }
-  .quick-services__grid::-webkit-scrollbar {
-    height: 4px;
+
+  .quick-service-card {
+    min-height: 102px;
+    padding: 0.75rem 0.55rem 0.75rem 0.75rem;
+    border-radius: 16px;
   }
-  .quick-services__grid::-webkit-scrollbar-thumb {
-    background: rgba(8, 59, 117, 0.15);
-    border-radius: 4px;
+
+  .quick-service-card__content {
+    padding-right: 0.25rem;
   }
-  .quick-service {
-    flex: 0 0 115px;
-    scroll-snap-align: start;
+
+  .quick-service-card__title {
+    font-size: clamp(0.78rem, 3.2vw, 0.92rem);
+    white-space: nowrap;
+    letter-spacing: -0.02em;
+  }
+
+  .quick-service-card__desc {
+    margin-top: 1px;
+    font-size: clamp(0.64rem, 2.3vw, 0.72rem);
+    line-height: 1.25;
+    -webkit-line-clamp: 2;
+  }
+
+  .quick-service-card__arrow-btn {
+    width: 24px;
+    height: 24px;
+    margin-top: 0.45rem;
+  }
+
+  .quick-service-card__arrow-svg {
+    width: 10px;
+    height: 10px;
+  }
+
+  .quick-service-card__image-wrap {
+    flex: 0 0 clamp(50px, 14vw, 68px);
+    width: clamp(50px, 14vw, 68px);
+    height: clamp(50px, 14vw, 68px);
+    margin-left: 0.1rem;
+  }
+
+  .quick-service-card__image {
+    max-width: 100%;
+    max-height: 100%;
   }
 }
 
+/* Extra Small Mobile (<= 380px): Tighten spacing slightly while keeping 2 per row */
+@media (max-width: 380px) {
+  .quick-services__grid {
+    gap: 8px;
+  }
 
+  .quick-service-card {
+    min-height: 96px;
+    padding: 0.65rem 0.45rem 0.65rem 0.6rem;
+    border-radius: 14px;
+  }
 
+  .quick-service-card__title {
+    font-size: 0.76rem;
+  }
+
+  .quick-service-card__desc {
+    font-size: 0.62rem;
+  }
+
+  .quick-service-card__arrow-btn {
+    width: 22px;
+    height: 22px;
+    margin-top: 0.35rem;
+  }
+
+  .quick-service-card__arrow-svg {
+    width: 9px;
+    height: 9px;
+  }
+
+  .quick-service-card__image-wrap {
+    flex: 0 0 46px;
+    width: 46px;
+    height: 46px;
+  }
+}

@@ -1,6 +1,7 @@
 import { localStore } from './localStorage'
 
 const APPLICATION_DRAFTS_KEY = 'taxedge.applicationDrafts'
+const CLEAN_SLATE_RESET_FLAG = 'taxedge.clean_slate_reset_v1'
 
 /** Services that are switched off; any draft saved for them can never be resumed. */
 export const RETIRED_DRAFT_SERVICE_IDS: readonly string[] = ['tax-notice-assistance', 'previous-year-itr']
@@ -36,11 +37,52 @@ const isKeptDraft = (draft: StoredDraft): boolean =>
   Boolean(draft.userId) && !RETIRED_DRAFT_SERVICE_IDS.includes(draft.serviceId || '')
 
 /**
- * One pass over browser storage at start-up that removes stale data left by earlier versions.
+ * Completely wipes all application, draft, deadline, and notification data from localStorage.
+ */
+export const clearAllApplicationStorage = (): void => {
+  localStore.remove('taxedge.userApplications')
+  localStore.remove('taxedge.applicationDrafts')
+  localStore.remove('taxedge.userDeadlines')
+  localStore.remove('taxedge.notifications')
+  localStore.remove('taxedge_gst_applications')
+  localStore.remove('taxedge_gst_returns')
+  localStore.remove('taxedge_gst_amendments')
+  localStore.remove('taxedge_gst_certificates')
+  localStore.remove('taxedge_gst_cancellations')
+
+  const allKeys = browserKeys()
+  for (const k of allKeys) {
+    if (
+      k.startsWith('taxedge_loan_') ||
+      k.startsWith('taxedge_gst_') ||
+      k.includes('_draft_') ||
+      k.startsWith('taxedge.draft_')
+    ) {
+      localStore.remove(k)
+    }
+  }
+
+  if (typeof window !== 'undefined') {
+    try {
+      window.dispatchEvent(new Event('taxedge:applications-updated'))
+    } catch {
+      // Safe fallback
+    }
+  }
+}
+
+/**
+ * One pass over browser storage at start-up that removes stale and mock data.
  * Returns the removed keys (useful for tests); never throws.
  */
 export const purgeStaleStorage = (): string[] => {
   try {
+    // 1. One-time auto-wipe of previous accumulated test/mock applications
+    if (!localStore.get(CLEAN_SLATE_RESET_FLAG)) {
+      clearAllApplicationStorage()
+      localStore.set(CLEAN_SLATE_RESET_FLAG, true)
+    }
+
     const staleKeys = browserKeys().filter((key) => LEGACY_KEY_PATTERNS.some((pattern) => pattern.test(key)))
     staleKeys.map((key) => localStore.remove(key))
 
@@ -53,4 +95,8 @@ export const purgeStaleStorage = (): string[] => {
   } catch {
     return []
   }
+}
+
+if (typeof window !== 'undefined') {
+  ;(window as unknown as Record<string, unknown>).__taxedge_clear_applications__ = clearAllApplicationStorage
 }

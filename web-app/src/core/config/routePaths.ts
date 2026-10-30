@@ -90,6 +90,8 @@ export const routePaths = {
     root: '/business',
   },
   payments: '/payments',
+  paymentCheckout: (id = ':id') => `/payments/checkout/${id}`,
+  paymentCheckoutDirect: '/payments/checkout',
   paymentReceipt: (id = ':id') => `/payments/receipt/${id}`,
   paymentReceiptDirect: '/payments/receipt',
   documents: '/documents',

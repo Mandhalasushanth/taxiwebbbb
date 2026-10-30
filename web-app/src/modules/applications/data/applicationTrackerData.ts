@@ -160,9 +160,9 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
 
   // If no application matches or localStorage is empty, provide default matching the exact user reference
   if (!matched) {
-    const defaultAppId = cleanId ? cleanId.toUpperCase() : 'ITR-2026-91842'
-    const defaultEntity = currentUser?.fullName || 'Sagarika'
-    const defaultDate = '13 Oct 2026'
+    const defaultAppId = cleanId ? cleanId.toUpperCase() : 'APP-PENDING'
+    const defaultEntity = currentUser?.fullName || 'Applicant'
+    const defaultDate = new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date())
 
     return buildTracker(defaultAppId, defaultEntity, defaultDate, {
       title: 'ITR Filing - ITR-1 (Sahaj) - Salary & Other Income',
@@ -198,9 +198,9 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
   }
 
   const metaParts = (matched.meta || '').split('·').map((s) => s.trim())
-  const entity = currentUser?.fullName || metaParts[0] || 'Sagarika'
+  const entity = currentUser?.fullName || metaParts[0] || 'Applicant'
   const appId = matched.code || matched.id
-  const date = (matched as { date?: string }).date || '13 Oct 2026'
+  const date = (matched as { date?: string }).date || new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date())
   const key = (matched.title || appId).toLowerCase()
   const pan = currentUser?.pan ? currentUser.pan.toUpperCase() : 'Submitted in Application'
 
@@ -213,7 +213,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
       filingHeader: 'GST Amendment Request Details',
       filingFields: [
         { label: 'Business Entity', value: entity },
-        { label: 'Target GSTIN', value: (currentUser as { gstin?: string })?.gstin || '29AAAAA0000A1Z5', isHighlight: true },
+        { label: 'Target GSTIN', value: (currentUser as { gstin?: string })?.gstin || 'Pending Verification', isHighlight: true },
         { label: 'Application ARN', value: appId, isHighlight: true },
         { label: 'Amended Section', value: metaParts[0] || 'Core Field' },
         { label: 'Jurisdiction', value: currentUser?.state || 'India' },

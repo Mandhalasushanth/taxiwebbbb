@@ -19,18 +19,19 @@ export const applicationsService = {
     const userApps = userStorage.getUserApplications()
 
     const mappedUserApps: ApplicationsItem[] = userApps.map((a) => {
-      const isItr = a.title.toLowerCase().includes('itr')
-      const isLoan = a.title.toLowerCase().includes('loan')
-      const isInsurance = a.title.toLowerCase().includes('insurance')
-      const isBusiness =
-        a.title.toLowerCase().includes('incorporation') ||
-        a.title.toLowerCase().includes('company') ||
-        a.title.toLowerCase().includes('business')
+      const lower = a.title.toLowerCase()
+      const isItr = lower.includes('itr')
+      const isLoan = lower.includes('loan')
+      const isInsurance = lower.includes('insurance')
+      const isCompany = lower.includes('incorporation') || lower.includes('company')
+      const isBusiness = lower.includes('business')
+
       let cat: ApplicationsItem['category'] = 'GST'
       if (isItr) cat = 'ITR'
       else if (isLoan) cat = 'Loans'
-      else if (isInsurance) cat = 'Insurance'
+      else if (isCompany) cat = 'Company Registration'
       else if (isBusiness) cat = 'Business'
+      else if (isInsurance) cat = 'Insurance'
 
       return {
         id: a.id,

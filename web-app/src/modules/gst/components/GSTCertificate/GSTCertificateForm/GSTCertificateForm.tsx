@@ -30,7 +30,7 @@ export const GSTCertificateForm = ({
 }: GSTCertificateFormProps) => {
   const { gstin, requestType: selectedRequestType } = values
 
-  const displayPhone = user?.mobile ? `+91 ${user.mobile}` : '+91 7008138785'
+  const displayPhone = user?.mobile ? `+91 ${user.mobile}` : ''
   const displayEmail = user?.email || 'sagu@gmail.com'
 
   return (

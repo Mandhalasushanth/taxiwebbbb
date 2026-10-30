@@ -32,6 +32,13 @@ export const LoansIcon: React.FC<{ className?: string }> = ({ className = 'app-c
   </svg>
 )
 
+export const CompanyIcon: React.FC<{ className?: string }> = ({ className = 'app-cat-svg' }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3" />
+    <path d="M9 9h1M9 13h1M9 17h1" />
+  </svg>
+)
+
 export const BusinessIcon: React.FC<{ className?: string }> = ({ className = 'app-cat-svg' }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <rect x="2" y="7" width="20" height="14" rx="2" />

@@ -10,13 +10,9 @@ import {
   ExternalLink,
 } from 'lucide-react'
 import { routePaths } from '@core/config'
-import { authStorage } from '@core/auth'
 import { userStorage } from '@core/storage/userStorage'
-import { useAppStore } from '@store/index'
 import { useApplications } from '@modules/applications'
-import type { PaymentResult } from '@shared/components/PaymentCheckout/payment.types'
 import { PaymentQuickLinksModal } from './components/PaymentQuickLinksModal'
-import { PaymentCheckoutModal } from './components/PaymentCheckoutModal'
 import './Payments.css'
 
 export interface PaymentItem {
@@ -41,20 +37,15 @@ const getServiceFee = (title: string = ''): number => {
 
 export const Payments: React.FC = () => {
   const navigate = useNavigate()
-  const pushToast = useAppStore((state) => state.pushToast)
   const { data: apiApplications } = useApplications()
-  const [refreshTrigger, setRefreshTrigger] = useState(0)
 
   // Modals state
-  const [checkoutApp, setCheckoutApp] = useState<PaymentItem | null>(null)
   const [activeModal, setActiveModal] = useState<'history' | 'receipts' | null>(null)
 
-  const user = authStorage.getUser()
 
   // Consolidate applications from userStorage and API
   const allApplications = useMemo<PaymentItem[]>(() => {
     // refreshTrigger forces re-read from localStore
-    void refreshTrigger
     const localApps = userStorage.getUserApplications()
     const mappedLocal: PaymentItem[] = localApps.map((app) => {
       const isPaid =
@@ -108,7 +99,7 @@ export const Payments: React.FC = () => {
       })
 
     return [...mappedLocal, ...additionalFromApi]
-  }, [apiApplications, refreshTrigger])
+  }, [apiApplications])
 
   // Calculations matching mobile app PaymentOverviewScreen
   const paidApps = useMemo(
@@ -134,56 +125,10 @@ export const Payments: React.FC = () => {
   const totalTransactions = paidApps.length + pendingApps.length
 
   const handlePayNow = useCallback((app: PaymentItem) => {
-    setCheckoutApp(app)
-  }, [])
+    navigate(`/payments/checkout/${app.code || app.id}`, { state: { application: app } })
+  }, [navigate])
 
-  const handlePaymentSuccess = useCallback(
-    (result: PaymentResult) => {
-      if (!checkoutApp) return
 
-      const todayFormatted = new Intl.DateTimeFormat('en-IN', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      }).format(new Date())
-
-      const localApps = userStorage.getUserApplications()
-      const existing = localApps.find((a) => a.id === checkoutApp.id || a.code === checkoutApp.code)
-
-      if (existing) {
-        userStorage.saveUserApplication({
-          ...existing,
-          paymentStatus: 'Paid',
-          statusLabel: 'Payment Received',
-          paidAt: todayFormatted,
-          transactionId: result.paymentId || result.receiptNumber || `TXN${Date.now().toString().slice(-8)}`,
-        })
-      } else {
-        userStorage.saveUserApplication({
-          id: checkoutApp.id,
-          code: checkoutApp.code,
-          title: checkoutApp.title,
-          meta: 'India',
-          statusLabel: 'Payment Received',
-          statusTone: 'success',
-          progress: 50,
-          icon: '📄',
-          to: routePaths.applicationTrack(checkoutApp.code),
-          paymentStatus: 'Paid',
-          paidAt: todayFormatted,
-          transactionId: result.paymentId || result.receiptNumber || `TXN${Date.now().toString().slice(-8)}`,
-        })
-      }
-
-      pushToast?.(
-        `Payment of ₹${checkoutApp.amount.toLocaleString('en-IN')} received successfully!`,
-        'success'
-      )
-      setCheckoutApp(null)
-      setRefreshTrigger((prev) => prev + 1)
-    },
-    [checkoutApp, pushToast]
-  )
 
   const handleExploreServices = () => {
     navigate(routePaths.allServices)
@@ -382,13 +327,7 @@ export const Payments: React.FC = () => {
         totalPaid={totalPaid}
       />
 
-      {/* Pay Now Checkout Modal */}
-      <PaymentCheckoutModal
-        checkoutApp={checkoutApp}
-        onClose={() => setCheckoutApp(null)}
-        onSuccess={handlePaymentSuccess}
-        applicantName={user?.fullName || 'Client'}
-      />
+
     </div>
   )
 }
