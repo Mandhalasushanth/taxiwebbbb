@@ -4,11 +4,13 @@ import {
   isValidPincode as sharedIsValidPincode,
   isValidEmail as sharedIsValidEmail,
   isValidAadhaar as sharedIsValidAadhaar,
+  isValidName as sharedIsValidName,
   formatMobile,
-} from '@shared/utils/validationUtils'
+} from '@shared/validations'
 
 /**
  * Incorporation Form Validation Utilities
+ * Reuses Centralized Validation from @shared/validations
  */
 
 // Mobile Number: exactly 10 digits, starts with 6, 7, 8, or 9
@@ -23,7 +25,7 @@ export const filterDigits = (val: string, maxLen?: number): string => {
 // Mobile input: strips +91 / leading 0 and limits to 10 digits
 export const filterMobile = (val: string): string => formatMobile(val)
 
-// Aadhaar: exactly 12 digits, numeric only
+// Aadhaar: exactly 12 digits, numeric only with Verhoeff check
 export const isValidAadhaar = (val: string): boolean => sharedIsValidAadhaar(val)
 
 // PAN Number: 5 uppercase letters, 4 digits, 1 uppercase letter
@@ -39,10 +41,8 @@ export const isValidPincode = (val: string): boolean => sharedIsValidPincode(val
 // Email: standard email format
 export const isValidEmail = (val: string): boolean => sharedIsValidEmail(val)
 
-
-// Person / Business Name: letters, spaces, dots, hyphens only
-export const isValidName = (val: string): boolean =>
-  /^[A-Za-z][A-Za-z\s.'-]{1,99}$/.test(val.trim())
+// Person / Business Name: unified centralized name validator
+export const isValidName = (val: string): boolean => sharedIsValidName(val)
 
 // DIN (Director Identification Number): 8 digits numeric only (optional or 8 digits)
 export const isValidDin = (val: string): boolean =>

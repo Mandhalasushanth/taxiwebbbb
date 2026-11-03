@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { Briefcase, Upload, Eye, ArrowRightLeft, Trash2 } from "lucide-react";
 import { FileInput, formatUploadSize } from "@shared/upload";
+import { CaretInput } from "@shared/components";
 import { formatAadhaar, formatMobile, formatPan } from "@shared/utils/formatUtils";
 import type { TdsBusinessDetails, UploadedFileMeta } from "@modules/itr/types/tdsRefund.types";
 import "./TdsBusinessDetailsCard.css";
@@ -70,7 +71,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
       </label>
       <div className={`tds-upload-field ${doc ? "tds-upload-field--has-doc" : ""} ${error ? "has-error" : ""}`}>
         <div className="tds-upload-field__input-wrap">
-          <input
+          <CaretInput
             id={id}
             type="text"
             inputMode={inputMode}
@@ -169,7 +170,7 @@ export const TdsBusinessDetailsCard: React.FC<TdsBusinessDetailsCardProps> = ({
           <label htmlFor="tds-business-name" className="tds-label">
             Legal Name of Business (as per PAN) <span className="tds-required">*</span>
           </label>
-          <input
+          <CaretInput
             id="tds-business-name"
             type="text"
             maxLength={150}
@@ -214,7 +215,7 @@ export const TdsBusinessDetailsCard: React.FC<TdsBusinessDetailsCardProps> = ({
           <label htmlFor="tds-business-mobile" className="tds-label">
             Mobile Number <span className="tds-required">*</span>
           </label>
-          <input
+          <CaretInput
             id="tds-business-mobile"
             type="tel"
             inputMode="numeric"

@@ -112,17 +112,24 @@ export const buildUserDashboardSummary = (): DashboardSummary => {
   const totalPaymentDue = pendingPaymentApps.reduce((sum, app) => {
     return sum + (app.finalizedCharges?.total || (app as any).paymentAmount || 0)
   }, 0)
-  const pendingPaymentTasks: PendingTask[] = pendingPaymentApps.map((app) => ({
-    id: `pay-${app.code || app.id}`,
-    title: `Payment Due: ${app.title}`,
-    meta: `${app.code || app.id} · Due amount: ${formatCurrency(app.finalizedCharges?.total || (app as any).paymentAmount || 0)}`,
-    statusLabel: 'Payment Due',
-    statusTone: 'danger',
-    actionLabel: 'Pay Now',
-    actionTo: `/payments/checkout/${app.code || app.id}`,
-    icon: '💳',
-    iconTone: 'danger',
-  }))
+  const pendingPaymentTasks: PendingTask[] = pendingPaymentApps.map((app) => {
+    const isTds =
+      (app.title || '').toLowerCase().includes('tds') ||
+      (app.code || '').startsWith('TDS-')
+    return {
+      id: `pay-${app.code || app.id}`,
+      title: `Payment Due: ${app.title}`,
+      meta: `${app.code || app.id} · Due amount: ${formatCurrency(app.finalizedCharges?.total || (app as any).paymentAmount || 0)}`,
+      statusLabel: 'Payment Due',
+      statusTone: 'danger',
+      actionLabel: 'Pay Now',
+      actionTo: isTds
+        ? `/applications/track/${app.code || app.id}?tab=payments`
+        : `/payments/checkout/${app.code || app.id}`,
+      icon: '💳',
+      iconTone: 'danger',
+    }
+  })
   const dateLabel = new Intl.DateTimeFormat('en-IN', {
     weekday: 'short',
     day: 'numeric',
@@ -140,7 +147,7 @@ export const buildUserDashboardSummary = (): DashboardSummary => {
       message,
       activeApplications: activeCount,
       pendingDocuments: pendingDocsCount,
-      paymentDue: totalPaymentDue > 0 ? `₹${totalPaymentDue.toLocaleString('en-IN')}` : '₹0',
+      paymentDue: formatCurrency(totalPaymentDue),
       completedServices: completedCount,
     },
     deadline: null,
@@ -164,7 +171,7 @@ export const buildUserDashboardSummary = (): DashboardSummary => {
       {
         id: 'payment-due',
         label: 'Payment Due',
-        value: totalPaymentDue > 0 ? `₹${totalPaymentDue.toLocaleString('en-IN')}` : '₹0',
+        value: formatCurrency(totalPaymentDue),
         hint: totalPaymentDue > 0 ? `${pendingPaymentApps.length} payment(s) pending` : 'No dues pending',
         tone: totalPaymentDue > 0 ? 'danger' : 'success',
         icon: '₹',

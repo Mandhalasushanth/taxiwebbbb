@@ -12,10 +12,10 @@ import { clampRegistrationStep } from '@modules/gst/utils/gstRegistrationGuard'
 import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
 import { useServiceDraft, readServiceDraft, hasFormChanged, deleteServiceDraft, DRAFT_NAMESPACES } from '@shared/saveDraft'
 import { useReviewEdit } from '@shared/edit'
+import { useGSTReviewEditNavigation } from '@modules/gst/shared/useGSTSectionFocus'
 import type { DocumentItem } from '@modules/gst/types/gstDocuments.types'
 import type { GstBusinessFormData } from '@modules/gst/types/gstBusiness.types'
 import type { PaymentResult } from '@modules/gst/types/gst.types'
-
 
 const SERVICE_ID = 'gst-registration'
 const SERVICE_TITLE = 'GST Registration'
@@ -204,6 +204,28 @@ export const useGstRegistrationState = () => {
 
   const recordApplication = (appCode: string) => {
     const applicant = businessData.tradeName || businessData.legalName || businessData.signatoryName || 'GST Applicant'
+
+    // Persist all uploaded document binaries in memory & IndexedDB so they remain viewable in Track Application
+    documents.forEach((doc) => {
+      if (doc.file) {
+        gstUploadedFiles.set(doc.id, doc.file)
+        if (doc.file.name) gstUploadedFiles.set(doc.file.name, doc.file)
+        if (doc.title) gstUploadedFiles.set(doc.title, doc.file)
+        gstUploadedFiles.set(`${appCode}_${doc.id}`, doc.file)
+      }
+    })
+
+    const mappedDocs = documents.map((doc, idx) => ({
+      id: doc.id || `doc-${idx + 1}`,
+      name: doc.title || (doc as any).name,
+      fileName: doc.fileName || doc.file?.name,
+      meta: doc.file ? `${doc.category || 'Statutory & Compliance'} · ${(doc.file.size / (1024 * 1024)).toFixed(2)} MB` : 'IMAGE / PDF · 6.55 MB',
+      date: new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
+      url: (doc as any).fileUrl,
+      file: doc.file,
+      status: 'uploaded' as const,
+    }))
+
     userStorage.saveUserApplication({
       id: `app-gst-${Date.now()}`,
       code: appCode,
@@ -214,7 +236,13 @@ export const useGstRegistrationState = () => {
       progress: 25,
       icon: '📄',
       to: routePaths.applicationTrack(appCode),
-    })
+      documents: mappedDocs,
+      formData: {
+        businessData,
+        documents,
+      },
+      paymentStatus: 'Awaiting Verification' as any,
+    } as any)
 
     try {
       const apps = localStore.get<any[]>('taxedge_gst_applications') || []
@@ -257,11 +285,10 @@ export const useGstRegistrationState = () => {
     pushToast('GST Application submitted successfully!', 'success')
     window.scrollTo({ top: 0, behavior: 'smooth' })
 
-    // Clear the draft and remember the business details for later GST services
-    draft.clearDraft()
-    gstUploadedFiles.clear()
-    gstProfileService.saveFromRegistration(businessData)
+    // Record application with uploaded documents and clear only the wizard draft (preserving files)
     recordApplication(applicationRef)
+    draft.clearDraft()
+    gstProfileService.saveFromRegistration(businessData)
   }
 
   const handlePaymentSuccess = (result: PaymentResult) => {
@@ -276,22 +303,38 @@ export const useGstRegistrationState = () => {
     pushToast(`Payment of ${formatRupees(result.amount ?? GST_FEES.registration)} successful`, 'success')
     window.scrollTo({ top: 0, behavior: 'smooth' })
 
-    // Clear the draft and remember the business details for later GST services
-    draft.clearDraft()
-    gstUploadedFiles.clear()
-    gstProfileService.saveFromRegistration(businessData)
+    // Record application with uploaded documents and clear only the wizard draft (preserving files)
     recordApplication(result.applicationRef || applicationRef)
+    draft.clearDraft()
+    gstProfileService.saveFromRegistration(businessData)
   }
 
   // "Edit" from the Review step: shared behaviour (Update & Review / Back return to the review)
   const reviewEdit = useReviewEdit(() => goToStep(REVIEW_STEP))
   // Review section the user chose to edit (business / bank / signatory / documents)
-  const [editSection, setEditSection] = useState<string | null>(null)
+  // Map of review section keys to target element anchor IDs
+  const SECTION_ANCHOR_MAP: Record<string, string> = {
+    business: 'gst-business-details',
+    'business-identity': 'gst-business-identity',
+    'business-scheme': 'gst-registration-scheme',
+    'business-address': 'gst-principal-place',
+    bank: 'gst-bank-details',
+    signatory: 'gst-authorised-signatory',
+  }
+
+  const { editSection, startSectionEdit } = useGSTReviewEditNavigation(SECTION_ANCHOR_MAP)
   const editingSection = reviewEdit.isEditMode ? editSection : null
 
   const startEditingFromReview = (step: number, section: string | null = null) => {
-    setEditSection(section)
-    reviewEdit.startEdit(() => goToStep(step))
+    startSectionEdit(section, () => {
+      reviewEdit.startEdit(() => {
+        const targetStep = allowedStep(step)
+        setCurrentStep(targetStep)
+        if (STEP_NAMES[targetStep]) {
+          setSearchParams({ step: STEP_NAMES[targetStep] }, { replace: true })
+        }
+      })
+    })
   }
 
   const handleDiscardAndExit = () => {

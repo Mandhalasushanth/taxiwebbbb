@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { CaretInput, FieldInfoTooltip } from '@shared/components'
 import { gstFieldRules } from '@modules/gst/validation/gstFieldRules'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstProfileService } from '@modules/gst/services/gstProfileService'
@@ -33,6 +34,7 @@ export interface GSTPeriodSelectionFieldsProps {
   periodOptions: SelectOption[]
   errors: Record<string, string>
   handleClearError: (field: string) => void
+  onBlurField?: (field: string) => void
 }
 
 export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> = ({
@@ -44,6 +46,7 @@ export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> =
   periodOptions,
   errors,
   handleClearError,
+  onBlurField,
 }) => {
   const periodLabel =
     frequency === 'Monthly'
@@ -81,6 +84,7 @@ export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> =
               setFinancialYear(e.target.value)
               handleClearError('financialYear')
             }}
+            onBlur={() => onBlurField?.('financialYear')}
           >
             <option value="">Select Financial Year</option>
             {FINANCIAL_YEAR_OPTIONS.map((opt) => (
@@ -113,6 +117,7 @@ export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> =
               setReturnPeriod(e.target.value)
               handleClearError('returnPeriod')
             }}
+            onBlur={() => onBlurField?.('returnPeriod')}
           >
             <option value="">{periodPlaceholder}</option>
             {periodOptions.map((opt) => (
@@ -139,6 +144,7 @@ export interface GSTTaxpayerReturnFieldsProps {
   filingType: 'regular' | 'nil' | ''
   errors: Record<string, string>
   handleClearError: (field: string) => void
+  onBlurField?: (field: string) => void
 }
 
 export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = ({
@@ -149,6 +155,7 @@ export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = (
   filingType,
   errors,
   handleClearError,
+  onBlurField,
 }) => {
   const profile = useMemo(() => gstProfileService.get(), [])
 
@@ -156,10 +163,16 @@ export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = (
     <>
       {/* GSTIN (15-Character) */}
       <div className="gst-filing-period__field">
-        <label htmlFor="gst-gstin" className="gst-filing-period__label">
-          GSTIN (15-Character) <span className="gst-filing-period__required">*</span>
-        </label>
-        <input
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+          <label htmlFor="gst-gstin" className="gst-filing-period__label" style={{ marginBottom: 0 }}>
+            GSTIN (15-Character) <span className="gst-filing-period__required">*</span>
+          </label>
+          <FieldInfoTooltip
+            title="GSTIN Information"
+            description="Enter your valid 15-digit GST Identification Number. Ensure it matches your GST registration."
+          />
+        </div>
+        <CaretInput
           id="gst-gstin"
           type="text"
           maxLength={15}
@@ -170,6 +183,7 @@ export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = (
             setGstin(gstInput.gstin(e.target.value))
             handleClearError('gstin')
           }}
+          onBlur={() => onBlurField?.('gstin')}
         />
         {errors.gstin && (
           <span className="gst-filing-period__error-text">{errors.gstin}</span>
@@ -186,8 +200,8 @@ export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = (
         )}
       </div>
 
-      {/* Filing Return Type (shown for Regular Return) */}
-      {filingType === 'regular' && (
+      {/* Filing Return Type (shown for Regular Return or initial unselected state) */}
+      {filingType !== 'nil' && (
         <div className="gst-filing-period__field">
           <label htmlFor="gst-return-type" className="gst-filing-period__label">
             Filing Return Type <span className="gst-filing-period__required">*</span>
@@ -201,6 +215,7 @@ export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = (
                 setReturnType(e.target.value)
                 handleClearError('returnType')
               }}
+              onBlur={() => onBlurField?.('returnType')}
             >
               <option value="">Select return type</option>
               {RETURN_TYPE_OPTIONS.map((opt) => (

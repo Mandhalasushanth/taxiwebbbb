@@ -69,11 +69,12 @@ describe('ApplicationTrackerView component', () => {
     expect(screen.getAllByText('Application Submitted').length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText(/Application submitted successfully on/i)).toBeDefined()
 
-    // 4 Steps matching Screenshot 2
-    expect(screen.getByText('Filing Data Submitted')).toBeDefined()
+    // 5 Default Steps matching reference
     expect(screen.getByText('Document Collection')).toBeDefined()
     expect(screen.getByText('Verification')).toBeDefined()
+    expect(screen.getByText('Payment')).toBeDefined()
     expect(screen.getAllByText('Completed').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText('Step 2/5')).toBeDefined()
 
     // Status pill badges
     expect(screen.getByText('In Progress')).toBeDefined()
@@ -104,6 +105,26 @@ describe('ApplicationTrackerView component', () => {
 
     // Bottom note
     expect(screen.getByText('These are the documents you uploaded during the application.')).toBeDefined()
+  })
+
+  it('opens document in a new tab when clicking View without showing a popup modal', async () => {
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => ({ focus: vi.fn() } as any))
+
+    render(
+      <MemoryRouter initialEntries={['/applications/track/GST-FIL-2026-31583?tab=documents']}>
+        <Routes>
+          <Route path="/applications/track/:id" element={<ApplicationTrackerView />} />
+        </Routes>
+      </MemoryRouter>
+    )
+
+    const viewButtons = screen.getAllByRole('button', { name: /^View$/i })
+    await act(async () => {
+      fireEvent.click(viewButtons[0])
+    })
+
+    expect(openSpy).toHaveBeenCalledWith(expect.stringContaining('blob:'), '_blank')
+    expect(screen.queryByText('Close Preview')).toBeNull()
   })
 
   it('renders Payments tab matching mobile screenshot 4 with Payment Summary, Details, and Completed banner', () => {

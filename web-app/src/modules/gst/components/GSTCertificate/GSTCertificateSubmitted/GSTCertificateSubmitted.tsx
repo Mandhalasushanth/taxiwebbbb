@@ -8,7 +8,7 @@ interface GSTCertificateSubmittedProps {
   applicationId?: string
   gstin?: string
   requestType?: string
-  onBackToForm: () => void
+  onBackToForm: (section?: string) => void
   onAllForms?: () => void
 }
 
@@ -19,6 +19,7 @@ interface GSTCertificateSubmittedProps {
  */
 export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = ({
   gstin = '',
+  onBackToForm,
 }) => {
   const navigate = useNavigate()
   const pushToast = useAppStore((state) => state.pushToast)
@@ -55,10 +56,6 @@ export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = (
 
   const handleMyApplications = () => {
     navigate(routePaths.applications)
-  }
-
-  const handleChatWithCa = () => {
-    navigate(routePaths.support)
   }
 
   return (
@@ -102,6 +99,34 @@ export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = (
 
       {/* ── Summary Details Card ── */}
       <div className="gst-cert-ready-card">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--secondary-text, #64748b)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Certificate Details</span>
+          {onBackToForm && (
+            <button
+              type="button"
+              onClick={() => onBackToForm('gst-cert-gstin')}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: 'none',
+                border: 'none',
+                color: '#ea580c',
+                fontSize: '0.88rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+              aria-label="Edit Certificate Request"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="14" height="14">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+              <span>Edit Details</span>
+            </button>
+          )}
+        </div>
+
         {/* Row 1: GSTIN */}
         <div className="gst-cert-ready-row">
           <div className="gst-cert-ready-row-left">
@@ -148,22 +173,8 @@ export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = (
         </div>
       </div>
 
-      {/* ── Primary Action: Share / Save Certificate ── */}
-      <button
-        type="button"
-        className="gst-cert-btn-outline-blue"
-        onClick={handleShareOrDownload}
-      >
-        <svg viewBox="0 0 24 24" className="gst-cert-btn-share-icon" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-          <polyline points="16 6 12 2 8 6" />
-          <line x1="12" y1="2" x2="12" y2="15" />
-        </svg>
-        <span>Share / Save Certificate</span>
-      </button>
-
-      {/* ── Replacement Bottom Actions (Dashboard, My Applications, Chat with CA) ── */}
-      <div className="gst-cert-ready-bottom-actions">
+      {/* ── Actions: Go to Dashboard, My Applications, Share / Save Certificate (One Row) ── */}
+      <div className="gst-cert-ready-actions-row">
         {/* 1. Go to Dashboard */}
         <button
           type="button"
@@ -192,16 +203,18 @@ export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = (
           <span>My Applications</span>
         </button>
 
-        {/* 3. Chat with CA */}
+        {/* 3. Share / Save Certificate */}
         <button
           type="button"
-          className="gst-cert-btn-nav gst-cert-btn-nav--chat"
-          onClick={handleChatWithCa}
+          className="gst-cert-btn-nav gst-cert-btn-nav--share"
+          onClick={handleShareOrDownload}
         >
-          <svg viewBox="0 0 24 24" className="gst-cert-nav-icon" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          <svg viewBox="0 0 24 24" className="gst-cert-nav-icon" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+            <polyline points="16 6 12 2 8 6" />
+            <line x1="12" y1="2" x2="12" y2="15" />
           </svg>
-          <span>Chat with CA</span>
+          <span>Share / Save Certificate</span>
         </button>
       </div>
     </div>

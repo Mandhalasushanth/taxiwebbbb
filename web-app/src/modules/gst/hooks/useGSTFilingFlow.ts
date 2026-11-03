@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { localStore } from '@core/storage'
@@ -8,9 +8,11 @@ import { generateGstReference } from '@modules/gst/utils/gstFormat'
 import { getDefaultFilingData, STEP_LABELS } from '@modules/gst/utils/gstFiling.constants'
 import { useServiceDraft, readServiceDraft, hasFormChanged, DRAFT_NAMESPACES } from '@shared/saveDraft'
 import { useReviewEdit } from '@shared/edit'
+import { useGSTReviewEditNavigation } from '@modules/gst/shared/useGSTSectionFocus'
+import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
 import type { FilingPeriodData } from '../components/GSTFiling'
 import type { PaymentResult } from '@modules/gst/types/gst.types'
-import type { UploadedFileInfo } from '@modules/gst/utils/gstDocumentsData'
+import { DEFAULT_DOCUMENT_ITEMS, type UploadedFileInfo } from '@modules/gst/utils/gstDocumentsData'
 
 type FilingStep = 1 | 2 | 3 | 4 | 5
 
@@ -75,11 +77,71 @@ export const useGSTFilingFlow = () => {
     ...savedDraft?.formData?.filingData,
   }))
   const [paymentResult, setPaymentResult] = useState<PaymentResult>(() => buildPaymentResult(filingRef))
-  // Uploaded files cannot be stored, so a restored draft asks for them again (same as loans)
-  const [uploadedFiles, setUploadedFiles] = useState<Record<string, UploadedFileInfo>>({})
+
+  // Restore uploaded files from draft metadata and IndexedDB store
+  const [uploadedFiles, setUploadedFiles] = useState<Record<string, UploadedFileInfo>>(() => {
+    const saved = savedDraft?.formData?.uploadedFiles
+    if (!saved || typeof saved !== 'object') return {}
+
+    const restored: Record<string, UploadedFileInfo> = {}
+    Object.entries(saved).forEach(([id, info]) => {
+      if (info && info.name) {
+        const file = gstUploadedFiles.get(`filing_${id}`)
+        restored[id] = {
+          ...info,
+          file: file || info.file,
+          fileUrl: file ? URL.createObjectURL(file) : info.fileUrl,
+          status: 'selected',
+          isLocal: true,
+        }
+      }
+    })
+    return restored
+  })
+
   const [notApplicableDocs, setNotApplicableDocs] = useState<Record<string, boolean>>(
     () => savedDraft?.formData?.notApplicableDocs || {}
   )
+
+  // Re-hydrate any files that were loading asynchronously from IndexedDB
+  useEffect(() => {
+    const saved = savedDraft?.formData?.uploadedFiles
+    if (!saved) return
+    let isMounted = true
+
+    Object.keys(saved).forEach(async (id) => {
+      const file = await gstUploadedFiles.getAsync(`filing_${id}`)
+      if (file && isMounted) {
+        setUploadedFiles((prev) => {
+          const current = prev[id]
+          if (current && (!current.file || !current.fileUrl)) {
+            return {
+              ...prev,
+              [id]: {
+                ...current,
+                file,
+                fileUrl: URL.createObjectURL(file),
+              },
+            }
+          }
+          return prev
+        })
+      }
+    })
+
+    return () => {
+      isMounted = false
+    }
+  }, [savedDraft])
+
+  // If user navigated into the generic /gst/filing route and has a draft at a later step, redirect to that step
+  useEffect(() => {
+    if (location.pathname === routePaths.gst.filing && savedDraft?.currentStep && savedDraft.currentStep > 1) {
+      const targetStep = Math.min(savedDraft.currentStep, TOTAL_STEPS) as FilingStep
+      setCurrentStep(targetStep)
+      navigate(FILING_PATH_BY_STEP[targetStep], { replace: true })
+    }
+  }, [location.pathname, savedDraft, navigate])
 
   const hasEnteredData =
     currentStep > 1 ||
@@ -94,39 +156,51 @@ export const useGSTFilingFlow = () => {
     totalSteps: TOTAL_STEPS,
     currentStep: Math.min(currentStep, TOTAL_STEPS),
     stepLabel: STEP_LABELS[currentStep] || 'Return Filing',
-    resumeRoute: routePaths.gst.filing,
+    resumeRoute: FILING_PATH_BY_STEP[currentStep as FilingStep] || routePaths.gst.filing,
     exitRoute: routePaths.gst.root,
     formData: { filingData, uploadedFiles, notApplicableDocs },
     hasEnteredData,
     isComplete: currentStep > TOTAL_STEPS,
     isFlowRoute: isFilingRoute,
+    onDiscard: () => {
+      Object.keys(uploadedFiles).forEach((id) => gstUploadedFiles.remove(`filing_${id}`))
+      setUploadedFiles({})
+      setNotApplicableDocs({})
+    },
   })
 
   // Follow the step named by the route (applied during render when the path changes)
   const [syncedPath, setSyncedPath] = useState(location.pathname)
   if (syncedPath !== location.pathname) {
     setSyncedPath(location.pathname)
-    const routeStep = FILING_STEP_BY_PATH[location.pathname]
-    if (routeStep) setCurrentStep(routeStep)
+    if (location.pathname !== routePaths.gst.filing) {
+      const routeStep = FILING_STEP_BY_PATH[location.pathname]
+      if (routeStep) setCurrentStep(routeStep)
+    }
   }
 
   // Steps replace the history entry (same as the loans flows): the browser Back button
   // leaves the filing and opens the save-draft dialog instead of stepping back
-  const goToStep = (step: FilingStep) => {
+  const goToStep = (step: FilingStep, skipScroll = false) => {
     setCurrentStep(step)
     navigate(FILING_PATH_BY_STEP[step], { replace: true })
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (!skipScroll) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   }
 
   const handleFileUpload = (id: string, file: File) => {
     const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
     if (file.size > MAX_FILE_SIZE) return
 
+    gstUploadedFiles.set(`filing_${id}`, file)
+
     const fileInfo: UploadedFileInfo = {
       name: file.name,
       sizeText: formatGstFileSize(file.size),
       uploadTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       fileUrl: URL.createObjectURL(file),
+      file,
       status: 'selected',
       isLocal: true,
     }
@@ -134,7 +208,10 @@ export const useGSTFilingFlow = () => {
     setNotApplicableDocs((prev) => (prev[id] ? withoutKey(prev, id) : prev))
   }
 
-  const handleFileRemove = (id: string) => setUploadedFiles((prev) => withoutKey(prev, id))
+  const handleFileRemove = (id: string) => {
+    gstUploadedFiles.remove(`filing_${id}`)
+    setUploadedFiles((prev) => withoutKey(prev, id))
+  }
 
   const handleToggleNotApplicable = (id: string) =>
     setNotApplicableDocs((prev) => (prev[id] ? withoutKey(prev, id) : { ...prev, [id]: true }))
@@ -147,8 +224,16 @@ export const useGSTFilingFlow = () => {
 
   // "Edit" from the Review step: shared behaviour (Update & Review / Back return to the review)
   const reviewEdit = useReviewEdit(() => goToStep(REVIEW_STEP))
+  const { editSection, startSectionEdit } = useGSTReviewEditNavigation()
+  const editingSection = reviewEdit.isEditMode ? editSection : null
 
-  const startEditingFromReview = (step: FilingStep) => reviewEdit.startEdit(() => goToStep(step))
+  const startEditingFromReview = (step: FilingStep, section: string | null = null) => {
+    startSectionEdit(section, () => {
+      reviewEdit.startEdit(() => {
+        goToStep(step, Boolean(section))
+      })
+    })
+  }
 
   const finishEditingToReview = (updatedData?: FilingPeriodData) => {
     if (updatedData) {
@@ -171,6 +256,31 @@ export const useGSTFilingFlow = () => {
   const submitFiling = () => {
     const res = buildPaymentResult(filingRef)
     setPaymentResult(res)
+
+    // Persist all uploaded filing documents in memory & IndexedDB so they remain viewable in Track Application
+    Object.entries(uploadedFiles).forEach(([id, up]) => {
+      if (up?.file) {
+        gstUploadedFiles.set(`filing_${id}`, up.file)
+        gstUploadedFiles.set(id, up.file)
+        if (up.name) gstUploadedFiles.set(up.name, up.file)
+        gstUploadedFiles.set(`${filingRef}_${id}`, up.file)
+      }
+    })
+
+    const mappedDocs = DEFAULT_DOCUMENT_ITEMS.map((docDef) => {
+      const up = uploadedFiles[docDef.id]
+      return {
+        id: docDef.id,
+        name: docDef.title,
+        fileName: up?.name || up?.file?.name,
+        meta: up ? `${docDef.title} · ${up.name} · ${up.sizeText}` : `${docDef.subtitle} · IMAGE / PDF · 6.55 MB`,
+        date: up?.uploadTime || new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
+        url: up?.fileUrl,
+        file: up?.file,
+        status: 'uploaded' as const,
+      }
+    })
+
     draft.clearDraft()
     userStorage.saveUserApplication({
       id: `app-gst-filing-${Date.now()}`,
@@ -182,7 +292,13 @@ export const useGSTFilingFlow = () => {
       progress: 25,
       icon: '📄',
       to: routePaths.gst.detail(filingRef),
-    })
+      documents: mappedDocs,
+      formData: {
+        filingData,
+        uploadedFiles,
+      },
+      paymentStatus: 'Awaiting Verification' as any,
+    } as any)
 
     try {
       const returns = localStore.get<any[]>('taxedge_gst_returns') || []
@@ -230,6 +346,7 @@ export const useGSTFilingFlow = () => {
     handleFileRemove,
     handleToggleNotApplicable,
     isEditMode: reviewEdit.isEditMode,
+    editSection: editingSection,
     startEditingFromReview,
     finishEditingToReview,
   }

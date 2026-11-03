@@ -2,6 +2,7 @@ import { routePaths } from "@core/config";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import type { ApplicationsItem } from "../types/applications.types";
+import { isDraftApplication, resolveDraftResumeRoute } from "../utils/draftRouting";
 import {
   GstDocIcon,
   ItrDocIcon,
@@ -18,8 +19,19 @@ interface ApplicationCardProps {
 
 export const ApplicationCard: React.FC<ApplicationCardProps> = ({ item }) => {
   const navigate = useNavigate();
+  const isDraft = isDraftApplication(item);
 
   const handleClick = () => {
+    if (isDraft) {
+      // Draft Applications = Resume Application at its respective service home page
+      const destination = item.to || resolveDraftResumeRoute(item);
+      if (destination) {
+        navigate(destination, { state: { resumeDraft: true } });
+        return;
+      }
+    }
+
+    // Submitted Applications = Track Application
     const targetId = item.reference || item.id;
     if (targetId) {
       navigate(routePaths.applicationTrack(encodeURIComponent(targetId)));
@@ -49,10 +61,11 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({ item }) => {
 
   return (
     <article
-      className="app-item-card"
+      className={`app-item-card ${isDraft ? 'app-item-card--draft' : ''}`}
       onClick={handleClick}
       role="button"
       tabIndex={0}
+      aria-label={`${isDraft ? 'Resume' : 'Track'} ${item.title}`}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           handleClick();
@@ -92,7 +105,9 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({ item }) => {
       </div>
 
       <div className="app-item-card__right">
-        <span className="app-item-card__track-text">Track</span>
+        <span className={`app-item-card__track-text ${isDraft ? 'app-item-card__track-text--resume' : ''}`}>
+          {isDraft ? "Resume" : "Track"}
+        </span>
         <div className="app-item-card__chevron-wrap">
           <ChevronRightIcon />
         </div>

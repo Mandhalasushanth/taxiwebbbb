@@ -1,13 +1,14 @@
-import { SaveDraftButton } from '@shared/saveDraft'
-import { UpdateAndReviewButton } from '@shared/edit'
 import { GST_FILE_MESSAGES } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
 import React, { useState, type FormEvent } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
 import { lookupSampleBankByIfsc } from '@shared/services'
-import { ConfirmAccountNumberInput } from '@shared/components'
+import { ConfirmAccountNumberInput, CaretInput } from '@shared/components'
 import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
+import { useAmendmentFileState } from '../hooks/useAmendmentFileState'
+import { GSTCurrentPortalCard } from './GSTCurrentPortalCard'
+import { GSTAmendmentActionBar } from './GSTAmendmentActionBar'
 import './GSTBankAccountsForm.css'
 
 interface GSTBankAccountsFormProps {
@@ -67,9 +68,24 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
   const [confirmAccountNumber, setConfirmAccountNumber] = useState(initialBankDetails?.accountNumber || '')
   const [ifscCode, setIfscCode] = useState(initialBankDetails?.ifscCode || '')
   const [accountType, setAccountType] = useState(initialBankDetails?.accountType || '')
-  const [selectedFile, setSelectedFile] = useState<File | null>(initialFile || null)
-  const [removedInitialFile, setRemovedInitialFile] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  const {
+    selectedFile,
+    effectiveFileName,
+    handleFileChange: onFileChange,
+    handleFileRemove,
+  } = useAmendmentFileState({
+    initialFile,
+    initialFileName,
+    initialFileSize,
+    onFileCleared: () => setErrors((prev) => ({ ...prev, file: '' })),
+  })
+
+  const handleFileChange = (file: File) => {
+    onFileChange(file)
+    setErrors((prev) => ({ ...prev, file: '' }))
+  }
 
   const [prevBankDetails, setPrevBankDetails] = useState(initialBankDetails)
   if (prevBankDetails !== initialBankDetails) {
@@ -83,24 +99,6 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
       if (initialBankDetails.ifscCode !== undefined) setIfscCode(initialBankDetails.ifscCode)
       if (initialBankDetails.accountType !== undefined) setAccountType(initialBankDetails.accountType)
     }
-  }
-
-  const [prevInitialFile, setPrevInitialFile] = useState(initialFile)
-  if (prevInitialFile !== initialFile) {
-    setPrevInitialFile(initialFile)
-    if (initialFile !== undefined) {
-      setSelectedFile(initialFile)
-      if (initialFile) setRemovedInitialFile(false)
-    }
-  }
-
-  const effectiveFileName = !removedInitialFile ? (selectedFile?.name || initialFileName) : selectedFile?.name
-
-  // Type, size and content are already checked by the shared upload rule
-  const handleFileChange = (file: File) => {
-    setSelectedFile(file)
-    setRemovedInitialFile(false)
-    setErrors((prev) => ({ ...prev, file: '' }))
   }
 
   const handleSubmitForm = (e: FormEvent) => {
@@ -187,43 +185,25 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
 
       <form onSubmit={handleSubmitForm} noValidate>
         {/* Card 1: Currently Registered on Portal */}
-        <div className="gst-amend-card-box">
-          <div className="gst-amend-card-box__header-flex">
-            <div className="gst-amend-card-header-icon-box gst-amend-card-header-icon-box--building">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
-                <path d="M9 22v-4h6v4" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="gst-amend-card-box__title">Currently Registered on Portal</h3>
-              <p className="gst-amend-card-box__subtitle">Read-only baseline from GST profile</p>
-            </div>
-          </div>
-          <div className="gst-amend-readonly-multiline-list">
-            <div className="gst-amend-readonly-row">
-              <span className="gst-amend-readonly-label">Bank Name</span>
-              <span className="gst-amend-readonly-value">
-                {_currentDetailsProp?.bankName && _currentDetailsProp.bankName !== '—' ? _currentDetailsProp.bankName : '-'}
-              </span>
-            </div>
-            <div className="gst-amend-readonly-row">
-              <span className="gst-amend-readonly-label">Account Number</span>
-              <span className="gst-amend-readonly-value">
-                {_currentDetailsProp?.accountNumber && _currentDetailsProp.accountNumber !== '—' ? _currentDetailsProp.accountNumber : '-'}
-              </span>
-            </div>
-            <div className="gst-amend-readonly-row">
-              <span className="gst-amend-readonly-label">IFSC Code</span>
-              <span className="gst-amend-readonly-value">
-                {_currentDetailsProp?.ifscCode && _currentDetailsProp.ifscCode !== '—' ? _currentDetailsProp.ifscCode : '-'}
-              </span>
-            </div>
-          </div>
-        </div>
+        <GSTCurrentPortalCard
+          rows={[
+            {
+              label: 'Bank Name',
+              value: _currentDetailsProp?.bankName && _currentDetailsProp.bankName !== '—' ? _currentDetailsProp.bankName : '-',
+            },
+            {
+              label: 'Account Number',
+              value: _currentDetailsProp?.accountNumber && _currentDetailsProp.accountNumber !== '—' ? _currentDetailsProp.accountNumber : '-',
+            },
+            {
+              label: 'IFSC Code',
+              value: _currentDetailsProp?.ifscCode && _currentDetailsProp.ifscCode !== '—' ? _currentDetailsProp.ifscCode : '-',
+            },
+          ]}
+        />
 
         {/* Card 2: Amended details */}
-        <div className="gst-amend-card-box">
+        <div className="gst-amend-card-box" id="gst-amend-details">
           <div className="gst-amend-card-box__header-flex">
             <div className="gst-amend-card-header-icon-box gst-amend-card-header-icon-box--edit">
               <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -248,8 +228,16 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
               placeholder="Enter bank name"
               value={bankName}
               onChange={(e) => {
-                setBankName(gstInput.letters(e.target.value))
-                if (errors.bankName) setErrors((prev) => ({ ...prev, bankName: '' }))
+                const val = gstInput.letters(e.target.value)
+                setBankName(val)
+                if (errors.bankName) {
+                  const err = rules.bankName(val)
+                  setErrors((prev) => ({ ...prev, bankName: err || '' }))
+                }
+              }}
+              onBlur={() => {
+                const err = rules.bankName(bankName)
+                setErrors((prev) => ({ ...prev, bankName: err || '' }))
               }}
               className={`gst-amend-text-input ${errors.bankName ? 'has-error' : ''}`}
             />
@@ -267,8 +255,20 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
               placeholder="Enter bank account number"
               value={accountNumber}
               onChange={(e) => {
-                setAccountNumber(gstInput.accountNumber(e.target.value))
-                if (errors.accountNumber) setErrors((prev) => ({ ...prev, accountNumber: '' }))
+                const val = gstInput.accountNumber(e.target.value)
+                setAccountNumber(val)
+                if (errors.accountNumber) {
+                  const err = rules.accountNumber(val)
+                  setErrors((prev) => ({ ...prev, accountNumber: err || '' }))
+                }
+                if (confirmAccountNumber && errors.confirmAccountNumber) {
+                  const cErr = rules.confirmAccountNumber(val, confirmAccountNumber)
+                  setErrors((prev) => ({ ...prev, confirmAccountNumber: cErr || '' }))
+                }
+              }}
+              onBlur={() => {
+                const err = rules.accountNumber(accountNumber)
+                setErrors((prev) => ({ ...prev, accountNumber: err || '' }))
               }}
               className={`gst-amend-text-input ${errors.accountNumber ? 'has-error' : ''}`}
             />
@@ -287,7 +287,14 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
               value={confirmAccountNumber}
               onChange={(val) => {
                 setConfirmAccountNumber(val)
-                if (errors.confirmAccountNumber) setErrors((prev) => ({ ...prev, confirmAccountNumber: '' }))
+                if (errors.confirmAccountNumber) {
+                  const err = rules.confirmAccountNumber(accountNumber, val)
+                  setErrors((prev) => ({ ...prev, confirmAccountNumber: err || '' }))
+                }
+              }}
+              onBlur={() => {
+                const err = rules.confirmAccountNumber(accountNumber, confirmAccountNumber)
+                setErrors((prev) => ({ ...prev, confirmAccountNumber: err || '' }))
               }}
               className={`gst-amend-text-input ${errors.confirmAccountNumber ? 'has-error' : ''}`}
               hasError={Boolean(errors.confirmAccountNumber)}
@@ -300,7 +307,7 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
             <label htmlFor="ifsc-code-input" className="gst-amend-field-label">
               IFSC Code <span className="gst-amend-star">*</span>
             </label>
-            <input
+            <CaretInput
               id="ifsc-code-input"
               type="text"
               placeholder="Enter IFSC code"
@@ -308,7 +315,10 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
               onChange={(e) => {
                 const cleaned = gstInput.ifsc(e.target.value)
                 setIfscCode(cleaned)
-                if (errors.ifscCode) setErrors((prev) => ({ ...prev, ifscCode: '' }))
+                if (errors.ifscCode) {
+                  const err = rules.ifsc(cleaned)
+                  setErrors((prev) => ({ ...prev, ifscCode: err || '' }))
+                }
                 if (cleaned.length >= 4) {
                   const match = lookupSampleBankByIfsc(cleaned)
                   if (match) {
@@ -316,6 +326,10 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
                     if (errors.bankName) setErrors((prev) => ({ ...prev, bankName: '' }))
                   }
                 }
+              }}
+              onBlur={() => {
+                const err = rules.ifsc(ifscCode)
+                setErrors((prev) => ({ ...prev, ifscCode: err || '' }))
               }}
               className={`gst-amend-text-input ${errors.ifscCode ? 'has-error' : ''}`}
             />
@@ -332,8 +346,12 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
                 id="account-type-select"
                 value={accountType}
                 onChange={(e) => {
-                  setAccountType(e.target.value)
-                  if (errors.accountType) setErrors((prev) => ({ ...prev, accountType: '' }))
+                  const val = e.target.value
+                  setAccountType(val)
+                  if (errors.accountType) setErrors((prev) => ({ ...prev, accountType: val ? '' : 'Please select account type.' }))
+                }}
+                onBlur={() => {
+                  setErrors((prev) => ({ ...prev, accountType: accountType ? '' : 'Please select account type.' }))
                 }}
                 className={`gst-amend-select-input ${errors.accountType ? 'has-error' : ''}`}
               >
@@ -355,18 +373,17 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
         </div>
 
         {/* Card 3: Supporting proof */}
-        <div className="gst-amend-section-heading">Supporting Proof</div>
-        <GSTProofUpload
-          selectedFile={selectedFile}
-          existingFileName={!selectedFile ? effectiveFileName : undefined}
-          existingFileSize={initialFileSize}
-          error={errors.file}
-          onFileSelect={handleFileChange}
-          onRemoveFile={() => {
-            setSelectedFile(null)
-            setRemovedInitialFile(true)
-          }}
-        />
+        <div id="gst-amend-proof">
+          <div className="gst-amend-section-heading">Supporting Proof</div>
+          <GSTProofUpload
+            selectedFile={selectedFile}
+            existingFileName={!selectedFile ? effectiveFileName : undefined}
+            existingFileSize={initialFileSize}
+            error={errors.file}
+            onFileSelect={handleFileChange}
+            onRemoveFile={handleFileRemove}
+          />
+        </div>
 
         {/* Accepted proofs card */}
         <div className="gst-amend-accepted-proofs-card">
@@ -413,22 +430,11 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
         </div>
 
         {/* Bottom Action Row (Left: Back, Right: Review Changes) */}
-        <div className="gst-amend-detail-actions-row">
-          <button
-            type="button"
-            onClick={handleBackClick}
-            className="gst-amend-back-pill-btn"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-            Back
-          </button>
-
-          <div className="form-actions-group">
-            {onSaveDraft && (
-              <SaveDraftButton
-                onClick={() => {
+        <GSTAmendmentActionBar
+          onBack={handleBackClick}
+          onSaveDraft={
+            onSaveDraft
+              ? () => {
                   const formattedNewValue = `${bankName.trim()} · A/C ${accountNumber.trim()} · ${ifscCode.toUpperCase().trim()} (${accountType})`
                   onSaveDraft({
                     newValue: formattedNewValue,
@@ -442,29 +448,12 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
                       accountType,
                     },
                   })
-                }}
-              />
-            )}
-            {isEditMode ? (
-              <UpdateAndReviewButton
-                type="submit"
-                isSubmitting={isSubmitting}
-              />
-            ) : (
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="gst-amend-submit-orange-btn"
-              >
-                {isSubmitting ? 'Submitting...' : 'Continue'}
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </button>
-            )}
-          </div>
-        </div>
+                }
+              : undefined
+          }
+          isSubmitting={isSubmitting}
+          isEditMode={isEditMode}
+        />
       </form>
     </div>
   )

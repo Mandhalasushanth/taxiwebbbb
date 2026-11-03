@@ -11,6 +11,7 @@ import { GSTAmendment } from '../../src/modules/gst/components/GSTAmendment/GSTA
 import { authStorage } from '../../src/core/auth'
 import { localStore } from '../../src/core/storage/localStorage'
 import { userStorage } from '../../src/core/storage/userStorage'
+import { gstUploadedFiles } from '../../src/modules/gst/services/gstUploadedFiles'
 
 describe('GST Amendment Edit Flow & Draft Persistence', () => {
   afterEach(cleanup)
@@ -20,6 +21,7 @@ describe('GST Amendment Edit Flow & Draft Persistence', () => {
     window.scrollTo = () => {}
     localStorage.clear()
     localStore.clear()
+    gstUploadedFiles.clear()
     authStorage.setUser({
       id: 'test-user-gst',
       mobile: '9876543210',
@@ -122,23 +124,24 @@ describe('GST Amendment Edit Flow & Draft Persistence', () => {
       resumeRoute: '/gst/amendment',
     })
 
-    render(
+        render(
       <BrowserRouter>
         <GSTAmendment />
       </BrowserRouter>
     )
 
-    // 1. Should show the core and non-core services page with prefilled GSTIN
+    // 1. Should show the selection page (home page where all core and non-core fields are listed) with prefilled GSTIN
     await waitFor(() => {
-      expect(screen.getByText('GST Amendment')).toBeInTheDocument()
       expect(screen.getByText('Select what you want to change')).toBeInTheDocument()
       const gstinInput = screen.getByPlaceholderText('Enter 15-character GSTIN') as HTMLInputElement
       expect(gstinInput.value).toBe('29AAAAA0000F1Z2')
     })
 
-    // 2. If user selects same code (Legal Business Name), show where he stopped
+    // 2. Click the same field (Legal Business Name) -> restores where stopped with prefilled values
     fireEvent.click(screen.getByText('Legal Business Name'))
+
     await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Legal Business Name', level: 1 })).toBeInTheDocument()
       const input = screen.getByPlaceholderText('Enter legal business name') as HTMLInputElement
       expect(input.value).toBe('Saved Draft Corp Private Limited')
       expect(screen.getByText(/certificate_draft\.pdf/i)).toBeInTheDocument()
@@ -149,7 +152,6 @@ describe('GST Amendment Edit Flow & Draft Persistence', () => {
     fireEvent.click(backBtn)
 
     // If modal appears, click Discard or close to go back to selection
-    // Note: if user clicks back and prompt appears, they can choose to go back:
     const discardBtn = screen.queryByRole('button', { name: /Discard/i })
     if (discardBtn) {
       fireEvent.click(discardBtn)
@@ -167,7 +169,7 @@ describe('GST Amendment Edit Flow & Draft Persistence', () => {
     })
   })
 
-  it('restores directly into review step if user had stopped at review when saving draft', async () => {
+  it('restores into review step when selecting the same service if user had stopped at review', async () => {
     const draftPayload = {
       gstin: '29AAAAA0000F1Z2',
       selectedOptionId: 'legal_name',
@@ -197,15 +199,16 @@ describe('GST Amendment Edit Flow & Draft Persistence', () => {
       </BrowserRouter>
     )
 
-    // Lands on selection page first
+    // 1. Shows selection page with prefilled GSTIN
     await waitFor(() => {
       expect(screen.getByText('Select what you want to change')).toBeInTheDocument()
+      const gstinInput = screen.getByPlaceholderText('Enter 15-character GSTIN') as HTMLInputElement
+      expect(gstinInput.value).toBe('29AAAAA0000F1Z2')
     })
 
-    // User clicks same service
+    // 2. Select the same field (Legal Business Name) -> restores directly into Review Amendment screen where user had stopped
     fireEvent.click(screen.getByText('Legal Business Name'))
 
-    // Should restore directly into Review Amendment screen where user had stopped
     await waitFor(() => {
       expect(screen.getByText('Review Amendment')).toBeInTheDocument()
       expect(screen.getByText('Review Stopped Corp Limited')).toBeInTheDocument()

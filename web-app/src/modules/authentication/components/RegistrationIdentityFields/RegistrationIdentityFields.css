@@ -8,10 +8,349 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
+  align-items: start;
 }
 
 @media (max-width: 640px) {
   .reg-identity-fields__row {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Green circular tick inside field */
+.reg-field__valid-tick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  flex-shrink: 0;
+  animation: regFadeIn 0.2s ease-out;
+}
+
+/* Aadhaar OTP Button inside field */
+.reg-aadhaar__otp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 8px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.reg-aadhaar__otp-btn--disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+  border: 1px solid #e2e8f0;
+}
+
+.reg-aadhaar__otp-btn--active {
+  background: var(--primary-orange, #ea580c);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(234, 88, 12, 0.25);
+}
+
+.reg-aadhaar__otp-btn--active:hover {
+  background: #c2410c;
+  transform: translateY(-0.5px);
+}
+
+/* Aadhaar Verified Pill inside field */
+.reg-aadhaar__verified-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 9999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #059669;
+  flex-shrink: 0;
+  margin-left: 8px;
+  animation: regFadeIn 0.2s ease-out;
+}
+
+/* Green success confirmation banner below field */
+.reg-aadhaar__success-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ecfdf5;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 9px 14px;
+  margin-top: 6px;
+  animation: regFadeIn 0.25s ease-out;
+}
+
+.reg-aadhaar__success-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reg-aadhaar__success-text {
+  color: #065f46;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.reg-aadhaar__change-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--primary-orange, #ea580c);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  font-family: inherit;
+  text-decoration: none;
+}
+
+.reg-aadhaar__change-btn:hover,
+.reg-aadhaar__change-btn:focus,
+.reg-aadhaar__change-btn:active {
+  opacity: 0.85;
+  text-decoration: none;
+  outline: none;
+}
+
+/* Verify Aadhaar OTP Card */
+.reg-aadhaar-otp-card {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-top: 8px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  animation: regSlideDown 0.25s ease-out;
+  box-sizing: border-box;
+}
+
+.reg-aadhaar-otp__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.reg-aadhaar-otp__title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.reg-aadhaar-otp__mock-badge {
+  background: #eff6ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.reg-aadhaar-otp__subtitle {
+  margin: 0 0 14px 0;
+  font-size: 12.5px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.reg-aadhaar-otp__inputs-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.reg-aadhaar-otp__input-box {
+  width: 42px;
+  height: 42px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.reg-aadhaar-otp__input-box:focus {
+  border-color: var(--primary-orange, #ea580c);
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+}
+
+.reg-aadhaar-otp__timer-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  font-size: 12.5px;
+  color: #64748b;
+}
+
+.reg-aadhaar-otp__timer-val {
+  color: #ea580c;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.reg-aadhaar-otp__resend-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--primary-orange, #ea580c);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 4px;
+  font-family: inherit;
+}
+
+.reg-aadhaar-otp__resend-btn:hover {
+  text-decoration: underline;
+}
+
+.reg-aadhaar-otp__verify-btn {
+  width: 100%;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.reg-aadhaar-otp__verify-btn--disabled {
+  background: #cbd5e1;
+  color: #ffffff;
+  cursor: not-allowed;
+}
+
+.reg-aadhaar-otp__verify-btn--active {
+  background: var(--primary-orange, #ea580c);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(234, 88, 12, 0.2);
+}
+
+.reg-aadhaar-otp__verify-btn--active:hover {
+  background: #c2410c;
+}
+
+/* Aadhaar Verified Popup Modal */
+.reg-aadhaar-modal__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: regFadeIn 0.2s ease-out;
+}
+
+.reg-aadhaar-modal__dialog {
+  background: #ffffff;
+  border-radius: 14px;
+  max-width: 360px;
+  width: 100%;
+  padding: 22px 24px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: regZoomIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+.reg-aadhaar-modal__title {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.reg-aadhaar-modal__message {
+  margin: 0 0 20px 0;
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.reg-aadhaar-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.reg-aadhaar-modal__ok-btn {
+  background: none;
+  border: none;
+  color: var(--primary-orange, #ea580c);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-family: inherit;
+}
+
+.reg-aadhaar-modal__ok-btn:hover {
+  background: #fff7ed;
+}
+
+@keyframes regFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes regSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes regZoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

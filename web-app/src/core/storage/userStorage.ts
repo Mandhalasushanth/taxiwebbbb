@@ -1,3 +1,4 @@
+import { errorTracker } from '../errors'
 import { localStore } from './localStorage'
 import { authStorage } from '@core/auth'
 import type { RecentApplication, UpcomingDeadlineItem, FinalizedCharges } from '@modules/dashboard/types/dashboard.types'
@@ -24,8 +25,8 @@ const emitApplicationsUpdated = () => {
   if (typeof window !== 'undefined') {
     try {
       window.dispatchEvent(new Event('taxedge:applications-updated'))
-    } catch {
-      // Safe fallback
+    } catch (err) {
+      errorTracker.captureException(err, { extra: { context: 'dispatchEvent:taxedge:applications-updated' } })
     }
   }
 }
@@ -105,8 +106,8 @@ export const userStorage = {
         timestamp: 'Just now',
         type: 'application',
       })
-    } catch {
-      // Safe fallback if called outside React/store initialization
+    } catch (err) {
+      errorTracker.captureException(err, { extra: { context: 'notificationStore:addNotification' } })
     }
   },
 
@@ -315,8 +316,8 @@ export const userStorage = {
     this.clearUserDeadlines()
     try {
       useNotificationStore.getState().clearAll()
-    } catch {
-      // Safe fallback
+    } catch (err) {
+      errorTracker.captureException(err, { extra: { context: 'clearNotifications' } })
     }
     localStore.remove(USER_APPLICATIONS_KEY)
     localStore.remove(APPLICATION_DRAFTS_KEY)

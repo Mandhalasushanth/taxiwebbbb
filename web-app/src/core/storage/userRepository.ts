@@ -1,3 +1,4 @@
+import { errorTracker } from '../errors'
 import { localStore } from './localStorage'
 import { STORAGE_KEYS } from '../config/constants'
 import type { AuthSession, AuthUser } from '../auth/authTypes'
@@ -89,7 +90,8 @@ export class LocalStorageUserRepository implements IUserRepository {
           .filter((entry): entry is [string, NonNullable<(typeof records)[string]>] => Boolean(entry[1]))
           .map(toStored)
       )
-    } catch {
+    } catch (err) {
+      errorTracker.captureException(err, { extra: { action: 'getAllRecords' } })
       return {}
     }
   }
@@ -97,8 +99,8 @@ export class LocalStorageUserRepository implements IUserRepository {
   private saveAllRecords(records: Record<string, StoredUserRecord>): void {
     try {
       localStore.set(STORAGE_KEYS.registeredUsers, records)
-    } catch {
-      // Safe fallback if quota exceeded
+    } catch (err) {
+      errorTracker.captureException(err, { extra: { action: 'saveAllRecords' } })
     }
   }
 
@@ -295,7 +297,8 @@ export class LocalStorageUserRepository implements IUserRepository {
         user: latestUser,
         tokens: { accessToken, refreshToken },
       }
-    } catch {
+    } catch (err) {
+      errorTracker.captureException(err, { extra: { action: 'getSession' } })
       return null
     }
   }
@@ -305,8 +308,8 @@ export class LocalStorageUserRepository implements IUserRepository {
       localStore.set(STORAGE_KEYS.accessToken, session.tokens.accessToken)
       localStore.set(STORAGE_KEYS.refreshToken, session.tokens.refreshToken)
       localStore.set(STORAGE_KEYS.user, session.user)
-    } catch {
-      // Safe fallback
+    } catch (err) {
+      errorTracker.captureException(err, { extra: { action: 'saveSession' } })
     }
   }
 
@@ -315,8 +318,8 @@ export class LocalStorageUserRepository implements IUserRepository {
       localStore.remove(STORAGE_KEYS.accessToken)
       localStore.remove(STORAGE_KEYS.refreshToken)
       localStore.remove(STORAGE_KEYS.user)
-    } catch {
-      // Safe fallback
+    } catch (err) {
+      errorTracker.captureException(err, { extra: { action: 'clearSession' } })
     }
   }
 
@@ -333,7 +336,9 @@ export class LocalStorageUserRepository implements IUserRepository {
       localStore.remove(STORAGE_KEYS.registeredUsers)
       localStore.remove('taxedge.userApplications')
       localStore.remove('taxedge.applicationDrafts')
-    } catch {}
+    } catch (err) {
+      errorTracker.captureException(err, { extra: { action: 'clearAll' } })
+    }
   }
 }
 

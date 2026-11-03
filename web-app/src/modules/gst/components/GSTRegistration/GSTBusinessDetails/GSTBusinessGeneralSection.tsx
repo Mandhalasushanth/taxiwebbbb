@@ -1,5 +1,6 @@
 import React from 'react'
 import { Award, Store } from 'lucide-react'
+import { FieldInfoTooltip } from '@shared/components'
 import { getCommencementDateBounds } from '@shared/utils'
 import { gstInput, GST_MAX_LENGTH } from '@modules/gst/utils/gstInputFormatters'
 import { GSTFormSection } from '@modules/gst/shared/GSTFormSection'
@@ -29,6 +30,7 @@ type GeneralField =
 export interface GSTBusinessGeneralSectionProps {
   data: Pick<GstBusinessFormData, GeneralField>
   onChange: <K extends keyof GstBusinessFormData>(field: K, value: GstBusinessFormData[K]) => void
+  onBlur?: (field: keyof GstBusinessFormData) => void
   errors?: Record<string, string>
   onClearError?: (field: string) => void
 }
@@ -56,7 +58,7 @@ const compositionOptionState =
   }
 
 export const GSTBusinessIdentitySection: React.FC<GSTBusinessGeneralSectionProps> = (props) => {
-  const { data, onChange, errors = {} } = props
+  const { data, onChange, onBlur, errors = {} } = props
   const update = createGeneralFieldUpdater(props)
   const dateBounds = getCommencementDateBounds()
   const panHint = CONSTITUTION_PAN_TYPES[data.constitution]
@@ -79,16 +81,28 @@ export const GSTBusinessIdentitySection: React.FC<GSTBusinessGeneralSectionProps
           value={data.legalName}
           error={errors.legalName}
           onValueChange={(v) => update('legalName', gstInput.businessName(v))}
-          onBlur={() => onChange('legalName', data.legalName.trim())}
+          onBlur={() => {
+            onChange('legalName', data.legalName.trim())
+            onBlur?.('legalName')
+          }}
         />
         <GSTTextField
           id="tradeName"
           label="Trade Name"
+          infoTooltip={
+            <FieldInfoTooltip
+              title="Trade Name Information"
+              description="Enter the trade name under which your business operates. It should match the trade name used in your GST registration details, if applicable."
+            />
+          }
           placeholder="Enter your business / trade name"
           value={data.tradeName}
           error={errors.tradeName}
           onValueChange={(v) => update('tradeName', gstInput.businessName(v))}
-          onBlur={() => onChange('tradeName', data.tradeName.trim())}
+          onBlur={() => {
+            onChange('tradeName', data.tradeName.trim())
+            onBlur?.('tradeName')
+          }}
         />
       </div>
 
@@ -101,6 +115,7 @@ export const GSTBusinessIdentitySection: React.FC<GSTBusinessGeneralSectionProps
           value={data.constitution}
           error={errors.constitution}
           onValueChange={(v) => update('constitution', v)}
+          onBlur={() => onBlur?.('constitution')}
         />
         <GSTTextField
           id="businessPan"
@@ -111,6 +126,10 @@ export const GSTBusinessIdentitySection: React.FC<GSTBusinessGeneralSectionProps
           value={data.businessPan}
           error={errors.businessPan}
           onValueChange={(v) => update('businessPan', gstInput.pan(v))}
+          onBlur={() => {
+            onChange('businessPan', data.businessPan.trim().toUpperCase())
+            onBlur?.('businessPan')
+          }}
         />
       </div>
 
@@ -124,6 +143,7 @@ export const GSTBusinessIdentitySection: React.FC<GSTBusinessGeneralSectionProps
           error={errors.natureOfBusiness}
           onValueChange={(v) => update('natureOfBusiness', v)}
           getOptionState={compositionOptionState('natureOfBusiness', data.compositionScheme)}
+          onBlur={() => onBlur?.('natureOfBusiness')}
         />
         <GSTDateField
           id="commencementDate"
@@ -133,6 +153,7 @@ export const GSTBusinessIdentitySection: React.FC<GSTBusinessGeneralSectionProps
           value={data.commencementDate}
           error={errors.commencementDate}
           onValueChange={(v) => update('commencementDate', v)}
+          onBlur={() => onBlur?.('commencementDate')}
         />
       </div>
     </GSTFormSection>
@@ -140,7 +161,7 @@ export const GSTBusinessIdentitySection: React.FC<GSTBusinessGeneralSectionProps
 }
 
 export const GSTRegistrationSchemeSection: React.FC<GSTBusinessGeneralSectionProps> = (props) => {
-  const { data, errors = {} } = props
+  const { data, onBlur, errors = {} } = props
   const update = createGeneralFieldUpdater(props)
 
   return (
@@ -162,6 +183,7 @@ export const GSTRegistrationSchemeSection: React.FC<GSTBusinessGeneralSectionPro
           error={errors.registrationReason}
           onValueChange={(v) => update('registrationReason', v)}
           getOptionState={compositionOptionState('registrationReason', data.compositionScheme)}
+          onBlur={() => onBlur?.('registrationReason')}
         />
         <GSTSelectField
           id="compositionScheme"
@@ -171,6 +193,7 @@ export const GSTRegistrationSchemeSection: React.FC<GSTBusinessGeneralSectionPro
           value={data.compositionScheme}
           error={errors.compositionScheme}
           onValueChange={(v) => update('compositionScheme', v)}
+          onBlur={() => onBlur?.('compositionScheme')}
         />
       </div>
     </GSTFormSection>

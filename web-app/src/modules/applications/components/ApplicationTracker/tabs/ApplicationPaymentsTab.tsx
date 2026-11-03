@@ -34,6 +34,20 @@ export const ApplicationPaymentsTab: React.FC<ApplicationPaymentsTabProps> = ({
   mgrSuccess,
   mgrError,
 }) => {
+  const isAwaitingVerification =
+    data.paymentSummary.paymentStatus === 'Awaiting Verification' ||
+    data.paymentSummary.totalAmount === 'Not Assigned'
+
+  const feeTypeLabel = data.title.toLowerCase().includes('registration')
+    ? (isAwaitingVerification ? 'Registration' : 'Service Fee')
+    : data.title.toLowerCase().includes('filing')
+    ? (isAwaitingVerification ? 'Filing' : 'Filing Fee')
+    : data.category === 'Loans'
+    ? 'Processing Fee'
+    : data.category === 'ITR'
+    ? 'Filing Fee'
+    : 'Service Fee'
+
   return (
     <div className="app-tracker-web-tab-content">
       {/* Payment Summary Card */}
@@ -44,11 +58,25 @@ export const ApplicationPaymentsTab: React.FC<ApplicationPaymentsTabProps> = ({
             <div className="app-tracker-rupee-circle">₹</div>
             <div>
               <span className="app-tracker-pay-summary-label">Total Amount</span>
-              <span className="app-tracker-pay-summary-value">{data.paymentSummary.totalAmount || '₹ 0.00'}</span>
+              <span className="app-tracker-pay-summary-value">{data.paymentSummary.totalAmount || (isAwaitingVerification ? 'Not Assigned' : '₹ 0.00')}</span>
             </div>
           </div>
-          <span className="app-tracker-pill-badge app-tracker-pill-badge--completed">Paid</span>
+          <span className={`app-tracker-pill-badge ${isAwaitingVerification ? 'app-tracker-pill-badge--awaiting' : isPaid ? 'app-tracker-pill-badge--completed' : 'app-tracker-pill-badge--pending'}`}>
+            {data.paymentSummary.paymentStatus || (isAwaitingVerification ? 'Awaiting Verification' : isPaid ? 'Paid' : 'Pending')}
+          </span>
         </div>
+
+        {isAwaitingVerification && (
+          <div className="app-tracker-awaiting-notice">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="app-tracker-awaiting-notice-icon">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <p className="app-tracker-awaiting-notice-text">
+              The CA manager will assign the payment amount after verification is completed.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Payment Details Card */}
@@ -57,64 +85,70 @@ export const ApplicationPaymentsTab: React.FC<ApplicationPaymentsTabProps> = ({
         <div className="app-tracker-details-list">
           <div className="app-tracker-detail-row">
             <span className="app-tracker-detail-label">Fee Type</span>
-            <span className="app-tracker-detail-value">Filing Fee</span>
+            <span className="app-tracker-detail-value">{feeTypeLabel}</span>
           </div>
           <div className="app-tracker-detail-row">
             <span className="app-tracker-detail-label">Amount</span>
-            <span className="app-tracker-detail-value">{data.paymentSummary.totalAmount || '₹ 0.00'}</span>
+            <span className="app-tracker-detail-value">{data.paymentSummary.totalAmount || (isAwaitingVerification ? 'Not Assigned' : '₹ 0.00')}</span>
           </div>
-          <div className="app-tracker-detail-row">
-            <span className="app-tracker-detail-label">Payment Mode</span>
-            <span className="app-tracker-detail-value">UPI</span>
-          </div>
-          <div className="app-tracker-detail-row">
-            <span className="app-tracker-detail-label">Payment Date</span>
-            <span className="app-tracker-detail-value">{data.paymentSummary.paymentDate || data.appliedDate}</span>
-          </div>
-          <div className="app-tracker-detail-row">
-            <span className="app-tracker-detail-label">Transaction ID</span>
-            <span className="app-tracker-detail-value app-tracker-detail-value--hash">
-              {data.paymentSummary.transactionId && data.paymentSummary.transactionId.length > 10
-                ? data.paymentSummary.transactionId
-                : `TXNFIL${data.appId.replace(/\D/g, '') || '7026602'}c7e6b4d91a80abd2f1234b9c3`}
-            </span>
-          </div>
+          {!isAwaitingVerification && (
+            <>
+              <div className="app-tracker-detail-row">
+                <span className="app-tracker-detail-label">Payment Mode</span>
+                <span className="app-tracker-detail-value">{data.paymentSummary.paymentMethod || 'UPI'}</span>
+              </div>
+              <div className="app-tracker-detail-row">
+                <span className="app-tracker-detail-label">Payment Date</span>
+                <span className="app-tracker-detail-value">{data.paymentSummary.paymentDate || data.appliedDate}</span>
+              </div>
+              <div className="app-tracker-detail-row">
+                <span className="app-tracker-detail-label">Transaction ID</span>
+                <span className="app-tracker-detail-value app-tracker-detail-value--hash">
+                  {data.paymentSummary.transactionId && data.paymentSummary.transactionId.length > 10
+                    ? data.paymentSummary.transactionId
+                    : `TXNFIL${data.appId.replace(/\D/g, '') || '7026602'}c7e6b4d91a80abd2f1234b9c3`}
+                </span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
       {/* Payment Status Banner */}
-      {isPaid ? (
-        <div className="app-tracker-clean-card app-tracker-paid-success-banner">
-          <div className="app-tracker-paid-success-circle">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
+      {!isAwaitingVerification && (
+        isPaid ? (
+          <div className="app-tracker-clean-card app-tracker-paid-success-banner">
+            <div className="app-tracker-paid-success-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </div>
+            <span className="app-tracker-paid-success-text">Payment completed successfully.</span>
           </div>
-          <span className="app-tracker-paid-success-text">Payment completed successfully.</span>
-        </div>
-      ) : (
-        <div className="app-tracker-clean-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <h4 style={{ margin: '0 0 4px', fontSize: '15px' }}>Payment Pending</h4>
-            <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>Complete payment to expedite CA processing.</p>
+        ) : (
+          <div className="app-tracker-clean-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <h4 style={{ margin: '0 0 4px', fontSize: '15px' }}>Payment Pending</h4>
+              <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>Complete payment to expedite CA processing.</p>
+            </div>
+            <button
+              type="button"
+              onClick={handlePayNow}
+              disabled={isProcessingPayment}
+              style={{
+                padding: '10px 24px',
+                background: '#ea580c',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '8px',
+                fontWeight: 600,
+                cursor: isProcessingPayment ? 'not-allowed' : 'pointer',
+              }}
+            >
+              {isProcessingPayment ? 'Processing...' : 'Pay Now'}
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={handlePayNow}
-            disabled={isProcessingPayment}
-            style={{
-              padding: '10px 24px',
-              background: '#ea580c',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '8px',
-              fontWeight: 600,
-              cursor: isProcessingPayment ? 'not-allowed' : 'pointer',
-            }}
-          >
-            {isProcessingPayment ? 'Processing...' : 'Pay Now'}
-          </button>
-        </div>
+        )
       )}
 
       {/* Manager Determination Desk (for TDS refunds when authorized) */}

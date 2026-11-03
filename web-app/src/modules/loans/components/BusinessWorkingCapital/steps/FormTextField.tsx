@@ -1,5 +1,6 @@
 import React from 'react'
 import type { ReactNode } from 'react'
+import { CaretInput } from '@shared/components'
 
 export interface FormTextFieldProps {
   id: string
@@ -63,7 +64,7 @@ export const FormTextField: React.FC<FormTextFieldProps> = ({
         {multiline ? (
           <textarea {...shared} rows={3} onChange={(event) => onChange(event.target.value)} />
         ) : (
-          <input
+          <CaretInput
             {...shared}
             type={type}
             inputMode={inputMode}

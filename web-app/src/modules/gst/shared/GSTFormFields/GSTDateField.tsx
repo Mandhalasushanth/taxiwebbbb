@@ -1,5 +1,5 @@
-import type { MouseEvent } from 'react'
-import { CalendarDays, ChevronDown } from 'lucide-react'
+import React, { type MouseEvent } from 'react'
+import { CalendarDays } from 'lucide-react'
 import { GSTFieldShell } from './GSTFieldParts'
 import { fieldErrorId } from './gstFieldClasses'
 import './GSTFormFields.css'
@@ -14,6 +14,7 @@ export interface GSTDateFieldProps {
   placeholder?: string
   error?: string | null
   onValueChange: (value: string) => void
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
 }
 
 /** YYYY-MM-DD → DD-MM-YYYY for display */
@@ -36,6 +37,7 @@ export const GSTDateField = ({
   placeholder = 'DD-MM-YYYY',
   error,
   onValueChange,
+  onBlur,
 }: GSTDateFieldProps) => {
   const wrapClass = ['gst-date', error ? 'gst-date--error' : ''].filter(Boolean).join(' ')
 
@@ -48,7 +50,6 @@ export const GSTDateField = ({
         <span className={`gst-date__text ${value ? '' : 'gst-date__text--empty'}`} aria-hidden="true">
           {value ? toDisplayDate(value) : placeholder}
         </span>
-        <ChevronDown className="gst-date__chevron" aria-hidden="true" />
         <input
           id={id}
           name={id}
@@ -59,6 +60,7 @@ export const GSTDateField = ({
           max={max}
           onClick={openPicker}
           onChange={(e) => onValueChange(e.target.value)}
+          onBlur={onBlur}
           aria-required="true"
           aria-invalid={Boolean(error)}
           aria-describedby={error ? fieldErrorId(id) : undefined}

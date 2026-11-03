@@ -1,18 +1,25 @@
 .gst-comp-card {
   background-color: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  border-radius: 20px;
+  padding: 24px 28px;
+  box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+}
+
+.gst-comp-card--ca-info {
+  background-color: #f0f7ff;
+  border: 1px solid #bfdbfe;
+  box-shadow: 0 1px 3px rgba(30, 64, 175, 0.05);
 }
 
 .gst-comp-card__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
   flex-wrap: wrap;
   gap: 12px;
 }
@@ -20,8 +27,23 @@
 .gst-comp-card__title-group {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
+}
+
+.gst-comp-card__info-icon-wrap {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0284c7;
+  flex-shrink: 0;
+}
+
+.gst-comp-card__info-icon {
+  width: 22px;
+  height: 22px;
 }
 
 .gst-comp-card__title {
@@ -30,6 +52,18 @@
   color: var(--palette-slate-900);
   margin: 0;
   letter-spacing: -0.01em;
+}
+
+.gst-comp-card__title--blue {
+  color: #1e3a8a;
+}
+
+.gst-comp-ca-message {
+  color: #1e40af;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.55;
+  margin: 0;
 }
 
 .gst-comp-badge {
@@ -52,36 +86,6 @@
   background-color: #e0f2fe;
   color: #0369a1;
   border: 1px solid #bae6fd;
-}
-
-.gst-comp-pending-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 12px 16px;
-  margin-bottom: 16px;
-}
-
-.gst-comp-pending-note__icon {
-  width: 20px;
-  height: 20px;
-  color: #0284c7;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-
-.gst-comp-pending-note__text {
-  font-size: 0.875rem;
-  color: #475569;
-  line-height: 1.45;
-  margin: 0;
-}
-
-.gst-comp-pending-note__text strong {
-  color: #1e293b;
 }
 
 .gst-comp-card__rows {
@@ -112,9 +116,8 @@
   font-size: 0.95rem;
   color: var(--palette-slate-900);
   font-weight: 700;
-  text-align: right;
 }
 
 .gst-comp-row__value--green {
-  color: var(--success);
+  color: #059669;
 }

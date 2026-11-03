@@ -22,21 +22,27 @@ export const Receipt = () => {
 
   useEffect(() => {
     let isMounted = true
-    setIsLoading(true)
 
-    receiptService
-      .getReceipt(receiptRef)
-      .then((data) => {
+    const loadReceipt = async () => {
+      try {
+        setIsLoading(true)
+        const data = await receiptService.getReceipt(receiptRef)
         if (isMounted) {
           setReceipt(data)
-          setIsLoading(false)
         }
-      })
-      .catch(() => {
+      } catch (error) {
+        console.error('Failed to load receipt:', error)
+        if (isMounted) {
+          setReceipt(null)
+        }
+      } finally {
         if (isMounted) {
           setIsLoading(false)
         }
-      })
+      }
+    }
+
+    loadReceipt()
 
     return () => {
       isMounted = false

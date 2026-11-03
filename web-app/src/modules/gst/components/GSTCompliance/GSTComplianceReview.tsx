@@ -10,7 +10,7 @@ export interface GSTComplianceReviewProps {
   salesFile: File | null
   noticeFile: File | null
   isSubmitting?: boolean
-  onEdit: () => void
+  onEdit: (section?: string) => void
   onSaveDraft?: () => void
   onViewDoc: (file: File, title: string) => void
   onSubmit: () => void
@@ -140,7 +140,7 @@ export const GSTComplianceReview: React.FC<GSTComplianceReviewProps> = ({
           <button
             type="button"
             className="gst-compliance-review-edit-btn"
-            onClick={onEdit}
+            onClick={() => onEdit('gst-compliance-business-details')}
             aria-label="Edit Request & Filing Details"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="14" height="14">
@@ -175,7 +175,7 @@ export const GSTComplianceReview: React.FC<GSTComplianceReviewProps> = ({
             <button
               type="button"
               className="gst-compliance-review-edit-btn"
-              onClick={onEdit}
+              onClick={() => onEdit('gst-notice-details')}
               aria-label="Edit Notice Details"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="14" height="14">
@@ -214,7 +214,7 @@ export const GSTComplianceReview: React.FC<GSTComplianceReviewProps> = ({
             <button
               type="button"
               className="gst-compliance-review-edit-btn"
-              onClick={onEdit}
+              onClick={() => onEdit('gst-reconciliation-details')}
               aria-label="Edit Reconciliation Parameters"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="14" height="14">
@@ -245,7 +245,7 @@ export const GSTComplianceReview: React.FC<GSTComplianceReviewProps> = ({
           <button
             type="button"
             className="gst-compliance-review-edit-btn"
-            onClick={onEdit}
+            onClick={() => onEdit(isNotice ? 'gst-notice-docs' : 'gst-reconciliation-docs')}
             aria-label="Edit Attached Documents"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="14" height="14">

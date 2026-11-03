@@ -81,6 +81,30 @@
   color: var(--color-danger);
 }
 
+/* ===== HSN / SAC Classification Badge ===== */
+.gst-hsn-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #166534;
+  line-height: 1.25;
+  width: fit-content;
+  box-sizing: border-box;
+}
+
+.gst-hsn-badge__check {
+  font-weight: 700;
+  color: #15803d;
+}
+
 /* ===== Select ===== */
 .gst-field__select-wrap {
   position: relative;

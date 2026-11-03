@@ -37,10 +37,11 @@ const buildInitialCancellation = (): CancellationDraft => ({
 })
 
 export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps) => {
+  const [draftSnapshot] = useState(() => readServiceDraft<CancellationDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst))
   const [initialValues] = useState(buildInitialCancellation)
   const [restored] = useState<CancellationDraft>(() => ({
     ...initialValues,
-    ...readServiceDraft<CancellationDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst)?.formData,
+    ...draftSnapshot?.formData,
   }))
   const [gstin, setGstin] = useState(restored.gstin)
   const [reason, setReason] = useState(restored.reason)
@@ -52,7 +53,7 @@ export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps
   const [finalReturnDeclaration, setFinalReturnDeclaration] = useState(restored.finalReturnDeclaration)
 
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [isReviewing, setIsReviewing] = useState(false)
+  const [isReviewing, setIsReviewing] = useState(() => draftSnapshot?.currentStep === 2)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [referenceNumber, setReferenceNumber] = useState('')
@@ -80,6 +81,27 @@ export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps
     hasEnteredData: isReviewing || Boolean(selectedFile) || hasFormChanged(draftData, initialValues),
     isComplete: isSubmitted,
   })
+
+  const validateField = (field: string) => {
+    let err: string | undefined
+    if (field === 'gstin') err = gstFieldRules.gstin(gstin)
+    else if (field === 'reason') err = reason ? undefined : 'Please select reason for cancellation.'
+    else if (field === 'cancellationDate') err = cancellationDate ? undefined : 'Please select cancellation date.'
+    else if (field === 'lastGstr3bFiled') err = gstFieldRules.text('Last GSTR-3B filed ARN / period', 6, 60)(lastGstr3bFiled)
+    else if (field === 'closingStockDetails') err = gstFieldRules.text('Closing stock details', 5, 500)(closingStockDetails)
+
+    return err
+  }
+
+  const handleBlur = (field: string) => {
+    const err = validateField(field)
+    setErrors((prev) => {
+      const next = { ...prev }
+      if (err) next[field] = err
+      else delete next[field]
+      return next
+    })
+  }
 
   const clearError = (field: string) => {
     if (errors[field]) {
@@ -115,6 +137,10 @@ export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
+      requestAnimationFrame(() => {
+        const firstErrorEl = document.querySelector(".gst-canc-error-msg, .field-error")
+        firstErrorEl?.scrollIntoView({ behavior: "smooth", block: "center" })
+      })
       return
     }
 
@@ -188,6 +214,8 @@ export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps
     setFinalReturnDeclaration,
     errors,
     clearError,
+    handleBlur,
+    validateField,
     handleFileChange,
     handleReviewProceed,
     handleFinalSubmit,

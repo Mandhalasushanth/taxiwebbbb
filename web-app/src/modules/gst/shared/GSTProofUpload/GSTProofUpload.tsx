@@ -1,6 +1,7 @@
-import type { FC } from 'react'
+import { useState, type FC } from 'react'
 import { UploadDocument } from '@shared/components'
-import { formatUploadSize } from '@shared/upload'
+import { formatUploadSize, DOCUMENT_UPLOAD_RULE } from '@shared/upload'
+import { assertGstUploadCriteria, GstUploadException } from '@modules/gst/utils/gstUploadValidator'
 import './GSTProofUpload.css'
 
 export interface GSTProofUploadProps {
@@ -23,8 +24,33 @@ export const GSTProofUpload: FC<GSTProofUploadProps> = ({
   onFileSelect,
   onRemoveFile,
 }) => {
+  const [internalError, setInternalError] = useState<string | undefined>(undefined)
+  const activeError = error || internalError
+
   const fileName = selectedFile?.name || existingFileName
   const fileSize = selectedFile ? formatUploadSize(selectedFile.size) : existingFileSize
+
+  const handleFileSelect = (_id: string, file: File) => {
+    try {
+      assertGstUploadCriteria(file, DOCUMENT_UPLOAD_RULE)
+      setInternalError(undefined)
+      onFileSelect(file)
+    } catch (err) {
+      const msg =
+        err instanceof GstUploadException
+          ? err.message
+          : err instanceof Error
+          ? err.message
+          : 'Invalid file'
+      onRemoveFile()
+      setInternalError(msg)
+    }
+  }
+
+  const handleRemove = () => {
+    setInternalError(undefined)
+    onRemoveFile()
+  }
 
   return (
     <div className="gst-amend-proof-container">
@@ -40,15 +66,15 @@ export const GSTProofUpload: FC<GSTProofUploadProps> = ({
         fileName={fileName}
         fileSize={fileSize}
         file={selectedFile || undefined}
-        onUpload={(_, file) => onFileSelect(file)}
-        onRemove={onRemoveFile}
-        className={error ? 'loan-doc-item--error' : ''}
+        error={activeError}
+        onUpload={handleFileSelect}
+        onUploadError={(_id, msg) => {
+          onRemoveFile()
+          setInternalError(msg)
+        }}
+        onRemove={handleRemove}
+        className={activeError ? 'loan-doc-item--error' : ''}
       />
-      {error && (
-        <span className="gst-amend-error-msg" role="alert">
-          {error}
-        </span>
-      )}
     </div>
   )
 }

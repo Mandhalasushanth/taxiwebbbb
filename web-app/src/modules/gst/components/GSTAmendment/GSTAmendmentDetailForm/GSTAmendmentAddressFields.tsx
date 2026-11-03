@@ -17,6 +17,11 @@ interface GSTAmendmentAddressFieldsProps {
   onStateUtChange: (val: string) => void
   onPinCodeChange: (e: ChangeEvent<HTMLInputElement>) => void
   onNatureOfPremisesChange: (val: string) => void
+  onAddressBlur?: () => void
+  onCityBlur?: () => void
+  onDistrictBlur?: () => void
+  onPinCodeBlur?: () => void
+  onStateUtBlur?: () => void
 }
 
 const PREMISES_NATURE_OPTIONS = [
@@ -43,6 +48,11 @@ export const GSTAmendmentAddressFields: React.FC<GSTAmendmentAddressFieldsProps>
   onStateUtChange,
   onPinCodeChange,
   onNatureOfPremisesChange,
+  onAddressBlur,
+  onCityBlur,
+  onDistrictBlur,
+  onPinCodeBlur,
+  onStateUtBlur,
 }) => {
   return (
     <div className="gst-amend-card-box">
@@ -70,6 +80,7 @@ export const GSTAmendmentAddressFields: React.FC<GSTAmendmentAddressFieldsProps>
           placeholder="Enter business address"
           value={address}
           onChange={(e) => onAddressChange(e.target.value)}
+          onBlur={onAddressBlur}
           className={`gst-amend-text-input ${errors.address ? 'has-error' : ''}`}
         />
         {errors.address && <span className="gst-amend-error-msg">{errors.address}</span>}
@@ -88,6 +99,7 @@ export const GSTAmendmentAddressFields: React.FC<GSTAmendmentAddressFieldsProps>
               placeholder="Enter city or town"
               value={city}
               onChange={(e) => onCityChange(e.target.value)}
+              onBlur={onCityBlur}
               className={`gst-amend-text-input ${errors.city ? 'has-error' : ''}`}
             />
             {errors.city && <span className="gst-amend-error-msg">{errors.city}</span>}
@@ -104,6 +116,7 @@ export const GSTAmendmentAddressFields: React.FC<GSTAmendmentAddressFieldsProps>
               maxLength={6}
               value={pinCode}
               onChange={onPinCodeChange}
+              onBlur={onPinCodeBlur}
               className={`gst-amend-text-input ${errors.pinCode ? 'has-error' : ''}`}
             />
             <div className="gst-amend-subrow-hint">
@@ -130,6 +143,7 @@ export const GSTAmendmentAddressFields: React.FC<GSTAmendmentAddressFieldsProps>
                 placeholder="Enter city or town"
                 value={city}
                 onChange={(e) => onCityChange(e.target.value)}
+                onBlur={onCityBlur}
                 className={`gst-amend-text-input ${errors.city ? 'has-error' : ''}`}
               />
               {errors.city && <span className="gst-amend-error-msg">{errors.city}</span>}
@@ -145,6 +159,7 @@ export const GSTAmendmentAddressFields: React.FC<GSTAmendmentAddressFieldsProps>
                 placeholder="Enter district"
                 value={district}
                 onChange={(e) => onDistrictChange(e.target.value)}
+                onBlur={onDistrictBlur}
                 className={`gst-amend-text-input ${errors.district ? 'has-error' : ''}`}
               />
               {errors.district && <span className="gst-amend-error-msg">{errors.district}</span>}
@@ -162,6 +177,7 @@ export const GSTAmendmentAddressFields: React.FC<GSTAmendmentAddressFieldsProps>
                   id="state-ut-select"
                   value={stateUt}
                   onChange={(e) => onStateUtChange(e.target.value)}
+                  onBlur={onStateUtBlur}
                   className={`gst-amend-select-input ${errors.stateUt ? 'has-error' : ''}`}
                 >
                   <option value="">Select State</option>
@@ -191,6 +207,7 @@ export const GSTAmendmentAddressFields: React.FC<GSTAmendmentAddressFieldsProps>
                 maxLength={6}
                 value={pinCode}
                 onChange={onPinCodeChange}
+                onBlur={onPinCodeBlur}
                 className={`gst-amend-text-input ${errors.pinCode ? 'has-error' : ''}`}
               />
               <div className="gst-amend-subrow-hint">

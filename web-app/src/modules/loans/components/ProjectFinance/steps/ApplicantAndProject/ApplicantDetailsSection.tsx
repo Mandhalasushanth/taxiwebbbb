@@ -1,5 +1,6 @@
 import React from 'react'
 import { Users, ChevronDown } from 'lucide-react'
+import { CaretInput } from '@shared/components'
 import type {
   ProjectFinanceData,
   ApplicantEntityType,
@@ -67,7 +68,7 @@ export const ApplicantDetailsSection: React.FC<ApplicantDetailsSectionProps> = (
             <label htmlFor="applicantName" className="pf-field-label">
               Applicant / Borrower Name <span className="pf-req">*</span>
             </label>
-            <input
+            <CaretInput
               id="applicantName"
               type="text"
               className={`pf-custom-input ${errors.applicantName ? 'pf-custom-input--error' : ''}`}
@@ -104,7 +105,7 @@ export const ApplicantDetailsSection: React.FC<ApplicantDetailsSectionProps> = (
             <label htmlFor="pan" className="pf-field-label">
               PAN <span className="pf-req">*</span>
             </label>
-            <input
+            <CaretInput
               id="pan"
               type="text"
               maxLength={10}
@@ -121,7 +122,7 @@ export const ApplicantDetailsSection: React.FC<ApplicantDetailsSectionProps> = (
             <label htmlFor="cinLlpin" className="pf-field-label">
               CIN / LLPIN
             </label>
-            <input
+            <CaretInput
               id="cinLlpin"
               type="text"
               className="pf-custom-input"
@@ -136,7 +137,7 @@ export const ApplicantDetailsSection: React.FC<ApplicantDetailsSectionProps> = (
             <label htmlFor="dateOfIncorporation" className="pf-field-label">
               Date of Incorporation <span className="pf-req">*</span>
             </label>
-            <input
+            <CaretInput
               id="dateOfIncorporation"
               type="date"
               className={`pf-custom-input ${errors.dateOfIncorporation ? 'pf-custom-input--error' : ''}`}
@@ -155,7 +156,7 @@ export const ApplicantDetailsSection: React.FC<ApplicantDetailsSectionProps> = (
             </label>
             <div className="pf-radio-group">
               <label className="pf-radio-label">
-                <input
+                <CaretInput
                   type="radio"
                   name="isExistingCustomer"
                   className="pf-radio-input"
@@ -168,7 +169,7 @@ export const ApplicantDetailsSection: React.FC<ApplicantDetailsSectionProps> = (
                 <span>Yes</span>
               </label>
               <label className="pf-radio-label">
-                <input
+                <CaretInput
                   type="radio"
                   name="isExistingCustomer"
                   className="pf-radio-input"

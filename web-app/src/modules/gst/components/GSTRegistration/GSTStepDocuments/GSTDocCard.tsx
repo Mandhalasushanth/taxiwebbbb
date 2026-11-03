@@ -65,7 +65,6 @@ export const GSTDocCard: FC<GSTDocCardProps> = ({
   onAddressProofChange,
   uploadError,
 }) => {
-  const uploadErrorId = `${doc.id}-upload-error`
   const [addressWarning, setAddressWarning] = useState(false)
 
   const handleUploadClick = () => {
@@ -107,6 +106,7 @@ export const GSTDocCard: FC<GSTDocCardProps> = ({
       fileName={doc.fileName}
       file={doc.file || gstUploadedFiles.get(doc.id)}
       rule={getGstDocUploadRule(doc.id)}
+      error={uploadError}
       onUploadClick={handleUploadClick}
       onUpload={handleUploadFile}
       onUploadError={onUploadError}
@@ -114,11 +114,6 @@ export const GSTDocCard: FC<GSTDocCardProps> = ({
       onRemove={() => onDelete(doc.id)}
       onView={() => onView(doc)}
     >
-      {uploadError && (
-        <p id={uploadErrorId} className="gst-doc-upload-error" role="alert">
-          {uploadError}
-        </p>
-      )}
       {doc.id === 'address_proof' && (
         <div className="gst-doc-address-wrapper">
           <div

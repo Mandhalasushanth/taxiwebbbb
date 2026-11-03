@@ -1,5 +1,6 @@
 import React from 'react'
 import type { ChangeEvent } from 'react'
+import { CaretInput } from '@shared/components'
 
 export interface FormTextFieldProps {
   id: string
@@ -49,7 +50,7 @@ export const FormTextField: React.FC<FormTextFieldProps> = ({
       </label>
       <div className="pl-field__input-wrap">
         {prefix && <span className="pl-field__prefix">{prefix}</span>}
-        <input
+        <CaretInput
           id={id}
           className={inputClass}
           value={value}

@@ -1,15 +1,15 @@
 import type { ChangeEvent, FormEvent } from 'react'
+import { CaretInput } from '@shared/components'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { GST_CERTIFICATE_REQUEST_TYPES } from '@modules/gst/data/gstCertificateData'
-import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
 import type { CertificateFields } from '@modules/gst/hooks/useGSTCertificateFlow'
 import './GSTCertificateForm.css'
 
 interface GSTCertificateFormProps {
   values: CertificateFields
   onChange: <K extends keyof CertificateFields>(field: K, value: CertificateFields[K]) => void
+  onBlur?: (field: keyof CertificateFields) => void
   errors: Record<string, string>
-  stepError: string | null
   contact: { mobile?: string; email?: string } | null
   isSubmitting?: boolean
   onSubmit: (e?: FormEvent) => void
@@ -22,8 +22,8 @@ interface GSTCertificateFormProps {
 export const GSTCertificateForm = ({
   values,
   onChange,
+  onBlur,
   errors,
-  stepError,
   contact: user,
   isSubmitting = false,
   onSubmit,
@@ -72,7 +72,7 @@ export const GSTCertificateForm = ({
         {/* Card 1 & Card 2 in responsive 2-column grid */}
         <div className="gst-cert-grid-row">
           {/* Card 1: GSTIN Number */}
-          <div className="gst-cert-card">
+          <div className="gst-cert-card" id="gst-cert-gstin">
             <div className="gst-cert-card__header">
               <div className="gst-cert-card__icon-box">
                 <svg viewBox="0 0 24 24" className="gst-cert-card__icon" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -92,13 +92,14 @@ export const GSTCertificateForm = ({
             </div>
 
             <div className="gst-cert-field-wrap">
-              <input
+              <CaretInput
                 id="gst-cert-gstin-input"
                 type="text"
                 className={`gst-cert-text-input ${errors.gstin ? 'has-error' : ''}`}
                 placeholder="Enter your GSTIN number"
                 maxLength={15}
                 value={gstin}
+                onBlur={() => onBlur?.('gstin')}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => onChange('gstin', gstInput.gstin(e.target.value))}
               />
               <p className="gst-cert-field-hint">Enter 15-character GSTIN for certificate download</p>
@@ -107,7 +108,7 @@ export const GSTCertificateForm = ({
           </div>
 
           {/* Card 2: Request Purpose */}
-          <div className="gst-cert-card">
+          <div className="gst-cert-card" id="gst-cert-request-type">
             <div className="gst-cert-card__header">
               <div className="gst-cert-card__icon-box">
                 <svg viewBox="0 0 24 24" className="gst-cert-card__icon" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -129,6 +130,7 @@ export const GSTCertificateForm = ({
                   className={`gst-cert-select ${errors.requestType ? 'has-error' : ''}`}
                   value={selectedRequestType}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) => onChange('requestType', e.target.value)}
+                  onBlur={() => onBlur?.('requestType')}
                 >
                   {GST_CERTIFICATE_REQUEST_TYPES.map((t) => (
                     <option key={t.key} value={t.label}>
@@ -148,7 +150,7 @@ export const GSTCertificateForm = ({
         </div>
 
         {/* Card 3: Verified Delivery Channel (Full Width) */}
-        <div className="gst-cert-card">
+        <div className="gst-cert-card" id="gst-cert-contact">
           <div className="gst-cert-card__header">
             <div className="gst-cert-card__icon-box">
               <svg viewBox="0 0 24 24" className="gst-cert-card__icon" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -167,8 +169,6 @@ export const GSTCertificateForm = ({
             </p>
           </div>
         </div>
-
-        <GSTStepErrorBanner message={stepError} />
 
         {/* Submit Action (Web desktop button right aligned) */}
         <div className="gst-cert-actions">

@@ -27,82 +27,98 @@
 /* ==========================================================================
    Variant 1: Application (Peach / Vibrant Orange Theme)
    ========================================================================== */
-.incomplete-banner--application {
+.incomplete-banner--application,
+.incomplete-banner--orange {
   background: var(--light-orange);
   border: 1.5px solid var(--palette-orange-600);
   box-shadow: 0 4px 16px rgba(234, 88, 12, 0.08);
 }
 
-.incomplete-banner--application:hover {
+.incomplete-banner--application:hover,
+.incomplete-banner--orange:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 24px rgba(234, 88, 12, 0.16);
   border-color: var(--palette-orange-700);
 }
 
-.incomplete-banner--application .incomplete-banner__badge {
+.incomplete-banner--application .incomplete-banner__badge,
+.incomplete-banner--orange .incomplete-banner__badge {
   background: var(--palette-orange-600);
   color: var(--surface);
 }
 
-.incomplete-banner--application .incomplete-banner__divider {
+.incomplete-banner--application .incomplete-banner__divider,
+.incomplete-banner--orange .incomplete-banner__divider {
   background: var(--palette-orange-100);
 }
 
-.incomplete-banner--application .incomplete-banner__cta-text {
+.incomplete-banner--application .incomplete-banner__cta-text,
+.incomplete-banner--orange .incomplete-banner__cta-text {
   color: var(--palette-orange-600);
 }
 
-.incomplete-banner--application:hover .incomplete-banner__cta-text {
+.incomplete-banner--application:hover .incomplete-banner__cta-text,
+.incomplete-banner--orange:hover .incomplete-banner__cta-text {
   color: var(--palette-orange-700);
 }
 
-.incomplete-banner--application .incomplete-banner__circle-btn {
+.incomplete-banner--application .incomplete-banner__circle-btn,
+.incomplete-banner--orange .incomplete-banner__circle-btn {
   background: var(--palette-orange-600);
   color: var(--surface);
 }
 
-.incomplete-banner--application:hover .incomplete-banner__circle-btn {
+.incomplete-banner--application:hover .incomplete-banner__circle-btn,
+.incomplete-banner--orange:hover .incomplete-banner__circle-btn {
   background: var(--palette-orange-700);
 }
 
 /* ==========================================================================
    Variant 2: Filing (Soft Blue / Navy Theme)
    ========================================================================== */
-.incomplete-banner--filing {
+.incomplete-banner--filing,
+.incomplete-banner--navy {
   background: var(--light-blue);
   border: 1.5px solid var(--palette-blue-700);
   box-shadow: 0 4px 16px rgba(29, 78, 216, 0.08);
 }
 
-.incomplete-banner--filing:hover {
+.incomplete-banner--filing:hover,
+.incomplete-banner--navy:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 24px rgba(29, 78, 216, 0.16);
   border-color: var(--palette-blue-800-1e40af);
 }
 
-.incomplete-banner--filing .incomplete-banner__badge {
+.incomplete-banner--filing .incomplete-banner__badge,
+.incomplete-banner--navy .incomplete-banner__badge {
   background: var(--primary-navy);
   color: var(--surface);
 }
 
-.incomplete-banner--filing .incomplete-banner__divider {
+.incomplete-banner--filing .incomplete-banner__divider,
+.incomplete-banner--navy .incomplete-banner__divider {
   background: var(--palette-blue-200);
 }
 
-.incomplete-banner--filing .incomplete-banner__cta-text {
+.incomplete-banner--filing .incomplete-banner__cta-text,
+.incomplete-banner--navy .incomplete-banner__cta-text {
   color: var(--primary-navy);
 }
 
-.incomplete-banner--filing:hover .incomplete-banner__cta-text {
+.incomplete-banner--filing:hover .incomplete-banner__cta-text,
+.incomplete-banner--navy:hover .incomplete-banner__cta-text {
   color: var(--palette-blue-700);
 }
 
-.incomplete-banner--filing .incomplete-banner__circle-btn {
+.incomplete-banner--filing .incomplete-banner__circle-btn,
+.incomplete-banner--navy .incomplete-banner__circle-btn {
   background: var(--primary-navy);
   color: var(--surface);
 }
 
-.incomplete-banner--filing:hover .incomplete-banner__circle-btn {
+.incomplete-banner--filing:hover .incomplete-banner__circle-btn,
+.incomplete-banner--navy:hover .incomplete-banner__circle-btn {
   background: var(--palette-blue-700);
 }
 

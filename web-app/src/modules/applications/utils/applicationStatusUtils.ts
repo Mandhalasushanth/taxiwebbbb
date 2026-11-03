@@ -59,7 +59,6 @@ const IN_PROGRESS_KEYWORDS = [
   'data preparation',
   'customer approval',
   'customer review',
-  'draft',
   'pending',
 ] as const
 
@@ -74,6 +73,16 @@ export function normalizeApplicationStatus(
   const s = combined.toLowerCase().replace(/[_-]/g, ' ').replace(/\s+/g, ' ')
   if (!s) {
     return 'OTHER'
+  }
+
+  // Draft applications are not submitted applications
+  if (
+    s === 'draft' ||
+    (status || '').toUpperCase() === 'DRAFT' ||
+    (statusLabel || '').toLowerCase() === 'draft' ||
+    s.startsWith('draft')
+  ) {
+    return 'DRAFT'
   }
 
   // Terminal non-success statuses

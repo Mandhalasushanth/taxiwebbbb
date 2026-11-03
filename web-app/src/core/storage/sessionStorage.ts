@@ -1,34 +1,66 @@
-/** Safe, JSON-aware wrapper around window.sessionStorage. */
-const available = typeof window !== 'undefined' && (() => {
+/** Safe, JSON-aware wrapper around window.sessionStorage with memory fallback. */
+const memoryStore = new Map<string, string>()
+
+const isStorageAvailable = (): boolean => {
   try {
-    const probe = '__taxedge_probe__'
-    window.sessionStorage.setItem(probe, probe)
-    window.sessionStorage.removeItem(probe)
-    return true
+    return typeof window !== 'undefined' && typeof window.sessionStorage !== 'undefined' && window.sessionStorage !== null
   } catch {
     return false
   }
-})()
-
-const memoryFallback = new Map<string, string>()
+}
 
 export const sessionStore = {
   get<T>(key: string): T | null {
-    const raw = available ? window.sessionStorage.getItem(key) : (memoryFallback.get(key) ?? null)
-    if (raw === null) return null
+    if (isStorageAvailable()) {
+      try {
+        const item = window.sessionStorage.getItem(key)
+        if (item !== null) {
+          return JSON.parse(item) as T
+        }
+      } catch {
+        // Fallback to memoryStore
+      }
+    }
+    const memRaw = memoryStore.get(key)
+    if (!memRaw) return null
     try {
-      return JSON.parse(raw) as T
+      return JSON.parse(memRaw) as T
     } catch {
       return null
     }
   },
+
   set<T>(key: string, value: T): void {
-    const raw = JSON.stringify(value)
-    if (available) window.sessionStorage.setItem(key, raw)
-    else memoryFallback.set(key, raw)
+    const serialized = JSON.stringify(value)
+    if (isStorageAvailable()) {
+      try {
+        window.sessionStorage.setItem(key, serialized)
+      } catch {
+        // Fallback to memoryStore
+      }
+    }
+    memoryStore.set(key, serialized)
   },
+
   remove(key: string): void {
-    if (available) window.sessionStorage.removeItem(key)
-    else memoryFallback.delete(key)
+    if (isStorageAvailable()) {
+      try {
+        window.sessionStorage.removeItem(key)
+      } catch {
+        // Fallback to memoryStore
+      }
+    }
+    memoryStore.delete(key)
+  },
+
+  clear(): void {
+    if (isStorageAvailable()) {
+      try {
+        window.sessionStorage.clear()
+      } catch {
+        // Fallback to memoryStore
+      }
+    }
+    memoryStore.clear()
   },
 }

@@ -407,3 +407,13 @@
 .supporting-doc-item .supporting-doc-item__bottom-bar .supporting-doc-item__delete-label {
   display: inline;
 }
+
+
+/* Inline document upload error matching registration style */
+.supporting-doc-item__error {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #dc2626;
+  line-height: 1.35;
+}

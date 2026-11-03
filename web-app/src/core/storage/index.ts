@@ -10,4 +10,3 @@ export {
   type IUserRepository,
   type StoredUserRecord,
 } from './userRepository'
-export { purgeStaleStorage, RETIRED_DRAFT_SERVICE_IDS } from './storageCleanup'

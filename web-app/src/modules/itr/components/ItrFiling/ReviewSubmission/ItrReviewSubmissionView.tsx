@@ -19,6 +19,8 @@ import {
 import { calculateItrTax } from '../itrTaxCalculator'
 import { determineApplicableItrForm } from '../IncomeSources/ItrApplicableReturnFormCard'
 import { ItrReviewEstimatedTaxCard } from './ItrReviewEstimatedTaxCard'
+import { ItrReviewUploadedDocsCard } from './ItrReviewUploadedDocsCard'
+import { ItrDeclarationCard } from './ItrDeclarationCard'
 import './ItrReviewSubmissionView.css'
 
 export interface ItrReviewSubmissionViewProps {
@@ -133,8 +135,6 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
     const lower = status.toLowerCase()
     return RESIDENTIAL_STATUS_LABELS[lower] || status.charAt(0).toUpperCase() + status.slice(1)
   }
-
-  const docCount = Object.keys(uploadedDocs).length
 
   return (
     <div className="itr-step-view-container itr-step-review">
@@ -331,64 +331,10 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
           </div>
 
           {/* 5. Uploaded Documents */}
-          <div className="itr-step-card itr-rv2-card-docs">
-            <div className="itr-rv2-section-header-row">
-              <h3 className="itr-rv2-section-title">
-                <svg
-                  viewBox="0 0 24 24"
-                  width="18"
-                  height="18"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-                </svg>
-                <span>Uploaded Documents ({docCount})</span>
-              </h3>
-              <button
-                type="button"
-                className="itr-rv2-edit-btn"
-                onClick={() => handleEdit(ITR_REVIEW_EDIT_STEPS.documents)}
-              >
-                Edit
-              </button>
-            </div>
-            {docCount === 0 ? (
-              <p className="itr-rv2-no-docs">
-                No documents uploaded. Your CA will request them separately.
-              </p>
-            ) : (
-              <div className="itr-rv2-doc-list">
-                {Object.entries(uploadedDocs).map(([id, doc]) => (
-                  <div key={id} className="itr-rv2-doc-row">
-                    <span className="itr-rv2-doc-check" aria-hidden="true">
-                      <svg
-                        viewBox="0 0 24 24"
-                        width="14"
-                        height="14"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    </span>
-                    <div className="itr-rv2-doc-info">
-                      <span className="itr-rv2-doc-name">{doc.fileName}</span>
-                      <span className="itr-rv2-doc-meta">
-                        {doc.fileSize} &middot; {doc.uploadedAt}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <ItrReviewUploadedDocsCard
+            uploadedDocs={uploadedDocs}
+            onEdit={() => handleEdit(ITR_REVIEW_EDIT_STEPS.documents)}
+          />
         </div>
 
         {/* Right Column (Desktop) */}
@@ -402,30 +348,14 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
       </div>
 
       {/* 6. Checkbox Declaration (Full Width) */}
-      <div className={`itr-step-card itr-rv2-declaration-card ${showError && !isDeclared ? 'itr-info-card--error' : ''}`}>
-        <label className="itr-rv2-declaration-label">
-          <input
-            type="checkbox"
-            checked={isDeclared}
-            onChange={(e) => {
-              setIsDeclared(e.target.checked)
-              if (e.target.checked) setShowError(false)
-            }}
-            className="itr-rv2-declaration-check"
-          />
-          <span className="itr-rv2-declaration-text">
-            I confirm that the income details, deductions, bank account, and documents provided are correct and complete to the best of my knowledge.
-          </span>
-        </label>
-        {showError && !isDeclared && (
-          <div className="itr-field-error" role="alert">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-            </svg>
-            <span>Please confirm the declaration before submitting for CA review.</span>
-          </div>
-        )}
-      </div>
+      <ItrDeclarationCard
+        isDeclared={isDeclared}
+        showError={showError}
+        onChange={(declared) => {
+          setIsDeclared(declared)
+          if (declared) setShowError(false)
+        }}
+      />
 
       {/* 7. Action Footer Bar: Left Back Button & Right Submit Button */}
       <div className="itr-rv2-footer-action-bar">

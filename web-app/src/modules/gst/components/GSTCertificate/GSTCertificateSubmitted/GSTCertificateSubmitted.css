@@ -221,43 +221,13 @@
   border: 1px solid rgba(29, 78, 216, 0.15);
 }
 
-/* ── Primary Action Button: Share / Save ── */
-.gst-cert-btn-outline-blue {
-  width: 100%;
-  height: 50px;
-  background: #ffffff;
-  color: #2563eb;
-  border: 2px solid #2563eb;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.65rem;
-  cursor: pointer;
-  transition: all 0.18s ease;
-  box-sizing: border-box;
-}
-
-.gst-cert-btn-outline-blue:hover {
-  background: #eff6ff;
-  border-color: #1d4ed8;
-  color: #1d4ed8;
-  transform: translateY(-1px);
-}
-
-.gst-cert-btn-share-icon {
-  width: 18px;
-  height: 18px;
-}
-
-/* ── Bottom Three Navigation Actions ── */
+/* ── Actions: Dashboard, My Applications, Share / Save Certificate (One Row) ── */
+.gst-cert-ready-actions-row,
 .gst-cert-ready-bottom-actions {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  margin-top: 0.35rem;
+  margin-top: 0.5rem;
   width: 100%;
 }
 
@@ -303,15 +273,16 @@
   transform: translateY(-1px);
 }
 
-.gst-cert-btn-nav--chat {
-  background: #eff6ff;
-  color: #083b75;
-  border: 1.5px solid #bfdbfe;
+.gst-cert-btn-nav--share {
+  background: #ffffff;
+  color: #2563eb;
+  border: 2px solid #2563eb;
 }
 
-.gst-cert-btn-nav--chat:hover {
-  background: #dbeafe;
-  border-color: #93c5fd;
+.gst-cert-btn-nav--share:hover {
+  background: #eff6ff;
+  border-color: #1d4ed8;
+  color: #1d4ed8;
   transform: translateY(-1px);
 }
 
@@ -326,6 +297,7 @@
     padding: 1.15rem 1.25rem;
   }
 
+  .gst-cert-ready-actions-row,
   .gst-cert-ready-bottom-actions {
     grid-template-columns: 1fr;
     gap: 0.75rem;

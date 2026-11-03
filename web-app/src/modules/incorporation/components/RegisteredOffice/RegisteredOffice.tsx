@@ -1,8 +1,15 @@
 import React, { useState } from 'react'
 import { routePaths } from '@core/config'
-import { StepActionBar } from '@shared/components'
+import { StepActionBar, CaretInput } from '@shared/components'
 import { getStatesForPincode } from '@shared/utils/pincodeState'
-import { filterDigits, filterMobile, isValidMobile, isValidPincode, isValidEmail } from '../../utils/validation'
+import { filterDigits, filterMobile } from '../../utils/validation'
+import {
+  validateAddress,
+  validateCity,
+  validatePincode,
+  validateEmail,
+  validateMobileNumber,
+} from '@shared/utils/validationUtils'
 import type { RegisteredOfficeAddressData } from '../../types/incorporation.types'
 import { useIncorporationFlow } from '../../hooks'
 import './RegisteredOffice.css'
@@ -22,7 +29,6 @@ const EMPTY_ADDRESS: RegisteredOfficeAddressData = {
 
 const OWNERSHIP_OPTIONS = ['Rented', 'Owned', 'Leased'] as const
 const PIN_LENGTH = 6
-const PLACE_NAME_PATTERN = /^[A-Za-z][A-Za-z\s.'-]{1,59}$/
 const ADDRESS_MIN_LENGTH = 5
 
 /** PIN must belong to the typed state (compared without case, e.g. "telangana" = "Telangana"). */
@@ -35,37 +41,68 @@ const pinStateError = (pin: string, state: string): string => {
 
 const requiredError = (value: string | undefined, message: string): string => ((value || '').trim() ? '' : message)
 
-const placeError = (value: string | undefined, label: string): string => {
-  const trimmed = (value || '').trim()
-  if (!trimmed) return `${label} is required`
-  return PLACE_NAME_PATTERN.test(trimmed) ? '' : `Enter a valid ${label.toLowerCase()} (letters only)`
+const validateSingleAddressField = (
+  field: AddressField,
+  value: string | undefined,
+  currentAddress: RegisteredOfficeAddressData
+): string => {
+  const val = (value || '').trim()
+  switch (field) {
+    case 'addressLine1':
+      if (!val) return 'Building / premises address is required'
+      if (val.length < ADDRESS_MIN_LENGTH) return 'Enter the full building / premises address'
+      return validateAddress(val, { label: 'Building / premises address', minLength: ADDRESS_MIN_LENGTH }) || ''
+    case 'city':
+      if (!val) return 'City is required'
+      return validateCity(val, 'City') || ''
+    case 'district':
+      if (!val) return 'District is required'
+      return validateCity(val, 'District') || ''
+    case 'state':
+      if (!val) return 'State is required'
+      return validateCity(val, 'State') || ''
+    case 'pincode': {
+      if (!val) return 'PIN code is required'
+      const pinErr = validatePincode(val, 'PIN code')
+      if (pinErr) return pinErr
+      if ((currentAddress.state || '').trim()) {
+        return pinStateError(val, currentAddress.state)
+      }
+      return ''
+    }
+    case 'ownershipStatus':
+      return requiredError(val, 'Premises ownership status is required')
+    case 'email':
+      if (!val) return 'Email address is required'
+      return validateEmail(val, 'Email address') || ''
+    case 'mobile':
+      if (!val) return 'Mobile number is required'
+      return validateMobileNumber(val, 'Mobile number') || ''
+    default:
+      return ''
+  }
 }
 
 /** All field errors for the Registered Office step, keyed by field. */
 const getAddressErrors = (address: RegisteredOfficeAddressData): Record<string, string> => {
-  const line = (address.addressLine1 || '').trim()
-  const pin = (address.pincode || '').trim()
-  const email = (address.email || '').trim()
-  const mobile = (address.mobile || '').trim()
-  const pinError = !pin
-    ? 'PIN code is required'
-    : !isValidPincode(pin)
-      ? 'Enter a valid 6-digit PIN code'
-      : (address.state || '').trim()
-        ? pinStateError(pin, address.state)
-        : ''
-
-  const errors: Record<string, string> = {
-    addressLine1: !line ? 'Building / premises address is required' : line.length < ADDRESS_MIN_LENGTH ? 'Enter the full building / premises address' : '',
-    city: placeError(address.city, 'City'),
-    district: placeError(address.district, 'District'),
-    state: placeError(address.state, 'State'),
-    pincode: pinError,
-    ownershipStatus: requiredError(address.ownershipStatus, 'Premises ownership status is required'),
-    email: !email ? 'Email address is required' : isValidEmail(email) ? '' : 'Enter a valid email address',
-    mobile: !mobile ? 'Mobile number is required' : isValidMobile(mobile) ? '' : 'Enter a valid 10-digit Indian mobile number',
+  const fields: AddressField[] = [
+    'addressLine1',
+    'city',
+    'district',
+    'state',
+    'pincode',
+    'ownershipStatus',
+    'email',
+    'mobile',
+  ]
+  const errors: Record<string, string> = {}
+  for (const field of fields) {
+    const err = validateSingleAddressField(field, address[field], address)
+    if (err) {
+      errors[field] = err
+    }
   }
-  return Object.fromEntries(Object.entries(errors).filter(([, message]) => Boolean(message)))
+  return errors
 }
 
 export const RegisteredOffice: React.FC = () => {
@@ -74,11 +111,28 @@ export const RegisteredOffice: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const handleInputChange = (field: AddressField, val: string) => {
-    setErrors((prev) => ({ ...prev, [field]: '' }))
     const finalVal = field === 'pincode' ? filterDigits(val, PIN_LENGTH) : field === 'mobile' ? filterMobile(val) : val
+    const updated = { ...addressData, [field]: finalVal }
     updateFormData({
-      registeredOffice: { ...formData.registeredOffice, addressData: { ...addressData, [field]: finalVal } },
+      registeredOffice: { ...formData.registeredOffice, addressData: updated },
     })
+
+    if (errors[field]) {
+      const err = validateSingleAddressField(field, finalVal, updated)
+      setErrors((prev) => {
+        if (!err) {
+          const next = { ...prev }
+          delete next[field]
+          return next
+        }
+        return { ...prev, [field]: err }
+      })
+    }
+  }
+
+  const handleInputBlur = (field: AddressField) => {
+    const err = validateSingleAddressField(field, addressData[field], addressData)
+    setErrors((prev) => (err ? { ...prev, [field]: err } : { ...prev, [field]: '' }))
   }
 
   const handleContinue = () => {
@@ -98,7 +152,7 @@ export const RegisteredOffice: React.FC = () => {
       <label htmlFor={`reg-office-${field}`} className="reg-office-label">
         {label}<span className="reg-office-required"> *</span>
       </label>
-      <input
+      <CaretInput
         id={`reg-office-${field}`}
         type="text"
         {...inputProps}
@@ -106,6 +160,7 @@ export const RegisteredOffice: React.FC = () => {
         placeholder={placeholder}
         value={addressData[field] || ''}
         onChange={(e) => handleInputChange(field, e.target.value)}
+        onBlur={() => handleInputBlur(field)}
       />
       {errors[field] && <span className="reg-office-field-error">{errors[field]}</span>}
     </div>

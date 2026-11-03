@@ -19,5 +19,5 @@ export {
 export type { UploadRule, UploadFileKind } from './uploadRules'
 export { FileInput } from './FileInput/FileInput'
 export type { FileInputProps } from './FileInput/FileInput'
-export { uploadedFileStore, viewUploadedDocument } from './documentPreview'
+export { uploadedFileStore, viewUploadedDocument, getDocumentPreviewUrl, openDocumentPreview } from './documentPreview'
 export type { ViewDocumentParams } from './documentPreview'

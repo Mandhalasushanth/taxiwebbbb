@@ -1,4 +1,3 @@
-import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
 import { useState, type FC } from 'react'
 import type { GSTStepReviewProps, ReviewField } from '@modules/gst/types/gstReview.types'
 import { INITIAL_DOCUMENTS } from '@modules/gst/utils/gstDocuments.constants'
@@ -11,11 +10,9 @@ import { GSTReviewSection } from './GSTReviewSection'
 import { GSTReviewDocsList } from './GSTReviewDocsList'
 import { GSTReviewDeclaration } from './GSTReviewDeclaration'
 import { GSTDocPreviewModal } from '../GSTStepDocuments/GSTDocPreviewModal'
-import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
 import type { DocPreviewState } from '@modules/gst/types/gstDocuments.types'
 import { StepActionBar } from '@shared/components'
 import './GSTStepReview.css'
-import { errorTracker } from '@core/errors'
 import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
 
 export const GSTStepReview: FC<GSTStepReviewProps> = ({
@@ -45,42 +42,12 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
 
   const handleViewDoc = (title: string, fileName: string) => {
     const matchedDoc = documents.find((d) => d.title === title || d.fileName === fileName)
-    const file = matchedDoc ? (matchedDoc.file || gstUploadedFiles.get(matchedDoc.id)) : undefined
-    if (file) {
-      try {
-        let viewableBlob: Blob = file
-        let mimeType = file.type
-        const name = file.name || fileName || ''
-        const ext = name.split('.').pop()?.toLowerCase()
-        if (!mimeType || mimeType === 'application/octet-stream') {
-          if (ext === 'pdf') mimeType = 'application/pdf'
-          else if (ext === 'jpg' || ext === 'jpeg') mimeType = 'image/jpeg'
-          else if (ext === 'png') mimeType = 'image/png'
-        }
-        if (mimeType && mimeType !== file.type) {
-          viewableBlob = new Blob([file], { type: mimeType })
-        }
-        const objectUrl = URL.createObjectURL(viewableBlob)
-        const win = window.open(objectUrl, '_blank')
-        try {
-          win?.focus?.()
-        } catch {
-          // ignore
-        }
-        return
-      } catch (e) {
-        errorTracker.captureException(e, { tags: { area: 'gst-review-preview' } })
-      }
-    }
-    try {
-      openGstDocumentPreview({
-        title,
-        fileName,
-      })
-      return
-    } catch (e) {
-      errorTracker.captureException(e, { tags: { area: 'gst-review-preview-fallback' } })
-    }
+    openGstDocumentPreview({
+      id: matchedDoc?.id,
+      title,
+      fileName,
+      file: matchedDoc?.file,
+    })
   }
 
   const locationString = [businessData.city, businessData.district, businessData.state, businessData.pinCode ? `- ${businessData.pinCode}` : '']
@@ -182,8 +149,6 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
         onChange={handleDeclarationChange}
         hasError={declarationError}
       />
-
-      <GSTStepErrorBanner message={declarationError ? 'Please accept the declaration to continue.' : null} />
 
       {/* 6. Navigation Footer Actions */}
       <StepActionBar

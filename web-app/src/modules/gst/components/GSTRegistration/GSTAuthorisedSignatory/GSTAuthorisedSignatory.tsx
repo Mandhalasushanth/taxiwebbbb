@@ -9,6 +9,7 @@ type SignatoryField = 'signatoryName' | 'signatoryPan' | 'dob' | 'designation' |
 export interface GSTAuthorisedSignatoryProps {
   data: Pick<GstBusinessFormData, SignatoryField>
   onChange: <K extends keyof GstBusinessFormData>(field: K, value: GstBusinessFormData[K]) => void
+  onBlur?: (field: keyof GstBusinessFormData) => void
   errors?: Record<string, string>
   onClearError?: (field: string) => void
 }
@@ -28,6 +29,7 @@ const todayIso = () => new Date().toISOString().slice(0, 10)
 export const GSTAuthorisedSignatory = ({
   data,
   onChange,
+  onBlur,
   errors = {},
   onClearError,
 }: GSTAuthorisedSignatoryProps) => {
@@ -53,6 +55,10 @@ export const GSTAuthorisedSignatory = ({
         value={data.signatoryName}
         error={errors.signatoryName}
         onValueChange={(v) => update('signatoryName', gstInput.personName(v))}
+        onBlur={() => {
+          onChange('signatoryName', data.signatoryName.trim())
+          onBlur?.('signatoryName')
+        }}
       />
 
       <div className="gst-form-row gst-form-row--pair">
@@ -65,6 +71,10 @@ export const GSTAuthorisedSignatory = ({
           value={data.signatoryPan}
           error={errors.signatoryPan}
           onValueChange={(v) => update('signatoryPan', gstInput.pan(v))}
+          onBlur={() => {
+            onChange('signatoryPan', data.signatoryPan.trim().toUpperCase())
+            onBlur?.('signatoryPan')
+          }}
         />
         <GSTDateField
           id="dob"
@@ -73,6 +83,7 @@ export const GSTAuthorisedSignatory = ({
           value={data.dob}
           error={errors.dob}
           onValueChange={(v) => update('dob', v)}
+          onBlur={() => onBlur?.('dob')}
         />
       </div>
 
@@ -83,6 +94,10 @@ export const GSTAuthorisedSignatory = ({
         value={data.designation}
         error={errors.designation}
         onValueChange={(v) => update('designation', gstInput.designation(v))}
+        onBlur={() => {
+          onChange('designation', data.designation.trim())
+          onBlur?.('designation')
+        }}
       />
 
       <div className="gst-form-row gst-form-row--pair">
@@ -95,6 +110,7 @@ export const GSTAuthorisedSignatory = ({
           value={data.signatoryMobile}
           error={errors.signatoryMobile}
           onValueChange={(v) => update('signatoryMobile', gstInput.mobile(v))}
+          onBlur={() => onBlur?.('signatoryMobile')}
         />
         <GSTTextField
           id="signatoryEmail"
@@ -105,6 +121,10 @@ export const GSTAuthorisedSignatory = ({
           value={data.signatoryEmail}
           error={errors.signatoryEmail}
           onValueChange={(v) => update('signatoryEmail', gstInput.email(v))}
+          onBlur={() => {
+            onChange('signatoryEmail', data.signatoryEmail.trim())
+            onBlur?.('signatoryEmail')
+          }}
         />
       </div>
     </GSTFormSection>

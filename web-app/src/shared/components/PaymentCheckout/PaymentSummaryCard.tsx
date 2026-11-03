@@ -3,6 +3,7 @@ import { FileText, ArrowRight } from 'lucide-react'
 import type { CouponValidationResult } from '@core/payments'
 import type { PaymentBreakdown } from './payment.types'
 import { formatCurrency } from '@shared/utils'
+import { CaretInput } from '../Input/CaretInput'
 
 interface PaymentSummaryCardProps {
   breakdown: PaymentBreakdown
@@ -106,7 +107,7 @@ export const PaymentSummaryCard: React.FC<PaymentSummaryCardProps> = ({
       {/* Optional Promo Code Input */}
       {enablePromoCode && !promoApplied && (
         <form className="payment-promo-form" onSubmit={handleApply} noValidate>
-          <input
+          <CaretInput
             type="text"
             className={`payment-promo-input ${promoError ? 'payment-input--error' : ''}`}
             placeholder="Promo code"

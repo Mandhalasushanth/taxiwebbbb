@@ -14,6 +14,7 @@ interface GSTCalculationMethodProps {
   onPurchasesChange?: (value: string) => void
   estimatedItc?: string
   onItcChange?: (value: string) => void
+  onBlurField?: (field: string) => void
 }
 
 export const GSTCalculationMethod: React.FC<GSTCalculationMethodProps> = ({
@@ -27,6 +28,7 @@ export const GSTCalculationMethod: React.FC<GSTCalculationMethodProps> = ({
   onPurchasesChange,
   estimatedItc = '',
   onItcChange,
+  onBlurField,
 }) => {
   return (
     <div className="gst-calc-method">
@@ -81,6 +83,7 @@ export const GSTCalculationMethod: React.FC<GSTCalculationMethodProps> = ({
               placeholder="Enter sales amount"
               value={estimatedSales}
               onChange={(e) => onSalesChange?.(gstInput.amount(e.target.value))}
+              onBlur={() => onBlurField?.('estimatedSales')}
             />
             {errors?.estimatedSales && (
               <span className="gst-calc-method__field-error">{errors.estimatedSales}</span>
@@ -99,6 +102,7 @@ export const GSTCalculationMethod: React.FC<GSTCalculationMethodProps> = ({
               placeholder="Enter purchases amount"
               value={estimatedPurchases}
               onChange={(e) => onPurchasesChange?.(gstInput.amount(e.target.value))}
+              onBlur={() => onBlurField?.('estimatedPurchases')}
             />
             {errors?.estimatedPurchases && (
               <span className="gst-calc-method__field-error">{errors.estimatedPurchases}</span>
@@ -117,6 +121,7 @@ export const GSTCalculationMethod: React.FC<GSTCalculationMethodProps> = ({
               placeholder="Enter eligible ITC amount"
               value={estimatedItc}
               onChange={(e) => onItcChange?.(gstInput.amount(e.target.value))}
+              onBlur={() => onBlurField?.('estimatedItc')}
             />
             {errors?.estimatedItc && (
               <span className="gst-calc-method__field-error">{errors.estimatedItc}</span>

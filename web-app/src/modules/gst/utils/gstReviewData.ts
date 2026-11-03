@@ -46,7 +46,6 @@ export const getTaxComputationRows = (isNilReturn: boolean): { items: TaxComputa
   netLiability: isNilReturn ? 0 : null,
 })
 
-
 export const WHAT_HAPPENS_NEXT_STEPS = [
   { step: 1, text: 'Review your details and tax computation' },
   { step: 2, text: 'Submit your filing application' },
@@ -76,15 +75,21 @@ export const getReconciledTaxComputation = (
   }
 
   const rawSales = filingData?.estimatedSales ? Number(filingData.estimatedSales.replace(/,/g, '')) : NaN
-  const turnover = !isNaN(rawSales) && rawSales > 0 ? rawSales : (filingData?.filingType === 'regular' && filingData?.calculationMethod === 'estimated_figures' ? 0 : 866598)
+  const turnover = !isNaN(rawSales) && rawSales >= 0
+    ? rawSales
+    : (filingData?.calculationMethod === 'estimated_figures' ? 0 : 866598)
 
   const rawPurchases = filingData?.estimatedPurchases ? Number(filingData.estimatedPurchases.replace(/,/g, '')) : NaN
-  const purchases = !isNaN(rawPurchases) && rawPurchases > 0 ? rawPurchases : (filingData?.filingType === 'regular' && filingData?.calculationMethod === 'estimated_figures' ? 0 : 452300)
+  const purchases = !isNaN(rawPurchases) && rawPurchases >= 0
+    ? rawPurchases
+    : (filingData?.calculationMethod === 'estimated_figures' ? 0 : 452300)
 
   const outputGst = Math.round(turnover * 0.18)
 
   const rawItc = filingData?.estimatedItc ? Number(filingData.estimatedItc.replace(/,/g, '')) : NaN
-  const eligibleItc = !isNaN(rawItc) && rawItc > 0 ? rawItc : (filingData?.filingType === 'regular' && filingData?.calculationMethod === 'estimated_figures' ? 0 : 78976)
+  const eligibleItc = !isNaN(rawItc) && rawItc >= 0
+    ? rawItc
+    : (filingData?.calculationMethod === 'estimated_figures' ? 0 : 78976)
 
   const netLiability = Math.max(0, outputGst - eligibleItc)
 
@@ -102,39 +107,47 @@ export const getResolvedReviewDetails = (
   attachedDocsCount?: number
 ): ReviewDetailsData => {
   const isNil = filingData?.filingType === 'nil' || (filingData?.filingType !== 'regular' && filingData?.returnType === 'nil')
-  const fy = filingData?.financialYear?.trim() || '2025-26'
-  const startYearMatch = fy.match(/\d{4}/)
-  const startYear = startYearMatch ? startYearMatch[0] : '2025'
 
-  let period = filingData?.selectedMonth?.trim() || 'August 2025'
-  if (period && !period.includes('20') && startYear) {
+  // Format financial year (e.g. FY 2025-26 or FY 2023-24)
+  const rawFy = filingData?.financialYear?.trim() || '2025-26'
+  const fyClean = rawFy.replace(/^FY\s*/i, '')
+  const financialYear = `FY ${fyClean}`
+
+  // Format filing frequency (e.g. Annual, Monthly, Quarterly)
+  const rawFreq = filingData?.frequency?.trim() || 'Monthly'
+  const frequency = rawFreq.charAt(0).toUpperCase() + rawFreq.slice(1).toLowerCase()
+
+  // Format filing period (matching Image 1 & Image 2)
+  let period = filingData?.selectedMonth?.trim() || ''
+  if (frequency.toLowerCase() === 'annual' || !period) {
+    period = `FY ${fyClean} (Full Year Return)`
+  } else if (!period.includes('20')) {
+    const startYearMatch = fyClean.match(/\d{4}/)
+    const startYear = startYearMatch ? startYearMatch[0] : '2025'
     period = `${period} ${startYear}`
   }
 
-  const rawForm = (filingData?.returnType?.toLowerCase() || '') === 'nil' ? 'gstr1' : (filingData?.returnType?.toLowerCase() || 'gstr1')
-  const returnForm = isNil
-    ? 'N/A (Nil Return)'
-    : rawForm === 'gstr3b'
-      ? 'GSTR-3B'
-      : 'GSTR-1'
+  // Return Form (e.g. GSTR-3B or GSTR-1)
+  const rawForm = (filingData?.returnType?.toLowerCase() || '') === 'nil'
+    ? 'gstr1'
+    : (filingData?.returnType?.toLowerCase() || (isNil ? 'gstr1' : 'gstr3b'))
+  const returnForm = rawForm === 'gstr1' ? 'GSTR-1' : 'GSTR-3B'
 
-  const calculationMethod = isNil
-    ? 'N/A (Nil Return)'
-    : filingData?.calculationMethod === 'estimated_figures'
-      ? 'I already have estimated figures'
-      : 'Let TaxEdge CA calculate from documents'
+  // Tax Calculation Method
+  const calculationMethod = filingData?.calculationMethod === 'ca_calculate'
+    ? 'Let TaxEdge CA calculate from documents'
+    : 'Self-estimated figures'
 
   return {
-    gstin: filingData?.gstin?.trim() || '',
+    gstin: filingData?.gstin?.trim() || '29AAAAA0000A1Z5',
     businessName: filingData?.businessName?.trim() || 'Shree Deshmukh Traders',
-    financialYear: fy,
+    financialYear,
     filingPeriod: period,
     scheme: DEFAULT_REVIEW_DETAILS.scheme,
-    frequency: filingData?.frequency?.trim() || DEFAULT_REVIEW_DETAILS.frequency,
+    frequency,
     filingType: isNil ? 'Nil Return' : 'Regular Return',
     returnForm,
     calculationMethod,
     attachedDocsCount: isNil ? 0 : (attachedDocsCount !== undefined ? attachedDocsCount : 0),
   }
 }
-

@@ -6,6 +6,14 @@
   width: 100%;
 }
 
+#gst-business-details,
+.gst-business-details-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  width: 100%;
+}
+
 /* Aadhaar e-KYC consent card */
 .gst-consent-card {
   display: flex;
@@ -83,7 +91,9 @@
 }
 
 @media (max-width: 768px) {
-  .gst-step-business {
+  .gst-step-business,
+  #gst-business-details,
+  .gst-business-details-stack {
     gap: 1.35rem;
   }
 }

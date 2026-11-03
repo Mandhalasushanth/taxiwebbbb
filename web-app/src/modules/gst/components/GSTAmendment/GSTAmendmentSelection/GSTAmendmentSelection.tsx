@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { CaretInput, FieldInfoTooltip } from '@shared/components'
 import { gstFieldRules } from '@modules/gst/validation/gstFieldRules'
 import { SaveDraftButton } from '@shared/saveDraft'
 import './GSTAmendmentSelection.css'
@@ -105,14 +106,20 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
         {/* Left Column: GSTIN Input Box */}
         <div className="gst-amend-gstin-box">
           <div className="gst-amend-gstin-header-row">
-            <label htmlFor="gstin-search-input" className="gst-amend-gstin-label">
-              GSTIN to Amend <span className="gst-amend-required-star">*</span>
-            </label>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <label htmlFor="gstin-search-input" className="gst-amend-gstin-label">
+                GSTIN to Amend <span className="gst-amend-required-star">*</span>
+              </label>
+              <FieldInfoTooltip
+                title="GSTIN to Amend Information"
+                description="Enter the 15-digit GSTIN of the existing GST registration for which you want to request an amendment. Ensure you select the correct registration."
+              />
+            </div>
             <span className="gst-amend-gstin-counter">{gstin.length}/15</span>
           </div>
 
           <div className="gst-amend-input-wrapper">
-            <input
+            <CaretInput
               id="gstin-search-input"
               type="text"
               value={gstin}

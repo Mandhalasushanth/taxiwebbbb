@@ -191,7 +191,7 @@ describe('Payments Component', () => {
     ).toBeDefined()
   })
 
-  it('opens checkout modal when Pay Now is clicked', () => {
+  it('navigates to checkout page when Pay Now is clicked', () => {
     vi.spyOn(userStorage, 'getUserApplications').mockReturnValue([
       {
         id: 'app-pending-1',
@@ -217,15 +217,9 @@ describe('Payments Component', () => {
     const payNowBtn = screen.getByText('Pay Now')
     fireEvent.click(payNowBtn)
 
-    expect(screen.getByText('Complete Payment')).toBeDefined()
-    expect(
-      screen.getByText('GST Quarterly Return Filing Service (App #GST-2026-00045)')
-    ).toBeDefined()
-
-    // Close checkout modal
-    const closeCheckout = screen.getByLabelText('Close checkout')
-    fireEvent.click(closeCheckout)
-
-    expect(screen.queryByText('Complete Payment')).toBeNull()
+    expect(mockNavigate).toHaveBeenCalledWith(
+      '/payments/checkout/GST-2026-00045',
+      expect.objectContaining({ state: expect.objectContaining({ application: expect.anything() }) })
+    )
   })
 })

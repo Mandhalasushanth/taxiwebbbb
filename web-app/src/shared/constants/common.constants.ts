@@ -4,6 +4,8 @@ import type {
   ServiceType,
   StatusTone,
 } from '../types/common.types'
+import { CANONICAL_INDIAN_STATES_AND_UTS } from '../services/indianStates'
+import { VALIDATION_RULES } from '../validations/validationRules'
 
 /** Backend enums are the source of truth; these turn them into display copy. */
 export const STATUS_LABELS: Record<ApplicationStatus, string> = {
@@ -57,24 +59,21 @@ export const SERVICE_LABELS: Record<ServiceType, string> = {
   ACCOUNTS: 'Accounts',
 }
 
-import { CANONICAL_INDIAN_STATES_AND_UTS } from '../services/indianStates'
-
 export const INDIAN_STATES = CANONICAL_INDIAN_STATES_AND_UTS
 
 export const REGEX = {
-  pan: /^[A-Z]{5}[0-9]{4}[A-Z]$/,
-  gstin: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][0-9A-Z]Z[0-9A-Z]$/,
-  mobile: /^[6-9]\d{9}$/,
-  aadhaar: /^[0-9]{12}$/,
+  pan: VALIDATION_RULES.pan.pattern,
+  gstin: VALIDATION_RULES.gstin.pattern,
+  mobile: VALIDATION_RULES.mobile.pattern,
+  aadhaar: VALIDATION_RULES.aadhaar.pattern,
   aadhaarMasked: /^\d{4}$/,
-  pincode: /^[1-9][0-9]{5}$/,
-  ifsc: /^[A-Z]{4}0[A-Z0-9]{6}$/,
-  bankAcc: /^\d{9,18}$/,
-  /**
-   * Local part: dot-separated atoms (no leading, trailing or consecutive dots).
-   * Domain: dot-separated labels that do not start/end with "-", ending in a 2+ letter TLD.
-   */
-  email: /^[A-Za-z0-9_%+-]+(?:\.[A-Za-z0-9_%+-]+)*@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/,
+  pincode: VALIDATION_RULES.pincode.pattern,
+  ifsc: VALIDATION_RULES.ifsc.pattern,
+  bankAcc: VALIDATION_RULES.accountNumber.pattern,
+  email: VALIDATION_RULES.email.pattern,
+  name: VALIDATION_RULES.name.pattern,
+  address: VALIDATION_RULES.address.pattern,
+  city: VALIDATION_RULES.city.pattern,
   /** Company CIN, e.g. U12345MH2020PTC123456 */
   cin: /^[LU]\d{5}[A-Z]{2}\d{4}[A-Z]{3}\d{6}$/,
   /** LLP identification number, e.g. AAB-1234 */

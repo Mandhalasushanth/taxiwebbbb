@@ -1,9 +1,11 @@
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import React, { useRef } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
-import { DocumentCard } from '@shared/components'
+import { DocumentCard, CaretInput, FieldInfoTooltip } from '@shared/components'
+import { UPLOAD_HINT, DOCUMENT_UPLOAD_RULE } from '@shared/upload'
+import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
+import { assertGstUploadCriteria, GstUploadException } from '@modules/gst/utils/gstUploadValidator'
 import './GSTComplianceUploadFields.css'
-import { UPLOAD_HINT } from '@shared/upload'
 
 export interface NoticeResponseValues {
   noticeNumber: string
@@ -18,8 +20,18 @@ interface GSTNoticeResponseFieldsProps {
   noticeFile: File | null
   onNoticeFileChange: (file: File | null) => void
   errors?: Partial<Record<keyof NoticeResponseValues | 'noticeFile', string>>
+  onNoticeFileError?: (message: string | undefined) => void
   onPreviewDoc?: (file: File, title: string) => void
   onBlurField?: (field: keyof NoticeResponseValues) => void
+}
+
+const toDisplayDate = (iso: string): string => {
+  if (!iso) return ''
+  const parts = iso.split('-')
+  if (parts.length === 3 && parts[0].length === 4) {
+    return `${parts[2]}-${parts[1]}-${parts[0]}`
+  }
+  return iso
 }
 
 /** Notice details for a compliance request; the values live in the parent so they can be validated and drafted */
@@ -29,6 +41,7 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
   noticeFile,
   onNoticeFileChange,
   errors = {},
+  onNoticeFileError,
   onPreviewDoc,
   onBlurField,
 }) => {
@@ -57,18 +70,38 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
     }
   }
 
+  const handleNoticeUpload = (_id: string, file: File) => {
+    try {
+      assertGstUploadCriteria(file, DOCUMENT_UPLOAD_RULE)
+      onNoticeFileChange(file)
+      onNoticeFileError?.(undefined)
+    } catch (err) {
+      const msg =
+        err instanceof GstUploadException
+          ? err.message
+          : err instanceof Error
+          ? err.message
+          : 'Invalid file'
+      onNoticeFileChange(null)
+      onNoticeFileError?.(msg)
+    }
+  }
+
   const handleView = () => {
     if (!noticeFile) return
     if (onPreviewDoc) {
       onPreviewDoc(noticeFile, 'Department Notice Copy')
     } else {
-      const url = URL.createObjectURL(noticeFile)
-      window.open(url, '_blank')
+      openGstDocumentPreview({
+        file: noticeFile,
+        fileName: noticeFile.name,
+        title: 'Department Notice Copy',
+      })
     }
   }
 
   return (
-    <div className="gst-notice-card">
+    <div className="gst-notice-card" id="gst-notice-details">
       {/* Card Header */}
       <div className="gst-notice-header">
         <div className="gst-notice-header-icon">
@@ -88,91 +121,149 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
       <div className="gst-notice-body">
         {/* Field 1: Notice Number */}
         <div className="gst-notice-field-group">
-          <label className="gst-notice-label" htmlFor="gst-notice-number-input">
-            Notice Number <span className="req-asterisk">*</span>
-          </label>
-          <input
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <label className="gst-notice-label" htmlFor="gst-notice-number-input">
+              Notice Number <span className="req-asterisk">*</span>
+            </label>
+            <FieldInfoTooltip
+              title="Notice Number Information"
+              description="Enter the notice or reference number mentioned in the GST notice issued by the GST department. Ensure the number matches the official notice."
+            />
+          </div>
+          <CaretInput
             id="gst-notice-number-input"
             type="text"
             maxLength={20}
-            placeholder="e.g. ZA270124000123Z or CBIC DIN"
+            className={`gst-notice-input ${errors.noticeNumber ? 'has-error' : ''}`}
+            placeholder="e.g. GST/NOT/2026/001"
             value={noticeNumber}
             onChange={(e) => onChange('noticeNumber', gstInput.noticeNumber(e.target.value))}
             onBlur={() => onBlurField?.('noticeNumber')}
-            className={`gst-notice-input ${errors.noticeNumber ? 'has-error' : ''}`}
           />
-          <span className="gst-notice-field-hint">
-            15-character GST Portal Reference Number (RFN) or 20-digit CBIC DIN
-          </span>
           {errors.noticeNumber && <span className="form-error">{errors.noticeNumber}</span>}
         </div>
 
-        {/* Field 2 & 3: Issue Date & Due Date (2-column row with right-aligned calendar icon) */}
+        {/* Section 2: Date Grid (Notice Issue Date & Reply Due Date in one row side by side) */}
         <div className="gst-notice-grid-row">
+          {/* Issue Date */}
           <div className="gst-notice-field-group">
-            <label className="gst-notice-label">
+            <label className="gst-notice-label" htmlFor="gst-notice-issue-date">
               Notice Issue Date <span className="req-asterisk">*</span>
             </label>
-            <div className="gst-notice-date-wrapper" onClick={openIssueDatePicker}>
-              <input
-                ref={issueDateInputRef}
-                type="date"
-                value={issueDate}
-                onChange={(e) => onChange('issueDate', e.target.value)}
-                className="gst-notice-date-input"
-              />
-              <span className="gst-notice-date-icon" onClick={openIssueDatePicker}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
+            <div
+              className={`gst-notice-date-wrapper ${errors.issueDate ? 'has-error' : ''}`}
+              onClick={openIssueDatePicker}
+            >
+              <span className={`gst-notice-date-display ${issueDate ? '' : 'gst-notice-date-display--empty'}`}>
+                {issueDate ? toDisplayDate(issueDate) : 'dd-mm-yyyy'}
               </span>
+              <div className="gst-notice-date-picker-anchor">
+                <input
+                  ref={issueDateInputRef}
+                  id="gst-notice-issue-date"
+                  type="date"
+                  value={issueDate}
+                  onChange={(e) => onChange('issueDate', e.target.value)}
+                  onClick={openIssueDatePicker}
+                  onBlur={() => onBlurField?.('issueDate')}
+                  className="gst-notice-date-input"
+                  aria-label="Notice Issue Date"
+                  tabIndex={0}
+                />
+                <button
+                  type="button"
+                  className="gst-notice-date-btn"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    openIssueDatePicker()
+                  }}
+                  aria-label="Open Notice Issue Date picker"
+                  tabIndex={-1}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                </button>
+              </div>
             </div>
             {errors.issueDate && <span className="form-error">{errors.issueDate}</span>}
           </div>
 
+          {/* Due Date */}
           <div className="gst-notice-field-group">
-            <label className="gst-notice-label">
+            <label className="gst-notice-label" htmlFor="gst-notice-due-date">
               Reply Due Date <span className="req-asterisk">*</span>
             </label>
-            <div className="gst-notice-date-wrapper" onClick={openDueDatePicker}>
-              <input
-                ref={dueDateInputRef}
-                type="date"
-                value={dueDate}
-                onChange={(e) => onChange('dueDate', e.target.value)}
-                className="gst-notice-date-input"
-              />
-              <span className="gst-notice-date-icon" onClick={openDueDatePicker}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
+            <div
+              className={`gst-notice-date-wrapper ${errors.dueDate ? 'has-error' : ''}`}
+              onClick={openDueDatePicker}
+            >
+              <span className={`gst-notice-date-display ${dueDate ? '' : 'gst-notice-date-display--empty'}`}>
+                {dueDate ? toDisplayDate(dueDate) : 'dd-mm-yyyy'}
               </span>
+              <div className="gst-notice-date-picker-anchor">
+                <input
+                  ref={dueDateInputRef}
+                  id="gst-notice-due-date"
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => onChange('dueDate', e.target.value)}
+                  onClick={openDueDatePicker}
+                  onBlur={() => onBlurField?.('dueDate')}
+                  className="gst-notice-date-input"
+                  aria-label="Reply Due Date"
+                  tabIndex={0}
+                />
+                <button
+                  type="button"
+                  className="gst-notice-date-btn"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    openDueDatePicker()
+                  }}
+                  aria-label="Open Reply Due Date picker"
+                  tabIndex={-1}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                </button>
+              </div>
             </div>
             {errors.dueDate && <span className="form-error">{errors.dueDate}</span>}
           </div>
         </div>
 
         {/* Section 3: Upload Notice Copy Card */}
-        <DocumentCard
-          id="notice-copy"
-          title="Upload Notice Copy"
-          subtitle={`Upload official GST notice copy from the tax department (${UPLOAD_HINT})`}
-          isRequired={true}
-          isUploaded={Boolean(noticeFile)}
-          fileName={noticeFile?.name}
-          fileSize={noticeFile ? formatGstFileSize(noticeFile.size) : undefined}
-          file={noticeFile || undefined}
-          onUpload={(_, file) => onNoticeFileChange(file)}
-          onRemove={() => onNoticeFileChange(null)}
-          onView={() => handleView()}
-        />
-        {errors.noticeFile && <span className="form-error">{errors.noticeFile}</span>}
+        <div id="gst-notice-docs" className="gst-notice-field-group">
+          <DocumentCard
+            id="notice-copy"
+            title="Upload Notice Copy"
+            subtitle={`Upload official GST notice copy from the tax department (${UPLOAD_HINT})`}
+            isRequired={true}
+            isUploaded={Boolean(noticeFile)}
+            fileName={noticeFile?.name}
+            fileSize={noticeFile ? formatGstFileSize(noticeFile.size) : undefined}
+            file={noticeFile || undefined}
+            error={errors.noticeFile}
+            onUpload={handleNoticeUpload}
+            onUploadError={(_id, msg) => {
+              onNoticeFileChange(null)
+              onNoticeFileError?.(msg)
+            }}
+            onRemove={() => {
+              onNoticeFileChange(null)
+              onNoticeFileError?.(undefined)
+            }}
+            onView={() => handleView()}
+          />
+        </div>
 
         {/* Section 4: Remarks (Optional) */}
         <div className="gst-notice-field-group">
@@ -196,5 +287,3 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
     </div>
   )
 }
-
-

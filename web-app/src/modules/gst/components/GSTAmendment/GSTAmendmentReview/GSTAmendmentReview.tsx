@@ -1,6 +1,7 @@
 import { SaveDraftButton } from '@shared/saveDraft'
 import React, { useState } from 'react'
 import { getAddressRows, getBankRows, getContactRows, getSignatoryRows, type RowItem } from './getComparisonRows'
+import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
 import './GSTAmendmentReview.css'
 
 export interface AddressDetailsItem {
@@ -51,11 +52,12 @@ interface GSTAmendmentReviewProps {
   fileName?: string
   fileSizeText?: string
   uploadDateText?: string
+  file?: File | null
   isSubmitting?: boolean
   onBack: () => void
   onSaveDraft?: () => void
   onSubmit: () => void
-  onEdit?: () => void
+  onEdit?: (section?: string) => void
 }
 
 export const GSTAmendmentReview: React.FC<GSTAmendmentReviewProps> = ({
@@ -74,6 +76,7 @@ export const GSTAmendmentReview: React.FC<GSTAmendmentReviewProps> = ({
   requestedContactDetails,
   fileName = 'RESUME FINAL (1).pdf',
   fileSizeText = '0.1 MB',
+  file = null,
   isSubmitting = false,
   onBack,
   onSubmit,
@@ -105,6 +108,14 @@ export const GSTAmendmentReview: React.FC<GSTAmendmentReviewProps> = ({
     : requestedAddressDetails
     ? getAddressRows(requestedAddressDetails, isAdditionalPlace, true)
     : null
+
+  const handleViewProof = () => {
+    openGstDocumentPreview({
+      file,
+      fileName,
+      title: `${sectionTitle} Supporting Proof`,
+    })
+  }
 
   return (
     <div className="gst-amend-review-container">
@@ -150,7 +161,7 @@ export const GSTAmendmentReview: React.FC<GSTAmendmentReviewProps> = ({
             {onEdit && (
               <button
                 type="button"
-                onClick={onEdit}
+                onClick={() => onEdit('gst-amend-details')}
                 className="gst-amend-requested-edit-btn"
                 aria-label="Edit requested changes"
               >
@@ -184,7 +195,21 @@ export const GSTAmendmentReview: React.FC<GSTAmendmentReviewProps> = ({
 
         {/* Card 3: Attached Proof Card */}
         <div className="gst-amend-proof-card">
-          <h3 className="gst-amend-proof-card-title">Attached Proof</h3>
+          <div className="gst-amend-proof-card-header">
+            <h3 className="gst-amend-proof-card-title">Attached Proof</h3>
+            <button
+              type="button"
+              className="gst-review-view-btn"
+              onClick={handleViewProof}
+              aria-label={`View ${fileName || 'Proof'}`}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <span>View</span>
+            </button>
+          </div>
           <div className="gst-amend-proof-row">
             <span className="gst-amend-proof-name" title={fileName}>{fileName}</span>
             <span className="gst-amend-proof-size">{fileSizeText}</span>

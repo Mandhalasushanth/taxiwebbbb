@@ -47,8 +47,8 @@ describe('bankService - IFSC Auto-Fetch', () => {
   })
 })
 
-describe('GSTBankDetails Component - IFSC Auto-Fill', () => {
-  it('automatically triggers onChange for bankName and branch when user enters IFSC', () => {
+describe('GSTBankDetails Component - Manual Bank Details Input', () => {
+  it('does NOT auto-fetch bankName and branch when user enters IFSC code', () => {
     const handleChange = vi.fn()
     const handleClearError = vi.fn()
 
@@ -75,43 +75,41 @@ describe('GSTBankDetails Component - IFSC Auto-Fill', () => {
 
     // Verify ifscCode updated
     expect(handleChange).toHaveBeenCalledWith('ifscCode', 'HDFC0000412')
-    // Verify bankName auto-fetched
-    expect(handleChange).toHaveBeenCalledWith('bankName', 'HDFC Bank')
-    // Verify branch auto-fetched
-    expect(handleChange).toHaveBeenCalledWith('branch', 'Fort Branch - Mumbai')
-    // Verify errors cleared
-    expect(handleClearError).toHaveBeenCalledWith('bankName')
-    expect(handleClearError).toHaveBeenCalledWith('branch')
+    // Verify bankName and branch are NOT auto-fetched
+    expect(handleChange).not.toHaveBeenCalledWith('bankName', expect.anything())
+    expect(handleChange).not.toHaveBeenCalledWith('branch', expect.anything())
   })
 
-  it('updates bankName and branch when user changes from one bank code to another', () => {
+  it('allows user to manually enter bankName and branch as text inputs', () => {
     const handleChange = vi.fn()
     const handleClearError = vi.fn()
 
-    // Simulating user who previously had SBI populated
-    const previousSbiData = {
+    const initialData = {
       accountHolderName: 'Sagarika Jena',
       accountNumber: '918273645012',
       confirmAccountNumber: '918273645012',
-      ifscCode: 'SBIN0000412',
-      bankName: 'State Bank of India',
-      branch: 'Commercial Branch',
+      ifscCode: 'HDFC0000412',
+      bankName: '',
+      branch: '',
       accountType: 'Overdraft',
     }
 
     render(
       <GSTBankDetails
-        data={previousSbiData}
+        data={initialData}
         onChange={handleChange}
         onClearError={handleClearError}
       />
     )
 
-    const ifscInput = screen.getByLabelText(/IFSC Code/i)
-    fireEvent.change(ifscInput, { target: { value: 'HDFC0000412' } })
-
-    // Must overwrite previous bankName and branch
+    const bankNameInput = screen.getByLabelText(/Bank Name/i)
+    expect(bankNameInput.tagName).toBe('INPUT')
+    fireEvent.change(bankNameInput, { target: { value: 'HDFC Bank' } })
     expect(handleChange).toHaveBeenCalledWith('bankName', 'HDFC Bank')
-    expect(handleChange).toHaveBeenCalledWith('branch', 'Fort Branch - Mumbai')
+
+    const branchInput = screen.getByLabelText(/Branch/i)
+    expect(branchInput.tagName).toBe('INPUT')
+    fireEvent.change(branchInput, { target: { value: 'Fort Branch' } })
+    expect(handleChange).toHaveBeenCalledWith('branch', 'Fort Branch')
   })
 })

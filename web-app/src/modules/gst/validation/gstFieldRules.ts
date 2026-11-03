@@ -1,19 +1,29 @@
 import {
-  HSN_SAC_LENGTHS,
   isValidBankAccNumber,
   isValidGstin,
-  isValidHsnSac,
+  validateAccountHolderName,
+  validateAddress,
+  validateBranch,
+  validateBusinessLegalName,
+  validateCity,
+  validateCommencementDate,
+  validateConfirmAccountNumber,
+  validateDesignation,
+  validateDistrict,
   validateDobSignatory,
   validateEmail,
+  validateHsnSac,
   validateIfsc,
   validateMobileNumber,
+  validateName,
   validatePan,
   validatePincode,
+  validateTradeName,
 } from '@shared/utils'
 
 /**
  * Field rules for every GST form. Each rule returns an error message, or
- * undefined when the value is valid. Generic checks reuse @shared/utils.
+ * undefined when the value is valid. Generic checks reuse centralized @shared/utils.
  */
 
 type Rule = (value: string | undefined) => string | undefined
@@ -87,52 +97,35 @@ export const gstFieldRules = {
     return isValidBankAccNumber(value) ? undefined : 'Enter a valid bank account number (9 to 18 digits)'
   },
 
-  confirmAccountNumber: (account?: string, confirm?: string): string | undefined => {
-    const conf = trimmed(confirm)
-    if (!conf) return 'Confirm account number is required'
-    if (!/^\d+$/.test(conf)) return 'Confirm account number must contain digits only'
-    return trimmed(account) === conf ? undefined : 'Account numbers do not match'
-  },
+  confirmAccountNumber: (account?: string, confirm?: string): string | undefined =>
+    fromShared(validateConfirmAccountNumber(account, confirm)),
 
-  hsnSac: (v?: string): string | undefined => {
-    const value = trimmed(v)
-    if (!value) return 'HSN / SAC code is required'
-    if (!/^\d+$/.test(value)) return 'HSN / SAC code must contain digits only'
-    return isValidHsnSac(value) ? undefined : `HSN / SAC code must be ${HSN_SAC_LENGTHS.join(', ').replace(/, (\d+)$/, ' or $1')} digits`
-  },
+  hsnSac: (v?: string): string | undefined => fromShared(validateHsnSac(v)),
 
   personName: (label: string): Rule => (v) => {
-    const value = trimmed(v)
-    if (!value) return `${label} is required`
-    if (value.length < 2) return `${label} must be at least 2 characters`
-    if (value.length > 100) return `${label} cannot exceed 100 characters`
-    if (!GST_PATTERNS.PERSON_NAME.test(value) || !/[A-Za-z]{2,}/.test(value)) {
+    const err = fromShared(validateName(trimmed(v), label))
+    if (err && err.includes('only contain letters')) {
       return `${label} must contain only letters`
     }
-    return undefined
+    return err
   },
 
   cityDistrict: (label: string): Rule => (v) => {
-    const value = trimmed(v)
-    if (!value) return `${label} is required`
-    if (value.length < 2) return `${label} must be at least 2 characters`
-    if (value.length > 50) return `${label} cannot exceed 50 characters`
-    if (!GST_PATTERNS.CITY_DISTRICT.test(value) || !/[A-Za-z]{2,}/.test(value)) {
-      return `${label} must contain only letters`
-    }
-    return undefined
+    const isDistrict = label.toLowerCase().includes('district')
+    return isDistrict ? fromShared(validateDistrict(trimmed(v), label)) : fromShared(validateCity(trimmed(v), { label, minLength: 2, maxLength: 50 }))
   },
 
+  city: (label = 'City'): Rule => (v) => fromShared(validateCity(trimmed(v), { label, minLength: 2, maxLength: 50 })),
+
+  district: (label = 'District'): Rule => (v) => fromShared(validateDistrict(trimmed(v), label)),
+
+  legalName: (label = 'Legal Name of Business'): Rule => (v) => fromShared(validateBusinessLegalName(trimmed(v), label)),
+
+  tradeName: (label = 'Trade Name'): Rule => (v) => fromShared(validateTradeName(trimmed(v), label)),
+
   businessName: (label: string): Rule => (v) => {
-    const value = trimmed(v)
-    if (!value) return `${label} is required`
-    if (value.length < 2) return `${label} must be at least 2 characters`
-    if (value.length > 150) return `${label} cannot exceed 150 characters`
-    if (!/[A-Za-z]/.test(value)) return `${label} must contain letters`
-    if (!GST_PATTERNS.BUSINESS_NAME.test(value)) {
-      return `${label} contains invalid special characters`
-    }
-    return undefined
+    const isTrade = /trade|brand/i.test(label)
+    return isTrade ? fromShared(validateTradeName(trimmed(v), label)) : fromShared(validateBusinessLegalName(trimmed(v), label))
   },
 
   placeName: (label: string): Rule => (v) => {
@@ -144,13 +137,7 @@ export const gstFieldRules = {
     return GST_PATTERNS.PLACE_NAME.test(value) ? undefined : `${label} must contain only letters`
   },
 
-  branch: (v?: string): string | undefined => {
-    const value = trimmed(v)
-    if (!value) return 'Branch is required'
-    if (value.length < 2) return 'Branch must be at least 2 characters'
-    if (value.length > 60) return 'Branch cannot exceed 60 characters'
-    return GST_PATTERNS.BRANCH.test(value) ? undefined : 'Branch contains invalid characters'
-  },
+  branch: (v?: string): string | undefined => fromShared(validateBranch(trimmed(v))),
 
   bankName: (v?: string): string | undefined => {
     const value = trimmed(v)
@@ -159,24 +146,13 @@ export const gstFieldRules = {
     return value.length < 3 ? 'Please enter the full bank name' : undefined
   },
 
-  designation: (v?: string): string | undefined => {
-    const value = trimmed(v)
-    if (!value) return 'Designation is required'
-    if (value.length < 2) return 'Designation must be at least 2 characters'
-    if (value.length > 60) return 'Designation cannot exceed 60 characters'
-    return GST_PATTERNS.DESIGNATION.test(value) ? undefined : 'Designation must contain only letters'
-  },
+  accountHolderName: (label = 'Account holder name'): Rule => (v) => fromShared(validateAccountHolderName(trimmed(v), label)),
 
-  address: (label: string): Rule => (v) => {
-    const value = trimmed(v)
-    if (!value) return `${label} is required`
-    if (value.length < 10) return `Please enter the complete ${label.toLowerCase()} (at least 10 characters)`
-    if (value.length > 250) return `${label} cannot exceed 250 characters`
-    if (!GST_PATTERNS.ADDRESS.test(value)) {
-      return `${label} contains invalid special characters`
-    }
-    return undefined
-  },
+  designation: (v?: string): string | undefined => fromShared(validateDesignation(trimmed(v))),
+
+  commencementDate: (v?: string): string | undefined => fromShared(validateCommencementDate(trimmed(v))),
+
+  address: (label: string): Rule => (v) => fromShared(validateAddress(trimmed(v), { label, minLength: 10, maxLength: 250 })),
 
   /**
    * GST Notice Number / RFN / DIN:
@@ -283,14 +259,14 @@ export const runGstRules = <T extends Record<string, unknown>>(
       .filter(([, message]) => Boolean(message))
   ) as Record<string, string>
 
-/** Banner text when "Continue" is pressed on an incomplete step (same as the loans flows) */
+/** Banner text when "Continue" is pressed on an incomplete step */
 export const GST_STEP_ERROR = 'Please fill in all required fields.'
 
 /** Keeps only the fields that have an error message */
 export const collectGstErrors = (checks: Record<string, string | undefined>): Record<string, string> =>
   Object.fromEntries(Object.entries(checks).filter(([, message]) => Boolean(message))) as Record<string, string>
 
-/** Field kinds recognised from a label/placeholder (rule 7: validate by what the field asks for) */
+/** Field kinds recognised from a label/placeholder */
 export type GstFieldKind =
   | 'gstin' | 'pan' | 'ifsc' | 'email' | 'mobile' | 'pinCode' | 'accountNumber'
   | 'personName' | 'businessName' | 'address' | 'noticeNumber' | 'arn' | 'reference' | 'text'
@@ -313,10 +289,9 @@ const KIND_MATCHERS: [GstFieldKind, RegExp][] = [
 
 const kindsIn = (text: string): GstFieldKind[] => KIND_MATCHERS.filter(([, re]) => re.test(text)).map(([kind]) => kind)
 
-/** A field that asks for several things at once (e.g. "name, PAN and designation") is free text */
 const isCombined = (text: string): boolean => /,| and /i.test(text)
 
-/** Detects the field kind from its label first, then its placeholder; mixed requests are plain text */
+/** Detects the field kind from its label first, then its placeholder */
 export const detectGstFieldKind = (label = '', placeholder = ''): GstFieldKind => {
   const fromLabel = kindsIn(label)
   if (fromLabel.length > 1) return 'text'

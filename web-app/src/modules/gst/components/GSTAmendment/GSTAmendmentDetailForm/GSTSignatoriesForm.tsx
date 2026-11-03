@@ -1,11 +1,13 @@
-import { SaveDraftButton } from '@shared/saveDraft'
-import { UpdateAndReviewButton } from '@shared/edit'
 import { GST_FILE_MESSAGES } from '@modules/gst/utils/gstFile'
 import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
 import React, { useState, useRef, type FormEvent } from 'react'
+import { CaretInput } from '@shared/components'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
 import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
+import { useAmendmentFileState } from '../hooks/useAmendmentFileState'
+import { GSTCurrentPortalCard } from './GSTCurrentPortalCard'
+import { GSTAmendmentActionBar } from './GSTAmendmentActionBar'
 import './GSTSignatoriesForm.css'
 import './GSTAmendmentDetailForm.css'
 
@@ -66,9 +68,24 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
   const [mobile, setMobile] = useState(initialSignatoryDetails?.mobile || '')
   const [dob, setDob] = useState(initialSignatoryDetails?.dob || '')
   const [email, setEmail] = useState(initialSignatoryDetails?.email || '')
-  const [selectedFile, setSelectedFile] = useState<File | null>(initialFile || null)
-  const [removedInitialFile, setRemovedInitialFile] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  const {
+    selectedFile,
+    effectiveFileName,
+    handleFileChange: onFileChange,
+    handleFileRemove,
+  } = useAmendmentFileState({
+    initialFile,
+    initialFileName,
+    initialFileSize,
+    onFileCleared: () => setErrors((prev) => ({ ...prev, file: '' })),
+  })
+
+  const handleFileChange = (file: File) => {
+    onFileChange(file)
+    setErrors((prev) => ({ ...prev, file: '' }))
+  }
 
   const [prevSignatoryDetails, setPrevSignatoryDetails] = useState(initialSignatoryDetails)
   if (prevSignatoryDetails !== initialSignatoryDetails) {
@@ -83,25 +100,7 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
     }
   }
 
-  const [prevInitialFile, setPrevInitialFile] = useState(initialFile)
-  if (prevInitialFile !== initialFile) {
-    setPrevInitialFile(initialFile)
-    if (initialFile !== undefined) {
-      setSelectedFile(initialFile)
-      if (initialFile) setRemovedInitialFile(false)
-    }
-  }
-
-  const effectiveFileName = !removedInitialFile ? (selectedFile?.name || initialFileName) : selectedFile?.name
-
   const dateRef = useRef<HTMLInputElement>(null)
-
-  // Type, size and content are already checked by the shared upload rule
-  const handleFileChange = (file: File) => {
-    setSelectedFile(file)
-    setRemovedInitialFile(false)
-    setErrors((prev) => ({ ...prev, file: '' }))
-  }
 
   const handleCalendarClick = () => {
     if (dateRef.current) {
@@ -189,45 +188,27 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
 
       <form onSubmit={handleSubmitForm} noValidate>
         {/* Card 1: Currently Registered on Portal */}
-        <div className="gst-amend-card-box">
-          <div className="gst-amend-card-box__header-flex">
-            <div className="gst-amend-card-header-icon-box gst-amend-card-header-icon-box--building">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
-                <path d="M9 22v-4h6v4" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="gst-amend-card-box__title">Currently Registered on Portal</h3>
-              <p className="gst-amend-card-box__subtitle">Read-only baseline from GST profile</p>
-            </div>
-          </div>
-          <div className="gst-amend-readonly-multiline-list">
-            <div className="gst-amend-readonly-row">
-              <span className="gst-amend-readonly-label">Signatory Name</span>
-              <span className="gst-amend-readonly-value">
-                {_currentDetailsProp?.name && _currentDetailsProp.name !== '—' ? _currentDetailsProp.name : '-'}
-              </span>
-            </div>
-            <div className="gst-amend-readonly-row">
-              <span className="gst-amend-readonly-label">Designation</span>
-              <span className="gst-amend-readonly-value">
-                {_currentDetailsProp?.designation && _currentDetailsProp.designation !== '—' ? _currentDetailsProp.designation : '-'}
-              </span>
-            </div>
-            <div className="gst-amend-readonly-row">
-              <span className="gst-amend-readonly-label">Contact</span>
-              <span className="gst-amend-readonly-value">
-                {_currentDetailsProp?.mobile && _currentDetailsProp.mobile !== '—'
-                  ? _currentDetailsProp.mobile
-                  : (_currentDetailsProp?.email && _currentDetailsProp.email !== '—' ? _currentDetailsProp.email : '-')}
-              </span>
-            </div>
-          </div>
-        </div>
+        <GSTCurrentPortalCard
+          rows={[
+            {
+              label: 'Signatory Name',
+              value: _currentDetailsProp?.name && _currentDetailsProp.name !== '—' ? _currentDetailsProp.name : '-',
+            },
+            {
+              label: 'Designation',
+              value: _currentDetailsProp?.designation && _currentDetailsProp.designation !== '—' ? _currentDetailsProp.designation : '-',
+            },
+            {
+              label: 'Contact',
+              value: _currentDetailsProp?.mobile && _currentDetailsProp.mobile !== '—'
+                ? _currentDetailsProp.mobile
+                : (_currentDetailsProp?.email && _currentDetailsProp.email !== '—' ? _currentDetailsProp.email : '-'),
+            },
+          ]}
+        />
 
         {/* Card 2: Amended details */}
-        <div className="gst-amend-card-box">
+        <div className="gst-amend-card-box" id="gst-amend-details">
           <div className="gst-amend-card-box__header-flex">
             <div className="gst-amend-card-header-icon-box gst-amend-card-header-icon-box--edit">
               <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -246,14 +227,22 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
             <label htmlFor="sig-name-input" className="gst-amend-field-label">
               Full Name of Signatory <span className="gst-amend-star">*</span>
             </label>
-            <input
+            <CaretInput
               id="sig-name-input"
               type="text"
               placeholder="Enter full name"
               value={name}
               onChange={(e) => {
-                setName(gstInput.letters(e.target.value))
-                if (errors.name) setErrors((prev) => ({ ...prev, name: '' }))
+                const val = gstInput.letters(e.target.value)
+                setName(val)
+                if (errors.name) {
+                  const err = rules.personName('Signatory name')(val)
+                  setErrors((prev) => ({ ...prev, name: err || '' }))
+                }
+              }}
+              onBlur={() => {
+                const err = rules.personName('Signatory name')(name)
+                setErrors((prev) => ({ ...prev, name: err || '' }))
               }}
               className={`gst-amend-text-input ${errors.name ? 'has-error' : ''}`}
             />
@@ -265,14 +254,22 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
             <label htmlFor="sig-pan-input" className="gst-amend-field-label">
               PAN Number <span className="gst-amend-star">*</span>
             </label>
-            <input
+            <CaretInput
               id="sig-pan-input"
               type="text"
               placeholder="Enter PAN number"
               value={pan}
               onChange={(e) => {
-                setPan(gstInput.pan(e.target.value))
-                if (errors.pan) setErrors((prev) => ({ ...prev, pan: '' }))
+                const val = gstInput.pan(e.target.value)
+                setPan(val)
+                if (errors.pan) {
+                  const err = rules.pan(val)
+                  setErrors((prev) => ({ ...prev, pan: err || '' }))
+                }
+              }}
+              onBlur={() => {
+                const err = rules.pan(pan)
+                setErrors((prev) => ({ ...prev, pan: err || '' }))
               }}
               className={`gst-amend-text-input ${errors.pan ? 'has-error' : ''}`}
             />
@@ -299,8 +296,16 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
                 type="date"
                 value={dob}
                 onChange={(e) => {
-                  setDob(e.target.value)
-                  if (errors.dob) setErrors((prev) => ({ ...prev, dob: '' }))
+                  const val = e.target.value
+                  setDob(val)
+                  if (errors.dob) {
+                    const err = rules.signatoryDob(val)
+                    setErrors((prev) => ({ ...prev, dob: err || '' }))
+                  }
+                }}
+                onBlur={() => {
+                  const err = rules.signatoryDob(dob)
+                  setErrors((prev) => ({ ...prev, dob: err || '' }))
                 }}
                 className="gst-sig-dob-native-input"
                 placeholder="Select date of birth"
@@ -319,14 +324,22 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
             <label htmlFor="sig-designation-input" className="gst-amend-field-label">
               Designation / Status <span className="gst-amend-star">*</span>
             </label>
-            <input
+            <CaretInput
               id="sig-designation-input"
               type="text"
               placeholder="Enter designation"
               value={designation}
               onChange={(e) => {
-                setDesignation(gstInput.designation(e.target.value))
-                if (errors.designation) setErrors((prev) => ({ ...prev, designation: '' }))
+                const val = gstInput.designation(e.target.value)
+                setDesignation(val)
+                if (errors.designation) {
+                  const err = rules.designation(val)
+                  setErrors((prev) => ({ ...prev, designation: err || '' }))
+                }
+              }}
+              onBlur={() => {
+                const err = rules.designation(designation)
+                setErrors((prev) => ({ ...prev, designation: err || '' }))
               }}
               className={`gst-amend-text-input ${errors.designation ? 'has-error' : ''}`}
             />
@@ -346,8 +359,16 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
                 placeholder="Enter mobile number"
                 value={mobile}
                 onChange={(e) => {
-                  setMobile(gstInput.mobile(e.target.value))
-                  if (errors.mobile) setErrors((prev) => ({ ...prev, mobile: '' }))
+                  const val = gstInput.mobile(e.target.value)
+                  setMobile(val)
+                  if (errors.mobile) {
+                    const err = rules.mobile(val)
+                    setErrors((prev) => ({ ...prev, mobile: err || '' }))
+                  }
+                }}
+                onBlur={() => {
+                  const err = rules.mobile(mobile)
+                  setErrors((prev) => ({ ...prev, mobile: err || '' }))
                 }}
                 className={`gst-amend-contact-input ${errors.mobile ? 'has-error' : ''}`}
               />
@@ -366,8 +387,16 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
               placeholder="Enter email address"
               value={email}
               onChange={(e) => {
-                setEmail(gstInput.email(e.target.value))
-                if (errors.email) setErrors((prev) => ({ ...prev, email: '' }))
+                const val = gstInput.email(e.target.value)
+                setEmail(val)
+                if (errors.email) {
+                  const err = rules.email(val)
+                  setErrors((prev) => ({ ...prev, email: err || '' }))
+                }
+              }}
+              onBlur={() => {
+                const err = rules.email(email)
+                setErrors((prev) => ({ ...prev, email: err || '' }))
               }}
               className={`gst-amend-text-input ${errors.email ? 'has-error' : ''}`}
             />
@@ -376,18 +405,17 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
         </div>
 
         {/* Card 3: Supporting proof */}
-        <div className="gst-amend-section-heading">Supporting Proof</div>
-        <GSTProofUpload
-          selectedFile={selectedFile}
-          existingFileName={!selectedFile ? effectiveFileName : undefined}
-          existingFileSize={initialFileSize}
-          error={errors.file}
-          onFileSelect={handleFileChange}
-          onRemoveFile={() => {
-            setSelectedFile(null)
-            setRemovedInitialFile(true)
-          }}
-        />
+        <div id="gst-amend-proof">
+          <div className="gst-amend-section-heading">Supporting Proof</div>
+          <GSTProofUpload
+            selectedFile={selectedFile}
+            existingFileName={!selectedFile ? effectiveFileName : undefined}
+            existingFileSize={initialFileSize}
+            error={errors.file}
+            onFileSelect={handleFileChange}
+            onRemoveFile={handleFileRemove}
+          />
+        </div>
 
         {/* Accepted proofs card */}
         <div className="gst-amend-accepted-proofs-card">
@@ -433,52 +461,33 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
           )}
         </div>
 
-            {/* Bottom Actions Row (Left: Back, Right: Review Changes) */}
-            <div className="gst-amend-detail-actions-row">
-              <button type="button" onClick={handleBackClick} className="gst-amend-back-pill-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="15 18 9 12 15 6" />
-                </svg>
-                Back
-              </button>
-              <div className="form-actions-group">
-                {onSaveDraft && (
-                  <SaveDraftButton
-                    onClick={() => {
-                      const formattedNewValue = `${name.trim()} (${designation.trim()}) · PAN: ${pan.toUpperCase().trim()}`
-                      onSaveDraft({
-                        newValue: formattedNewValue,
-                        file: selectedFile,
-                        fileName: effectiveFileName,
-                        fileSizeText: initialFileSize,
-                        signatoryDetails: {
-                          name: name.trim(),
-                          designation: designation.trim(),
-                          pan: pan.toUpperCase().trim(),
-                          mobile: mobile.trim(),
-                          dob: dob.trim(),
-                          email: email.trim(),
-                        },
-                      })
-                    }}
-                  />
-                )}
-                {isEditMode ? (
-                  <UpdateAndReviewButton
-                    type="submit"
-                    isSubmitting={isSubmitting}
-                  />
-                ) : (
-                  <button type="submit" disabled={isSubmitting} className="gst-amend-submit-orange-btn">
-                    {isSubmitting ? 'Submitting...' : 'Continue'}
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                      <polyline points="12 5 19 12 12 19" />
-                    </svg>
-                  </button>
-                )}
-              </div>
-            </div>
+        {/* Bottom Actions Row (Left: Back, Right: Review Changes) */}
+        <GSTAmendmentActionBar
+          onBack={handleBackClick}
+          onSaveDraft={
+            onSaveDraft
+              ? () => {
+                  const formattedNewValue = `${name.trim()} (${designation.trim()}) · PAN: ${pan.toUpperCase().trim()}`
+                  onSaveDraft({
+                    newValue: formattedNewValue,
+                    file: selectedFile,
+                    fileName: effectiveFileName,
+                    fileSizeText: initialFileSize,
+                    signatoryDetails: {
+                      name: name.trim(),
+                      designation: designation.trim(),
+                      pan: pan.toUpperCase().trim(),
+                      mobile: mobile.trim(),
+                      dob: dob.trim(),
+                      email: email.trim(),
+                    },
+                  })
+                }
+              : undefined
+          }
+          isSubmitting={isSubmitting}
+          isEditMode={isEditMode}
+        />
       </form>
     </div>
   )

@@ -36,6 +36,7 @@ export interface UploadedFileInfo {
   fileUrl?: string
   status?: 'verified' | 'pending' | 'rejected' | 'selected'
   isLocal?: boolean
+  file?: File
 }
 
 
@@ -172,5 +173,3 @@ export {
   type CalculatedDocumentSummaryItem,
   type DocumentSummaryResult,
 } from './gstDocumentsSummary'
-
-

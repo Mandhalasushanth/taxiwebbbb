@@ -1,6 +1,7 @@
 import React from 'react'
 import { MapPin } from 'lucide-react'
-import { HSN_SAC_LENGTHS, validatePincodeMatchesState } from '@shared/utils'
+import { FieldInfoTooltip } from '@shared/components'
+import { HSN_SAC_LENGTHS, getHsnSacClassification, validatePincodeMatchesState } from '@shared/utils'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { GSTFormSection } from '@modules/gst/shared/GSTFormSection'
 import { GSTSelectField, GSTTextField } from '@modules/gst/shared/GSTFormFields'
@@ -15,6 +16,7 @@ type AddressField = 'placeOfBusiness' | 'businessAddress' | 'city' | 'district' 
 export interface GSTBusinessAddressSectionProps {
   data: Pick<GstBusinessFormData, AddressField>
   onChange: <K extends keyof GstBusinessFormData>(field: K, value: GstBusinessFormData[K]) => void
+  onBlur?: (field: keyof GstBusinessFormData) => void
   errors?: Record<string, string>
   onClearError?: (field: string) => void
 }
@@ -32,6 +34,7 @@ const ADDRESS_FIELDS: readonly AddressField[] = [
 export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps> = ({
   data,
   onChange,
+  onBlur,
   errors = {},
   onClearError,
 }) => {
@@ -45,6 +48,7 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
   // Live PIN ↔ State check so a mismatch is visible before pressing Continue
   const pinStateMismatch = errors.pinCode ? null : validatePincodeMatchesState(data.pinCode, data.state)
   const pinCodeMessage = errors.pinCode || pinStateMismatch
+  const hsnClassification = getHsnSacClassification(data.hsnSacCode)
 
   return (
     <GSTFormSection
@@ -64,6 +68,7 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           value={data.placeOfBusiness}
           error={errors.placeOfBusiness}
           onValueChange={(v) => update('placeOfBusiness', v)}
+          onBlur={() => onBlur?.('placeOfBusiness')}
         />
         <GSTTextField
           id="businessAddress"
@@ -72,6 +77,10 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           value={data.businessAddress}
           error={errors.businessAddress}
           onValueChange={(v) => update('businessAddress', gstInput.address(v))}
+          onBlur={() => {
+            onChange('businessAddress', data.businessAddress.trim())
+            onBlur?.('businessAddress')
+          }}
         />
       </div>
 
@@ -83,6 +92,10 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           value={data.city}
           error={errors.city}
           onValueChange={(v) => update('city', gstInput.cityDistrict(v, 50))}
+          onBlur={() => {
+            onChange('city', data.city.trim())
+            onBlur?.('city')
+          }}
         />
         <GSTTextField
           id="district"
@@ -91,6 +104,10 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           value={data.district}
           error={errors.district}
           onValueChange={(v) => update('district', gstInput.cityDistrict(v, 50))}
+          onBlur={() => {
+            onChange('district', data.district.trim())
+            onBlur?.('district')
+          }}
         />
       </div>
 
@@ -103,6 +120,7 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           value={data.state}
           error={errors.state}
           onValueChange={(v) => update('state', v)}
+          onBlur={() => onBlur?.('state')}
         />
         <GSTTextField
           id="pinCode"
@@ -114,19 +132,35 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           error={pinCodeMessage}
           alertError
           onValueChange={(v) => update('pinCode', gstInput.pinCode(v))}
+          onBlur={() => onBlur?.('pinCode')}
         />
       </div>
 
       <GSTTextField
         id="hsnSacCode"
         label="Primary HSN / SAC Code"
+        infoTooltip={
+          <FieldInfoTooltip
+            title="SAC Code Information"
+            description="Enter the appropriate Service Accounting Code (SAC) applicable to the services provided by your business. Ensure the code matches the nature of your services."
+          />
+        }
         placeholder="e.g. 998311"
         inputMode="numeric"
         pattern="[0-9]*"
         maxLength={Math.max(...HSN_SAC_LENGTHS)}
         value={data.hsnSacCode}
         error={errors.hsnSacCode}
+        helper={
+          !errors.hsnSacCode && hsnClassification ? (
+            <div className="gst-hsn-badge" data-testid="gst-hsn-badge">
+              <span className="gst-hsn-badge__check" aria-hidden="true">✓</span>{' '}
+              <span>{hsnClassification.badgeText.replace(/^✓\s*/, '')}</span>
+            </div>
+          ) : undefined
+        }
         onValueChange={(v) => update('hsnSacCode', gstInput.hsnSac(v))}
+        onBlur={() => onBlur?.('hsnSacCode')}
       />
     </GSTFormSection>
   )

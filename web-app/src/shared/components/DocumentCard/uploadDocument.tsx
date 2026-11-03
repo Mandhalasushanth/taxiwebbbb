@@ -6,6 +6,7 @@ import {
   viewUploadedDocument,
   type UploadRule,
 } from "@shared/upload";
+import { assertGstUploadCriteria, GstUploadException } from "@modules/gst/utils/gstUploadValidator";
 import "./uploadDocument.css";
 
 export interface UploadDocumentProps {
@@ -26,8 +27,10 @@ export interface UploadDocumentProps {
   /** Allowed files (default: PDF, Excel, JPG or PNG up to 15 MB — the application-wide rule) */
   rule?: UploadRule;
   uploadLabel?: string;
+  /** Inline validation error message displayed directly below subtitle */
+  error?: string;
   onUpload?: (id: string, file: File) => void;
-  /** A picked file broke the upload rule (default: an error toast) */
+  /** A picked file broke the upload rule */
   onUploadError?: (id: string, message: string) => void;
   onRemove?: (id: string) => void;
   onView?: (doc: {
@@ -73,6 +76,7 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
   icon,
   rule = DOCUMENT_UPLOAD_RULE,
   uploadLabel = "Upload",
+  error,
   onUpload,
   onUploadError,
   onRemove,
@@ -87,22 +91,57 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [localFile, setLocalFile] = useState<File | undefined>(file);
+  const [internalError, setInternalError] = useState<string | undefined>(undefined);
+
+  // The active error shows internal validation failure or caller-provided error
+  const activeError = error !== undefined ? error : internalError;
+
+  // When an error is present (such as during a failed file replace), do not show
+  // the previous document or marked uploaded status. Only show the error warning and upload button.
+  const effectiveIsUploaded = Boolean(isUploaded && !activeError);
 
   // Remember a file passed in by the parent so "View Document" can open it later
   useEffect(() => {
     if (file) uploadedFileStore.remember(id, file);
   }, [file, id]);
 
-  /** Runs only for files that passed the upload rule (FileInput validates every pick) */
+  /** Runs only for files that passed the upload rule */
   const handleFileSelected = (selectedFile: File) => {
-    setLocalFile(selectedFile);
-    uploadedFileStore.remember(id, selectedFile);
-    onUpload?.(id, selectedFile);
+    try {
+      assertGstUploadCriteria(selectedFile, rule);
+      setInternalError(undefined);
+      setLocalFile(selectedFile);
+      uploadedFileStore.remember(id, selectedFile);
+      onUpload?.(id, selectedFile);
+    } catch (err) {
+      const errorMsg =
+        err instanceof GstUploadException
+          ? err.message
+          : err instanceof Error
+          ? err.message
+          : "Invalid file";
+      // Clear previous document when replacement fails validation
+      setLocalFile(undefined);
+      uploadedFileStore.forget(id, fileName);
+      onRemove?.(id);
+      setInternalError(errorMsg);
+      onUploadError?.(id, errorMsg);
+    }
+  };
+
+  /** Captures file rejection from FileInput and renders inline under the card (no toast / side popup) */
+  const handleFileInputError = (message: string) => {
+    // Clear previous document when replacement fails validation
+    setLocalFile(undefined);
+    uploadedFileStore.forget(id, fileName);
+    onRemove?.(id);
+    setInternalError(message);
+    onUploadError?.(id, message);
   };
 
   const handleView = () => {
     const activeFile = file || localFile || uploadedFileStore.get(id, fileName);
-    if (!activeFile && onView) {
+    if (onView) {
       onView({ id, title, fileName, file: activeFile });
       return;
     }
@@ -112,18 +151,25 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
   /** Lets the parent block the picker (e.g. profile incomplete) before it opens */
   const openPicker = (e: React.MouseEvent) => {
     if (onUploadClick?.(e) === false) return;
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
     fileInputRef.current?.click();
   };
 
   const handleReplaceClick = (e: React.MouseEvent) => {
     if (onUploadClick?.(e) === false) return;
     onReplace?.(id);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
     fileInputRef.current?.click();
   };
 
   const handleUploadBtnClick = openPicker;
 
   const handleDeleteClick = () => {
+    setInternalError(undefined);
     setLocalFile(undefined);
     uploadedFileStore.forget(id, fileName);
     onRemove?.(id);
@@ -136,7 +182,9 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
 
   return (
     <div
-      className={`supporting-doc-item ${isUploaded ? "supporting-doc-item--uploaded" : ""} ${className}`}
+      id={id}
+      data-doc-id={id}
+      className={`supporting-doc-item ${effectiveIsUploaded ? "supporting-doc-item--uploaded" : ""} ${className}`}
       data-testid={`doc-card-${id}`}
     >
       <FileInput
@@ -145,7 +193,7 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
         id={`file-input-${id}`}
         className="supporting-doc-item__file-input"
         onFileSelected={handleFileSelected}
-        onFileError={onUploadError ? (message) => onUploadError(id, message) : undefined}
+        onFileError={handleFileInputError}
         aria-label={`Choose file for ${title}`}
       />
 
@@ -187,7 +235,12 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
                 {effectiveSubtitle}
               </span>
             )}
-            {isUploaded && (
+            {activeError && (
+              <p className="supporting-doc-item__error" role="alert">
+                {activeError}
+              </p>
+            )}
+            {effectiveIsUploaded && (
               <span className="supporting-doc-item__filename">
                 {fileName || file?.name || "Document uploaded"}{" "}
                 {fileSize ? `(${fileSize})` : ""}
@@ -198,7 +251,7 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
         </div>
 
         {/* Right side status / button */}
-        {isUploaded ? (
+        {effectiveIsUploaded ? (
           <div className="supporting-doc-item__uploaded-badge">
             <svg viewBox="0 0 20 20" fill="currentColor">
               <path
@@ -264,7 +317,7 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
       </div>
 
       {/* Uploaded Actions Footer Bar: View Document | Replace | Trash */}
-      {isUploaded && (
+      {effectiveIsUploaded && (
         <>
           <div className="supporting-doc-item__divider" />
           <div className="supporting-doc-item__bottom-bar">
