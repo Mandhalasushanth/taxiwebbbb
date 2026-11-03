@@ -28,6 +28,42 @@ describe('registrationValidation', () => {
     agreeTerms: true,
   }
 
+  describe('Full Name and Name Field Validations', () => {
+    it('accepts valid full names while typing and with intermediate spaces', () => {
+      // User typing "gefehfd " with a space to type next word
+      expect(validateField('fullName', { ...sampleValidForm, fullName: 'gefehfd ' }, { isLive: true })).toBeUndefined()
+      expect(validateField('fullName', { ...sampleValidForm, fullName: 'Rahul Kumar' })).toBeUndefined()
+      expect(validateField('fullName', { ...sampleValidForm, fullName: 'P. Kumar' })).toBeUndefined()
+    })
+
+    it('rejects numbers and unsupported characters immediately during live typing', () => {
+      expect(validateField('fullName', { ...sampleValidForm, fullName: 'Rahul123' }, { isLive: true })).toBe(
+        'Full Name should only contain letters'
+      )
+      expect(validateField('fullName', { ...sampleValidForm, fullName: 'Rahul@Kumar' }, { isLive: true })).toBe(
+        'Full Name should only contain letters'
+      )
+    })
+
+    it('rejects consecutive spaces and leading spaces immediately', () => {
+      expect(validateField('fullName', { ...sampleValidForm, fullName: 'Rahul  Kumar' }, { isLive: true })).toBe(
+        'Full Name should not contain consecutive spaces'
+      )
+      expect(validateField('fullName', { ...sampleValidForm, fullName: ' Rahul' }, { isLive: true })).toBe(
+        'Full Name cannot start with a space or dot'
+      )
+    })
+
+    it('requires Full Name on blur/submit and enforces min length', () => {
+      expect(validateField('fullName', { ...sampleValidForm, fullName: '' }, { isLive: false })).toBe(
+        'Full Name is required'
+      )
+      expect(validateField('fullName', { ...sampleValidForm, fullName: 'A' }, { isLive: false })).toBe(
+        'Full Name must be at least 2 characters'
+      )
+    })
+  })
+
   describe('Address field validations', () => {
     it('validates areaLocality requirement', () => {
       expect(validateField('areaLocality', { ...sampleValidForm, areaLocality: 'a' })).toBe(

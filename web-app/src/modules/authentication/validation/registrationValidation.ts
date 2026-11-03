@@ -1,9 +1,9 @@
 import {
   getAgeRangeError,
   isValidEmail,
-  validateAadhaar,
   validateIndividualPan,
   validateMobileNumber,
+  validateName,
   validatePan,
 } from '@shared/utils'
 
@@ -17,6 +17,7 @@ export interface RegistrationFormState {
   fatherSpouseName: string
   pan: string
   aadhaar: string
+  isAadhaarVerified?: boolean
   mobile: string
   addressLine1: string
   areaLocality: string
@@ -46,6 +47,7 @@ export const INITIAL_REGISTRATION_VALUES: RegistrationFormState = {
   fatherSpouseName: '',
   pan: '',
   aadhaar: '',
+  isAadhaarVerified: false,
   mobile: '',
   addressLine1: '',
   areaLocality: '',
@@ -134,30 +136,31 @@ const isFieldHidden = (name: keyof RegistrationFormState): boolean =>
 
 export const validateField = (
   name: keyof RegistrationFormState,
-  values: RegistrationFormState
+  values: RegistrationFormState,
+  options?: { isLive?: boolean }
 ): string | undefined => {
   if (isFieldHidden(name)) return undefined
   const val = values[name]
 
   switch (name) {
     case 'fullName': {
-      const rawVal = String(val ?? '')
-      const trimmed = rawVal.trim().replace(/\s+/g, ' ')
-      
-      if (!trimmed) return 'Full Name is required'
-      if (rawVal !== trimmed) return 'Full Name should not contain unnecessary spaces'
-      
-      if (!/^[a-zA-Z\s.'-]+$/.test(trimmed)) {
-        return 'Full Name should only contain letters'
-      }
-      if (trimmed.length < 2) return 'Full Name must be at least 2 characters'
-      return undefined
+      const err = validateName(String(val ?? ''), {
+        label: 'Full Name',
+        required: true,
+        isLive: options?.isLive,
+      })
+      return err || undefined
     }
 
     case 'email': {
-      const trimmed = String(val ?? '').trim()
-      if (!trimmed) return 'Email is required'
-      if (!isValidEmail(trimmed)) {
+      const rawVal = String(val ?? '')
+      const trimmed = rawVal.trim()
+      if (!trimmed) {
+        if (options?.isLive) return undefined
+        return 'Email is required'
+      }
+      if (rawVal !== trimmed || /\s/.test(rawVal)) return 'Email should not contain spaces'
+      if (!options?.isLive && !isValidEmail(trimmed)) {
         return 'Please enter a valid email address (no leading, trailing or consecutive dots)'
       }
       return undefined
@@ -179,20 +182,20 @@ export const validateField = (
     }
 
     case 'fatherSpouseName': {
-      const trimmed = String(val ?? '').trim()
-      if (trimmed) {
-        if (!/^[a-zA-Z\s.'-]+$/.test(trimmed)) {
-          return 'Name should only contain letters'
-        }
-        if (trimmed.length < 2) {
-          return 'Please enter a valid name'
-        }
-      }
-      return undefined
+      const rawVal = String(val ?? '')
+      if (!rawVal.trim()) return undefined
+      const err = validateName(rawVal, {
+        label: "Father's / Spouse Name",
+        required: false,
+        isLive: options?.isLive,
+      })
+      return err || undefined
     }
 
     case 'pan': {
-      const panStr = String(val ?? '').trim().toUpperCase()
+      const rawVal = String(val ?? '')
+      if (/\s/.test(rawVal)) return 'PAN should not contain spaces'
+      const panStr = rawVal.trim().toUpperCase()
       if (['partnership', 'llp', 'private_limited', 'company'].includes(values.customerType)) {
         return validatePan(panStr) || undefined
       }
@@ -200,14 +203,28 @@ export const validateField = (
     }
 
     case 'aadhaar': {
-      return validateAadhaar(String(val ?? '')) || undefined
+      const raw = String(val ?? '')
+      const clean = raw.replace(/\D/g, '')
+      if (!clean) {
+        if (options?.isLive) return undefined
+        return 'Aadhaar Number is required'
+      }
+      if (clean.length < 12) {
+        return 'Invalid Aadhaar'
+      }
+      if (clean.startsWith('0') || clean.startsWith('1')) {
+        return 'Aadhaar number cannot start with 0 or 1'
+      }
+      if (/^(\d)\1{11}$/.test(clean) || new Set(clean.split('')).size < 4) {
+        return 'Invalid Aadhaar'
+      }
+      return undefined
     }
 
     case 'mobile': {
       const str = String(val ?? '').replace(/\D/g, '')
       return validateMobileNumber(str) || undefined
     }
-
 
     case 'pincode': {
       const str = String(val ?? '').replace(/\D/g, '')
@@ -329,12 +346,12 @@ const MANDATORY_FIELDS: Array<keyof RegistrationFormState> = [
 
 export const checkIsFormValid = (values: RegistrationFormState): boolean => {
   const mandatoryValid = MANDATORY_FIELDS.every(
-    (field) => validateField(field, values) === undefined
+    (field) => validateField(field, values, { isLive: false }) === undefined
   )
 
   const optionalValid =
-    (!values.fatherSpouseName || validateField('fatherSpouseName', values) === undefined) &&
-    (!values.areaLocality || validateField('areaLocality', values) === undefined)
+    (!values.fatherSpouseName || validateField('fatherSpouseName', values, { isLive: false }) === undefined) &&
+    (!values.areaLocality || validateField('areaLocality', values, { isLive: false }) === undefined)
 
   return mandatoryValid && optionalValid
 }

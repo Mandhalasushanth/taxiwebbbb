@@ -141,3 +141,45 @@
     padding: 1.15rem 1.15rem 1.4rem;
   }
 }
+
+
+/* Preserve clear margin below fixed topbar when scrolling into section */
+.gst-section,
+.gst-form-card,
+.gst-notice-card,
+.gst-amend-card-box,
+.gst-cert-card,
+.gst-canc-section,
+#gst-business-identity,
+#gst-registration-scheme,
+#gst-principal-place,
+#gst-bank-details,
+#gst-authorised-signatory,
+#gst-filing-frequency-period,
+#gst-taxpayer-details,
+#gst-calculation-method,
+#gst-compliance-business-details,
+#gst-notice-details,
+#gst-notice-docs,
+#gst-reconciliation-details,
+#gst-reconciliation-docs,
+#gst-amend-details,
+#gst-amend-proof,
+#gst-cert-gstin,
+#gst-cert-request-type,
+#gst-cert-contact,
+#gst-canc-fields,
+#gst-canc-proof-section {
+  scroll-margin-top: 100px;
+}
+
+/* Preserves standard card stack gap between inner nested business sections */
+#gst-business-details,
+.gst-business-details-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  width: 100%;
+}
+
+

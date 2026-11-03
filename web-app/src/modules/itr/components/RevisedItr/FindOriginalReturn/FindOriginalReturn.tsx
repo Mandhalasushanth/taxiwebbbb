@@ -1,4 +1,5 @@
 import React from 'react'
+import { CaretInput } from '@shared/components'
 import { AY_OPTIONS, type OriginalReturnDetails } from '@modules/itr/types/revisedItr.types'
 import { ChevronDown as ChevronDownIcon, Check as CheckIcon } from 'lucide-react'
 import './FindOriginalReturn.css'
@@ -128,7 +129,7 @@ export const FindOriginalReturn: React.FC<FindOriginalReturnProps> = ({
       <label htmlFor="ack-input" className="field-label">
         Original ITR Acknowledgement Number <span className="required-star">*</span>
       </label>
-      <input
+      <CaretInput
         id="ack-input"
         type="text"
         inputMode="numeric"

@@ -15,6 +15,7 @@ type AddressField = 'placeOfBusiness' | 'businessAddress' | 'city' | 'district' 
 export interface GSTBusinessAddressSectionProps {
   data: Pick<GstBusinessFormData, AddressField>
   onChange: <K extends keyof GstBusinessFormData>(field: K, value: GstBusinessFormData[K]) => void
+  onBlur?: (field: keyof GstBusinessFormData) => void
   errors?: Record<string, string>
   onClearError?: (field: string) => void
 }
@@ -32,6 +33,7 @@ const ADDRESS_FIELDS: readonly AddressField[] = [
 export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps> = ({
   data,
   onChange,
+  onBlur,
   errors = {},
   onClearError,
 }) => {
@@ -64,6 +66,7 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           value={data.placeOfBusiness}
           error={errors.placeOfBusiness}
           onValueChange={(v) => update('placeOfBusiness', v)}
+          onBlur={() => onBlur?.('placeOfBusiness')}
         />
         <GSTTextField
           id="businessAddress"
@@ -72,6 +75,10 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           value={data.businessAddress}
           error={errors.businessAddress}
           onValueChange={(v) => update('businessAddress', gstInput.address(v))}
+          onBlur={() => {
+            onChange('businessAddress', data.businessAddress.trim())
+            onBlur?.('businessAddress')
+          }}
         />
       </div>
 
@@ -83,6 +90,10 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           value={data.city}
           error={errors.city}
           onValueChange={(v) => update('city', gstInput.cityDistrict(v, 50))}
+          onBlur={() => {
+            onChange('city', data.city.trim())
+            onBlur?.('city')
+          }}
         />
         <GSTTextField
           id="district"
@@ -91,6 +102,10 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           value={data.district}
           error={errors.district}
           onValueChange={(v) => update('district', gstInput.cityDistrict(v, 50))}
+          onBlur={() => {
+            onChange('district', data.district.trim())
+            onBlur?.('district')
+          }}
         />
       </div>
 
@@ -103,6 +118,7 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           value={data.state}
           error={errors.state}
           onValueChange={(v) => update('state', v)}
+          onBlur={() => onBlur?.('state')}
         />
         <GSTTextField
           id="pinCode"
@@ -114,6 +130,7 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
           error={pinCodeMessage}
           alertError
           onValueChange={(v) => update('pinCode', gstInput.pinCode(v))}
+          onBlur={() => onBlur?.('pinCode')}
         />
       </div>
 
@@ -127,6 +144,7 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
         value={data.hsnSacCode}
         error={errors.hsnSacCode}
         onValueChange={(v) => update('hsnSacCode', gstInput.hsnSac(v))}
+        onBlur={() => onBlur?.('hsnSacCode')}
       />
     </GSTFormSection>
   )

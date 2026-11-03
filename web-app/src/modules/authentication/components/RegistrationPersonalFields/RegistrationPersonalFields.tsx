@@ -1,4 +1,5 @@
 import React, { useRef } from 'react'
+import { CaretInput } from '@shared/components'
 import {
   UserIcon,
   MailIcon,
@@ -95,11 +96,10 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
             <span className="reg-field__icon">
               <UserIcon />
             </span>
-            <input
+            <CaretInput
               id="reg-fullName"
               name="fullName"
               type="text"
-              pattern="[a-zA-Z\s.'-]*"
               className="reg-field__input"
               placeholder="Full Name"
               value={values.fullName}

@@ -1,5 +1,4 @@
-import { viewUploadedDocument, type UploadRule } from '@shared/upload'
-import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
+import { type UploadRule } from '@shared/upload'
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import React, { useState } from 'react'
 import { MONTHLY_PERIOD_OPTIONS } from '@modules/gst/utils/gstPeriodOptions'
@@ -11,6 +10,8 @@ import {
   type UploadedFileInfo,
   type DocumentIconType,
 } from '@modules/gst/utils/gstDocumentsData'
+import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
+import { assertGstUploadCriteria, GstUploadException } from '@modules/gst/utils/gstUploadValidator'
 import './GSTFilingDocuments.css'
 
 export interface GSTFilingDocumentsProps {
@@ -152,65 +153,90 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
   const totalCount = DEFAULT_DOCUMENT_ITEMS.length
 
   const [showMissing, setShowMissing] = useState(false)
-  const [fileError, setFileError] = useState<string | null>(null)
+  // Per-document inline upload errors
+  const [fileErrors, setFileErrors] = useState<Record<string, string>>({})
 
-  const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
-
-  const handleFileUpload = (id: string, file: File) => {
-    if (file.size > MAX_FILE_SIZE) {
-      setFileError(`File "${file.name}" exceeds the 10 MB limit. Please select a file under 10 MB.`)
-      return
-    }
-    setFileError(null)
-
-    if (externalOnFileUpload) {
-      externalOnFileUpload(id, file)
-      return
-    }
-    const sizeText = formatGstFileSize(file.size)
-    const fileUrl = URL.createObjectURL(file)
-    const fileInfo: UploadedFileInfo = {
-      name: file.name,
-      sizeText,
-      uploadTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      fileUrl,
-      status: 'selected',
-      isLocal: true,
-    }
-    setInternalUploadedFiles((prev) => ({
-      ...prev,
-      [id]: fileInfo,
-    }))
-  }
-
-  const handleFileRemove = (id: string) => {
-    setFileError(null)
+  const removeUploadedFileOnly = (id: string) => {
     if (externalOnFileRemove) {
       externalOnFileRemove(id)
-      return
     }
     setInternalUploadedFiles((prev) => {
+      if (!prev[id]) return prev
       const copy = { ...prev }
       delete copy[id]
       return copy
     })
   }
 
+  const handleFileUpload = (id: string, file: File) => {
+    try {
+      assertGstUploadCriteria(file, GST_FILING_UPLOAD_RULE)
+
+      // Clear any prior upload error for this document card
+      setFileErrors((prev) => {
+        if (!prev[id]) return prev
+        const next = { ...prev }
+        delete next[id]
+        return next
+      })
+
+      if (externalOnFileUpload) {
+        externalOnFileUpload(id, file)
+        return
+      }
+      const sizeText = formatGstFileSize(file.size)
+      const fileUrl = URL.createObjectURL(file)
+      const fileInfo: UploadedFileInfo = {
+        name: file.name,
+        sizeText,
+        uploadTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        fileUrl,
+        status: 'selected',
+        isLocal: true,
+        file,
+      }
+      setInternalUploadedFiles((prev) => ({
+        ...prev,
+        [id]: fileInfo,
+      }))
+    } catch (err) {
+      const errorMsg =
+        err instanceof GstUploadException
+          ? err.message
+          : err instanceof Error
+          ? err.message
+          : 'Invalid file'
+      // When replacement fails validation, delete old document and display only the error warning
+      removeUploadedFileOnly(id)
+      setFileErrors((prev) => ({ ...prev, [id]: errorMsg }))
+    }
+  }
+
+  const handleFileRemove = (id: string) => {
+    setFileErrors((prev) => {
+      if (!prev[id]) return prev
+      const copy = { ...prev }
+      delete copy[id]
+      return copy
+    })
+    removeUploadedFileOnly(id)
+  }
+
   // Required docs verification: all documents marked mandatory
   const missingDocs = DEFAULT_DOCUMENT_ITEMS.filter(
     (doc) => doc.isRequired && !uploadedFiles[doc.id] && !notApplicableDocs[doc.id]
   )
-  // Updates as documents are added, and disappears once nothing is missing
-  const stepError =
-    fileError ||
-    (showMissing && missingDocs.length > 0
-      ? `Please upload ${missingDocs.map((doc) => doc.title).join(', ')}.`
-      : null)
 
-  // Continue stays enabled (as in loans); pressing it names the documents still missing
   const handleNext = () => {
     if (missingDocs.length > 0) {
       setShowMissing(true)
+      const firstMissing = missingDocs[0]
+      if (firstMissing) {
+        requestAnimationFrame(() => {
+          const el = document.getElementById(firstMissing.id) || document.querySelector(`[data-doc-id="${firstMissing.id}"]`)
+          el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        })
+      }
       return
     }
     onNext()
@@ -262,17 +288,28 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
                   subtitle={item.subtitle}
                   isRequired={item.isRequired}
                   rule={GST_FILING_UPLOAD_RULE}
+                  error={fileErrors[item.id] || (showMissing && item.isRequired && !uploadedFiles[item.id] && !notApplicableDocs[item.id] ? `Please upload ${item.title}` : undefined)}
                   icon={renderGstDocIcon(item.iconType)}
                   iconBg={colors.bg}
                   iconColor={colors.color}
                   isUploaded={Boolean(fileInfo)}
                   fileName={fileInfo?.name}
                   fileSize={fileInfo?.sizeText}
+                  file={fileInfo?.file}
                   onUpload={handleFileUpload}
-                  onUploadError={(_id, msg) => setFileError(msg)}
+                  onUploadError={(docId, msg) => {
+                    removeUploadedFileOnly(docId)
+                    setFileErrors((prev) => ({ ...prev, [docId]: msg }))
+                  }}
                   onRemove={handleFileRemove}
                   onView={(doc) =>
-                    viewUploadedDocument({ id: doc.id, title: item.title, fileName: fileInfo?.name, file: doc.file, fileUrl: fileInfo?.fileUrl })
+                    openGstDocumentPreview({
+                      id: doc.id,
+                      title: item.title,
+                      fileName: fileInfo?.name,
+                      file: doc.file || fileInfo?.file,
+                      fileUrl: fileInfo?.fileUrl,
+                    })
                   }
                 />
               )
@@ -293,8 +330,6 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
           TaxEdge uses end-to-end 256-bit encryption for filing proofs. Only certified Chartered Accountants review your books.
         </p>
       </div>
-
-      <GSTStepErrorBanner message={stepError} />
 
       {/* Standard Step Action Bar (Back, Save Draft & Exit, Continue) */}
       <StepActionBar

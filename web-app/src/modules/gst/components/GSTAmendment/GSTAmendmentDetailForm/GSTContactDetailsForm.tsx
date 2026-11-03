@@ -201,7 +201,7 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
         </div>
 
         {/* Card 2: Amended details */}
-        <div className="gst-amend-card-box">
+        <div className="gst-amend-card-box" id="gst-amend-details">
           <div className="gst-amend-card-box__header-flex">
             <div className="gst-amend-card-header-icon-box gst-amend-card-header-icon-box--edit">
               <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -228,8 +228,16 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
                 placeholder="Enter mobile number"
                 value={mobileNumber}
                 onChange={(e) => {
-                  setMobileNumber(gstInput.mobile(e.target.value))
-                  if (errors.mobileNumber) setErrors((prev) => ({ ...prev, mobileNumber: '' }))
+                  const val = gstInput.mobile(e.target.value)
+                  setMobileNumber(val)
+                  if (errors.mobileNumber) {
+                    const err = rules.mobile(val)
+                    setErrors((prev) => ({ ...prev, mobileNumber: err || '' }))
+                  }
+                }}
+                onBlur={() => {
+                  const err = rules.mobile(mobileNumber)
+                  setErrors((prev) => ({ ...prev, mobileNumber: err || '' }))
                 }}
                 className={`gst-amend-contact-input ${errors.mobileNumber ? 'has-error' : ''}`}
               />
@@ -248,8 +256,16 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
               placeholder="Enter email address"
               value={emailAddress}
               onChange={(e) => {
-                setEmailAddress(gstInput.email(e.target.value))
-                if (errors.emailAddress) setErrors((prev) => ({ ...prev, emailAddress: '' }))
+                const val = gstInput.email(e.target.value)
+                setEmailAddress(val)
+                if (errors.emailAddress) {
+                  const err = rules.email(val)
+                  setErrors((prev) => ({ ...prev, emailAddress: err || '' }))
+                }
+              }}
+              onBlur={() => {
+                const err = rules.email(emailAddress)
+                setErrors((prev) => ({ ...prev, emailAddress: err || '' }))
               }}
               className={`gst-amend-text-input ${errors.emailAddress ? 'has-error' : ''}`}
             />
@@ -258,18 +274,20 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
         </div>
 
         {/* Section 3: Supporting proof */}
-        <div className="gst-amend-section-heading">Supporting Proof</div>
-        <GSTProofUpload
-          selectedFile={selectedFile}
-          existingFileName={!selectedFile ? effectiveFileName : undefined}
-          existingFileSize={initialFileSize}
-          error={errors.file}
-          onFileSelect={handleFileChange}
-          onRemoveFile={() => {
-            setSelectedFile(null)
-            setRemovedInitialFile(true)
-          }}
-        />
+        <div id="gst-amend-proof">
+          <div className="gst-amend-section-heading">Supporting Proof</div>
+          <GSTProofUpload
+            selectedFile={selectedFile}
+            existingFileName={!selectedFile ? effectiveFileName : undefined}
+            existingFileSize={initialFileSize}
+            error={errors.file}
+            onFileSelect={handleFileChange}
+            onRemoveFile={() => {
+              setSelectedFile(null)
+              setRemovedInitialFile(true)
+            }}
+          />
+        </div>
 
         {/* Accepted proofs card */}
         <div className="gst-amend-accepted-proofs-card">

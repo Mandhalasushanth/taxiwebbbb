@@ -87,66 +87,80 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
   const handleRemovePromo = () => setAppliedCoupon(null)
 
   const validatePayment = (): boolean => {
-    if (selectedMethod === 'upi') {
-      const trimmed = upiId.trim()
-      if (!trimmed) {
-        setUpiId('user@okhdfcbank')
-        setUpiError(null)
-        return true
+    try {
+      switch (selectedMethod) {
+        case 'upi': {
+          const trimmed = upiId.trim()
+          if (!trimmed) {
+            setUpiId('user@okhdfcbank')
+            break
+          }
+          if (!trimmed.includes('@')) {
+            setUpiId(`${trimmed}@upi`)
+          }
+          break
+        }
+        case 'card':
+        case 'debit':
+        case 'credit': {
+          const cleanNum = cardDetails.cardNumber.replace(/\s+/g, '')
+          if (!cleanNum) {
+            setCardDetails({
+              cardNumber: '4532 0150 1234 5678',
+              expiry: '12/28',
+              cvv: '123',
+              cardHolder: applicantName || 'Client',
+            })
+          }
+          break
+        }
+        case 'netbanking': {
+          if (!selectedBank) {
+            throw new Error('Please select your bank to continue')
+          }
+          break
+        }
       }
-      if (!trimmed.includes('@')) {
-        setUpiId(`${trimmed}@upi`)
-        setUpiError(null)
-        return true
-      }
+
       setUpiError(null)
-      return true
-    }
-
-    if (selectedMethod === 'card' || selectedMethod === 'debit' || selectedMethod === 'credit') {
-      const cleanNum = cardDetails.cardNumber.replace(/\s+/g, '')
-      if (!cleanNum) {
-        setCardDetails({
-          cardNumber: '4532 0150 1234 5678',
-          expiry: '12/28',
-          cvv: '123',
-          cardHolder: applicantName || 'Client',
-        })
-        setCardErrors({})
-        return true
-      }
       setCardErrors({})
-      return true
-    }
-
-    if (selectedMethod === 'netbanking') {
-      if (!selectedBank) {
-        setBankError('Please select your bank to continue')
-        return false
-      }
       setBankError(null)
       return true
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Validation failed'
+      if (selectedMethod === 'netbanking') {
+        setBankError(message)
+      } else if (selectedMethod === 'upi') {
+        setUpiError(message)
+      } else {
+        setPaymentError(message)
+      }
+      return false
     }
-
-    return true
   }
 
   /**
-   * Creates a gateway order (server recomputes the amount incl. coupon), completes the payment
-   * and reports success ONLY when the server has verified the gateway callback.
+   * Creates a gateway order, completes the payment and reports success.
+   * Uses structured exception handling for validation, gateway errors, and verification.
    */
   const handlePay = async () => {
-    if (!validatePayment() || isProcessing) return
+    if (isProcessing) return
 
     setIsProcessing(true)
     setPaymentError(null)
+
     try {
+      if (!validatePayment()) {
+        return
+      }
+
       const order = await paymentGateway.createOrder({
         amount,
         applicationRef,
         serviceId,
         couponCode: appliedCoupon?.code,
       })
+
       const gatewayMethod: 'upi' | 'card' | 'netbanking' =
         selectedMethod === 'debit' || selectedMethod === 'credit' ? 'card' : selectedMethod
 
@@ -156,10 +170,11 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
         cardNumber: cardDetails.cardNumber,
         bank: selectedBank,
       })
+
       if (!isVerifiedPayment(payment)) {
-        setPaymentError(payment.failureReason || 'Payment could not be verified. You have not been charged.')
-        return
+        throw new Error(payment.failureReason || 'Payment could not be verified. You have not been charged.')
       }
+
       const result: PaymentResult = {
         paymentId: payment.paymentId,
         orderId: payment.orderId,
@@ -171,9 +186,12 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
         verified: true,
         receiptNumber: payment.receiptNumber,
       }
+
       onSuccess(result)
-    } catch {
-      setPaymentError('Payment service is unavailable. Please try again in a moment.')
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Payment service is unavailable. Please try again in a moment.'
+      setPaymentError(message)
     } finally {
       setIsProcessing(false)
     }

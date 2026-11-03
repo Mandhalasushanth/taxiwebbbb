@@ -68,10 +68,29 @@ export const ApplicationOverviewTab: React.FC<ApplicationOverviewTabProps> = ({
               </span>
               <span className="app-tracker-detail-label">Status</span>
             </div>
-            <span className="app-tracker-detail-status-green">Submitted</span>
+            <span className="app-tracker-detail-status-green">{data.rawApplication?.statusLabel || data.currentStageTitle || 'Submitted'}</span>
           </div>
         </div>
       </div>
+
+      {/* Application Filing Fields (Dynamic per Application) */}
+      {data.filingFields && data.filingFields.filter((f) => !['service', 'application id', 'submission date', 'status'].includes(f.label.toLowerCase())).length > 0 && (
+        <div className="app-tracker-clean-card">
+          <h3 className="app-tracker-card-subtitle">{data.filingFieldsHeader || 'Filing Details'}</h3>
+          <div className="app-tracker-details-list">
+            {data.filingFields
+              .filter((f) => !['service', 'application id', 'submission date', 'status'].includes(f.label.toLowerCase()))
+              .map((field, idx) => (
+                <div key={idx} className="app-tracker-detail-row">
+                  <span className="app-tracker-detail-label">{field.label}</span>
+                  <span className={`app-tracker-detail-value ${field.isHighlight ? 'app-tracker-detail-value--bold' : ''}`}>
+                    {field.value}
+                  </span>
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
 
       {/* What happens next? Card */}
       <div className="app-tracker-clean-card app-tracker-clean-card--next">

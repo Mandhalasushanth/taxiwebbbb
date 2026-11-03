@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { StepActionBar } from '@shared/components'
+import { StepActionBar, CaretInput } from '@shared/components'
 import {
   type NoticeFormData,
   ASSESSMENT_YEAR_OPTIONS,
@@ -102,7 +102,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
           <label htmlFor="notice-pan" className="notice-field__label">
             Permanent Account Number (PAN) <span className="notice-field__required">*</span>
           </label>
-          <input
+          <CaretInput
             id="notice-pan"
             type="text"
             maxLength={10}
@@ -155,7 +155,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
             </div>
           ) : (
             <div className="notice-field__other-input-wrapper">
-              <input
+              <CaretInput
                 id="notice-ay"
                 type="text"
                 className={`notice-field__input ${
@@ -292,7 +292,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
             Notice Date <span className="notice-field__required">*</span>
           </label>
           <div className="notice-field__date-wrapper">
-            <input
+            <CaretInput
               id="notice-date"
               type="date"
               className={`notice-field__input notice-field__input--date ${
@@ -315,7 +315,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
           <label htmlFor="notice-ref" className="notice-field__label">
             Notice Reference Number / DIN <span className="notice-field__required">*</span>
           </label>
-          <input
+          <CaretInput
             id="notice-ref"
             type="text"
             className={`notice-field__input ${
@@ -341,7 +341,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
             Response Due Date <span className="notice-field__required">*</span>
           </label>
           <div className="notice-field__date-wrapper">
-            <input
+            <CaretInput
               id="notice-due-date"
               type="date"
               className={`notice-field__input notice-field__input--date ${

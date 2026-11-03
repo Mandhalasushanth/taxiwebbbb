@@ -14,6 +14,7 @@ export interface ScrollToTopProps {
  */
 export const resetScrollToTop = (allowHashScroll = true): void => {
   if (typeof window === 'undefined') return
+  if ((window as any).__GST_FOCUS_ACTIVE__) return
 
   if (allowHashScroll && window.location.hash) {
     try {
@@ -23,6 +24,8 @@ export const resetScrollToTop = (allowHashScroll = true): void => {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' })
         return
       }
+      // Hash is present but element is mounting: do not force top: 0
+      return
     } catch {
       // Fallback to top if hash is invalid
     }
@@ -85,18 +88,24 @@ export const ScrollToTop: React.FC<ScrollToTopProps> = ({
   }, [])
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).__GST_FOCUS_ACTIVE__) {
+      return
+    }
+
     // Immediate scroll reset
     resetScrollToTop(allowHashScroll)
 
     // Run again on the next animation frame to catch late-mounting children / layout reflow
     const rafId = typeof requestAnimationFrame === 'function'
       ? requestAnimationFrame(() => {
+          if (typeof window !== 'undefined' && (window as any).__GST_FOCUS_ACTIVE__) return
           resetScrollToTop(allowHashScroll)
         })
       : null
 
     // Also run a short timeout check for async lazy chunks / Suspense resolution
     const timeoutId = setTimeout(() => {
+      if (typeof window !== 'undefined' && (window as any).__GST_FOCUS_ACTIVE__) return
       resetScrollToTop(allowHashScroll)
     }, 60)
 

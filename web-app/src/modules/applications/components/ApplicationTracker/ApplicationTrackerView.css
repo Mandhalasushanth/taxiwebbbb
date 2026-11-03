@@ -253,6 +253,48 @@
   color: #c2410c;
 }
 
+.app-tracker-web-tab__badge--paid {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.app-tracker-web-tab__badge--awaiting {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.app-tracker-pill-badge--awaiting {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.app-tracker-awaiting-notice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f0f9ff;
+  border: 1px solid #e0f2fe;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-top: 16px;
+}
+
+.app-tracker-awaiting-notice-icon {
+  width: 22px;
+  height: 22px;
+  color: #0284c7;
+  flex-shrink: 0;
+}
+
+.app-tracker-awaiting-notice-text {
+  font-size: 0.875rem;
+  color: #0369a1;
+  font-weight: 500;
+  line-height: 1.45;
+  margin: 0;
+}
+
 .app-tracker-web-tab__dot {
   width: 8px;
   height: 8px;

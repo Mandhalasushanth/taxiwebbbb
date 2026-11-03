@@ -4,6 +4,7 @@ import './IncompleteApplicationBanner.css'
 
 export interface IncompleteApplicationBannerProps {
   draft: ApplicationDraft
+  colorScheme?: 'orange' | 'navy' | 'application' | 'filing'
   onResume?: () => void
   onDiscard?: (serviceId: string) => void
 }
@@ -31,6 +32,7 @@ const CloseIcon = () => (
 
 export const IncompleteApplicationBanner = ({
   draft,
+  colorScheme,
   onResume,
   onDiscard,
 }: IncompleteApplicationBannerProps) => {
@@ -42,7 +44,18 @@ export const IncompleteApplicationBanner = ({
     draft.serviceTitle.toLowerCase().includes('filing') ||
     draft.serviceId.toLowerCase().includes('return')
 
-  const variantClass = isFiling ? 'incomplete-banner--filing' : 'incomplete-banner--application'
+  const effectiveScheme = colorScheme
+    ? colorScheme === 'navy' || colorScheme === 'filing'
+      ? 'navy'
+      : 'orange'
+    : isFiling
+      ? 'navy'
+      : 'orange'
+
+  const variantClass =
+    effectiveScheme === 'navy'
+      ? 'incomplete-banner--filing incomplete-banner--navy'
+      : 'incomplete-banner--application incomplete-banner--orange'
   const badgeText = (draft as { badgeLabel?: string }).badgeLabel || (isFiling ? 'INCOMPLETE FILING' : 'INCOMPLETE APPLICATION')
   const ctaText = (draft as { ctaLabel?: string }).ctaLabel || (isFiling ? 'Resume Filing' : 'Resume Application')
   const defaultSubtitle = isFiling

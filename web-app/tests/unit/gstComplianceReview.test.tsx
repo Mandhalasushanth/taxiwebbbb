@@ -288,5 +288,72 @@ describe('GST Compliance Review Page', () => {
       // Notice Details section appears
       expect(screen.getByText('Notice Details & Documents')).toBeDefined()
     })
+
+    it('renders notice issue date and reply due date side-by-side in one row with date pickers inside field', () => {
+      const { container } = render(
+        <MemoryRouter>
+          <GSTCompliance />
+        </MemoryRouter>
+      )
+
+      const reqTypeSelect = screen.getByLabelText(/request type/i)
+      fireEvent.change(reqTypeSelect, { target: { value: 'Notice Response' } })
+
+      // Both date inputs exist inside the form
+      const issueDateInput = container.querySelector('#gst-notice-issue-date') as HTMLInputElement
+      const dueDateInput = container.querySelector('#gst-notice-due-date') as HTMLInputElement
+      expect(issueDateInput).not.toBeNull()
+      expect(dueDateInput).not.toBeNull()
+
+      // Both are placed inside the same .gst-notice-grid-row parent (one row side by side)
+      const gridRow = issueDateInput.closest('.gst-notice-grid-row')
+      expect(gridRow).not.toBeNull()
+      expect(gridRow?.contains(dueDateInput)).toBe(true)
+
+      // Both date inputs are housed inside .gst-notice-date-wrapper with their respective calendar buttons
+      const issueWrap = issueDateInput.closest('.gst-notice-date-wrapper')
+      const dueWrap = dueDateInput.closest('.gst-notice-date-wrapper')
+      expect(issueWrap).not.toBeNull()
+      expect(dueWrap).not.toBeNull()
+
+      expect(issueWrap?.querySelector('.gst-notice-date-btn')).not.toBeNull()
+      expect(dueWrap?.querySelector('.gst-notice-date-btn')).not.toBeNull()
+
+      // Both date inputs are housed inside .gst-notice-date-picker-anchor on the right side of .gst-notice-date-wrapper
+      expect(issueDateInput.closest('.gst-notice-date-picker-anchor')).not.toBeNull()
+      expect(dueDateInput.closest('.gst-notice-date-picker-anchor')).not.toBeNull()
+
+      // Both fields display formatted date text on the left
+      expect(issueWrap?.querySelector('.gst-notice-date-display')).not.toBeNull()
+      expect(dueWrap?.querySelector('.gst-notice-date-display')).not.toBeNull()
+    })
+
+    it('marks a green circle tick when a valid GSTIN is entered and removes it when invalid', () => {
+      render(
+        <MemoryRouter>
+          <GSTCompliance />
+        </MemoryRouter>
+      )
+
+      const gstinInput = screen.getByLabelText(/GSTIN/i) as HTMLInputElement
+
+      // Clear any prefilled value
+      fireEvent.change(gstinInput, { target: { value: '' } })
+      expect(screen.queryByTestId('gstin-valid-tick')).toBeNull()
+
+      // Partially complete GSTIN (14 chars) -> no tick
+      fireEvent.change(gstinInput, { target: { value: '29AAAAA0000A1Z' } })
+      expect(screen.queryByTestId('gstin-valid-tick')).toBeNull()
+
+      // Fully valid 15-char GSTIN -> green circle tick appears
+      fireEvent.change(gstinInput, { target: { value: '29AAAAA0000A1Z5' } })
+      const tick = screen.getByTestId('gstin-valid-tick')
+      expect(tick).not.toBeNull()
+      expect(tick.querySelector('svg circle')?.getAttribute('fill')).toBe('#10B981')
+
+      // Backspace 1 character -> tick disappears immediately
+      fireEvent.change(gstinInput, { target: { value: '29AAAAA0000A1Z' } })
+      expect(screen.queryByTestId('gstin-valid-tick')).toBeNull()
+    })
   })
 })

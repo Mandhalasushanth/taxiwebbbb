@@ -99,49 +99,136 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
-/* 2-Column Grid Row for Dates */
-.gst-notice-grid-row {
+/* 2-Column Grid Row for Dates (Notice Issue Date & Reply Due Date in one row side by side) */
+.gst-notice-grid-row,
+.gst-notice-date-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
+  width: 100%;
 }
 
-.gst-notice-date-wrapper {
+@media (max-width: 640px) {
+  .gst-notice-grid-row,
+  .gst-notice-date-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Date input wrapper & calendar icon inside the box */
+.gst-notice-date-wrapper,
+.gst-notice-date-input-wrap {
   position: relative;
   width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--grey-300, #cbd5e1);
+  border-radius: 10px;
+  background-color: var(--surface);
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
   cursor: pointer;
+  padding: 0 0 0 1rem;
 }
 
-.gst-notice-date-icon {
-  position: absolute;
-  right: 0.85rem;
-  left: auto;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: auto;
-  cursor: pointer;
+.gst-notice-date-wrapper:focus-within,
+.gst-notice-date-input-wrap:focus-within {
+  border-color: var(--palette-blue-500, #3b82f6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.gst-notice-date-wrapper.has-error,
+.gst-notice-date-input-wrap.has-error {
+  border-color: var(--palette-red-500, #ef4444);
+  background-color: #fffaf0;
+}
+
+/* Formatted date display text on the left */
+.gst-notice-date-display {
+  flex: 1;
+  font-size: 0.925rem;
+  color: var(--palette-slate-900, #0f172a);
+  font-family: inherit;
+  user-select: none;
+  pointer-events: none;
+  line-height: 1.2;
+}
+
+.gst-notice-date-display--empty {
+  color: var(--muted-text, #94a3b8);
+}
+
+/* Calendar picker container strictly anchored on the right */
+.gst-notice-date-picker-anchor {
+  position: relative;
+  width: 44px;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
+  flex-shrink: 0;
 }
 
-.gst-notice-date-input {
-  padding-left: 1rem;
-  padding-right: 2.5rem;
-  cursor: pointer;
-}
-
-.gst-notice-date-input::-webkit-calendar-picker-indicator {
+/* Native date input positioned strictly inside the 44px right anchor */
+.gst-notice-date-picker-anchor .gst-notice-date-input {
   position: absolute;
-  right: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
   opacity: 0;
-  width: 24px;
-  height: 24px;
   cursor: pointer;
-  z-index: 3;
+  margin: 0;
+  padding: 0;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+.gst-notice-date-picker-anchor .gst-notice-date-input:focus {
+  border: none;
+  box-shadow: none;
+}
+
+/* Native calendar picker indicator filling the right anchor */
+.gst-notice-date-picker-anchor .gst-notice-date-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Calendar icon button positioned inside the right anchor */
+.gst-notice-date-picker-anchor .gst-notice-date-btn,
+.gst-notice-date-icon {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary-text, #64748b);
+  cursor: pointer;
+  pointer-events: none;
+  flex-shrink: 0;
+  z-index: 1;
+  transition: color 0.15s ease;
+}
+
+.gst-notice-date-wrapper:hover .gst-notice-date-btn,
+.gst-notice-date-wrapper:hover .gst-notice-date-icon {
+  color: var(--palette-orange-600, #ea580c);
 }
 
 /* Upload Notice Copy Card */

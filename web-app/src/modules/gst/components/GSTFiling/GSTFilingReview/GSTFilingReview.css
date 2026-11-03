@@ -44,7 +44,57 @@
   line-height: 1.5;
 }
 
-/* Main Content: 4 Cards in Stack */
+/* Ready for Review Banner matching Image 1 & Image 2 */
+.gst-review-banner {
+  background-color: #0b2238;
+  border-radius: 16px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 14px rgba(11, 34, 56, 0.12);
+}
+
+.gst-review-banner__icon-box {
+  width: 38px;
+  height: 38px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gst-review-banner__check {
+  width: 20px;
+  height: 20px;
+}
+
+.gst-review-banner__content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.gst-review-banner__title {
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.gst-review-banner__subtitle {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Main Content: Cards in Stack */
 .gst-review-main-content {
   width: 100%;
   display: flex;
@@ -59,5 +109,20 @@
 
   .gst-review-title {
     font-size: 22px;
+  }
+
+  .gst-review-banner {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .gst-review-banner__icon-box {
+    width: 32px;
+    height: 32px;
+  }
+
+  .gst-review-banner__check {
+    width: 16px;
+    height: 16px;
   }
 }

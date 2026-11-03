@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { CaretInput } from '@shared/components'
 import type { DirectorDetails } from '../../types/incorporation.types'
 import { filterDigits, filterMobile, filterPan } from '../../utils/validation'
 import './DirectorCard.css'
@@ -7,6 +8,7 @@ interface FormFieldProps {
   label: string
   value: string
   onChange: (val: string) => void
+  onBlur?: () => void
   required?: boolean
   type?: string
   placeholder?: string
@@ -18,6 +20,7 @@ const DirectorFormField: React.FC<FormFieldProps> = ({
   label,
   value,
   onChange,
+  onBlur,
   required,
   type = 'text',
   placeholder = '',
@@ -28,12 +31,13 @@ const DirectorFormField: React.FC<FormFieldProps> = ({
     <label className="director-label">
       {label}{required && <span className="director-required"> *</span>}
     </label>
-    <input
+    <CaretInput
       {...inputProps}
       type={type}
       className={`director-input ${error ? 'director-input--error' : ''}`}
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      onBlur={onBlur}
       placeholder={placeholder}
     />
     {error && <span className="director-field-error">{error}</span>}
@@ -44,6 +48,7 @@ export interface DirectorCardProps {
   director: DirectorDetails
   index: number
   onChange: (id: number, field: keyof DirectorDetails, value: DirectorDetails[keyof DirectorDetails]) => void
+  onBlur?: (id: number, field: keyof DirectorDetails) => void
   onSave?: (id: number) => void
   onCancel?: (id: number) => void
   errors?: Record<string, string>
@@ -53,6 +58,7 @@ export const DirectorCard: React.FC<DirectorCardProps> = ({
   director,
   index,
   onChange,
+  onBlur,
   onSave,
   onCancel,
   errors = {},
@@ -80,6 +86,10 @@ export const DirectorCard: React.FC<DirectorCardProps> = ({
       return
     }
     onChange(director.id, field, val)
+  }
+
+  const handleFieldBlur = (field: keyof DirectorDetails) => {
+    onBlur?.(director.id, field)
   }
 
   const handleSave = () => {
@@ -161,18 +171,83 @@ export const DirectorCard: React.FC<DirectorCardProps> = ({
       {!isCollapsed && (
         <div className="director-card__body">
           <div className="director-grid-2">
-            <DirectorFormField label="Full Name (as in PAN)" value={director.fullName} onChange={(val) => handleFieldChange('fullName', val)} placeholder="Full Legal Name" required error={errors.fullName} inputProps={{ maxLength: 100, autoComplete: 'name' }} />
-            <DirectorFormField label="PAN Number" value={director.pan} onChange={(val) => handleFieldChange('pan', val)} placeholder="10-character PAN" required error={errors.pan} inputProps={{ maxLength: 10 }} />
+            <DirectorFormField
+              label="Full Name (as in PAN)"
+              value={director.fullName}
+              onChange={(val) => handleFieldChange('fullName', val)}
+              onBlur={() => handleFieldBlur('fullName')}
+              placeholder="Full Legal Name"
+              required
+              error={errors.fullName}
+              inputProps={{ maxLength: 100, autoComplete: 'name' }}
+            />
+            <DirectorFormField
+              label="PAN Number"
+              value={director.pan}
+              onChange={(val) => handleFieldChange('pan', val)}
+              onBlur={() => handleFieldBlur('pan')}
+              placeholder="10-character PAN"
+              required
+              error={errors.pan}
+              inputProps={{ maxLength: 10 }}
+            />
           </div>
           <div className="director-grid-2">
-            <DirectorFormField label="Date of Birth" type="date" value={director.dob} onChange={(val) => handleFieldChange('dob', val)} placeholder="DD-MM-YYYY" required error={errors.dob} inputProps={{ max: new Date().toISOString().slice(0, 10) }} />
-            <DirectorFormField label="Designation" value={director.designation} onChange={(val) => handleFieldChange('designation', val)} placeholder="e.g. Director" required error={errors.designation} inputProps={{ maxLength: 60 }} />
+            <DirectorFormField
+              label="Date of Birth"
+              type="date"
+              value={director.dob}
+              onChange={(val) => handleFieldChange('dob', val)}
+              onBlur={() => handleFieldBlur('dob')}
+              placeholder="DD-MM-YYYY"
+              required
+              error={errors.dob}
+              inputProps={{ max: new Date().toISOString().slice(0, 10) }}
+            />
+            <DirectorFormField
+              label="Designation"
+              value={director.designation}
+              onChange={(val) => handleFieldChange('designation', val)}
+              onBlur={() => handleFieldBlur('designation')}
+              placeholder="e.g. Director"
+              required
+              error={errors.designation}
+              inputProps={{ maxLength: 60 }}
+            />
           </div>
           <div className="director-grid-2">
-            <DirectorFormField label="Email Address" type="email" value={director.email} onChange={(val) => handleFieldChange('email', val)} placeholder="Enter Email Address" required error={errors.email} inputProps={{ maxLength: 254, autoComplete: 'email' }} />
-            <DirectorFormField label="Mobile Number" type="tel" value={director.mobile} onChange={(val) => handleFieldChange('mobile', val)} placeholder="Enter 10-digit Mobile" required error={errors.mobile} inputProps={{ inputMode: 'numeric', autoComplete: 'tel' }} />
+            <DirectorFormField
+              label="Email Address"
+              type="email"
+              value={director.email}
+              onChange={(val) => handleFieldChange('email', val)}
+              onBlur={() => handleFieldBlur('email')}
+              placeholder="Enter Email Address"
+              required
+              error={errors.email}
+              inputProps={{ maxLength: 254, autoComplete: 'email' }}
+            />
+            <DirectorFormField
+              label="Mobile Number"
+              type="tel"
+              value={director.mobile}
+              onChange={(val) => handleFieldChange('mobile', val)}
+              onBlur={() => handleFieldBlur('mobile')}
+              placeholder="Enter 10-digit Mobile"
+              required
+              error={errors.mobile}
+              inputProps={{ inputMode: 'numeric', autoComplete: 'tel' }}
+            />
           </div>
-          <DirectorFormField label="DIN (if already allotted)" value={director.din} onChange={(val) => handleFieldChange('din', val)} placeholder="8-digit DIN (Optional)" error={errors.din} inputProps={{ inputMode: 'numeric', maxLength: 8 }} />
+          <DirectorFormField
+            label="DIN (if already allotted)"
+            value={director.din}
+            onChange={(val) => handleFieldChange('din', val)}
+            onBlur={() => handleFieldBlur('din')}
+            placeholder="8-digit DIN (Optional)"
+            error={errors.din}
+            inputProps={{ inputMode: 'numeric', maxLength: 8 }}
+          />
 
           {/* Card Actions */}
           <div className="director-card__actions">

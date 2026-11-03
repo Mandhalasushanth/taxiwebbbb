@@ -1,4 +1,5 @@
 import React from 'react'
+import { CaretInput } from '@shared/components'
 import type { ProjectFinanceData } from '@modules/loans/types/projectFinance.types'
 import { BUSINESS_REGISTRATION_TYPE_OPTIONS } from './securityComplianceConstants'
 
@@ -80,7 +81,7 @@ export const RegulatoryComplianceSection: React.FC<RegulatoryComplianceSectionPr
             <label htmlFor="complianceRegistrationNumber" className="pf-field-label">
               Registration Number <span className="pf-required-star">*</span>
             </label>
-            <input
+            <CaretInput
               id="complianceRegistrationNumber"
               type="text"
               className={`pf-custom-input ${errors.complianceRegistrationNumber ? 'pf-custom-input--error' : ''}`}
@@ -100,7 +101,7 @@ export const RegulatoryComplianceSection: React.FC<RegulatoryComplianceSectionPr
             </label>
             <div className="pf-radio-group">
               <label className="pf-radio-label">
-                <input
+                <CaretInput
                   type="radio"
                   name="gstApplicable"
                   className="pf-radio-input"
@@ -113,7 +114,7 @@ export const RegulatoryComplianceSection: React.FC<RegulatoryComplianceSectionPr
                 <span>Yes</span>
               </label>
               <label className="pf-radio-label">
-                <input
+                <CaretInput
                   type="radio"
                   name="gstApplicable"
                   className="pf-radio-input"
@@ -134,7 +135,7 @@ export const RegulatoryComplianceSection: React.FC<RegulatoryComplianceSectionPr
               <label htmlFor="complianceGstNumber" className="pf-field-label">
                 GSTIN <span className="pf-required-star">*</span>
               </label>
-              <input
+              <CaretInput
                 id="complianceGstNumber"
                 type="text"
                 className={`pf-custom-input ${errors.complianceGstNumber ? 'pf-custom-input--error' : ''}`}
@@ -153,7 +154,7 @@ export const RegulatoryComplianceSection: React.FC<RegulatoryComplianceSectionPr
             <label htmlFor="complianceIncomeTaxPan" className="pf-field-label">
               PAN Number <span className="pf-required-star">*</span>
             </label>
-            <input
+            <CaretInput
               id="complianceIncomeTaxPan"
               type="text"
               className={`pf-custom-input ${errors.complianceIncomeTaxPan ? 'pf-custom-input--error' : ''}`}
@@ -173,7 +174,7 @@ export const RegulatoryComplianceSection: React.FC<RegulatoryComplianceSectionPr
             </label>
             <div className="pf-radio-group">
               <label className="pf-radio-label">
-                <input
+                <CaretInput
                   type="radio"
                   name="approvalEnvironmentalClearance"
                   className="pf-radio-input"
@@ -186,7 +187,7 @@ export const RegulatoryComplianceSection: React.FC<RegulatoryComplianceSectionPr
                 <span>Yes</span>
               </label>
               <label className="pf-radio-label">
-                <input
+                <CaretInput
                   type="radio"
                   name="approvalEnvironmentalClearance"
                   className="pf-radio-input"
@@ -206,7 +207,7 @@ export const RegulatoryComplianceSection: React.FC<RegulatoryComplianceSectionPr
             <label htmlFor="typeOfInsurance" className="pf-field-label">
               Pollution Control Board Category
             </label>
-            <input
+            <CaretInput
               id="typeOfInsurance"
               type="text"
               className="pf-custom-input"

@@ -180,6 +180,38 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
+.gst-amend-proof-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.875rem;
+}
+
+.gst-amend-proof-card-header .gst-amend-proof-card-title {
+  margin: 0;
+}
+
+.gst-review-view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #ffffff;
+  border: 1.5px solid #93c5fd;
+  color: #2563eb;
+  border-radius: 8px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.gst-review-view-btn:hover {
+  background-color: #eff6ff;
+  border-color: #3b82f6;
+}
+
 .gst-amend-proof-card-title {
   font-size: 0.95rem;
   font-weight: 700;

@@ -11,6 +11,95 @@ export interface PaymentQuickLinksModalProps {
   totalPaid: number
 }
 
+const PaymentHistoryContent: React.FC<{ paidApps: PaymentItem[]; totalPaid: number }> = ({
+  paidApps,
+  totalPaid,
+}) => {
+  if (paidApps.length === 0) {
+    return (
+      <div className="payments-modal-dialog__empty-msg">
+        <p>
+          You have no completed payments yet. Once you make a payment, your full transaction history will appear here.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div className="payments-modal-dialog__summary-banner">
+        <span>
+          You have <strong>{paidApps.length}</strong> completed transaction{paidApps.length > 1 ? 's' : ''} totaling{' '}
+          <strong>₹{totalPaid.toLocaleString('en-IN')}</strong>.
+        </span>
+      </div>
+      <ul className="payments-modal-dialog__list">
+        {paidApps.map((app) => (
+          <li key={app.id} className="payments-modal-dialog__item">
+            <div>
+              <p className="payments-modal-dialog__item-title">{app.title}</p>
+              <p className="payments-modal-dialog__item-meta">
+                App #{app.code} • {app.paidAt || app.date}
+              </p>
+            </div>
+            <div className="payments-modal-dialog__item-right">
+              <span className="payments-modal-dialog__item-amount">
+                ₹{Number(app.amount).toLocaleString('en-IN')}
+              </span>
+              <span className="payments-modal-dialog__item-badge">Paid ✓</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+const PaymentReceiptsContent: React.FC<{ paidApps: PaymentItem[]; onClose: () => void }> = ({
+  paidApps,
+  onClose,
+}) => {
+  if (paidApps.length === 0) {
+    return (
+      <div className="payments-modal-dialog__empty-msg">
+        <p>
+          No invoices or payment receipts are available yet. Invoices are generated automatically upon successful payment.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div className="payments-modal-dialog__summary-banner">
+        <span>
+          <strong>{paidApps.length}</strong> tax invoice receipt{paidApps.length > 1 ? 's' : ''} available for download.
+        </span>
+      </div>
+      <ul className="payments-modal-dialog__list">
+        {paidApps.map((app) => (
+          <li key={app.id} className="payments-modal-dialog__item">
+            <div>
+              <p className="payments-modal-dialog__item-title">{app.title}</p>
+              <p className="payments-modal-dialog__item-meta">
+                Invoice for #{app.code} • ₹{Number(app.amount).toLocaleString('en-IN')}
+              </p>
+            </div>
+            <Link
+              to={routePaths.paymentReceipt(app.code || app.id)}
+              className="payments-modal-dialog__action-btn"
+              onClick={onClose}
+            >
+              <span>View Invoice</span>
+              <ExternalLink size={14} />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 export const PaymentQuickLinksModal: React.FC<PaymentQuickLinksModalProps> = ({
   activeModal,
   onClose,
@@ -18,6 +107,8 @@ export const PaymentQuickLinksModal: React.FC<PaymentQuickLinksModalProps> = ({
   totalPaid,
 }) => {
   if (!activeModal) return null
+
+  const isHistory = activeModal === 'history'
 
   return (
     <div className="payments-modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
@@ -29,14 +120,14 @@ export const PaymentQuickLinksModal: React.FC<PaymentQuickLinksModalProps> = ({
         <div className="payments-modal-dialog__header">
           <div className="payments-modal-dialog__title-row">
             <div className="payments-modal-dialog__icon-circle">
-              {activeModal === 'history' ? (
+              {isHistory ? (
                 <Clock size={20} className="text-sky-600" />
               ) : (
                 <FileText size={20} className="text-sky-600" />
               )}
             </div>
             <h3 id="payments-modal-title" className="payments-modal-dialog__title">
-              {activeModal === 'history' ? 'Payment History' : 'Invoices & Receipts'}
+              {isHistory ? 'Payment History' : 'Invoices & Receipts'}
             </h3>
           </div>
           <button
@@ -50,75 +141,10 @@ export const PaymentQuickLinksModal: React.FC<PaymentQuickLinksModalProps> = ({
         </div>
 
         <div className="payments-modal-dialog__body">
-          {activeModal === 'history' ? (
-            paidApps.length === 0 ? (
-              <div className="payments-modal-dialog__empty-msg">
-                <p>
-                  You have no completed payments yet. Once you make a payment, your full transaction history will appear here.
-                </p>
-              </div>
-            ) : (
-              <div>
-                <div className="payments-modal-dialog__summary-banner">
-                  <span>
-                    You have <strong>{paidApps.length}</strong> completed transaction{paidApps.length > 1 ? 's' : ''} totaling{' '}
-                    <strong>₹{totalPaid.toLocaleString('en-IN')}</strong>.
-                  </span>
-                </div>
-                <ul className="payments-modal-dialog__list">
-                  {paidApps.map((app) => (
-                    <li key={app.id} className="payments-modal-dialog__item">
-                      <div>
-                        <p className="payments-modal-dialog__item-title">{app.title}</p>
-                        <p className="payments-modal-dialog__item-meta">
-                          App #{app.code} • {app.paidAt || app.date}
-                        </p>
-                      </div>
-                      <div className="payments-modal-dialog__item-right">
-                        <span className="payments-modal-dialog__item-amount">
-                          ₹{Number(app.amount).toLocaleString('en-IN')}
-                        </span>
-                        <span className="payments-modal-dialog__item-badge">Paid ✓</span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )
-          ) : paidApps.length === 0 ? (
-            <div className="payments-modal-dialog__empty-msg">
-              <p>
-                No invoices or payment receipts are available yet. Invoices are generated automatically upon successful payment.
-              </p>
-            </div>
+          {isHistory ? (
+            <PaymentHistoryContent paidApps={paidApps} totalPaid={totalPaid} />
           ) : (
-            <div>
-              <div className="payments-modal-dialog__summary-banner">
-                <span>
-                  <strong>{paidApps.length}</strong> tax invoice receipt{paidApps.length > 1 ? 's' : ''} available for download.
-                </span>
-              </div>
-              <ul className="payments-modal-dialog__list">
-                {paidApps.map((app) => (
-                  <li key={app.id} className="payments-modal-dialog__item">
-                    <div>
-                      <p className="payments-modal-dialog__item-title">{app.title}</p>
-                      <p className="payments-modal-dialog__item-meta">
-                        Invoice for #{app.code} • ₹{Number(app.amount).toLocaleString('en-IN')}
-                      </p>
-                    </div>
-                    <Link
-                      to={routePaths.paymentReceipt(app.code || app.id)}
-                      className="payments-modal-dialog__action-btn"
-                      onClick={onClose}
-                    >
-                      <span>View Invoice</span>
-                      <ExternalLink size={14} />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <PaymentReceiptsContent paidApps={paidApps} onClose={onClose} />
           )}
         </div>
 
@@ -135,4 +161,3 @@ export const PaymentQuickLinksModal: React.FC<PaymentQuickLinksModalProps> = ({
     </div>
   )
 }
-

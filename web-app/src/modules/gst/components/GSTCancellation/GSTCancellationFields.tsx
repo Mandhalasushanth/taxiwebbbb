@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 import { FileText, Calculator } from 'lucide-react'
 import { GSTFormSection } from '@modules/gst/shared/GSTFormSection'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
+import { CaretInput } from '@shared/components'
 
 interface GSTCancellationFieldsProps {
   gstin: string
@@ -18,6 +19,7 @@ interface GSTCancellationFieldsProps {
   setClosingStockDetails: (val: string) => void
   errors: Record<string, string>
   clearError: (field: string) => void
+  onBlur?: (field: string) => void
 }
 
 const REASON_OPTIONS = [
@@ -32,7 +34,7 @@ const REASON_OPTIONS = [
 export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
   gstin, setGstin, reason, setReason, cancellationDate, setCancellationDate,
   pendingLiabilities, setPendingLiabilities, lastGstr3bFiled, setLastGstr3bFiled,
-  closingStockDetails, setClosingStockDetails, errors, clearError,
+  closingStockDetails, setClosingStockDetails, errors, clearError, onBlur,
 }) => {
   const dateInputRef = useRef<HTMLInputElement>(null)
 
@@ -61,9 +63,10 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
           <label htmlFor="gst-canc-gstin-input" className="gst-canc-label">
             GSTIN (15-Character) <span className="gst-canc-star">*</span>
           </label>
-          <input
+          <CaretInput
             id="gst-canc-gstin-input" type="text" maxLength={15} placeholder="Enter your GSTIN"
             value={gstin} onChange={(e) => { setGstin(gstInput.gstin(e.target.value)); clearError('gstin') }}
+            onBlur={() => onBlur?.('gstin')}
             className={`gst-canc-input ${errors.gstin ? 'has-error' : ''}`}
           />
           {errors.gstin && <span className="gst-canc-error-msg">{errors.gstin}</span>}
@@ -78,6 +81,7 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
               <select
                 id="gst-canc-reason-select" value={reason}
                 onChange={(e) => { setReason(e.target.value); clearError('reason') }}
+                onBlur={() => onBlur?.('reason')}
                 className={`gst-canc-select ${errors.reason ? 'has-error' : ''}`}
               >
                 <option value="">Select Reason for Cancellation</option>
@@ -97,9 +101,10 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
               Date Cancellation Is Sought <span className="gst-canc-star">*</span>
             </label>
             <div className="gst-canc-date-wrapper" onClick={handleCalendarClick}>
-              <input
+              <CaretInput
                 id="gst-canc-date-input" ref={dateInputRef} type="date" value={cancellationDate}
                 onChange={(e) => { setCancellationDate(e.target.value); clearError('cancellationDate') }}
+                onBlur={() => onBlur?.('cancellationDate')}
                 className={`gst-canc-date-input ${errors.cancellationDate ? 'has-error' : ''}`}
               />
               <button type="button" className="gst-canc-calendar-btn" onClick={(e) => { e.stopPropagation(); handleCalendarClick() }} aria-label="Open calendar">
@@ -123,7 +128,7 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
         <div className="gst-canc-form-row">
           <div className="gst-canc-field-group">
             <label htmlFor="gst-canc-dues-input" className="gst-canc-label">Pending Dues / Liabilities (Optional)</label>
-            <input
+            <CaretInput
               id="gst-canc-dues-input"
               type="text"
               placeholder="Enter amount in ₹ (e.g. 10,000)"
@@ -137,13 +142,14 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
             <label htmlFor="gst-canc-gstr3b-input" className="gst-canc-label">
               Last GSTR-3B Filed ARN / Period <span className="gst-canc-star">*</span>
             </label>
-            <input
+            <CaretInput
               id="gst-canc-gstr3b-input"
               type="text"
               maxLength={20}
               placeholder="e.g. AA270124000123Z or March 2024"
               value={lastGstr3bFiled}
               onChange={(e) => { setLastGstr3bFiled(gstInput.reference(e.target.value)); clearError('lastGstr3bFiled') }}
+              onBlur={() => onBlur?.('lastGstr3bFiled')}
               className={`gst-canc-input ${errors.lastGstr3bFiled ? 'has-error' : ''}`}
             />
             {errors.lastGstr3bFiled && <span className="gst-canc-error-msg">{errors.lastGstr3bFiled}</span>}
@@ -158,6 +164,7 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
             <textarea
               id="gst-canc-stock-textarea" rows={3} maxLength={300} placeholder="Describe closing inventory value and ITC reversal or enter 'Nil'"
               value={closingStockDetails} onChange={(e) => { setClosingStockDetails(gstInput.text(e.target.value, 500)); clearError('closingStockDetails') }}
+              onBlur={() => onBlur?.('closingStockDetails')}
               className={`gst-canc-textarea ${errors.closingStockDetails ? 'has-error' : ''}`}
             />
             <span className="gst-canc-char-count">{closingStockDetails.length}/300</span>

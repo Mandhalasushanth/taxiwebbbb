@@ -1,4 +1,3 @@
-import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
 import type { FC } from 'react'
 import type { GSTStepDocumentsProps, DocumentCategory } from '@modules/gst/types/gstDocuments.types'
 import { useGstDocuments } from '@modules/gst/hooks/useGstDocuments'
@@ -33,7 +32,6 @@ export const GSTStepDocuments: FC<GSTStepDocumentsProps> = ({
     progressPercent,
     replacingDocId,
     previewDoc,
-    validationError,
     uploadErrors,
     fileInputRef,
     cameraInputRef,
@@ -115,8 +113,6 @@ export const GSTStepDocuments: FC<GSTStepDocumentsProps> = ({
           Your documents are encrypted and safely stored in compliance with GST data protection standards.
         </p>
       </aside>
-
-      <GSTStepErrorBanner message={validationError} />
 
       {/* Step Navigation Bar */}
       <StepActionBar

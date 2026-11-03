@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { CaretInput } from '@shared/components'
 import { gstFieldRules } from '@modules/gst/validation/gstFieldRules'
 import { SaveDraftButton } from '@shared/saveDraft'
 import './GSTAmendmentSelection.css'
@@ -112,7 +113,7 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
           </div>
 
           <div className="gst-amend-input-wrapper">
-            <input
+            <CaretInput
               id="gstin-search-input"
               type="text"
               value={gstin}

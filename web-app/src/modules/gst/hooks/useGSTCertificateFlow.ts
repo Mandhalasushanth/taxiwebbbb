@@ -6,6 +6,7 @@ import { useAppStore } from '@store/index'
 import { gstService } from '@modules/gst/services/gstService'
 import { gstProfileService } from '@modules/gst/services/gstProfileService'
 import { gstFieldRules, collectGstErrors, GST_STEP_ERROR } from '@modules/gst/validation/gstFieldRules'
+import { useGSTReviewEditNavigation } from '@modules/gst/shared/useGSTSectionFocus'
 import type { GstCertificateRecord } from '@modules/gst/types/gst.types'
 
 export interface CertificateFields {
@@ -36,6 +37,22 @@ export const useGSTCertificateFlow = () => {
     })
   }
 
+  const validateField = (field: keyof CertificateFields) => {
+    if (field === 'gstin') return gstFieldRules.gstin(fields.gstin)
+    if (field === 'requestType') return fields.requestType ? undefined : 'Please select a request type'
+    return undefined
+  }
+
+  const handleBlur = (field: keyof CertificateFields) => {
+    const err = validateField(field)
+    setErrors((prev) => {
+      const next = { ...prev }
+      if (err) next[field] = err
+      else delete next[field]
+      return next
+    })
+  }
+
   const contactText = user?.mobile
     ? `+91 ${user.mobile}${user.email ? ` · ${user.email}` : ''}`
     : 'Registered Signatory Authorization'
@@ -47,7 +64,13 @@ export const useGSTCertificateFlow = () => {
       requestType: fields.requestType ? undefined : 'Please select a request type',
     })
     setErrors(newErrors)
-    if (Object.keys(newErrors).length > 0) return
+    if (Object.keys(newErrors).length > 0) {
+      requestAnimationFrame(() => {
+        const firstErrorEl = document.querySelector(".gst-cert-field-error, .has-error")
+        firstErrorEl?.scrollIntoView({ behavior: "smooth", block: "center" })
+      })
+      return
+    }
 
     setIsSubmitting(true)
     try {
@@ -66,17 +89,22 @@ export const useGSTCertificateFlow = () => {
     }
   }
 
-  const handleBackToForm = () => {
-    setSubmittedRecord(null)
-    setFields(initialFields)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  const { editSection, startSectionEdit } = useGSTReviewEditNavigation()
+
+  const handleBackToForm = (section: string = 'gst-cert-gstin') => {
+    startSectionEdit(section, () => {
+      setSubmittedRecord(null)
+      setFields(initialFields)
+    })
   }
 
   return {
     user,
     fields,
     setField,
+    handleBlur,
     errors,
+    editSection,
     stepError: Object.keys(errors).length > 0 ? GST_STEP_ERROR : null,
     isSubmitting,
     submittedRecord,

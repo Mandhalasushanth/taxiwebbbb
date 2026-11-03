@@ -5,11 +5,13 @@ import './GSTFilingTypeSelector.css'
 interface GSTFilingTypeSelectorProps {
   value: 'regular' | 'nil' | ''
   onChange: (type: 'regular' | 'nil') => void
+  error?: string
 }
 
 export const GSTFilingTypeSelector: React.FC<GSTFilingTypeSelectorProps> = ({
   value,
   onChange,
+  error,
 }) => {
   return (
     <div className="gst-filing-type">
@@ -47,6 +49,7 @@ export const GSTFilingTypeSelector: React.FC<GSTFilingTypeSelectorProps> = ({
           )
         })}
       </div>
+      {error && <span className="gst-filing-period__error-text">{error}</span>}
     </div>
   )
 }

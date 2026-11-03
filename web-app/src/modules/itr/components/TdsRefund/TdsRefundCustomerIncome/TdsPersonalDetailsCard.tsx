@@ -1,6 +1,7 @@
 import React from "react";
 import { User, Pencil, Check } from "lucide-react";
 import { formatMobile } from "@shared/utils/validationUtils";
+import { CaretInput } from "@shared/components";
 import type { TdsTaxpayerProfile } from "@modules/itr/utils/tdsRefund.constants";
 import {
   formatDob,
@@ -104,7 +105,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
           <label htmlFor="tds-profile-fullname" className="tds-label">
             Full Name <span className="tds-required">*</span>
           </label>
-          <input
+          <CaretInput
             id="tds-profile-fullname"
             type="text"
             className={`tds-input ${fieldErrors.fullName ? "has-error" : ""}`}
@@ -130,7 +131,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
           <label htmlFor="tds-profile-pan" className="tds-label">
             PAN Number <span className="tds-required">*</span>
           </label>
-          <input
+          <CaretInput
             id="tds-profile-pan"
             type="text"
             className={`tds-input tds-input--upper ${fieldErrors.pan ? "has-error" : ""}`}
@@ -154,7 +155,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
           <label htmlFor="tds-profile-aadhaar" className="tds-label">
             Aadhaar Number
           </label>
-          <input
+          <CaretInput
             id="tds-profile-aadhaar"
             type="text"
             className={`tds-input ${fieldErrors.aadhaar ? "has-error" : ""}`}
@@ -179,7 +180,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
           <label htmlFor="tds-profile-dob" className="tds-label">
             Date of Birth
           </label>
-          <input
+          <CaretInput
             id="tds-profile-dob"
             type="date"
             className="tds-input"
@@ -191,7 +192,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
           <label htmlFor="tds-profile-mobile" className="tds-label">
             Mobile Number
           </label>
-          <input
+          <CaretInput
             id="tds-profile-mobile"
             type="tel"
             className={`tds-input ${fieldErrors.mobile ? "has-error" : ""}`}
@@ -215,7 +216,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
           <label htmlFor="tds-profile-email" className="tds-label">
             Email Address
           </label>
-          <input
+          <CaretInput
             id="tds-profile-email"
             type="email"
             className={`tds-input ${fieldErrors.email ? "has-error" : ""}`}
@@ -237,7 +238,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
           <label htmlFor="tds-profile-address" className="tds-label">
             Address
           </label>
-          <input
+          <CaretInput
             id="tds-profile-address"
             type="text"
             className="tds-input"

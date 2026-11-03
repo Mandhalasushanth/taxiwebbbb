@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
+import { CaretInput } from './CaretInput'
 import './ConfirmAccountNumberInput.css'
 
 export interface ConfirmAccountNumberInputProps {
@@ -45,7 +46,7 @@ export const ConfirmAccountNumberInput: React.FC<ConfirmAccountNumberInputProps>
   return (
     <div className="confirm-acc-input-container">
       <div className="confirm-acc-input-row">
-        <input
+        <CaretInput
           id={id}
           name={name}
           type={showPassword ? 'text' : 'password'}

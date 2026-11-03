@@ -5,15 +5,46 @@ import { StepActionBar } from '@shared/components'
 import { useAppStore } from '@store/index'
 import { useIncorporationFlow } from '../../hooks'
 import {
-  isValidPan,
   isValidDin,
-  isValidEmail,
-  isValidMobile,
-  isValidName,
 } from '../../utils/validation'
-import { validateDobSignatory } from '@shared/utils/validationUtils'
+import {
+  validateName,
+  isValidName,
+  validatePan,
+  validateEmail,
+  validateMobileNumber,
+  validateDobSignatory,
+} from '@shared/utils/validationUtils'
 import { getEntityStructureLabel, type DirectorDetails } from '../../types/incorporation.types'
 import './PromoterDetails.css'
+
+const validateSingleDirectorField = (field: keyof DirectorDetails, value: unknown): string | undefined => {
+  const str = String(value || '').trim()
+  switch (field) {
+    case 'fullName':
+      if (!str) return 'Name is required'
+      return validateName(str, 'Name') || undefined
+    case 'pan':
+      if (!str) return 'PAN is required'
+      return validatePan(str, 'PAN') || undefined
+    case 'din':
+      return str && !isValidDin(str) ? 'Enter a valid 8-digit DIN' : undefined
+    case 'dob':
+      if (!str) return 'Date of birth is required'
+      return validateDobSignatory(str) || undefined
+    case 'designation':
+      if (!str) return 'Designation is required'
+      return !isValidName(str) ? 'Enter a valid designation (letters only)' : undefined
+    case 'email':
+      if (!str) return 'Email address is required'
+      return validateEmail(str, 'Email address') || undefined
+    case 'mobile':
+      if (!str) return 'Mobile number is required'
+      return validateMobileNumber(str, 'Mobile number') || undefined
+    default:
+      return undefined
+  }
+}
 
 export const PromoterDetails: React.FC = () => {
   const { formData, updateFormData, draft, reviewEdit, goToStep } = useIncorporationFlow()
@@ -26,15 +57,40 @@ export const PromoterDetails: React.FC = () => {
   const [directorErrors, setDirectorErrors] = useState<Record<number, Record<string, string>>>({})
 
   const handleDirectorChange = (id: number, field: keyof DirectorDetails, value: DirectorDetails[keyof DirectorDetails]) => {
+    const updated = directors.map((d: DirectorDetails) => (d.id === id ? { ...d, [field]: value } : d))
+    updateFormData({ promoters: updated })
+
+    // Auto-clear or update error if field currently has an error
     setDirectorErrors((prev) => {
       const cur = prev[id]
       if (!cur || !cur[field]) return prev
+      const err = validateSingleDirectorField(field, value)
       const copy = { ...cur }
-      delete copy[field]
+      if (err) {
+        copy[field] = err
+      } else {
+        delete copy[field]
+      }
       return { ...prev, [id]: copy }
     })
-    const updated = directors.map((d: DirectorDetails) => (d.id === id ? { ...d, [field]: value } : d))
-    updateFormData({ promoters: updated })
+  }
+
+  const handleDirectorBlur = (id: number, field: keyof DirectorDetails) => {
+    const director = directors.find((d) => d.id === id)
+    if (!director) return
+    const err = validateSingleDirectorField(field, director[field])
+    setDirectorErrors((prev) => {
+      const cur = prev[id] || {}
+      if (err) {
+        return { ...prev, [id]: { ...cur, [field]: err } }
+      }
+      if (cur[field]) {
+        const copy = { ...cur }
+        delete copy[field]
+        return { ...prev, [id]: copy }
+      }
+      return prev
+    })
   }
 
   const handleAddDirector = () => {
@@ -100,38 +156,26 @@ export const PromoterDetails: React.FC = () => {
 
     const allErrors = directors.reduce<Record<number, Record<string, string>>>((acc, d) => {
       const dErrors: Record<string, string> = {}
-      if (!(d.fullName || '').trim()) {
-        dErrors.fullName = 'Name is required'
-      } else if (!isValidName(d.fullName)) {
-        dErrors.fullName = 'Enter a valid name (letters only)'
-      }
-      if (!(d.pan || '').trim()) {
-        dErrors.pan = 'PAN is required'
-      } else if (!isValidPan(d.pan)) {
-        dErrors.pan = 'Enter a valid PAN'
-      }
-      if (d.din && !isValidDin(d.din)) dErrors.din = 'Enter a valid 8-digit DIN'
-      if (!d.dob) {
-        dErrors.dob = 'Date of birth is required'
-      } else {
-        const dobError = validateDobSignatory(d.dob)
-        if (dobError) dErrors.dob = dobError
-      }
-      if (!(d.designation || '').trim()) {
-        dErrors.designation = 'Designation is required'
-      } else if (!isValidName(d.designation)) {
-        dErrors.designation = 'Enter a valid designation (letters only)'
-      }
-      if (!(d.email || '').trim()) {
-        dErrors.email = 'Email address is required'
-      } else if (!isValidEmail(d.email)) {
-        dErrors.email = 'Enter a valid email address'
-      }
-      if (!(d.mobile || '').trim()) {
-        dErrors.mobile = 'Mobile number is required'
-      } else if (!isValidMobile(d.mobile)) {
-        dErrors.mobile = 'Enter a valid 10-digit Indian mobile number'
-      }
+      const nameErr = validateSingleDirectorField('fullName', d.fullName)
+      if (nameErr) dErrors.fullName = nameErr
+
+      const panErr = validateSingleDirectorField('pan', d.pan)
+      if (panErr) dErrors.pan = panErr
+
+      const dinErr = validateSingleDirectorField('din', d.din)
+      if (dinErr) dErrors.din = dinErr
+
+      const dobErr = validateSingleDirectorField('dob', d.dob)
+      if (dobErr) dErrors.dob = dobErr
+
+      const desErr = validateSingleDirectorField('designation', d.designation)
+      if (desErr) dErrors.designation = desErr
+
+      const emailErr = validateSingleDirectorField('email', d.email)
+      if (emailErr) dErrors.email = emailErr
+
+      const mobErr = validateSingleDirectorField('mobile', d.mobile)
+      if (mobErr) dErrors.mobile = mobErr
 
       if (Object.keys(dErrors).length > 0) {
         acc[d.id] = dErrors
@@ -146,27 +190,37 @@ export const PromoterDetails: React.FC = () => {
       return
     }
 
-    setMinDirectorsWarning('')
-    setDirectorErrors({})
     goToStep(routePaths.incorporation.capitalDetails)
+  }
+
+  const handleBack = () => {
+    goToStep(routePaths.incorporation.registeredOffice)
   }
 
   return (
     <div className="promoter-details-page">
+      <div className="promoter-details-header">
+        <h1 className="promoter-details-header__title">Promoter / Director Details</h1>
+        <p className="promoter-details-header__subtitle">
+          Add directors and promoters as required for {getEntityStructureLabel(companyType)} (Minimum {minDirectors} required).
+        </p>
+      </div>
+
       {minDirectorsWarning && (
-        <p className="promoter-details-min-warning">
+        <p className="promoter-details-min-warning" role="alert">
           {minDirectorsWarning}
         </p>
       )}
 
-      {/* Directors List */}
+      {/* Director Cards List */}
       <main className="promoter-details-list">
-        {directors.map((director, index) => (
+        {directors.map((director: DirectorDetails, idx: number) => (
           <DirectorCard
             key={director.id}
             director={director}
-            index={index}
+            index={idx}
             onChange={handleDirectorChange}
+            onBlur={handleDirectorBlur}
             onSave={handleSaveDirector}
             onCancel={handleCancelDirector}
             errors={directorErrors[director.id]}
@@ -188,9 +242,9 @@ export const PromoterDetails: React.FC = () => {
         </button>
       </main>
 
-      {/* Footer Navigation */}
+      {/* Step Action Bar */}
       <StepActionBar
-        onBack={() => goToStep(routePaths.incorporation.registeredOffice)}
+        onBack={handleBack}
         onNext={handleContinue}
         isEditMode={reviewEdit.isEditMode}
         onSaveDraft={draft.openDraftModal}

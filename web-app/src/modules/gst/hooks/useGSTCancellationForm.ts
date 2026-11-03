@@ -81,6 +81,27 @@ export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps
     isComplete: isSubmitted,
   })
 
+  const validateField = (field: string) => {
+    let err: string | undefined
+    if (field === 'gstin') err = gstFieldRules.gstin(gstin)
+    else if (field === 'reason') err = reason ? undefined : 'Please select reason for cancellation.'
+    else if (field === 'cancellationDate') err = cancellationDate ? undefined : 'Please select cancellation date.'
+    else if (field === 'lastGstr3bFiled') err = gstFieldRules.text('Last GSTR-3B filed ARN / period', 6, 60)(lastGstr3bFiled)
+    else if (field === 'closingStockDetails') err = gstFieldRules.text('Closing stock details', 5, 500)(closingStockDetails)
+
+    return err
+  }
+
+  const handleBlur = (field: string) => {
+    const err = validateField(field)
+    setErrors((prev) => {
+      const next = { ...prev }
+      if (err) next[field] = err
+      else delete next[field]
+      return next
+    })
+  }
+
   const clearError = (field: string) => {
     if (errors[field]) {
       setErrors((prev) => {
@@ -115,6 +136,10 @@ export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
+      requestAnimationFrame(() => {
+        const firstErrorEl = document.querySelector(".gst-canc-error-msg, .field-error")
+        firstErrorEl?.scrollIntoView({ behavior: "smooth", block: "center" })
+      })
       return
     }
 
@@ -188,6 +213,8 @@ export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps
     setFinalReturnDeclaration,
     errors,
     clearError,
+    handleBlur,
+    validateField,
     handleFileChange,
     handleReviewProceed,
     handleFinalSubmit,

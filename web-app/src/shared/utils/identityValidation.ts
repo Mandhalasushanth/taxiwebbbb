@@ -4,44 +4,13 @@
  * PAN holder types (4th character) and plausible age ranges.
  */
 
-/* ---------------------------- Verhoeff ---------------------------- */
-const VERHOEFF_MULTIPLICATION: readonly number[][] = [
-  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-  [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
-  [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
-  [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
-  [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
-  [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
-  [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
-  [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
-  [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
-  [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
-]
+import {
+  isValidVerhoeff,
+  computeVerhoeffCheckDigit,
+} from '@shared/validations/aadhaarValidator'
 
-const VERHOEFF_PERMUTATION: readonly number[][] = [
-  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-  [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
-  [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
-  [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
-  [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
-  [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
-  [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
-  [7, 0, 4, 6, 9, 1, 3, 2, 5, 8],
-]
-
-const VERHOEFF_INVERSE: readonly number[] = [0, 4, 3, 2, 1, 5, 6, 7, 8, 9]
-
-const verhoeffChecksum = (digits: string): number =>
-  digits
-    .split('')
-    .reverse()
-    .reduce((check, digit, index) => VERHOEFF_MULTIPLICATION[check][VERHOEFF_PERMUTATION[index % 8][Number(digit)]], 0)
-
-/** True when the last digit is a valid Verhoeff check digit for the rest. */
-export const isValidVerhoeff = (digits: string): boolean => /^\d+$/.test(digits) && verhoeffChecksum(digits) === 0
-
-/** Check digit to append to `digits` (used to build valid test numbers). */
-export const verhoeffCheckDigit = (digits: string): number => VERHOEFF_INVERSE[verhoeffChecksum(`${digits}0`)]
+export { isValidVerhoeff }
+export const verhoeffCheckDigit = computeVerhoeffCheckDigit
 
 /* ----------------------------- Aadhaar ---------------------------- */
 export const AADHAAR_LENGTH = 12

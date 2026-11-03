@@ -213,15 +213,15 @@ describe('GST Filing - Step 3: Review & Summary', () => {
     // Filing Details should be visible
     expect(screen.getByText('Filing Details')).toBeDefined()
     expect(screen.getByText('Nil Return')).toBeDefined()
-    expect(screen.getByText('Not Required (Nil Return)')).toBeDefined()
+    expect(screen.getByText(/Nil Return \(None Required\)/i)).toBeDefined()
 
-    // Tax Computation card and Documents card should NOT be rendered
+    // Documents card shows No Documents Required for Nil Return matching Image 1
     expect(screen.queryByText(/Tax Computation/i)).toBeNull()
-    expect(screen.queryByText(/All Required Documents Attached/i)).toBeNull()
+    expect(screen.getByText(/No Documents Required/i)).toBeDefined()
     expect(screen.queryByText(/Professional Filing Fee/i)).toBeNull()
   })
 
-  it('renders pending state for Regular Return with CA calculation method', () => {
+  it('renders blue callout for Regular Return with CA calculation method', () => {
     render(
       <GSTReviewTaxComputationCard
         calculationMethod="ca_calculate"
@@ -231,10 +231,7 @@ describe('GST Filing - Step 3: Review & Summary', () => {
     )
 
     expect(screen.getByText('Tax Computation')).toBeDefined()
-    expect(screen.getByText('Pending CA Computation')).toBeDefined()
-    expect(screen.getByText(/Let TaxEdge CA calculate from documents/i)).toBeDefined()
-    const pendingValues = screen.getAllByText('— Pending')
-    expect(pendingValues.length).toBe(5)
+    expect(screen.getByText(/TaxEdge CA will calculate your liabilities, ITC, and net payable tax directly from your uploaded invoices/i)).toBeDefined()
   })
 
   it('renders estimated figures for Regular Return with user estimated figures', () => {
@@ -251,7 +248,7 @@ describe('GST Filing - Step 3: Review & Summary', () => {
       />
     )
 
-    expect(screen.getByText('Tax Computation (Estimated)')).toBeDefined()
+    expect(screen.getByText('Tax Computation')).toBeDefined()
     expect(screen.getByText('Estimated Figures')).toBeDefined()
     expect(screen.getByText(/12,00,000/)).toBeDefined()
     expect(screen.getByText(/6,00,000/)).toBeDefined()
@@ -308,29 +305,23 @@ describe('GST Filing - Step 3: Review & Summary', () => {
       </MemoryRouter>
     )
 
-    // Should indicate documents are required
-    expect(screen.getByText(/Documents Required/i)).toBeDefined()
-    expect(screen.getByText(/Please upload all 12 required documents/i)).toBeDefined()
+    // Should indicate documents are missing matching Image 2
+    const missingAlerts = screen.getAllByText(/12 Documents Missing/i)
+    expect(missingAlerts.length).toBeGreaterThan(0)
+    expect(screen.getByText(/Please upload all 12 required documents to proceed with filing/i)).toBeDefined()
 
-    // Next button in StepActionBar is named "Submit"
-    const submitBtn = screen.getByRole('button', { name: 'Submit' })
+    // Next button in StepActionBar
+    const submitBtn = screen.getByRole('button', { name: /Proceed to Submit|Submit/i })
     expect(submitBtn).toBeDefined()
 
-    // Clicking Submit when documents are missing shows red error warning and does not call handleApprove
+    // Clicking Submit when documents are missing does not call handleApprove
     fireEvent.click(submitBtn)
     expect(handleApprove).not.toHaveBeenCalled()
-    expect(screen.getByText(/Please upload all required documents before submitting/i)).toBeDefined()
 
-    // The red warning alert displays only the warning message without a button
-    const alertBanner = screen.getByRole('alert')
-    expect(alertBanner).toBeDefined()
-    expect(within(alertBanner).queryByRole('button')).toBeNull()
-
-    // Duplicate header "Upload" button is removed; only "Upload Documents" button in the card exists
-    expect(screen.queryByRole('button', { name: 'Upload' })).toBeNull()
-    const uploadDocBtn = screen.getByRole('button', { name: 'Upload Documents' })
-    expect(uploadDocBtn).toBeDefined()
-    fireEvent.click(uploadDocBtn)
+    // Reupload button exists and redirects to Step 2
+    const reuploadBtn = screen.getByRole('button', { name: /Reupload Here/i })
+    expect(reuploadBtn).toBeDefined()
+    fireEvent.click(reuploadBtn)
     expect(handleEditDocs).toHaveBeenCalledTimes(1)
   })
 
@@ -373,8 +364,15 @@ describe('GST Filing - Step 3: Review & Summary', () => {
       </MemoryRouter>
     )
 
-    // Should indicate all required documents attached
+    // Should indicate all required documents attached via summary banner only
     expect(screen.getByText('All Required Documents Attached')).toBeDefined()
+    expect(
+      screen.getByText(/12 local documents attached and ready for CA computation upon submission/i)
+    ).toBeDefined()
+
+    // Does not render individual document list in Review
+    expect(screen.queryByText('Sales Invoices / Register')).toBeNull()
+    expect(screen.queryByText('Credit Notes')).toBeNull()
 
     // Shows Edit option in header after uploading to redirect to step 2 page
     const editDocsBtn = screen.getByRole('button', { name: 'Edit Documents' })
@@ -382,8 +380,8 @@ describe('GST Filing - Step 3: Review & Summary', () => {
     fireEvent.click(editDocsBtn)
     expect(handleEditDocs).toHaveBeenCalledTimes(1)
 
-    // Next button in StepActionBar should say "Submit"
-    const submitBtn = screen.getByRole('button', { name: 'Submit' })
+    // Next button in StepActionBar
+    const submitBtn = screen.getByRole('button', { name: /Proceed to Submit|Submit/i })
     expect(submitBtn).toBeDefined()
 
     // Clicking Submit calls handleApprove

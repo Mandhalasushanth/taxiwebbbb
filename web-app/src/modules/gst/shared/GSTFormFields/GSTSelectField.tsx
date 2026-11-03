@@ -1,3 +1,4 @@
+import React from 'react'
 import { ChevronDown } from 'lucide-react'
 import { GSTFieldShell } from './GSTFieldParts'
 import { fieldErrorId, fieldInputClass } from './gstFieldClasses'
@@ -18,6 +19,7 @@ export interface GSTSelectFieldProps {
   onValueChange: (value: string) => void
   /** Lets a caller disable or relabel individual options (e.g. composition-scheme rules) */
   getOptionState?: (option: string) => GSTSelectOptionState
+  onBlur?: (e: React.FocusEvent<HTMLSelectElement>) => void
 }
 
 export const GSTSelectField = ({
@@ -29,6 +31,7 @@ export const GSTSelectField = ({
   error,
   onValueChange,
   getOptionState,
+  onBlur,
 }: GSTSelectFieldProps) => {
   const isEmpty = !value
 
@@ -50,6 +53,7 @@ export const GSTSelectField = ({
           className={fieldInputClass(error, `gst-field__select ${isEmpty ? 'gst-field__select--empty' : ''}`)}
           value={value}
           onChange={(e) => onValueChange(e.target.value)}
+          onBlur={onBlur}
           aria-required="true"
           aria-invalid={Boolean(error)}
           aria-describedby={error ? fieldErrorId(id) : undefined}

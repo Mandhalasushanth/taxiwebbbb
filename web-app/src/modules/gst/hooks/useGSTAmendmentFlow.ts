@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { gstProfileService } from '@modules/gst/services/gstProfileService'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
@@ -9,6 +9,8 @@ import { useReviewEdit } from '@shared/edit'
 import { getAmendmentConfig } from '@modules/gst/components/GSTAmendment/amendmentConfigs'
 import { gstService } from '@modules/gst/services/gstService'
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
+import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
+import { useGSTReviewEditNavigation } from '@modules/gst/shared/useGSTSectionFocus'
 import type { GstAmendmentPayload, GstAmendmentRecord, GstAmendmentFieldKey } from '@modules/gst/types/gst.types'
 import type { AmendmentCardItem, AddressDetailsItem } from '../components/GSTAmendment/index'
 
@@ -48,10 +50,29 @@ export const useGSTAmendmentFlow = () => {
 
   const [restored] = useState(() => readServiceDraft<AmendmentDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst)?.formData)
   const [gstin, setGstin] = useState(restored?.gstin || '')
-  // After saving draft, if user comes again, always show the core and non-core services page first
+
+  // Always start on the selection page (home page where all core and non-core fields are shown)
   const [selectedOption, setSelectedOption] = useState<AmendmentCardItem | null>(null)
   const [formData, setFormData] = useState<GSTAmendmentFormData | null>(null)
   const [isReviewing, setIsReviewing] = useState<boolean>(false)
+
+  // Re-hydrate any file that was loading asynchronously from IndexedDB
+  useEffect(() => {
+    let isMounted = true
+    const hydrateFile = async () => {
+      if (formData && !formData.file) {
+        const file = await gstUploadedFiles.getAsync('amendment_file')
+        if (file && isMounted) {
+          setFormData((prev) => (prev ? { ...prev, file, fileName: prev.fileName || file.name } : prev))
+        }
+      }
+    }
+    hydrateFile()
+    return () => {
+      isMounted = false
+    }
+  }, [formData])
+
   // "Edit" from the review: shared behaviour (Update & Review / Back return to the review)
   const reviewEdit = useReviewEdit(() => {
     setIsReviewing(true)
@@ -97,12 +118,17 @@ export const useGSTAmendmentFlow = () => {
     ),
     isComplete: Boolean(submittedRecord),
     onDiscard: () => {
+      gstUploadedFiles.remove('amendment_file')
       setSelectedOption(null)
       setFormData(null)
+      setIsReviewing(false)
     },
   })
 
   const handleDetailFormSubmit = (data: GSTAmendmentFormData) => {
+    if (data.file) {
+      gstUploadedFiles.set('amendment_file', data.file)
+    }
     setFormData((prev) => ({
       ...prev,
       ...data,
@@ -117,10 +143,13 @@ export const useGSTAmendmentFlow = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleEdit = () => {
-    reviewEdit.startEdit(() => {
-      setIsReviewing(false)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+  const { editSection, startSectionEdit } = useGSTReviewEditNavigation()
+
+  const handleEdit = (section: string = 'gst-amend-details') => {
+    startSectionEdit(section, () => {
+      reviewEdit.startEdit(() => {
+        setIsReviewing(false)
+      })
     })
   }
 
@@ -137,12 +166,15 @@ export const useGSTAmendmentFlow = () => {
   }
 
   const handleSelectOption = (option: AmendmentCardItem) => {
-    if (restored?.selectedOptionId === option.id && restored.savedFormData) {
+    if (formData?.selectedOptionId === option.id) {
+      // Re-selecting the option worked on in the active session: preserve data
+    } else if (restored?.selectedOptionId === option.id && restored.savedFormData) {
+      const file = gstUploadedFiles.get('amendment_file') || null
       setFormData({
         selectedOptionId: option.id,
         newValue: restored.savedFormData.newValue || '',
-        file: null,
-        fileName: restored.savedFormData.fileName,
+        file,
+        fileName: restored.savedFormData.fileName || file?.name,
         fileSizeText: restored.savedFormData.fileSizeText,
         addressDetails: restored.savedFormData.addressDetails,
         bankDetails: restored.savedFormData.bankDetails,
@@ -150,10 +182,8 @@ export const useGSTAmendmentFlow = () => {
         contactDetails: restored.savedFormData.contactDetails,
       })
       setIsReviewing(Boolean(restored.isReviewing))
-    } else if (formData?.selectedOptionId === option.id) {
-      // Re-selecting the option worked on in the active session: preserve data
     } else {
-      // Any other service: start fresh from starting
+      // Any other service: start fresh
       setFormData(null)
       setIsReviewing(false)
     }
@@ -162,6 +192,14 @@ export const useGSTAmendmentFlow = () => {
   }
 
   const handleFormChange = (data: Partial<GSTAmendmentFormData>) => {
+    if (data.file) {
+      gstUploadedFiles.set('amendment_file', data.file)
+      gstUploadedFiles.set('d1', data.file)
+      gstUploadedFiles.set('d2', data.file)
+      gstUploadedFiles.set('Supporting Proof Document', data.file)
+      gstUploadedFiles.set('Identity & Authorization Proof', data.file)
+      if (data.file.name) gstUploadedFiles.set(data.file.name, data.file)
+    }
     setFormData((prev) => ({
       ...prev,
       ...data,
@@ -177,6 +215,14 @@ export const useGSTAmendmentFlow = () => {
 
   const handleFormSaveDraft = (data?: Partial<GSTAmendmentFormData>) => {
     if (data) {
+      if (data.file) {
+        gstUploadedFiles.set('amendment_file', data.file)
+        gstUploadedFiles.set('d1', data.file)
+        gstUploadedFiles.set('d2', data.file)
+        gstUploadedFiles.set('Supporting Proof Document', data.file)
+        gstUploadedFiles.set('Identity & Authorization Proof', data.file)
+        if (data.file.name) gstUploadedFiles.set(data.file.name, data.file)
+      }
       setFormData((prev) => ({
         ...prev,
         ...data,
@@ -211,11 +257,45 @@ export const useGSTAmendmentFlow = () => {
       setIsSubmitting(true)
       const record = await gstService.submitAmendment(payload)
       setSubmittedRecord(record)
+
+      // Ensure uploaded amendment file is preserved for Track Application
+      const amendFile = formData.file || gstUploadedFiles.get('amendment_file')
+      if (amendFile) {
+        gstUploadedFiles.set('amendment_file', amendFile)
+        gstUploadedFiles.set('d1', amendFile)
+        gstUploadedFiles.set('d2', amendFile)
+        gstUploadedFiles.set('Supporting Proof Document', amendFile)
+        gstUploadedFiles.set('Identity & Authorization Proof', amendFile)
+        if (amendFile.name) gstUploadedFiles.set(amendFile.name, amendFile)
+        gstUploadedFiles.set(`${record.reference}_file`, amendFile)
+      }
+
       draft.clearDraft()
 
       try {
         const existing = userStorage.getUserApplications()
         const alreadyPresent = existing.some((a) => a.code === record.reference)
+        const fileName = amendFile?.name || formData.fileName || 'supporting_document.pdf'
+        const docs = [
+          {
+            id: 'd1',
+            name: 'Supporting Proof Document',
+            fileName,
+            meta: amendFile ? `Statutory & Compliance · ${(amendFile.size / (1024 * 1024)).toFixed(2)} MB` : 'Statutory & Compliance · IMAGE / PDF · 6.55 MB',
+            date: new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
+            file: amendFile,
+            status: 'uploaded' as const,
+          },
+          {
+            id: 'd2',
+            name: 'Identity & Authorization Proof',
+            fileName,
+            meta: amendFile ? `Statutory & Compliance · ${(amendFile.size / (1024 * 1024)).toFixed(2)} MB` : 'Statutory & Compliance · IMAGE / PDF · 6.55 MB',
+            date: new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
+            file: amendFile,
+            status: 'uploaded' as const,
+          },
+        ]
         if (!alreadyPresent) {
           userStorage.saveUserApplication({
             id: `app-amend-${Date.now()}`,
@@ -227,7 +307,13 @@ export const useGSTAmendmentFlow = () => {
             progress: 25,
             icon: '📝',
             to: routePaths.applicationTrack(record.reference),
-          })
+            documents: docs,
+            formData: {
+              amendmentData: formData,
+              config,
+            },
+            paymentStatus: 'Awaiting Verification' as any,
+          } as any)
         }
       } catch {
         // storage fallback
@@ -260,6 +346,7 @@ export const useGSTAmendmentFlow = () => {
     isReviewing,
     setIsReviewing,
     isEditMode,
+    editSection,
     handleSelectOption,
     /** Leaves edit mode and shows the review again (Back on an edit form) */
     returnToReview: reviewEdit.finishEdit,

@@ -1,16 +1,17 @@
 import { useGSTCertificateFlow } from '@modules/gst/hooks/useGSTCertificateFlow'
+import { useGSTSectionFocus } from '@modules/gst/shared/useGSTSectionFocus'
 import { GSTCertificateForm } from './GSTCertificateForm/GSTCertificateForm'
 import { GSTCertificateSubmitted } from './GSTCertificateSubmitted/GSTCertificateSubmitted'
 import './GSTCertificate.css'
 
 export default function GSTCertificate() {
   const flow = useGSTCertificateFlow()
+  useGSTSectionFocus(flow.editSection)
   const {
     user,
     fields,
-    setField,
+    setField, handleBlur,
     errors,
-    stepError,
     isSubmitting,
     submittedRecord,
     handleSubmit,
@@ -36,9 +37,8 @@ export default function GSTCertificate() {
     <div className="gst-certificate-page">
       <GSTCertificateForm
         values={fields}
-        onChange={setField}
+        onChange={setField} onBlur={handleBlur}
         errors={errors}
-        stepError={stepError}
         contact={user}
         isSubmitting={isSubmitting}
         onSubmit={handleSubmit}

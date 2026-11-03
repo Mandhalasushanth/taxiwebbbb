@@ -12,7 +12,8 @@ import { ApplicationOverviewTab } from './tabs/ApplicationOverviewTab'
 import { ApplicationStatusTab } from './tabs/ApplicationStatusTab'
 import { ApplicationDocumentsTab } from './tabs/ApplicationDocumentsTab'
 import { ApplicationPaymentsTab } from './tabs/ApplicationPaymentsTab'
-import { DocumentPreviewModal } from './tabs/DocumentPreviewModal'
+import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
+import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
 import './ApplicationTrackerView.css'
 
 export type TrackerTab = 'overview' | 'status' | 'documents' | 'payments' | 'chat'
@@ -20,9 +21,11 @@ export type TrackerTab = 'overview' | 'status' | 'documents' | 'payments' | 'cha
 export interface ApplicationDocumentItem {
   id?: string
   name: string
+  fileName?: string
   meta: string
   date?: string
   url?: string
+  file?: File | Blob | null
 }
 
 export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ customId }) => {
@@ -37,7 +40,6 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
   )
   const [data, setData] = useState<ApplicationTrackerData | null>(() => getApplicationTrackerData(appId))
   const pushToast = useAppStore((state) => state.pushToast)
-  const [previewDoc, setPreviewDoc] = useState<ApplicationDocumentItem | null>(null)
 
   useEffect(() => {
     resetScrollToTop()
@@ -123,7 +125,7 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
     documents: {
       pageHeader: 'Uploaded Documents',
       title: data.title,
-      subtitle: '4 of 4 documents uploaded',
+      subtitle: `${data.documentsUploadedCount} of ${data.totalDocumentsCount} documents uploaded`,
     },
     payments: {
       pageHeader: 'Payment Summary',
@@ -139,42 +141,84 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
 
   const { pageHeader, title: bannerTitle, subtitle: bannerSubtitle } = tabTitles[activeTab]
 
-  // Prepared 4 documents matching Screenshot 3
-  const defaultDocsConfig: ApplicationDocumentItem[] = [
-    {
-      id: 'doc-1',
-      name: 'Sales Invoices / Register',
-      meta: 'Sales & Outward Supplies · IMAGE · 6.55 MB',
-      date: data.appliedDate || '28 Oct 2026',
-    },
-    {
-      id: 'doc-2',
-      name: 'Purchase Invoices / Register',
-      meta: 'Purchases & Input Tax · IMAGE · 6.55 MB',
-      date: data.appliedDate || '28 Oct 2026',
-    },
-    {
-      id: 'doc-3',
-      name: 'Bank Statement / Passbook',
-      meta: 'Banking & Reconciliation · IMAGE · 6.55 MB',
-      date: data.appliedDate || '28 Oct 2026',
-    },
-    {
-      id: 'doc-4',
-      name: 'Other Supporting Documents',
-      meta: 'Statutory & Compliance · IMAGE · 6.55 MB',
-      date: data.appliedDate || '28 Oct 2026',
-    },
-  ]
+  const currentStepIndex = data.timelineSteps.findIndex((s) => s.status === 'current')
+  const completedStepCount = data.timelineSteps.filter((s) => s.status === 'completed').length
+  const activeStepNum = currentStepIndex >= 0
+    ? currentStepIndex + 1
+    : completedStepCount === data.timelineSteps.length
+    ? data.timelineSteps.length
+    : Math.min(completedStepCount + 1, data.timelineSteps.length || 1)
+  const totalSteps = data.timelineSteps.length || 1
 
-  const displayDocuments: ApplicationDocumentItem[] = data.documents && data.documents.length >= 4
-    ? data.documents.map((d, i) => ({
-        id: d.id,
-        name: d.name,
-        meta: defaultDocsConfig[i]?.meta || 'Uploaded Document · IMAGE · 6.55 MB',
-        date: data.appliedDate || '28 Oct 2026',
-      }))
-    : defaultDocsConfig
+  const getDocumentMetaFallback = (name: string): string => {
+    const n = name.toLowerCase()
+    if (n.includes('pan')) return 'Statutory & Compliance · IMAGE / PDF · 0.61 MB'
+    if (n.includes('aadhaar')) return 'Statutory & Compliance · IMAGE / PDF · 0.72 MB'
+    if (n.includes('business registration') || n.includes('coi') || n.includes('partnership')) return 'Statutory & Compliance · IMAGE / PDF · 1.80 MB'
+    if (n.includes('address') || n.includes('premises')) return 'Statutory & Compliance · IMAGE / PDF · 2.51 MB'
+    if (n.includes('bank') || n.includes('cheque') || n.includes('passbook')) return 'Financial Document · IMAGE / PDF · 2.32 MB'
+    if (n.includes('photo')) return 'Statutory & Compliance · IMAGE · 2.26 MB'
+    if (n.includes('sales')) return 'Sales & Outward Supplies · IMAGE / PDF · 2.45 MB'
+    if (n.includes('credit')) return 'Sales & Outward Supplies · IMAGE / PDF · 1.15 MB'
+    if (n.includes('debit')) return 'Sales & Outward Supplies · IMAGE / PDF · 1.05 MB'
+    if (n.includes('irn') || n.includes('e-invoice')) return 'Sales & Outward Supplies · JSON / PDF · 1.30 MB'
+    if (n.includes('eway') || n.includes('e-way')) return 'Sales & Outward Supplies · PDF · 1.25 MB'
+    if (n.includes('purchase')) return 'Purchases & Input Tax · IMAGE / PDF · 2.80 MB'
+    if (n.includes('gstr2b') || n.includes('gstr-2b')) return 'Purchases & Input Tax · JSON / PDF · 1.10 MB'
+    if (n.includes('expense')) return 'Purchases & Input Tax · IMAGE / PDF · 1.65 MB'
+    if (n.includes('return')) return 'Banking & Reconciliation · PDF · 2.15 MB'
+    if (n.includes('ack') || n.includes('acknowledgement')) return 'Banking & Reconciliation · PDF · 0.85 MB'
+    if (n.includes('statement') || n.includes('salary') || n.includes('slips') || n.includes('26as')) return 'Financial Document · PDF · 3.10 MB'
+    return 'Statutory & Compliance · IMAGE / PDF · 1.45 MB'
+  }
+
+  const displayDocuments: ApplicationDocumentItem[] = (data.documents && data.documents.length > 0)
+    ? data.documents.map((d, i) => {
+        const rawDocs = (data.rawApplication as any)?.documents as any[] | undefined
+        const matchedRawDoc = rawDocs?.find(
+          (rd: any) =>
+            rd.id === d.id ||
+            rd.name?.toLowerCase() === d.name?.toLowerCase() ||
+            (d.name?.toLowerCase().includes('pan') && rd.name?.toLowerCase().includes('pan')) ||
+            (d.name?.toLowerCase().includes('aadhaar') && rd.name?.toLowerCase().includes('aadhaar')) ||
+            (d.name?.toLowerCase().includes('address') && rd.name?.toLowerCase().includes('address')) ||
+            (d.name?.toLowerCase().includes('bank') && rd.name?.toLowerCase().includes('bank')) ||
+            (d.name?.toLowerCase().includes('photo') && rd.name?.toLowerCase().includes('photo')) ||
+            (d.name?.toLowerCase().includes('sales') && rd.name?.toLowerCase().includes('sales')) ||
+            (d.name?.toLowerCase().includes('purchase') && rd.name?.toLowerCase().includes('purchase'))
+        ) || rawDocs?.[i]
+
+        const resolvedFile =
+          matchedRawDoc?.file ||
+          (d as any).file ||
+          (d.id ? gstUploadedFiles.get(d.id) : undefined) ||
+          (matchedRawDoc?.fileName ? gstUploadedFiles.get(matchedRawDoc.fileName) : undefined) ||
+          (matchedRawDoc?.name ? gstUploadedFiles.get(matchedRawDoc.name) : undefined) ||
+          (d.name ? gstUploadedFiles.get(d.name) : undefined) ||
+          (d.id ? gstUploadedFiles.get(`filing_${d.id}`) : undefined) ||
+          (data.title.includes('Amendment') ? gstUploadedFiles.get('amendment_file') : undefined) ||
+          gstUploadedFiles.find({ id: d.id, fileName: matchedRawDoc?.fileName, title: d.name })
+
+        const fileName =
+          matchedRawDoc?.fileName ||
+          (d as any).fileName ||
+          (resolvedFile instanceof File ? resolvedFile.name : undefined)
+
+        return {
+          id: d.id || `doc-${i + 1}`,
+          name: d.name,
+          fileName,
+          meta: matchedRawDoc?.meta || (d as any).meta || getDocumentMetaFallback(d.name),
+          date: matchedRawDoc?.date || (d as any).date || data.appliedDate || '3 Nov 2026',
+          url: matchedRawDoc?.url || (d as any).url || (d as any).fileHash,
+          file: resolvedFile,
+        }
+      })
+    : []
+
+  const isAwaitingVerification =
+    data.paymentSummary.paymentStatus === 'Awaiting Verification' ||
+    data.paymentSummary.totalAmount === 'Not Assigned'
 
   const isTdsApplication = Boolean(
     data.title.toLowerCase().includes('tds') ||
@@ -182,7 +226,7 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
     (data.category === 'ITR' && data.title.toLowerCase().includes('refund'))
   )
   const isChargesPending = isTdsApplication && (data.paymentSummary.paymentStatus === 'Charges Pending' || !data.chargesFinalized)
-  const isPaid = !isChargesPending
+  const isPaid = !isAwaitingVerification && !isChargesPending
 
   const computedGst = Math.round(Number(mgrServiceFee || 0) * 0.18)
   const computedTotal = Number(mgrServiceFee || 0) + Number(mgrGovFees || 0) + computedGst
@@ -289,7 +333,7 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
             onClick={() => setActiveTab('status')}
           >
             <span>Status</span>
-            <span className="app-tracker-web-tab__badge">Step 2/4</span>
+            <span className="app-tracker-web-tab__badge">Step {activeStepNum}/{totalSteps}</span>
           </button>
           <button
             type="button"
@@ -297,7 +341,7 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
             onClick={() => setActiveTab('documents')}
           >
             <span>Documents</span>
-            <span className="app-tracker-web-tab__badge">4/4</span>
+            <span className="app-tracker-web-tab__badge">{data.documentsUploadedCount}/{data.totalDocumentsCount}</span>
           </button>
           <button
             type="button"
@@ -305,7 +349,17 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
             onClick={() => setActiveTab('payments')}
           >
             <span>Payments</span>
-            <span className="app-tracker-web-tab__badge app-tracker-web-tab__badge--paid">Paid</span>
+            <span
+              className={`app-tracker-web-tab__badge ${
+                isAwaitingVerification
+                  ? 'app-tracker-web-tab__badge--awaiting'
+                  : isPaid
+                  ? 'app-tracker-web-tab__badge--paid'
+                  : 'app-tracker-web-tab__badge--pending'
+              }`}
+            >
+              {data.paymentSummary.paymentStatus || (isAwaitingVerification ? 'Awaiting Verification' : isPaid ? 'Paid' : 'Pending')}
+            </span>
           </button>
           <button
             type="button"
@@ -331,7 +385,15 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
             <ApplicationDocumentsTab
               documents={displayDocuments}
               appliedDate={data.appliedDate}
-              onPreviewDoc={(doc) => setPreviewDoc(doc)}
+              onPreviewDoc={(doc) => {
+                openGstDocumentPreview({
+                  id: doc.id,
+                  title: doc.name,
+                  fileName: doc.fileName || doc.name,
+                  file: doc.file,
+                  fileUrl: doc.url,
+                })
+              }}
             />
           )}
 
@@ -369,12 +431,6 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
           )}
         </main>
       </div>
-
-      {/* Document Preview Modal */}
-      <DocumentPreviewModal
-        previewDoc={previewDoc}
-        onClose={() => setPreviewDoc(null)}
-      />
     </div>
   )
 }

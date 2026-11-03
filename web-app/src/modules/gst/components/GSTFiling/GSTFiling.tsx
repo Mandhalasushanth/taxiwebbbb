@@ -40,6 +40,7 @@ export const GSTFiling = () => {
         <GSTFilingPeriod
           initialData={filingData}
           isEditMode={isEditMode}
+          focusSection={flow.editSection}
           onStepClick={handleStepClick}
           onContinue={handleStep1Continue}
           onCancel={handleStep1Back}
@@ -77,9 +78,9 @@ export const GSTFiling = () => {
           notApplicableDocs={notApplicableDocs}
           onStepClick={handleStepClick}
           onSaveDraft={openModal}
-          onEditFilingDetails={() => startEditingFromReview(1)}
-          onEditTaxComputation={() => startEditingFromReview(1)}
-          onEditDocuments={() => startEditingFromReview(2)}
+          onEditFilingDetails={() => startEditingFromReview(1, 'gst-filing-frequency-period')}
+          onEditTaxComputation={() => startEditingFromReview(1, 'gst-calculation-method')}
+          onEditDocuments={() => startEditingFromReview(2, 'documents')}
           onBack={() => goToStep(filingData.filingType === 'nil' || filingData.returnType === 'nil' ? 1 : 2)}
           onRequestChange={() => goToStep(filingData.filingType === 'nil' || filingData.returnType === 'nil' ? 1 : 2)}
           onApprove={handleStep3Approve}

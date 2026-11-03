@@ -1,106 +1,55 @@
-import { useEffect, useState, type FC } from 'react'
-import { Modal } from '@shared/components'
-import { formatFileSize } from '@shared/utils'
+import { useMemo, type FC } from 'react'
 import type { DocPreviewState } from '@modules/gst/types/gstDocuments.types'
-import { DocPlaceholderIcon } from '@modules/gst/shared/GSTDocIcons/GSTDocIcons'
 
-interface GSTDocPreviewModalProps {
+export interface GSTDocPreviewModalProps {
   previewDoc: DocPreviewState | null
   onClose: () => void
 }
 
-type PreviewKind = 'image' | 'pdf' | 'unsupported'
-
-const previewKindOf = (file: File): PreviewKind => {
-  if (file.type.startsWith('image/') || /\.(jpe?g|png)$/i.test(file.name)) return 'image'
-  if (file.type === 'application/pdf' || /\.pdf$/i.test(file.name)) return 'pdf'
-  return 'unsupported'
-}
-
-/**
- * Object URL for the file, revoked when the file changes or the modal closes, so the
- * document never leaves the browser and no memory is leaked.
- */
-const useObjectUrl = (file?: File): string | null => {
-  const [url, setUrl] = useState<string | null>(null)
-  useEffect(() => {
-    if (!file) return undefined
-    const objectUrl = URL.createObjectURL(file)
-    // oxlint-disable-next-line react/set-state-in-effect
-    setUrl(objectUrl)
-    return () => {
-      URL.revokeObjectURL(objectUrl)
-      setUrl(null)
-    }
-  }, [file])
-  return file ? url : null
-}
-
-const PreviewUnavailable = ({ message }: { message: string }) => (
-  <div className="gst-doc-modal__preview-placeholder">
-    <DocPlaceholderIcon width={48} height={48} />
-    <p className="gst-doc-modal__preview-text">Preview not available</p>
-    <span className="gst-doc-modal__preview-sub">{message}</span>
-  </div>
-)
-
 export const GSTDocPreviewModal: FC<GSTDocPreviewModalProps> = ({ previewDoc, onClose }) => {
   const file = previewDoc?.file
-  const objectUrl = useObjectUrl(file)
+  const fileUrl = useMemo(() => {
+    if (file) {
+      return URL.createObjectURL(file)
+    }
+    return null
+  }, [file])
 
   if (!previewDoc) return null
 
-  const renderPreview = () => {
-    if (!file) {
-      return <PreviewUnavailable message="This file was added in an earlier session. Replace it to preview the document again." />
-    }
-    if (!objectUrl) return null
-    const kind = previewKindOf(file)
-    if (kind === 'image') {
-      return (
-        <div className="gst-doc-modal__viewer">
-          <img className="gst-doc-modal__image" src={objectUrl} alt={`${previewDoc.title} – ${file.name}`} />
-        </div>
-      )
-    }
-    if (kind === 'pdf') {
-      return (
-        <div className="gst-doc-modal__viewer">
-          <iframe className="gst-doc-modal__pdf" src={objectUrl} title={`${previewDoc.title} – ${file.name}`} />
-        </div>
-      )
-    }
-    return <PreviewUnavailable message="Only PDF, JPG and PNG files can be previewed." />
-  }
+  const isPdf =
+    file?.type === 'application/pdf' ||
+    Boolean(previewDoc.fileName?.toLowerCase().endsWith('.pdf'))
 
   return (
-    <Modal
-      isOpen={Boolean(previewDoc)}
-      onClose={onClose}
-      size="lg"
-      title={
-        <div className="gst-doc-modal__title-group">
-          <span className="gst-doc-modal__title">{previewDoc.title}</span>
-          <span className="gst-doc-modal__filename">
-            {previewDoc.fileName}
-            {file ? ` · ${formatFileSize(file.size)}` : ''}
-          </span>
+    <div className="gst-preview-modal-backdrop" onClick={onClose} role="dialog" aria-modal="true">
+      <div className="gst-preview-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="gst-preview-modal-header">
+          <h3>{previewDoc.title || previewDoc.fileName}</h3>
+          <button type="button" onClick={onClose} aria-label="Close Preview">✕</button>
         </div>
-      }
-      footer={
-        <>
-          {objectUrl && file && (
-            <a className="gst-doc-modal__btn-secondary" href={objectUrl} target="_blank" rel="noopener noreferrer">
-              Open in new tab
-            </a>
+        <div className="gst-preview-modal-body">
+          {fileUrl ? (
+            isPdf ? (
+              <iframe
+                src={fileUrl}
+                title={`${previewDoc.title || ''}${previewDoc.fileName ? ` – ${previewDoc.fileName}` : ''}`}
+                style={{ width: '100%', height: '500px', border: 'none' }}
+              />
+            ) : (
+              <img
+                src={fileUrl}
+                alt={previewDoc.title || previewDoc.fileName || 'Preview'}
+                style={{ maxWidth: '100%', maxHeight: '500px', objectFit: 'contain' }}
+              />
+            )
+          ) : (
+            <p>Preview not available</p>
           )}
-          <button type="button" className="gst-doc-modal__btn-secondary" onClick={onClose}>
-            Close Preview
-          </button>
-        </>
-      }
-    >
-      {renderPreview()}
-    </Modal>
+        </div>
+      </div>
+    </div>
   )
 }
+
+export default GSTDocPreviewModal

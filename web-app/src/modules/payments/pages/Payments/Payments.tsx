@@ -12,6 +12,7 @@ import {
 import { routePaths } from '@core/config'
 import { userStorage } from '@core/storage/userStorage'
 import { useApplications } from '@modules/applications'
+import { resolveServiceFee } from '../../services/paymentPricing'
 import { PaymentQuickLinksModal } from './components/PaymentQuickLinksModal'
 import './Payments.css'
 
@@ -26,15 +27,6 @@ export interface PaymentItem {
   transactionId?: string
 }
 
-const getServiceFee = (title: string = ''): number => {
-  const t = title.toLowerCase()
-  if (t.includes('gst') || t.includes('goods')) return 2500
-  if (t.includes('itr') || t.includes('tax') || t.includes('tds')) return 1800
-  if (t.includes('loan')) return 1130
-  if (t.includes('incorporation') || t.includes('company') || t.includes('business')) return 5000
-  return 2500
-}
-
 export const Payments: React.FC = () => {
   const navigate = useNavigate()
   const { data: apiApplications } = useApplications()
@@ -42,63 +34,65 @@ export const Payments: React.FC = () => {
   // Modals state
   const [activeModal, setActiveModal] = useState<'history' | 'receipts' | null>(null)
 
-
-  // Consolidate applications from userStorage and API
+  // Consolidate applications from userStorage and API with exception safety
   const allApplications = useMemo<PaymentItem[]>(() => {
-    // refreshTrigger forces re-read from localStore
-    const localApps = userStorage.getUserApplications()
-    const mappedLocal: PaymentItem[] = localApps.map((app) => {
-      const isPaid =
-        app.paymentStatus === 'Paid' ||
-        Boolean(app.paidAt) ||
-        Boolean(app.transactionId) ||
-        app.statusLabel === 'Completed' ||
-        app.statusTone === 'success'
-
-      const amount =
-        app.finalizedCharges?.total ||
-        (typeof app.finalizedCharges?.serviceFee === 'number'
-          ? (app.finalizedCharges.serviceFee + (app.finalizedCharges.gst || 0))
-          : 0) ||
-        getServiceFee(app.title)
-
-      return {
-        id: app.id,
-        code: app.code || app.id,
-        title: app.title || 'TaxEdge Service',
-        date: app.paidAt || 'Recently submitted',
-        amount,
-        paymentStatus: isPaid ? 'Paid' : 'Pending',
-        paidAt: app.paidAt,
-        transactionId: app.transactionId,
-      }
-    })
-
-    const seenCodes = new Set(mappedLocal.map((a) => a.code))
-
-    // Include any API applications not already mapped
-    const additionalFromApi: PaymentItem[] = (apiApplications || [])
-      .filter((apiApp) => !seenCodes.has(apiApp.reference) && !seenCodes.has(apiApp.id))
-      .map((apiApp) => {
+    try {
+      const localApps = userStorage.getUserApplications() || []
+      const mappedLocal: PaymentItem[] = localApps.map((app) => {
         const isPaid =
-          apiApp.status === 'COMPLETED' ||
-          apiApp.statusLabel === 'Completed'
+          app.paymentStatus === 'Paid' ||
+          Boolean(app.paidAt) ||
+          Boolean(app.transactionId) ||
+          app.statusLabel === 'Completed' ||
+          app.statusTone === 'success'
 
-        const amount = typeof apiApp.amount === 'number' && apiApp.amount > 0
-          ? apiApp.amount
-          : getServiceFee(apiApp.title)
+        const chargesTotal = app.finalizedCharges?.total
+        const calculatedFee =
+          typeof app.finalizedCharges?.serviceFee === 'number'
+            ? app.finalizedCharges.serviceFee + (app.finalizedCharges.gst || 0)
+            : 0
+
+        const amount = chargesTotal || calculatedFee || resolveServiceFee(app.title)
 
         return {
-          id: apiApp.id,
-          code: apiApp.reference || apiApp.id,
-          title: apiApp.title || 'TaxEdge Service',
-          date: apiApp.date || 'Recently submitted',
+          id: app.id,
+          code: app.code || app.id,
+          title: app.title || 'TaxEdge Service',
+          date: app.paidAt || 'Recently submitted',
           amount,
           paymentStatus: isPaid ? 'Paid' : 'Pending',
+          paidAt: app.paidAt,
+          transactionId: app.transactionId,
         }
       })
 
-    return [...mappedLocal, ...additionalFromApi]
+      const seenCodes = new Set(mappedLocal.map((a) => a.code))
+
+      // Include any API applications not already mapped
+      const additionalFromApi: PaymentItem[] = (apiApplications || [])
+        .filter((apiApp) => !seenCodes.has(apiApp.reference) && !seenCodes.has(apiApp.id))
+        .map((apiApp) => {
+          const isPaid = apiApp.status === 'COMPLETED' || apiApp.statusLabel === 'Completed'
+          const amount =
+            typeof apiApp.amount === 'number' && apiApp.amount > 0
+              ? apiApp.amount
+              : resolveServiceFee(apiApp.title)
+
+          return {
+            id: apiApp.id,
+            code: apiApp.reference || apiApp.id,
+            title: apiApp.title || 'TaxEdge Service',
+            date: apiApp.date || 'Recently submitted',
+            amount,
+            paymentStatus: isPaid ? 'Paid' : 'Pending',
+          }
+        })
+
+      return [...mappedLocal, ...additionalFromApi]
+    } catch (error) {
+      console.error('Failed to load user applications for payments:', error)
+      return []
+    }
   }, [apiApplications])
 
   // Calculations matching mobile app PaymentOverviewScreen

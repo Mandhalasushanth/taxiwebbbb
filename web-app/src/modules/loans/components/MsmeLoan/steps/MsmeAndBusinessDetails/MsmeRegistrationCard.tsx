@@ -1,5 +1,6 @@
 import React from 'react'
 import { Award } from 'lucide-react'
+import { CaretInput } from '@shared/components'
 import type { MsmeLoanStepProps } from '@modules/loans/types/msmeLoan.types'
 import { InlineSelect } from '../InlineSelect'
 import {
@@ -74,7 +75,7 @@ export const MsmeRegistrationCard: React.FC<MsmeLoanStepProps> = ({ data, onChan
           <label className="msme-field__label" htmlFor="msme-udyam-number">
             Udyam Registration Number <span className="msme-required">*</span>
           </label>
-          <input
+          <CaretInput
             id="msme-udyam-number"
             className={`msme-field__input${errors.udyamNumber ? ' msme-field__input--error' : ''}`}
             placeholder="UDYAM-XX-00-0000000"
@@ -109,7 +110,7 @@ export const MsmeRegistrationCard: React.FC<MsmeLoanStepProps> = ({ data, onChan
           <label className="msme-field__label" htmlFor="msme-gstin">
             GSTIN <span className="msme-required">*</span>
           </label>
-          <input
+          <CaretInput
             id="msme-gstin"
             className={`msme-field__input${errors.gstin ? ' msme-field__input--error' : ''}`}
             placeholder="e.g. 27ABCDE1234F1Z5"

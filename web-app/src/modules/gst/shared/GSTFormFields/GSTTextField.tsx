@@ -1,4 +1,5 @@
 import type { InputHTMLAttributes } from 'react'
+import { CaretInput } from '@shared/components'
 import { GSTFieldShell } from './GSTFieldParts'
 import { fieldErrorId, fieldInputClass } from './gstFieldClasses'
 import './GSTFormFields.css'
@@ -25,7 +26,7 @@ export const GSTTextField = ({
   ...inputProps
 }: GSTTextFieldProps) => (
   <GSTFieldShell id={id} label={label} error={error} alertError={alertError}>
-    <input
+    <CaretInput
       {...inputProps}
       id={id}
       name={name ?? id}

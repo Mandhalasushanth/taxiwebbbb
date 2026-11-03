@@ -49,13 +49,14 @@ export const CustomerDashboard = () => {
         completedCount={data.brief?.completedServices}
       />
 
-      {/* 4. Incomplete Application Drafts (Supports Multiple Drafts matching Mobile View) */}
+      {/* 4. Incomplete Application Drafts (Only latest 3, alternating Orange / Navy Blue) */}
       {drafts.length > 0 && (
         <div className="incomplete-banners-list">
-          {drafts.map((draft) => (
+          {drafts.slice(0, 3).map((draft, index) => (
             <IncompleteApplicationBanner
               key={draft.serviceId}
               draft={draft}
+              colorScheme={index % 2 === 0 ? 'orange' : 'navy'}
               onDiscard={handleDiscardDraft}
             />
           ))}

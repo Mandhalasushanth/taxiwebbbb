@@ -23,16 +23,6 @@ export const ITR_SERVICES_LIST: ItrServiceCard[] = [
     icon: 'rupee',
     viewKey: 'tds-refund',
   },
-  // Disabled: Previous Year ITR / Tax Notice Assistance are not offered right now.
-//   {
-//     id: 'service_previous_year',
-//     title: 'Previous Year ITR',
-//     description: 'Belated or updated return for an earlier assessment year.',
-//     pricing: '₹3,500 per year',
-//     timeline: '5-7 working days',
-//     icon: 'clock',
-//     viewKey: 'previous-year-itr',
-//   },
   {
     id: 'service_revised_itr',
     title: 'Revised ITR',
@@ -42,16 +32,6 @@ export const ITR_SERVICES_LIST: ItrServiceCard[] = [
     icon: 'document',
     viewKey: 'revised-itr',
   },
-  // Disabled: Previous Year ITR / Tax Notice Assistance are not offered right now.
-//   {
-//     id: 'service_tax_notice',
-//     title: 'Tax Notice Assistance',
-//     description: 'Reply to a 143(1), 139(9) or scrutiny notice with a CA.',
-//     pricing: '₹5,500 from',
-//     timeline: 'Within notice deadline',
-//     icon: 'warning',
-//     viewKey: 'tax-notice-assistance',
-//   },
 ]
 
 export const listItrApplications = async (filters?: ItrFilters): Promise<ItrItem[]> => {

@@ -113,6 +113,10 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
+      requestAnimationFrame(() => {
+        const firstErrorEl = document.querySelector(".amend-field-error, .gst-file-error, .has-error")
+        firstErrorEl?.scrollIntoView({ behavior: "smooth", block: "center" })
+      })
       return
     }
 
@@ -174,7 +178,7 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
             </div>
 
             {/* Card 2: Amended details */}
-            <div className="gst-amend-card-box">
+            <div className="gst-amend-card-box" id="gst-amend-details">
               <div className="gst-amend-card-box__header-flex">
                 <div className="gst-amend-card-header-icon-box gst-amend-card-header-icon-box--edit">
                   <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -199,13 +203,20 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
                   onChange={(e) => {
                     const val = filterInput(e.target.value)
                     setNewValue(val)
-                    if (errors.newValue) setErrors((prev) => ({ ...prev, newValue: undefined }))
+                    if (errors.newValue) {
+                      const err = validateField(val)
+                      setErrors((prev) => ({ ...prev, newValue: err || undefined }))
+                    }
                     onChange?.({
                       newValue: val,
                       file: selectedFile,
                       fileName: effectiveFileName,
                       fileSizeText: initialFileSize,
                     })
+                  }}
+                  onBlur={() => {
+                    const err = validateField(newValue)
+                    setErrors((prev) => ({ ...prev, newValue: err || undefined }))
                   }}
                   className={`gst-amend-text-input ${errors.newValue ? 'has-error' : ''}`}
                 />
@@ -216,15 +227,17 @@ export const GSTAmendmentDetailForm: React.FC<GSTAmendmentDetailFormProps> = ({
             </div>
 
             {/* Supporting proof */}
-            <div className="gst-amend-section-heading">Supporting Proof</div>
-            <GSTProofUpload
-              selectedFile={selectedFile}
-              existingFileName={!selectedFile ? effectiveFileName : undefined}
-              existingFileSize={initialFileSize}
-              error={errors.file}
-              onFileSelect={handleFileChange}
-              onRemoveFile={handleRemoveFile}
-            />
+            <div id="gst-amend-proof">
+              <div className="gst-amend-section-heading">Supporting Proof</div>
+              <GSTProofUpload
+                selectedFile={selectedFile}
+                existingFileName={!selectedFile ? effectiveFileName : undefined}
+                existingFileSize={initialFileSize}
+                error={errors.file}
+                onFileSelect={handleFileChange}
+                onRemoveFile={handleRemoveFile}
+              />
+            </div>
 
             {/* Accepted proofs */}
             {proofs && proofs.length > 0 && (

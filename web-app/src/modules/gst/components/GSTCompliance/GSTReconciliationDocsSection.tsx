@@ -2,7 +2,9 @@ import React from 'react'
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { DocumentCard } from '@shared/components'
-import { UPLOAD_HINT } from '@shared/upload'
+import { UPLOAD_HINT, DOCUMENT_UPLOAD_RULE } from '@shared/upload'
+import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
+import { assertGstUploadCriteria, GstUploadException } from '@modules/gst/utils/gstUploadValidator'
 import '@modules/gst/shared/GSTComplianceCard/GSTComplianceUploadFields.css'
 
 interface GSTReconciliationDocsSectionProps {
@@ -16,7 +18,7 @@ interface GSTReconciliationDocsSectionProps {
   setNotes: (val: string) => void
   errors: { purchaseFile?: string; salesFile?: string; gstr2bRef?: string }
   setErrors: React.Dispatch<React.SetStateAction<Record<string, string | undefined>>>
-  setPreviewDoc: (doc: { file: File; title: string }) => void
+  setPreviewDoc?: (doc: { file: File; title: string }) => void
 }
 
 export const GSTReconciliationDocsSection: React.FC<GSTReconciliationDocsSectionProps> = ({
@@ -32,8 +34,55 @@ export const GSTReconciliationDocsSection: React.FC<GSTReconciliationDocsSection
   setErrors,
   setPreviewDoc,
 }) => {
+  const handleView = (file: File | null, title: string) => {
+    if (!file) return
+    if (setPreviewDoc) {
+      setPreviewDoc({ file, title })
+    } else {
+      openGstDocumentPreview({
+        file,
+        fileName: file.name,
+        title,
+      })
+    }
+  }
+
+  const handlePurchaseUpload = (_id: string, file: File) => {
+    try {
+      assertGstUploadCriteria(file, DOCUMENT_UPLOAD_RULE)
+      setPurchaseFile(file)
+      setErrors((prev) => ({ ...prev, purchaseFile: undefined }))
+    } catch (err) {
+      const msg =
+        err instanceof GstUploadException
+          ? err.message
+          : err instanceof Error
+          ? err.message
+          : 'Invalid file'
+      setPurchaseFile(null)
+      setErrors((prev) => ({ ...prev, purchaseFile: msg }))
+    }
+  }
+
+  const handleSalesUpload = (_id: string, file: File) => {
+    try {
+      assertGstUploadCriteria(file, DOCUMENT_UPLOAD_RULE)
+      setSalesFile(file)
+      setErrors((prev) => ({ ...prev, salesFile: undefined }))
+    } catch (err) {
+      const msg =
+        err instanceof GstUploadException
+          ? err.message
+          : err instanceof Error
+          ? err.message
+          : 'Invalid file'
+      setSalesFile(null)
+      setErrors((prev) => ({ ...prev, salesFile: msg }))
+    }
+  }
+
   return (
-    <div className="gst-recon-card">
+    <div className="gst-recon-card" id="gst-reconciliation-docs">
       {/* Card Header */}
       <div className="gst-notice-header">
         <div className="gst-notice-header-icon">
@@ -71,19 +120,19 @@ export const GSTReconciliationDocsSection: React.FC<GSTReconciliationDocsSection
             fileName={purchaseFile?.name}
             fileSize={purchaseFile ? formatGstFileSize(purchaseFile.size) : undefined}
             file={purchaseFile || undefined}
+            error={errors.purchaseFile}
             className={errors.purchaseFile ? 'doc-card--has-error' : ''}
-            onUpload={(_, file) => {
-              setPurchaseFile(file)
+            onUpload={handlePurchaseUpload}
+            onUploadError={(_id, msg) => {
+              setPurchaseFile(null)
+              setErrors((prev) => ({ ...prev, purchaseFile: msg }))
+            }}
+            onRemove={() => {
+              setPurchaseFile(null)
               setErrors((prev) => ({ ...prev, purchaseFile: undefined }))
             }}
-            onRemove={() => setPurchaseFile(null)}
-            onView={() => {
-              if (purchaseFile) {
-                setPreviewDoc({ file: purchaseFile, title: 'Purchase Register' })
-              }
-            }}
+            onView={() => handleView(purchaseFile, 'Purchase Register')}
           />
-          {errors.purchaseFile && <span className="form-error">{errors.purchaseFile}</span>}
         </div>
 
         {/* Document 2: Sales Register */}
@@ -97,23 +146,23 @@ export const GSTReconciliationDocsSection: React.FC<GSTReconciliationDocsSection
             fileName={salesFile?.name}
             fileSize={salesFile ? formatGstFileSize(salesFile.size) : undefined}
             file={salesFile || undefined}
+            error={errors.salesFile}
             className={errors.salesFile ? 'doc-card--has-error' : ''}
-            onUpload={(_, file) => {
-              setSalesFile(file)
+            onUpload={handleSalesUpload}
+            onUploadError={(_id, msg) => {
+              setSalesFile(null)
+              setErrors((prev) => ({ ...prev, salesFile: msg }))
+            }}
+            onRemove={() => {
+              setSalesFile(null)
               setErrors((prev) => ({ ...prev, salesFile: undefined }))
             }}
-            onRemove={() => setSalesFile(null)}
-            onView={() => {
-              if (salesFile) {
-                setPreviewDoc({ file: salesFile, title: 'Sales Register' })
-              }
-            }}
+            onView={() => handleView(salesFile, 'Sales Register')}
           />
-          {errors.salesFile && <span className="form-error">{errors.salesFile}</span>}
         </div>
 
         {/* Field 3: GSTR-2B Reference */}
-        <div className="gst-notice-field-group">
+        <div className="gst-notice-field-group" id="gst-reconciliation-details">
           <label className="gst-notice-label" htmlFor="gstr2b-ref-input">
             GSTR-2B Reference
           </label>

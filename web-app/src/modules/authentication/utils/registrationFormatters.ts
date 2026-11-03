@@ -4,14 +4,27 @@ import { formatDOB, type RegistrationFormState } from '../validation/registratio
 
 type FieldFormatter = (value: string, previous: string, values: RegistrationFormState) => string
 
-const lettersOnly = (value: string) => value.replace(/[^a-zA-Z\s.'-]/g, '')
 const digitsOnly = (max: number) => (value: string) => value.replace(/\D/g, '').slice(0, max)
 /** Auto-inserts dashes only while typing forward so deleting a dash still works */
 const datePart: FieldFormatter = (value, previous) => (value.length > previous.length ? formatDOB(value) : value)
 
+/**
+ * Name input filter: only accepts Unicode letters, single spaces, and single dots.
+ * Prevents invalid characters (hyphens, numbers, symbols, emojis, consecutive dots/spaces, leading spaces/dots)
+ * from ever being taken by the field.
+ */
+export const formatNameInput: FieldFormatter = (value: string) => {
+  return value
+    .replace(/[^\p{L}\s.]/gu, '')
+    .replace(/^[ .]+/u, '')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\.{2,}/g, '.')
+    .slice(0, 100)
+}
+
 const FIELD_FORMATTERS: Partial<Record<keyof RegistrationFormState, FieldFormatter>> = {
-  fullName: lettersOnly,
-  fatherSpouseName: lettersOnly,
+  fullName: formatNameInput,
+  fatherSpouseName: formatNameInput,
   pan: (value) => value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10),
   aadhaar: digitsOnly(12),
   pincode: digitsOnly(6),

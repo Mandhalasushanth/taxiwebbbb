@@ -2,6 +2,7 @@ import { useId } from 'react'
 import type { InputHTMLAttributes, ReactNode } from 'react'
 
 import { classNames } from '../../utils/formatUtils'
+import { CaretInput } from './CaretInput'
 import './Input.css'
 
 export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'prefix'> {
@@ -28,7 +29,7 @@ export const Input = ({ label, hint, error, prefix, suffix, className, id, ...re
 
       <div className="field__control">
         {prefix && <span className="field__affix">{prefix}</span>}
-        <input
+        <CaretInput
           {...rest}
           id={inputId}
           className="field__input"

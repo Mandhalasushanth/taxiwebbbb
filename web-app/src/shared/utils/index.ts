@@ -1,5 +1,7 @@
 export * from './dateUtils'
 export * from './currencyUtils'
+export { isValidGstin } from './validationUtils'
 export * from './formatUtils'
 export * from './validationUtils'
 export * from './pincodeState'
+export * from './caretUtils'

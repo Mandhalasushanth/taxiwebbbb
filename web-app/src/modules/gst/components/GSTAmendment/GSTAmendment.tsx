@@ -18,11 +18,13 @@ import {
   getCurrentSignatoryDetails,
 } from '@modules/gst/services/gstProfileDetails'
 import { useGSTAmendmentFlow } from '@modules/gst/hooks/useGSTAmendmentFlow'
+import { useGSTSectionFocus } from '@modules/gst/shared/useGSTSectionFocus'
 import { buildReviewData } from './gstAmendmentReviewHelpers'
 import './GSTAmendment.css'
 
 export const GSTAmendment = () => {
   const flow = useGSTAmendmentFlow()
+  useGSTSectionFocus(flow.editSection)
   const {
     navigate,
     gstin,
@@ -90,6 +92,7 @@ export const GSTAmendment = () => {
           requestedContactDetails={reviewData.requestedContact}
           fileName={reviewData.fileName}
           fileSizeText={reviewData.fileSizeText}
+          file={formData.file}
           uploadDateText={`Uploaded on ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}`}
           isSubmitting={isSubmitting}
           onBack={handleReviewBack}

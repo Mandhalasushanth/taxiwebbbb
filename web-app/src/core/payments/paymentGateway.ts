@@ -53,9 +53,34 @@ const mockValidateCoupon = ({ code, amount }: CouponValidationRequest): CouponVa
   return { valid: true, code: normalized, discountAmount, message: 'Promo code applied' }
 }
 
-const mockDeclineReason = (_instrument: PaymentInstrument): string | undefined => {
-  // In demo / frontend mock mode, all valid payment attempts succeed
-  return undefined
+/** UPI handles of real PSP banks; anything else (e.g. name@fakebank) cannot be verified */
+const MOCK_KNOWN_UPI_HANDLES = new Set([
+  'upi', 'ybl', 'ibl', 'axl', 'paytm', 'apl', 'okaxis', 'okhdfcbank', 'okicici', 'oksbi',
+  'icici', 'hdfcbank', 'sbi', 'axisbank', 'kotak', 'freecharge', 'jupiteraxis', 'waaxis',
+])
+
+/** Luhn checksum used by every card network */
+const passesLuhn = (digits: string): boolean =>
+  digits
+    .split('')
+    .reverse()
+    .map(Number)
+    .reduce((sum, digit, index) => {
+      if (index % 2 === 0) return sum + digit
+      const doubled = digit * 2
+      return sum + (doubled > 9 ? doubled - 9 : doubled)
+    }, 0) % 10 === 0
+
+const mockDeclineReason = (instrument: PaymentInstrument): string | undefined => {
+  if (instrument.method === 'upi') {
+    const handle = (instrument.upiId ?? '').split('@')[1]?.toLowerCase() ?? ''
+    return MOCK_KNOWN_UPI_HANDLES.has(handle) ? undefined : 'UPI ID could not be verified with any bank. Please check and try again.'
+  }
+  if (instrument.method === 'card') {
+    const digits = (instrument.cardNumber ?? '').replace(/\D/g, '')
+    return digits.length >= 13 && passesLuhn(digits) ? undefined : 'Card was declined by the issuing bank.'
+  }
+  return instrument.bank ? undefined : 'Bank authorisation was not completed.'
 }
 
 /* ------------------------------------------------------------------ */

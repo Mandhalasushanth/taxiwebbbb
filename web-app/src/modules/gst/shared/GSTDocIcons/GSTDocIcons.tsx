@@ -237,6 +237,54 @@ export const CheckCircleIcon: FC<IconProps> = ({
 
 
 
+/** Green filled circular badge with white checkmark for validated GSTIN */
+export const GreenCheckCircleIcon: FC<{ size?: number; className?: string }> = ({
+  size = 20,
+  className,
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 20 20"
+    fill="none"
+    className={className}
+    aria-hidden="true"
+  >
+    <circle cx="10" cy="10" r="10" fill="#10B981" />
+    <path
+      d="M6 10.2L8.7 13L14.2 7.5"
+      stroke="#ffffff"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+)
+
+/** Blue filled circular badge with white checkmark for validated GSTIN */
+export const BlueCheckCircleIcon: FC<{ size?: number; className?: string }> = ({
+  size = 20,
+  className,
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 20 20"
+    fill="none"
+    className={className}
+    aria-hidden="true"
+  >
+    <circle cx="10" cy="10" r="10" fill="#2563eb" />
+    <path
+      d="M6 10.2L8.7 13L14.2 7.5"
+      stroke="#ffffff"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+)
+
 export const ViewEyeIcon: FC<IconProps> = (props) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
     <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />

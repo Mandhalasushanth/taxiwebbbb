@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { orNotAvailable } from '@modules/gst/services/gstProfileService'
 import { GSTCancellationStepper } from './GSTCancellationStepper'
 import type { CancellationFormData } from './GSTCancellationCard'
+import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
 import './GSTCancellationReview.css'
 
 interface GSTCancellationReviewProps {
@@ -12,9 +13,8 @@ interface GSTCancellationReviewProps {
   onBack: () => void
   onSaveDraft?: () => void
   onSubmit: () => void
-  onEdit?: () => void
+  onEdit?: (section?: string) => void
 }
-
 
 export const GSTCancellationReview: React.FC<GSTCancellationReviewProps> = ({
   formData,
@@ -88,7 +88,7 @@ export const GSTCancellationReview: React.FC<GSTCancellationReviewProps> = ({
               {onEdit && (
                 <button
                   type="button"
-                  onClick={onEdit}
+                  onClick={() => onEdit('gst-canc-details-section')}
                   className="gst-canc-edit-btn"
                   aria-label="Edit Application Details"
                 >
@@ -101,17 +101,7 @@ export const GSTCancellationReview: React.FC<GSTCancellationReviewProps> = ({
               )}
             </div>
 
-            <div className="gst-canc-summary-rows">
-              <div className="gst-canc-summary-row">
-                <span className="gst-canc-summary-label">Form</span>
-                <span className="gst-canc-summary-val font-bold">REG-16 (Cancellation)</span>
-              </div>
-
-              <div className="gst-canc-summary-row">
-                <span className="gst-canc-summary-label">GSTIN</span>
-                <span className="gst-canc-summary-val font-bold">{orNotAvailable(formData.gstin)}</span>
-              </div>
-
+            <div className="gst-canc-summary-card-body">
               <div className="gst-canc-summary-row">
                 <span className="gst-canc-summary-label">Reason for Cancellation</span>
                 <span className="gst-canc-summary-val font-bold">{orNotAvailable(formData.reason)}</span>
@@ -147,12 +137,69 @@ export const GSTCancellationReview: React.FC<GSTCancellationReviewProps> = ({
                   </span>
                   <span className="gst-canc-doc-name" title={fileName}>{fileName}</span>
                   <span className="gst-canc-doc-size">({fileSize})</span>
+                  {onEdit && (
+                    <button
+                      type="button"
+                      onClick={() => onEdit('gst-canc-proof-section')}
+                      style={{
+                        marginLeft: 'auto',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        background: 'none',
+                        border: 'none',
+                        color: '#ea580c',
+                        fontSize: '0.82rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                      }}
+                      aria-label="Edit Supporting Document"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="13" height="13">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                      </svg>
+                      <span>Edit</span>
+                    </button>
+                  )}
+                  {formData.file && (
+                    <button
+                      type="button"
+                      className="gst-review-view-btn"
+                      onClick={() =>
+                        openGstDocumentPreview({
+                          file: formData.file,
+                          fileName: formData.file?.name,
+                          title: 'Cancellation Supporting Document',
+                        })
+                      }
+                      style={{
+                        marginLeft: 'auto',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        background: '#ffffff',
+                        border: '1.5px solid #93c5fd',
+                        color: '#2563eb',
+                        borderRadius: '6px',
+                        padding: '3px 10px',
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                      }}
+                      aria-label="View Supporting Document"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="14" height="14">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                      <span>View</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
           </div>
-
-
         </div>
 
         {/* Declaration Card */}

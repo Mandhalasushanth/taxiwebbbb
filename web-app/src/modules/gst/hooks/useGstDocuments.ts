@@ -1,9 +1,9 @@
 import { useState, useRef, useMemo } from 'react'
 import type { DocumentItem, DocumentCategory, DocPreviewState } from '@modules/gst/types/gstDocuments.types'
 import { INITIAL_DOCUMENTS, getGstDocUploadRule } from '@modules/gst/utils/gstDocuments.constants'
-import { getDocumentsStepError } from '@modules/gst/utils/gstRegistrationGuard'
 import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
 import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
+import { assertGstUploadCriteria, GstUploadException } from '@modules/gst/utils/gstUploadValidator'
 import { errorTracker } from '@core/errors'
 
 export const useGstDocuments = (
@@ -94,11 +94,19 @@ export const useGstDocuments = (
     storeFile(targetId, file)
   }
 
-  /** A picked file broke the slot's rule: show why next to that document */
+  /** A picked file broke the slot's rule: clear previous document and show why next to that document */
   const handleUploadRejected = (docId: string | null, message: string) => {
     const targetId = docId ?? activeUploadTargetId
     if (!targetId) return
     setActiveUploadTargetId(null)
+    setReplacingDocId(null)
+    // Clear old document so only the warning error is shown
+    gstUploadedFiles.remove(targetId)
+    updateDocuments((prev) =>
+      prev.map((doc) =>
+        doc.id === targetId ? { ...doc, isUploaded: false, fileName: undefined, file: undefined } : doc
+      )
+    )
     setUploadErrors((prev) => ({ ...prev, [targetId]: message }))
   }
 
@@ -168,14 +176,43 @@ export const useGstDocuments = (
   }
 
   const handleProceed = (onNext: () => void) => {
-    const stepError = getDocumentsStepError(documents)
-    setValidationError(stepError)
-    if (!stepError) onNext()
+    const missing = documents.filter((d) => !d.isUploaded)
+    if (missing.length > 0) {
+      setUploadErrors((prev) => {
+        const next = { ...prev }
+        missing.forEach((d) => {
+          if (!next[d.id]) {
+            next[d.id] = `Please upload ${d.title}`
+          }
+        })
+        return next
+      })
+      const firstMissing = missing[0]
+      if (firstMissing) {
+        requestAnimationFrame(() => {
+          const el = document.getElementById(firstMissing.id) || document.querySelector(`[data-doc-id="${firstMissing.id}"]`)
+          el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        })
+      }
+      return
+    }
+    onNext()
   }
 
   const handleDirectUpload = (id: string, file: File) => {
-    setActiveUploadTargetId(null)
-    storeFile(id, file)
+    try {
+      assertGstUploadCriteria(file, getGstDocUploadRule(id))
+      setActiveUploadTargetId(null)
+      storeFile(id, file)
+    } catch (err) {
+      const msg =
+        err instanceof GstUploadException
+          ? err.message
+          : err instanceof Error
+          ? err.message
+          : 'Invalid file'
+      handleUploadRejected(id, msg)
+    }
   }
 
   return {

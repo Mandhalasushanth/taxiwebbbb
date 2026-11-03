@@ -1,6 +1,4 @@
 import { SaveDraftButton } from '@shared/saveDraft'
-import { GSTStepErrorBanner } from '@modules/gst/shared/GSTStepErrorBanner'
-import { GST_STEP_ERROR } from '@modules/gst/validation/gstFieldRules'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
@@ -14,6 +12,7 @@ import { GSTCancellationFields } from './GSTCancellationFields'
 import { GSTCancellationReview } from './GSTCancellationReview'
 import { GSTCancellationStepper } from './GSTCancellationStepper'
 import { useGSTCancellationForm, type CancellationFormData } from '@modules/gst/hooks/useGSTCancellationForm'
+import { useGSTReviewEditNavigation, useGSTSectionFocus } from '@modules/gst/shared/useGSTSectionFocus'
 import './GSTCancellationCard.css'
 
 export type { CancellationFormData }
@@ -30,6 +29,8 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
   const navigate = useNavigate()
 
   const flow = useGSTCancellationForm({ onSubmit })
+  const { editSection, startSectionEdit } = useGSTReviewEditNavigation()
+  useGSTSectionFocus(editSection)
   const {
     gstin,
     setGstin,
@@ -49,6 +50,7 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
     setFinalReturnDeclaration,
     errors,
     clearError,
+    handleBlur,
     handleFileChange,
     handleReviewProceed,
     handleFinalSubmit,
@@ -96,8 +98,10 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
             reviewEdit.cancelEdit()
             setIsReviewing(false)
           }}
-          onEdit={() => {
-            reviewEdit.startEdit(() => setIsReviewing(false))
+          onEdit={(section = 'gst-canc-details-section') => {
+            startSectionEdit(section, () => {
+              reviewEdit.startEdit(() => setIsReviewing(false))
+            })
           }}
           onSubmit={handleFinalSubmit}
           onSaveDraft={openDraftModal}
@@ -138,7 +142,7 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
           pendingLiabilities={pendingLiabilities} setPendingLiabilities={setPendingLiabilities}
           lastGstr3bFiled={lastGstr3bFiled} setLastGstr3bFiled={setLastGstr3bFiled}
           closingStockDetails={closingStockDetails} setClosingStockDetails={setClosingStockDetails}
-          errors={errors} clearError={clearError}
+          errors={errors} clearError={clearError} onBlur={handleBlur}
         />
 
         <GSTFormSection
@@ -190,8 +194,6 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
             {errors.finalReturnDeclaration}
           </span>
         )}
-
-        <GSTStepErrorBanner message={Object.keys(errors).length > 0 ? GST_STEP_ERROR : null} />
 
         <div className="gst-canc-actions-row">
           <button
