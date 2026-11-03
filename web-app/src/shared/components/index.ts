@@ -35,4 +35,7 @@ export type { LogoutConfirmModalProps } from './LogoutConfirmModal/LogoutConfirm
 export { LogoutIcon } from './LogoutConfirmModal/LogoutIcon'
 export type { LogoutIconProps } from './LogoutConfirmModal/LogoutIcon'
 
+export { FieldInfoTooltip } from './FieldInfoTooltip'
+export type { FieldInfoTooltipProps } from './FieldInfoTooltip'
+
 export * from './ScrollToTop'

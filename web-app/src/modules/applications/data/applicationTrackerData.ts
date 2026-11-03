@@ -64,7 +64,7 @@ interface TrackerConfig {
   stageTitle: string
   filingHeader: string
   filingFields: ApplicationInfoField[]
-  steps: Array<[string, string, 'completed' | 'current' | 'pending', string?]>
+  steps?: Array<[string, string, 'completed' | 'current' | 'pending', string?]>
   docs: Array<[string, string, 'uploaded' | 'pending', string?]>
   payment: [string, string, string, string] // serviceFee, govFees, gst, total
   paymentStatus?: string
@@ -75,6 +75,47 @@ interface TrackerConfig {
   chargesFinalized?: boolean
   finalizedCharges?: FinalizedCharges
   rawApplication?: RecentApplication
+}
+
+
+export function getDefaultApplicationSteps(
+  dateOrTimestamp?: string,
+  currentStatus?: string
+): Array<[string, string, 'completed' | 'current' | 'pending', string?]> {
+  const ts = dateOrTimestamp || '3 Nov 2026, 11:36 am'
+  const isCompleted = currentStatus === 'Completed' || currentStatus === 'Approved'
+  const isPaid = currentStatus === 'Paid'
+  const isInVerification = currentStatus === 'Verification' || currentStatus === 'In Verification' || currentStatus === 'Under Review'
+  const isPaymentDue = currentStatus === 'Payment Due' || currentStatus === 'Payment'
+
+  return [
+    [
+      'Application Submitted',
+      `Application successfully submitted on ${ts}.`,
+      'completed',
+      ts,
+    ],
+    [
+      'Document Collection',
+      'Review of identity, premises and constitution proofs.',
+      isCompleted || isPaid || isInVerification || isPaymentDue ? 'completed' : 'current',
+    ],
+    [
+      'Verification',
+      'TRN & ARN processing and tax officer scrutiny.',
+      isCompleted || isPaid ? 'completed' : (isInVerification ? 'current' : 'pending'),
+    ],
+    [
+      'Payment',
+      'The CA manager will assign the amount after verification. Payment progress will appear in the Payments tab.',
+      isCompleted || isPaid ? 'completed' : (isPaymentDue ? 'current' : 'pending'),
+    ],
+    [
+      'Completed',
+      'Processing continues after successful payment, according to the service workflow.',
+      isCompleted ? 'completed' : (isPaid ? 'current' : 'pending'),
+    ],
+  ]
 }
 
 function buildTracker(
@@ -148,8 +189,9 @@ function buildTracker(
       : []
   )
 
+  const defaultSteps = getDefaultApplicationSteps(date, cfg.rawApplication?.statusLabel || cfg.stageTitle)
   const rawSteps = (cfg.rawApplication as any)?.steps as Array<[string, string, 'completed' | 'current' | 'pending', string?]> | undefined
-  const sourceSteps = (rawSteps && rawSteps.length > 0) ? rawSteps : cfg.steps
+  const sourceSteps = (rawSteps && rawSteps.length === 5) ? rawSteps : (cfg.steps && cfg.steps.length === 5 ? cfg.steps : defaultSteps)
 
   const timelineSteps: TimelineStep[] = sourceSteps.map(([title, desc, status, time], idx) => ({
     stepNumber: idx + 1,
@@ -205,7 +247,6 @@ function buildTracker(
 
 export function getApplicationTrackerData(id?: string): ApplicationTrackerData | null {
   const userApps = userStorage.getUserApplications()
-  const drafts = userStorage.getAllDrafts()
   const cleanId = (id || '').trim().toLowerCase()
 
   // Match application by exact id or code first, then digits, or draft
@@ -218,19 +259,6 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
       return Boolean(cleanDigits && cleanDigits.length >= 4 && aDigits === cleanDigits)
     })
 
-  const matchedDraft = drafts.find((d) => {
-    const prefix = d.serviceId.replace(/^gst-/, 'GST-').replace(/^itr-/, 'ITR-').toUpperCase()
-    const code = `DRAFT-${prefix}-${String(d.savedTimestamp || '').slice(-4)}`.toLowerCase()
-    return (
-      code === cleanId ||
-      (d.serviceId && cleanId.includes(d.serviceId)) ||
-      (d.serviceId && cleanId.includes(d.serviceId.replace(/^gst-/, '').replace(/^itr-/, '')))
-    )
-  }) ||
-  (cleanId.includes('registration') ? userStorage.getDraft('gst-registration') :
-   cleanId.includes('filing') ? userStorage.getDraft('gst-filing') :
-   cleanId.includes('amendment') ? userStorage.getDraft('gst-amendment') : null)
-
   const currentUser = authStorage.getUser()
   const defaultAppId = cleanId ? cleanId.toUpperCase() : 'APP-PENDING'
   const defaultEntity = currentUser?.fullName || 'Applicant'
@@ -238,26 +266,11 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
 
   let matchedApp: RecentApplication | null = matchedAppFromStorage || null
 
-  const isDraftId = cleanId.startsWith('draft-') || cleanId.includes('draft')
+  const isDraftId = cleanId.startsWith('draft-') || cleanId.startsWith('draft') || cleanId.includes('draft')
 
-  if (!matchedApp && matchedDraft) {
-    const prefix = matchedDraft.serviceId.replace(/^gst-/, 'GST-').replace(/^itr-/, 'ITR-').toUpperCase()
-    const draftCode = cleanId.startsWith('draft-')
-      ? cleanId.toUpperCase()
-      : `DRAFT-${prefix}-${String(matchedDraft.savedTimestamp || Date.now()).slice(-4)}`
-    matchedApp = {
-      id: `draft-${matchedDraft.serviceId}`,
-      code: draftCode,
-      title: matchedDraft.serviceTitle || (cleanId.includes('registration') ? 'GST Registration' : cleanId.includes('filing') ? 'GST Filing' : 'GST Application'),
-      meta: `${defaultEntity} · Draft Application`,
-      statusLabel: 'Draft',
-      statusTone: 'info',
-      progress: 25,
-      icon: '📄',
-      to: matchedDraft.resumeRoute,
-      formData: matchedDraft.formData,
-      paymentStatus: 'Awaiting Verification' as any,
-    } as any
+  // Draft applications must NEVER display tracking details or fake timelines
+  if (isDraftId) {
+    return null
   }
 
   if (!matchedApp) {
@@ -302,7 +315,10 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
   const metaParts = (matchedApp.meta || '').split('·').map((s) => s.trim())
   const entity = currentUser?.fullName || metaParts[0] || 'Applicant'
   const appId = matchedApp.code || matchedApp.id
-  const date = (matchedApp as { date?: string }).date || defaultDate
+  const rawDate = (matchedApp as { date?: string; savedAt?: string }).date || (matchedApp as any)?.createdAt
+  const date = rawDate
+    ? (rawDate.includes('am') || rawDate.includes('pm') ? rawDate : `${rawDate}, ${(matchedApp as any)?.savedAt || '11:36 am'}`)
+    : `${defaultDate}, ${(matchedApp as any)?.savedAt || '11:36 am'}`
   const key = (matchedApp.title || appId).toLowerCase()
   const pan = currentUser?.pan ? currentUser.pan.toUpperCase() : 'Submitted in Application'
 
@@ -323,12 +339,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
         { label: 'Jurisdiction', value: currentUser?.state || 'India' },
         { label: 'Status', value: matchedApp.statusLabel || 'Submitted', isHighlight: true },
       ],
-      steps: [
-        ['Amendment Request Submitted', 'Application received with uploaded proof', 'completed', 'Today'],
-        ['Officer Verification', 'Verification of requested modifications', 'current', 'Today'],
-        ['Portal Endorsement', 'Updating records on GST portal', 'pending'],
-        ['Amended Certificate Issued', 'Updated GST registration certificate generated', 'pending'],
-      ],
+      steps: getDefaultApplicationSteps(date, matchedApp.statusLabel),
       docs: [
         ['d1', 'Supporting Proof Document', 'uploaded'],
         ['d2', 'Identity & Authorization Proof', 'uploaded'],
@@ -343,7 +354,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
     ((key.includes('gst') || (matchedApp as { category?: string }).category === 'GST') && (key.includes('filing') || key.includes('return'))) ||
     appId.toLowerCase().startsWith('gst-fil')
   ) {
-    const filDraft = matchedDraft || userStorage.getDraft('gst-filing') || readServiceDraft<any>('gst-filing', 'gst')
+    const filDraft = userStorage.getDraft('gst-filing') || readServiceDraft<any>('gst-filing', 'gst')
     const filFormData = (matchedApp as any)?.formData || filDraft?.formData
     const fData = filFormData?.filingData || {}
 
@@ -389,12 +400,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
         { label: 'Application Ref', value: appId, isHighlight: true },
         { label: 'Filing Status', value: matchedApp.statusLabel || 'Submitted', isHighlight: true },
       ],
-      steps: [
-        ['Filing Data Submitted', 'Sales, purchase & turnover details received', 'completed', 'Today'],
-        ['Document Collection', 'Input Tax Credit & invoice records checked', 'current', 'Today'],
-        ['Verification', 'CA reconciliation and return computation', 'pending'],
-        ['Completed', 'Portal e-filing confirmed and ARN generated', 'pending'],
-      ],
+      steps: getDefaultApplicationSteps(date, matchedApp.statusLabel),
       docs: dynamicFilingDocs,
       payment: isAwaiting
         ? ['Not Assigned', '₹0', '₹0', 'Not Assigned']
@@ -405,7 +411,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
 
   // 3. GST Registration
   if (key.includes('registration')) {
-    const regDraft = matchedDraft || userStorage.getDraft('gst-registration') || readServiceDraft<any>('gst-registration', 'gst')
+    const regDraft = userStorage.getDraft('gst-registration') || readServiceDraft<any>('gst-registration', 'gst')
     const regFormData = (matchedApp as any)?.formData || regDraft?.formData
     const bData = regFormData?.businessData || {}
 
@@ -447,14 +453,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
         { label: 'Application Ref', value: appId },
         { label: 'Filing Status', value: matchedApp.statusLabel || 'Submitted', isHighlight: true },
       ],
-      steps: [
-        ['Customer Request', 'Application submitted by user', 'completed', 'Today'],
-        ['Staff Verification', 'Checking details and premises proof', 'current', 'Today'],
-        ['Application Drafting', 'Preparing portal filing dossier REG-01', 'pending'],
-        ['E-Sign / OTP Authentication', 'Applicant Aadhaar OTP authorization', 'pending'],
-        ['Portal E-Filing', 'Submission to GSTN portal', 'pending'],
-        ['Acknowledgement Issuance', 'GSTIN & Registration Certificate REG-06 generated', 'pending'],
-      ],
+      steps: getDefaultApplicationSteps(date, matchedApp.statusLabel),
       docs: dynamicRegistrationDocs,
       payment: isAwaiting
         ? ['Not Assigned', '₹0', '₹0', 'Not Assigned']
@@ -478,12 +477,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
         { label: 'Request Type', value: metaParts[0] || 'Notice Response' },
         { label: 'Filing Status', value: matchedApp.statusLabel || 'Submitted', isHighlight: true },
       ],
-      steps: [
-        ['Notice Response Submitted', 'Notice copy & initial data uploaded', 'completed', 'Today'],
-        ['CA Case Scrutiny', 'Senior CA examining department notice', 'current', 'Today'],
-        ['Department Clarification Drafted', 'Preparing legal reply on GST portal', 'pending'],
-        ['Notice Closure & Order', 'Official submission & closure acknowledgement', 'pending'],
-      ],
+      steps: getDefaultApplicationSteps(date, matchedApp.statusLabel),
       docs: [
         ['d1', 'Official GST Notice Copy', 'uploaded'],
         ['d2', 'Supporting Clarification Documents', 'uploaded'],
@@ -506,11 +500,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
         { label: 'Form Number', value: 'Form GST REG-06' },
         { label: 'Status', value: 'Generated & Saved', isHighlight: true },
       ],
-      steps: [
-        ['Request Submitted', 'Certificate request received', 'completed', 'Today'],
-        ['Portal Verification', 'Active status verified on GST portal', 'completed', 'Today'],
-        ['Certificate Issued', 'Form GST REG-06 generated & available', 'completed', 'Today'],
-      ],
+      steps: getDefaultApplicationSteps(date, matchedApp.statusLabel),
       docs: [
         ['d1', 'Registration Certificate (REG-06)', 'uploaded'],
         ['d2', 'Taxpayer Verification Record', 'uploaded'],
@@ -535,12 +525,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
         { label: 'Cancellation Reason', value: metaParts[1] || 'Closure of Business' },
         { label: 'Status', value: matchedApp.statusLabel || 'Submitted', isHighlight: true },
       ],
-      steps: [
-        ['Application Submitted', 'REG-16 cancellation application logged', 'completed', 'Today'],
-        ['Officer Scrutiny', 'Tax liability & ITC reversal check', 'current', 'Today'],
-        ['Tax Clearance', 'Final assessment verification', 'pending'],
-        ['Order for Cancellation', 'Issuance of REG-19 order', 'pending'],
-      ],
+      steps: getDefaultApplicationSteps(date, matchedApp.statusLabel),
       docs: [
         ['d1', 'Cancellation Application (REG-16)', 'uploaded'],
         ['d2', 'Closing Stock & Liability Declaration', 'uploaded'],
@@ -588,35 +573,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
       ]
     }
 
-    let steps: Array<[string, string, 'completed' | 'current' | 'pending', string?]>
-    if (currentPaymentStatus === 'Paid') {
-      steps = [
-        ['Application Submitted', 'TDS refund details & documents received', 'completed', 'Today'],
-        ['CA Verification', 'Senior CA verified Form 26AS & AIS deductions', 'completed', 'Today'],
-        ['Manager Charge Finalization', `Charges finalized (${ch?.finalizedBy || 'Manager'})`, 'completed', 'Today'],
-        ['Fee Payment Confirmed', `Paid ₹${ch?.total?.toLocaleString('en-IN') || ''} via Online Gateway`, 'completed', 'Today'],
-        ['CPC Return Filing', 'Uploading verified claim to IT Department CPC', 'current', 'Today'],
-        ['Direct Bank Credit', 'Direct credit to pre-validated bank account', 'pending'],
-      ]
-    } else if (isChargesFinalized) {
-      steps = [
-        ['Application Submitted', 'TDS refund details & documents received', 'completed', 'Today'],
-        ['CA Verification', 'Senior CA verified Form 26AS & AIS deductions', 'completed', 'Today'],
-        ['Manager Charge Finalization', `Charges finalized (${ch?.finalizedBy || 'Manager'})`, 'completed', 'Today'],
-        ['Payment Due', `Payable balance: ₹${ch?.total?.toLocaleString('en-IN') || ''}`, 'current', 'Today'],
-        ['CPC Return Filing', 'Uploading verified claim to IT Department CPC', 'pending'],
-        ['Direct Bank Credit', 'Direct credit to pre-validated bank account', 'pending'],
-      ]
-    } else {
-      steps = [
-        ['Application Submitted', 'TDS refund details & documents received', 'completed', 'Today'],
-        ['CA Verification', 'Senior CA cross-examining 26AS, AIS & deduction proof', 'current', 'Today'],
-        ['Manager Charge Finalization', 'Assessing service charges based on return complexity', 'pending'],
-        ['Fee Payment', 'Payment of finalized charges in Payment tab', 'pending'],
-        ['CPC Return Filing', 'Uploading verified claim to IT Department CPC', 'pending'],
-        ['Direct Bank Credit', 'Direct credit to pre-validated bank account', 'pending'],
-      ]
-    }
+    const steps = getDefaultApplicationSteps(date, currentPaymentStatus === 'Paid' ? 'Paid' : isChargesFinalized ? 'Payment Due' : matchedApp.statusLabel)
 
     const stageTitle = isChargesFinalized
       ? (currentPaymentStatus === 'Paid' ? 'Processing with Income Tax Dept' : 'Charges Finalized — Payment Due')
@@ -676,16 +633,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
         { label: 'Assigned CA', value: 'CA not assigned yet' },
         { label: 'Expected Completion', value: '15 Oct 2026' },
       ],
-      steps: [
-        ['Application Submitted', 'Return information & documents received', 'completed', 'Today'],
-        ['Staff Verification', 'Tax Executive verifying documents & Form 26AS/AIS', 'current', 'Today'],
-        ['ITR Preparation & Tax Calculation', 'Tax computation & dual-regime optimization', 'pending'],
-        ['Internal Tax Review', 'Senior CA verification & quality audit', 'pending'],
-        ['Customer Review & Approval', 'Customer signs off on final computation', 'pending'],
-        ['ITR Submission', 'Filing return with Income Tax e-Filing portal', 'pending'],
-        ['E-Verification', 'Aadhaar OTP / EVC verification pending', 'pending'],
-        ['Income Tax Department Processing', 'Central Processing Center (CPC) return processing & refund/tax closure', 'pending'],
-      ],
+      steps: getDefaultApplicationSteps(date, matchedApp.statusLabel),
       docs: [
         ['d1', 'Form 16 / Salary Certificate', 'uploaded'],
         ['d2', 'Bank Statement / Interest Certificate', 'uploaded'],
@@ -711,12 +659,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
         { label: 'Jurisdiction', value: currentUser?.state || 'India' },
         { label: 'Status', value: matchedApp.statusLabel || 'Submitted', isHighlight: true },
       ],
-      steps: [
-        ['Application Submitted', 'Company details & promoter KYC received', 'completed', 'Today'],
-        ['Name Approval (RUN / SPICe+ Part A)', 'Name availability & MCA reservation', 'current', 'Today'],
-        ['SPICe+ Part B & AGILE-PRO-S', 'Drafting MOA, AOA & statutory forms', 'pending'],
-        ['Certificate of Incorporation (COI)', 'COI, PAN, TAN & Bank A/C issued', 'pending'],
-      ],
+      steps: getDefaultApplicationSteps(date, matchedApp.statusLabel),
       docs: [
         ['d1', 'Directors Identity Proof (PAN, Passport / Voter ID)', 'uploaded'],
         ['d2', 'Directors Residential Address Proof', 'uploaded'],
@@ -778,12 +721,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
         { label: 'Loan Type', value: matchedApp.title },
         { label: 'Status', value: matchedApp.statusLabel || 'Documents Received', isHighlight: true },
       ],
-      steps: [
-        ['Application Submitted', 'Loan request & financial details received', 'completed', 'Today'],
-        ['Document & KYC Verification', 'Verifying income proof & credit report', 'current', 'Today'],
-        ['Credit Underwriting & Sanction', 'Lender underwriting and sanction letter', 'pending'],
-        ['Disbursement', 'Loan agreement execution & fund credit', 'pending'],
-      ],
+      steps: getDefaultApplicationSteps(date, matchedApp.statusLabel),
       docs: loanDocs,
       payment: ['Processing Fee', '₹0', 'Included in Sanction', 'Paid'],
     })
@@ -803,12 +741,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
       { label: 'Service Description', value: matchedApp.title },
       { label: 'Status', value: matchedApp.statusLabel || 'Submitted', isHighlight: true },
     ],
-    steps: [
-      ['Application Logged', 'Service request initiated', 'completed', 'Today'],
-      ['Document & Profile Review', 'Specialist reviewing submission', 'current', 'Today'],
-      ['Processing & Approval', 'Partner coordination and filing', 'pending'],
-      ['Final Dispatch / Issuance', 'Final confirmation delivery', 'pending'],
-    ],
+    steps: getDefaultApplicationSteps(date, matchedApp.statusLabel),
     docs: [
       ['d1', 'Applicant KYC & Identification', 'uploaded'],
       ['d2', 'Financial Statements / Supporting Proofs', 'uploaded'],

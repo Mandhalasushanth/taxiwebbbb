@@ -1,7 +1,7 @@
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import React, { useRef } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
-import { DocumentCard, CaretInput } from '@shared/components'
+import { DocumentCard, CaretInput, FieldInfoTooltip } from '@shared/components'
 import { UPLOAD_HINT, DOCUMENT_UPLOAD_RULE } from '@shared/upload'
 import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
 import { assertGstUploadCriteria, GstUploadException } from '@modules/gst/utils/gstUploadValidator'
@@ -121,9 +121,15 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
       <div className="gst-notice-body">
         {/* Field 1: Notice Number */}
         <div className="gst-notice-field-group">
-          <label className="gst-notice-label" htmlFor="gst-notice-number-input">
-            Notice Number <span className="req-asterisk">*</span>
-          </label>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <label className="gst-notice-label" htmlFor="gst-notice-number-input">
+              Notice Number <span className="req-asterisk">*</span>
+            </label>
+            <FieldInfoTooltip
+              title="Notice Number Information"
+              description="Enter the notice or reference number mentioned in the GST notice issued by the GST department. Ensure the number matches the official notice."
+            />
+          </div>
           <CaretInput
             id="gst-notice-number-input"
             type="text"

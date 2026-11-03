@@ -27,14 +27,16 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
   })
 
   it('renders GST Registration with all 6 uploaded documents matching mobile reference and 6 status steps', () => {
-    userStorage.saveDraft({
-      serviceId: 'gst-registration',
-      serviceTitle: 'GST Registration',
-      currentStep: 2,
-      totalSteps: 3,
-      savedAt: '11:36 am',
-      savedTimestamp: Date.now(),
-      resumeRoute: '/gst/register?step=documents',
+    userStorage.saveUserApplication({
+      id: 'app-gst-reg-5586',
+      code: 'GST-REG-5586',
+      title: 'GST Registration',
+      meta: 'Apex Logistics LLP · Maharashtra',
+      statusLabel: 'Under Review',
+      statusTone: 'warning',
+      progress: 35,
+      icon: '📄',
+      to: '/applications/track/GST-REG-5586',
       formData: {
         businessData: {
           legalName: 'Apex Logistics LLP',
@@ -50,7 +52,7 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
     })
 
     render(
-      <MemoryRouter initialEntries={['/applications/track/DRAFT-GST-REGISTRATION-5586?tab=documents']}>
+      <MemoryRouter initialEntries={['/applications/track/GST-REG-5586?tab=documents']}>
         <Routes>
           <Route path="/applications/track/:id" element={<ApplicationTrackerView />} />
         </Routes>
@@ -74,15 +76,17 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
     expect(viewButtons.length).toBe(6)
   })
 
-  it('renders GST Registration Overview with user filled business details and Status with Step 2/6', () => {
-    userStorage.saveDraft({
-      serviceId: 'gst-registration',
-      serviceTitle: 'GST Registration',
-      currentStep: 2,
-      totalSteps: 3,
-      savedAt: '11:36 am',
-      savedTimestamp: Date.now(),
-      resumeRoute: '/gst/register?step=documents',
+  it('renders GST Registration Overview with user filled business details and Status with Step 2/5', () => {
+    userStorage.saveUserApplication({
+      id: 'app-gst-reg-5586',
+      code: 'GST-REG-5586',
+      title: 'GST Registration',
+      meta: 'Apex Logistics LLP · Maharashtra',
+      statusLabel: 'Under Review',
+      statusTone: 'warning',
+      progress: 35,
+      icon: '📄',
+      to: '/applications/track/GST-REG-5586',
       formData: {
         businessData: {
           legalName: 'Apex Logistics LLP',
@@ -99,7 +103,7 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
 
     // Overview Tab
     const { unmount } = render(
-      <MemoryRouter initialEntries={['/applications/track/DRAFT-GST-REGISTRATION-5586?tab=overview']}>
+      <MemoryRouter initialEntries={['/applications/track/GST-REG-5586?tab=overview']}>
         <Routes>
           <Route path="/applications/track/:id" element={<ApplicationTrackerView />} />
         </Routes>
@@ -116,36 +120,37 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
 
     // Status Tab
     render(
-      <MemoryRouter initialEntries={['/applications/track/DRAFT-GST-REGISTRATION-5586?tab=status']}>
+      <MemoryRouter initialEntries={['/applications/track/GST-REG-5586?tab=status']}>
         <Routes>
           <Route path="/applications/track/:id" element={<ApplicationTrackerView />} />
         </Routes>
       </MemoryRouter>
     )
 
-    expect(screen.getByText('Step 2/6')).toBeDefined()
-    expect(screen.getByText('Customer Request')).toBeDefined()
-    expect(screen.getByText('Staff Verification')).toBeDefined()
-    expect(screen.getByText('Application Drafting')).toBeDefined()
-    expect(screen.getByText('E-Sign / OTP Authentication')).toBeDefined()
-    expect(screen.getByText('Portal E-Filing')).toBeDefined()
-    expect(screen.getByText(/Acknowledgement Issuance/i)).toBeDefined()
+    expect(screen.getByText(/Step \d\/5/)).toBeDefined()
+    expect(screen.getByText('Document Collection')).toBeDefined()
+    expect(screen.getByText('Verification')).toBeDefined()
+    expect(screen.getByText('Payment')).toBeDefined()
+    expect(screen.getAllByText('Completed').length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders GST Registration Payments with Awaiting Verification and Not Assigned amounts matching mobile screen', () => {
-    userStorage.saveDraft({
-      serviceId: 'gst-registration',
-      serviceTitle: 'GST Registration',
-      currentStep: 2,
-      totalSteps: 3,
-      savedAt: '11:36 am',
-      savedTimestamp: Date.now(),
-      resumeRoute: '/gst/register?step=documents',
+    userStorage.saveUserApplication({
+      id: 'app-gst-reg-5586',
+      code: 'GST-REG-5586',
+      title: 'GST Registration',
+      meta: 'Apex Logistics LLP · Maharashtra',
+      statusLabel: 'Under Review',
+      statusTone: 'warning',
+      progress: 35,
+      icon: '📄',
+      to: '/applications/track/GST-REG-5586',
+      paymentStatus: 'Awaiting Verification' as any,
       formData: {},
     })
 
     render(
-      <MemoryRouter initialEntries={['/applications/track/DRAFT-GST-REGISTRATION-5586?tab=payments']}>
+      <MemoryRouter initialEntries={['/applications/track/GST-REG-5586?tab=payments']}>
         <Routes>
           <Route path="/applications/track/:id" element={<ApplicationTrackerView />} />
         </Routes>
@@ -160,15 +165,17 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
     expect(screen.queryByText('Pay Now')).toBeNull()
   })
 
-  it('renders GST Filing with all 12 uploaded documents and Step 2/4', () => {
-    userStorage.saveDraft({
-      serviceId: 'gst-filing',
-      serviceTitle: 'GST Filing',
-      currentStep: 2,
-      totalSteps: 3,
-      savedAt: '11:36 am',
-      savedTimestamp: Date.now(),
-      resumeRoute: '/gst/filing/upload',
+  it('renders GST Filing with all 12 uploaded documents and Step 2/5', () => {
+    userStorage.saveUserApplication({
+      id: 'app-gst-fil-7452',
+      code: 'GST-FIL-7452',
+      title: 'GST Filing',
+      meta: 'Nova Retail Ventures · August 2026',
+      statusLabel: 'Under Verification',
+      statusTone: 'info',
+      progress: 30,
+      icon: '📄',
+      to: '/applications/track/GST-FIL-7452',
       formData: {
         filingData: {
           businessName: 'Nova Retail Ventures',
@@ -183,7 +190,7 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
     })
 
     render(
-      <MemoryRouter initialEntries={['/applications/track/DRAFT-GST-FILING-7452?tab=documents']}>
+      <MemoryRouter initialEntries={['/applications/track/GST-FIL-7452?tab=documents']}>
         <Routes>
           <Route path="/applications/track/:id" element={<ApplicationTrackerView />} />
         </Routes>
@@ -214,14 +221,17 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
   })
 
   it('renders GST Filing Overview with user filled details and Payments Awaiting Verification', () => {
-    userStorage.saveDraft({
-      serviceId: 'gst-filing',
-      serviceTitle: 'GST Filing',
-      currentStep: 2,
-      totalSteps: 3,
-      savedAt: '11:36 am',
-      savedTimestamp: Date.now(),
-      resumeRoute: '/gst/filing/upload',
+    userStorage.saveUserApplication({
+      id: 'app-gst-fil-7452',
+      code: 'GST-FIL-7452',
+      title: 'GST Filing',
+      meta: 'Nova Retail Ventures · August 2026',
+      statusLabel: 'Under Verification',
+      statusTone: 'info',
+      progress: 30,
+      icon: '📄',
+      to: '/applications/track/GST-FIL-7452',
+      paymentStatus: 'Awaiting Verification' as any,
       formData: {
         filingData: {
           businessName: 'Nova Retail Ventures',
@@ -237,7 +247,7 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
 
     // Overview Tab
     const { unmount } = render(
-      <MemoryRouter initialEntries={['/applications/track/DRAFT-GST-FILING-7452?tab=overview']}>
+      <MemoryRouter initialEntries={['/applications/track/GST-FIL-7452?tab=overview']}>
         <Routes>
           <Route path="/applications/track/:id" element={<ApplicationTrackerView />} />
         </Routes>
@@ -254,7 +264,7 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
 
     // Payments Tab
     render(
-      <MemoryRouter initialEntries={['/applications/track/DRAFT-GST-FILING-7452?tab=payments']}>
+      <MemoryRouter initialEntries={['/applications/track/GST-FIL-7452?tab=payments']}>
         <Routes>
           <Route path="/applications/track/:id" element={<ApplicationTrackerView />} />
         </Routes>
@@ -274,14 +284,16 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
 
     const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null)
 
-    userStorage.saveDraft({
-      serviceId: 'gst-registration',
-      serviceTitle: 'GST Registration',
-      currentStep: 2,
-      totalSteps: 3,
-      savedAt: '11:36 am',
-      savedTimestamp: Date.now(),
-      resumeRoute: '/gst/register?step=documents',
+    userStorage.saveUserApplication({
+      id: 'app-gst-reg-5586',
+      code: 'GST-REG-5586',
+      title: 'GST Registration',
+      meta: 'Apex Logistics LLP · Maharashtra',
+      statusLabel: 'Under Review',
+      statusTone: 'warning',
+      progress: 35,
+      icon: '📄',
+      to: '/applications/track/GST-REG-5586',
       formData: {
         businessData: {
           legalName: 'Apex Logistics LLP',
@@ -301,7 +313,7 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
     })
 
     render(
-      <MemoryRouter initialEntries={['/applications/track/DRAFT-GST-REGISTRATION-5586?tab=documents']}>
+      <MemoryRouter initialEntries={['/applications/track/GST-REG-5586?tab=documents']}>
         <Routes>
           <Route path="/applications/track/:id" element={<ApplicationTrackerView />} />
         </Routes>

@@ -9,6 +9,7 @@ import {
   validateDistrict,
   validateHsnSac,
   isValidHsnSac,
+  getHsnSacClassification,
   validateAccountHolderName,
   validateConfirmAccountNumber,
   validateDesignation,
@@ -152,14 +153,15 @@ describe('GST Validations - Centralized & Field-by-Field', () => {
   })
 
   describe('5. Primary HSN / SAC Code Validation', () => {
-    it('accepts valid 4, 6, or 8 digit HSN/SAC codes', () => {
+    it('accepts valid 4, 6, or 8 digit HSN codes and 6-digit SAC codes', () => {
       expect(isValidHsnSac('1234')).toBe(true)
       expect(isValidHsnSac('123456')).toBe(true)
       expect(isValidHsnSac('12345678')).toBe(true)
+      expect(isValidHsnSac('998311')).toBe(true)
       expect(validateHsnSac('998311')).toBeNull()
     })
 
-    it('rejects invalid HSN/SAC lengths and non-numeric codes', () => {
+    it('rejects invalid HSN/SAC lengths, non-numeric codes, and non-6-digit SAC codes', () => {
       expect(isValidHsnSac('123')).toBe(false)
       expect(isValidHsnSac('12345')).toBe(false)
       expect(isValidHsnSac('1234567')).toBe(false)
@@ -167,6 +169,43 @@ describe('GST Validations - Centralized & Field-by-Field', () => {
       expect(isValidHsnSac('9983AB')).toBe(false)
       expect(validateHsnSac('123')).toBe('HSN / SAC code must be 4, 6 or 8 digits')
       expect(validateHsnSac('9983AB')).toBe('HSN / SAC code must contain digits only')
+      expect(validateHsnSac('0012')).toBe('HSN / SAC code must start with a valid chapter (01-98 for HSN, 99 for SAC)')
+      expect(validateHsnSac('9983')).toBe('SAC code must be 6 digits')
+      expect(validateHsnSac('99831122')).toBe('SAC code must be 6 digits')
+    })
+
+    it('correctly classifies HSN (Goods) and SAC (Services) with badge formatting', () => {
+      expect(getHsnSacClassification('1234')).toEqual({
+        isValid: true,
+        type: 'HSN',
+        category: 'Goods',
+        digits: 4,
+        badgeText: '✓ HSN (Goods) — 4 digits',
+      })
+      expect(getHsnSacClassification('123455')).toEqual({
+        isValid: true,
+        type: 'HSN',
+        category: 'Goods',
+        digits: 6,
+        badgeText: '✓ HSN (Goods) — 6 digits',
+      })
+      expect(getHsnSacClassification('12345555')).toEqual({
+        isValid: true,
+        type: 'HSN',
+        category: 'Goods',
+        digits: 8,
+        badgeText: '✓ HSN (Goods) — 8 digits',
+      })
+      expect(getHsnSacClassification('998311')).toEqual({
+        isValid: true,
+        type: 'SAC',
+        category: 'Services',
+        digits: 6,
+        badgeText: '✓ SAC (Services) — 6 digits',
+      })
+      expect(getHsnSacClassification('9983')).toBeNull()
+      expect(getHsnSacClassification('0012')).toBeNull()
+      expect(getHsnSacClassification('123')).toBeNull()
     })
   })
 
@@ -315,7 +354,9 @@ describe('GST Validations - Centralized & Field-by-Field', () => {
       expect(validateGstBusinessField('signatoryPan', { ...validFormData, signatoryPan: 'ABCCE1234F' })).toContain('4th character "P"')
 
       // Test HSN code on blur
-      expect(validateGstBusinessField('hsnSacCode', { ...validFormData, hsnSacCode: '9983' })).toBeUndefined()
+      expect(validateGstBusinessField('hsnSacCode', { ...validFormData, hsnSacCode: '998311' })).toBeUndefined()
+      expect(validateGstBusinessField('hsnSacCode', { ...validFormData, hsnSacCode: '1234' })).toBeUndefined()
+      expect(validateGstBusinessField('hsnSacCode', { ...validFormData, hsnSacCode: '9983' })).toBe('SAC code must be 6 digits')
       expect(validateGstBusinessField('hsnSacCode', { ...validFormData, hsnSacCode: '99' })).toBe('HSN / SAC code must be 4, 6 or 8 digits')
     })
   })

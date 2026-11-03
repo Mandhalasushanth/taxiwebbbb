@@ -7,13 +7,14 @@ import './Input.css'
 
 export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'prefix'> {
   label?: string
+  labelSuffix?: ReactNode
   hint?: string
   error?: string
   prefix?: ReactNode
   suffix?: ReactNode
 }
 
-export const Input = ({ label, hint, error, prefix, suffix, className, id, ...rest }: InputProps) => {
+export const Input = ({ label, labelSuffix, hint, error, prefix, suffix, className, id, ...rest }: InputProps) => {
   const generatedId = useId()
   const inputId = id ?? generatedId
   const describedBy = error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined
@@ -24,6 +25,7 @@ export const Input = ({ label, hint, error, prefix, suffix, className, id, ...re
         <label className="field__label" htmlFor={inputId}>
           {label}
           {rest.required && <span aria-hidden="true"> *</span>}
+          {labelSuffix}
         </label>
       )}
 

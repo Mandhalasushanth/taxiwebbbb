@@ -1,5 +1,6 @@
 import React from 'react'
 import { Award, Store } from 'lucide-react'
+import { FieldInfoTooltip } from '@shared/components'
 import { getCommencementDateBounds } from '@shared/utils'
 import { gstInput, GST_MAX_LENGTH } from '@modules/gst/utils/gstInputFormatters'
 import { GSTFormSection } from '@modules/gst/shared/GSTFormSection'
@@ -88,6 +89,12 @@ export const GSTBusinessIdentitySection: React.FC<GSTBusinessGeneralSectionProps
         <GSTTextField
           id="tradeName"
           label="Trade Name"
+          infoTooltip={
+            <FieldInfoTooltip
+              title="Trade Name Information"
+              description="Enter the trade name under which your business operates. It should match the trade name used in your GST registration details, if applicable."
+            />
+          }
           placeholder="Enter your business / trade name"
           value={data.tradeName}
           error={errors.tradeName}

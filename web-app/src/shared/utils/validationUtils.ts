@@ -47,6 +47,9 @@ import {
   CONSTITUTION_PAN_TYPES,
   validateDistrict,
   validateHsnSac,
+  isValidHsnSac,
+  getHsnSacClassification,
+  type HsnSacClassification,
   validateAccountHolderName,
   validateConfirmAccountNumber,
   validateDesignation,
@@ -80,6 +83,9 @@ export {
   CONSTITUTION_PAN_TYPES,
   validateDistrict,
   validateHsnSac,
+  isValidHsnSac,
+  getHsnSacClassification,
+  type HsnSacClassification,
   validateAccountHolderName,
   validateConfirmAccountNumber,
   validateDesignation,
@@ -231,13 +237,9 @@ export const getCommencementDateBounds = (today: Date = new Date()): { min: stri
 
 export const validateCommencementDate = (date: string, today: Date = new Date()): string | null => centralValidateCommencementDate(date, today)
 
-/* ------------------------------- HSN / SAC ------------------------------- */
+// HSN_SAC_LENGTHS is exported above
 export const HSN_SAC_LENGTHS = [4, 6, 8] as const
 
-export const isValidHsnSac = (code: string): boolean => {
-  const trimmed = (code || '').trim()
-  return /^\d+$/.test(trimmed) && (HSN_SAC_LENGTHS as readonly number[]).includes(trimmed.length)
-}
 
 /* -------------------------------- AMOUNT --------------------------------- */
 export const validateAmount = (

@@ -69,11 +69,12 @@ describe('ApplicationTrackerView component', () => {
     expect(screen.getAllByText('Application Submitted').length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText(/Application submitted successfully on/i)).toBeDefined()
 
-    // 4 Steps matching Screenshot 2
-    expect(screen.getByText('Filing Data Submitted')).toBeDefined()
+    // 5 Default Steps matching reference
     expect(screen.getByText('Document Collection')).toBeDefined()
     expect(screen.getByText('Verification')).toBeDefined()
+    expect(screen.getByText('Payment')).toBeDefined()
     expect(screen.getAllByText('Completed').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText('Step 2/5')).toBeDefined()
 
     // Status pill badges
     expect(screen.getByText('In Progress')).toBeDefined()

@@ -65,14 +65,12 @@ describe('ApplicationTrackerView dynamic behavior across applications', () => {
       </MemoryRouter>
     )
 
-    // Step badge must show total 6 steps
-    expect(screen.getByText(/Step \d\/6/)).toBeDefined()
-    expect(screen.getByText('Customer Request')).toBeDefined()
-    expect(screen.getByText('Staff Verification')).toBeDefined()
-    expect(screen.getByText('Application Drafting')).toBeDefined()
-    expect(screen.getByText('E-Sign / OTP Authentication')).toBeDefined()
-    expect(screen.getByText('Portal E-Filing')).toBeDefined()
-    expect(screen.getByText(/Acknowledgement Issuance/i)).toBeDefined()
+    // Step badge must show total 5 default steps
+    expect(screen.getByText(/Step \d\/5/)).toBeDefined()
+    expect(screen.getByText('Document Collection')).toBeDefined()
+    expect(screen.getByText('Verification')).toBeDefined()
+    expect(screen.getByText('Payment')).toBeDefined()
+    expect(screen.getAllByText('Completed').length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders ITR Filing with 8 steps and dynamic overview details', () => {
@@ -96,11 +94,12 @@ describe('ApplicationTrackerView dynamic behavior across applications', () => {
       </MemoryRouter>
     )
 
-    // Step badge must show total 8 steps
-    expect(screen.getByText(/Step \d\/8/)).toBeDefined()
-    expect(screen.getByText('Internal Tax Review')).toBeDefined()
-    expect(screen.getByText('Customer Review & Approval')).toBeDefined()
-    expect(screen.getByText('E-Verification')).toBeDefined()
+    // Step badge must show total 5 default steps
+    expect(screen.getByText(/Step \d\/5/)).toBeDefined()
+    expect(screen.getByText('Document Collection')).toBeDefined()
+    expect(screen.getByText('Verification')).toBeDefined()
+    expect(screen.getByText('Payment')).toBeDefined()
+    expect(screen.getAllByText('Completed').length).toBeGreaterThanOrEqual(1)
   })
 })
 

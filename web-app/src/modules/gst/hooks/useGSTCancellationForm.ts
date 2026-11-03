@@ -37,10 +37,11 @@ const buildInitialCancellation = (): CancellationDraft => ({
 })
 
 export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps) => {
+  const [draftSnapshot] = useState(() => readServiceDraft<CancellationDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst))
   const [initialValues] = useState(buildInitialCancellation)
   const [restored] = useState<CancellationDraft>(() => ({
     ...initialValues,
-    ...readServiceDraft<CancellationDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst)?.formData,
+    ...draftSnapshot?.formData,
   }))
   const [gstin, setGstin] = useState(restored.gstin)
   const [reason, setReason] = useState(restored.reason)
@@ -52,7 +53,7 @@ export const useGSTCancellationForm = ({ onSubmit }: UseGSTCancellationFormProps
   const [finalReturnDeclaration, setFinalReturnDeclaration] = useState(restored.finalReturnDeclaration)
 
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [isReviewing, setIsReviewing] = useState(false)
+  const [isReviewing, setIsReviewing] = useState(() => draftSnapshot?.currentStep === 2)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [referenceNumber, setReferenceNumber] = useState('')

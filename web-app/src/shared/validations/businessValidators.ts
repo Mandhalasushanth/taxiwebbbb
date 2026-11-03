@@ -307,11 +307,73 @@ export const validateHsnSac = (
     return `${label} must be 4, 6 or 8 digits`
   }
 
+  if (raw.startsWith('00')) {
+    return `${label} must start with a valid chapter (01-98 for HSN, 99 for SAC)`
+  }
+
+  if (raw.startsWith('99')) {
+    if (raw.length !== 6) {
+      return 'SAC code must be 6 digits'
+    }
+    return null
+  }
+
   return null
 }
 
 export const isValidHsnSac = (code: string): boolean =>
   validateHsnSac(code, { required: true }) === null
+
+export interface HsnSacClassification {
+  isValid: boolean
+  type: 'HSN' | 'SAC'
+  category: 'Goods' | 'Services'
+  digits: number
+  badgeText: string
+}
+
+/**
+ * Returns classification details (HSN Goods vs SAC Services) for valid HSN/SAC codes:
+ * - HSN (Goods): Chapters 01 through 98, numeric lengths 4, 6, or 8 digits.
+ * - SAC (Services): Always starts with 99, 6 digits uniformly.
+ */
+export const getHsnSacClassification = (
+  code: string | undefined | null
+): HsnSacClassification | null => {
+  const raw = String(code ?? '').trim()
+  if (!/^\d+$/.test(raw)) return null
+
+  // SAC codes always start with 99 and are 6 digits uniformly
+  if (raw.startsWith('99')) {
+    if (raw.length === 6) {
+      return {
+        isValid: true,
+        type: 'SAC',
+        category: 'Services',
+        digits: 6,
+        badgeText: '✓ SAC (Services) — 6 digits',
+      }
+    }
+    return null
+  }
+
+  const length = raw.length
+  if (![4, 6, 8].includes(length)) return null
+
+  // HSN codes start with chapters 01 through 98 (Goods)
+  const chapter = parseInt(raw.slice(0, 2), 10)
+  if (chapter >= 1 && chapter <= 98) {
+    return {
+      isValid: true,
+      type: 'HSN',
+      category: 'Goods',
+      digits: length,
+      badgeText: `✓ HSN (Goods) — ${length} digits`,
+    }
+  }
+
+  return null
+}
 
 /* -------------------------------------------------------------------------- */
 /* Account Holder Name (Business or Individual)                               */

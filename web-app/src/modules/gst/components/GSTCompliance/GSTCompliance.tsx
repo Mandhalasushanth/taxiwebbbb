@@ -9,7 +9,7 @@ import { useGSTComplianceState, type ComplianceRequestOption } from '@modules/gs
 import { FINANCIAL_YEAR_OPTIONS } from '@modules/gst/utils/gstPeriodOptions'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { ServiceDraftModal } from '@shared/saveDraft'
-import { CaretInput, StepActionBar } from '@shared/components'
+import { CaretInput, FieldInfoTooltip, StepActionBar } from '@shared/components'
 import { gstFieldRules } from '@modules/gst/validation/gstFieldRules'
 import { GreenCheckCircleIcon } from '@modules/gst/shared/GSTDocIcons/GSTDocIcons'
 import { GSTReconciliationDocsSection } from './GSTReconciliationDocsSection'
@@ -153,9 +153,15 @@ export const GSTCompliance: React.FC = () => {
                 <form id="gst-compliance-form" onSubmit={handleSubmit} noValidate className="gst-form">
                   {/* GSTIN Field */}
                   <div className="form-group">
-                    <label htmlFor="gstin-input" className="form-label">
-                      GSTIN <span className="req-asterisk">*</span>
-                    </label>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <label htmlFor="gstin-input" className="form-label">
+                        GSTIN <span className="req-asterisk">*</span>
+                      </label>
+                      <FieldInfoTooltip
+                        title="GSTIN Information"
+                        description="Enter the valid 15-digit GST Identification Number associated with the GST registration for which you want to manage compliance."
+                      />
+                    </div>
                     <div className="gstin-input-wrapper">
                       <CaretInput
                         id="gstin-input"

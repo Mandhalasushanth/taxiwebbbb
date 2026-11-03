@@ -14,6 +14,7 @@ import { ApplicationDocumentsTab } from './tabs/ApplicationDocumentsTab'
 import { ApplicationPaymentsTab } from './tabs/ApplicationPaymentsTab'
 import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
 import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
+import { resolveDraftResumeRoute } from '../../utils/draftRouting'
 import './ApplicationTrackerView.css'
 
 export type TrackerTab = 'overview' | 'status' | 'documents' | 'payments' | 'chat'
@@ -44,6 +45,32 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
   useEffect(() => {
     resetScrollToTop()
   }, [appId])
+
+  // Draft Applications = Resume Application: redirect directly to service home page
+  useEffect(() => {
+    if (!appId) return
+    const cleanId = appId.trim().toLowerCase()
+    const isDraft =
+      cleanId.startsWith('draft-') ||
+      cleanId.startsWith('draft') ||
+      cleanId.includes('draft')
+
+    if (isDraft) {
+      const drafts = userStorage.getAllDrafts()
+      const matchedDraft = drafts.find((d) => {
+        const prefix = d.serviceId.replace(/^gst-/, 'GST-').replace(/^itr-/, 'ITR-').toUpperCase()
+        const code = `DRAFT-${prefix}-${String(d.savedTimestamp || '').slice(-4)}`.toLowerCase()
+        return (
+          code === cleanId ||
+          cleanId === `draft-${d.serviceId}` ||
+          (d.serviceId && cleanId.includes(d.serviceId))
+        )
+      })
+
+      const targetRoute = matchedDraft?.resumeRoute || resolveDraftResumeRoute(matchedDraft || cleanId)
+      navigate(targetRoute, { replace: true, state: { resumeDraft: true } })
+    }
+  }, [appId, navigate])
 
   // Sync state if appId changes
   useEffect(() => {

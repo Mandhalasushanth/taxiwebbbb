@@ -1,6 +1,7 @@
 import React from 'react'
 import { MapPin } from 'lucide-react'
-import { HSN_SAC_LENGTHS, validatePincodeMatchesState } from '@shared/utils'
+import { FieldInfoTooltip } from '@shared/components'
+import { HSN_SAC_LENGTHS, getHsnSacClassification, validatePincodeMatchesState } from '@shared/utils'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { GSTFormSection } from '@modules/gst/shared/GSTFormSection'
 import { GSTSelectField, GSTTextField } from '@modules/gst/shared/GSTFormFields'
@@ -47,6 +48,7 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
   // Live PIN ↔ State check so a mismatch is visible before pressing Continue
   const pinStateMismatch = errors.pinCode ? null : validatePincodeMatchesState(data.pinCode, data.state)
   const pinCodeMessage = errors.pinCode || pinStateMismatch
+  const hsnClassification = getHsnSacClassification(data.hsnSacCode)
 
   return (
     <GSTFormSection
@@ -137,12 +139,26 @@ export const GSTBusinessAddressSection: React.FC<GSTBusinessAddressSectionProps>
       <GSTTextField
         id="hsnSacCode"
         label="Primary HSN / SAC Code"
+        infoTooltip={
+          <FieldInfoTooltip
+            title="SAC Code Information"
+            description="Enter the appropriate Service Accounting Code (SAC) applicable to the services provided by your business. Ensure the code matches the nature of your services."
+          />
+        }
         placeholder="e.g. 998311"
         inputMode="numeric"
         pattern="[0-9]*"
         maxLength={Math.max(...HSN_SAC_LENGTHS)}
         value={data.hsnSacCode}
         error={errors.hsnSacCode}
+        helper={
+          !errors.hsnSacCode && hsnClassification ? (
+            <div className="gst-hsn-badge" data-testid="gst-hsn-badge">
+              <span className="gst-hsn-badge__check" aria-hidden="true">✓</span>{' '}
+              <span>{hsnClassification.badgeText.replace(/^✓\s*/, '')}</span>
+            </div>
+          ) : undefined
+        }
         onValueChange={(v) => update('hsnSacCode', gstInput.hsnSac(v))}
         onBlur={() => onBlur?.('hsnSacCode')}
       />

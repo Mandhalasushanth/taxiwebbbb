@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { CaretInput } from '@shared/components'
+import { CaretInput, FieldInfoTooltip } from '@shared/components'
 import { gstFieldRules } from '@modules/gst/validation/gstFieldRules'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstProfileService } from '@modules/gst/services/gstProfileService'
@@ -163,9 +163,15 @@ export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = (
     <>
       {/* GSTIN (15-Character) */}
       <div className="gst-filing-period__field">
-        <label htmlFor="gst-gstin" className="gst-filing-period__label">
-          GSTIN (15-Character) <span className="gst-filing-period__required">*</span>
-        </label>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+          <label htmlFor="gst-gstin" className="gst-filing-period__label" style={{ marginBottom: 0 }}>
+            GSTIN (15-Character) <span className="gst-filing-period__required">*</span>
+          </label>
+          <FieldInfoTooltip
+            title="GSTIN Information"
+            description="Enter your valid 15-digit GST Identification Number. Ensure it matches your GST registration."
+          />
+        </div>
         <CaretInput
           id="gst-gstin"
           type="text"
