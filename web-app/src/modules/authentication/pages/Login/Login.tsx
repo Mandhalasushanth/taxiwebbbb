@@ -1,3 +1,4 @@
+import { FinsolzBrand } from '@shared/components'
 import React from 'react'
 import { Navigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
@@ -24,14 +25,8 @@ export const Login: React.FC = () => {
 
       {/* Top Bar */}
       <div className="login-top-brand">
-        <img src="/assets/images/taxedge-brand-icon.png" alt="TaxEdge" className="top-brand-icon" />
-        <div className="top-brand-text">
-          <div className="top-brand-name">
-            <span className="brand-white">Tax</span>
-            <span className="brand-orange">Edge</span>
-          </div>
-          <span className="top-brand-sub">FIN SOLUTIONS</span>
-        </div>
+        <img src="/finsolz-icon.png" alt="Finsolz" className="top-brand-icon" />
+        <FinsolzBrand size="md" align="center" taglineTone="light" />
       </div>
 
       <div className="login-top-tagline">

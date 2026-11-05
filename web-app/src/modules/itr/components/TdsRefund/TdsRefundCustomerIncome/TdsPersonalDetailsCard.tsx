@@ -27,7 +27,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
   setIsEditingPersonal,
   handleProfileChange,
 }) => (
-  <div className="tds-card" data-testid="tds-card-personal">
+  <div className="tds-card" id="tds-card-personal" data-section="tds-card-personal" data-testid="tds-card-personal">
     <div className="tds-card-header">
       <div className="tds-card-title-wrap">
         <div

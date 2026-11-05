@@ -86,7 +86,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
   }
 
   return (
-    <form className="notice-form" onSubmit={handleSubmit} noValidate>
+    <form className="notice-form" id="notice-step1-info" data-section="notice-step1-info" onSubmit={handleSubmit} noValidate>
       {/* Heading Section */}
       <div className="notice-form__intro">
         <h2 className="notice-form__heading">Enter Notice Information</h2>

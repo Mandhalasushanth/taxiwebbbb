@@ -260,7 +260,7 @@ export const LoanApplicationStatus: React.FC = () => {
     try {
       const receiptContent = `
 =====================================================
-         TAXEDGE FIN SOLUTIONS - LOAN RECEIPT
+         FINSOLZ - SIMPLIFYING YOUR FIN JOURNEY
 =====================================================
 Application Ref: ${refNumber}
 Loan Type:       ${formattedLoanType}
@@ -272,14 +272,14 @@ Loan Agent:      ${loanAgent}
 Status:          Documents Received (In Progress)
 Generated At:    ${new Date().toLocaleString()}
 =====================================================
-Thank you for applying with TaxEdge Fin Solutions.
+Thank you for applying with Finsolz.
 `.trim()
 
       const blob = new Blob([receiptContent], { type: 'text/plain;charset=utf-8' })
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.download = `TaxEdge-${refNumber}-Receipt.txt`
+      link.download = `Finsolz-${refNumber}-Receipt.txt`
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)

@@ -6,6 +6,7 @@ export interface ReviewResponseProps {
   formData: NoticeFormData
   userName?: string
   onEditRequest: () => void
+  onEditStep?: (step: number, sectionId?: string) => void
   onApproveAndSubmit: () => void
   isSubmitting: boolean
 }
@@ -14,6 +15,7 @@ export const ReviewResponse: React.FC<ReviewResponseProps> = ({
   formData,
   userName = 'Assessee',
   onEditRequest,
+  onEditStep,
   onApproveAndSubmit,
   isSubmitting,
 }) => {
@@ -38,6 +40,71 @@ export const ReviewResponse: React.FC<ReviewResponseProps> = ({
         <p className="notice-form__subheading">
           Your Tax Executive has prepared the following response to the Income Tax Department.
         </p>
+      </div>
+
+      {/* Sections Summary with Direct Edit Navigation */}
+      <div className="review-response-sections-grid">
+        <div className="review-response-section-chip">
+          <div className="review-response-section-chip__info">
+            <span className="review-response-section-chip__title">Notice Details</span>
+            <span className="review-response-section-chip__val">{section} · {noticeRef}</span>
+          </div>
+          <button
+            type="button"
+            className="review-response-section-chip__edit"
+            onClick={() => (onEditStep ? onEditStep(1, 'notice-step1-info') : onEditRequest())}
+            aria-label="Edit Notice Details"
+          >
+            Edit
+          </button>
+        </div>
+
+        <div className="review-response-section-chip">
+          <div className="review-response-section-chip__info">
+            <span className="review-response-section-chip__title">Uploaded Notice</span>
+            <span className="review-response-section-chip__val">{formData.documentFileName || 'Notice Document'}</span>
+          </div>
+          <button
+            type="button"
+            className="review-response-section-chip__edit"
+            onClick={() => (onEditStep ? onEditStep(2, 'notice-step2-doc') : onEditRequest())}
+            aria-label="Edit Uploaded Notice"
+          >
+            Edit
+          </button>
+        </div>
+
+        <div className="review-response-section-chip">
+          <div className="review-response-section-chip__info">
+            <span className="review-response-section-chip__title">Notice Summary</span>
+            <span className="review-response-section-chip__val">Assessment &amp; Timeline</span>
+          </div>
+          <button
+            type="button"
+            className="review-response-section-chip__edit"
+            onClick={() => (onEditStep ? onEditStep(3, 'notice-step3-summary') : onEditRequest())}
+            aria-label="Edit Notice Summary"
+          >
+            Edit
+          </button>
+        </div>
+
+        <div className="review-response-section-chip">
+          <div className="review-response-section-chip__info">
+            <span className="review-response-section-chip__title">Supporting Docs</span>
+            <span className="review-response-section-chip__val">
+              {Object.keys(formData.supportingDocuments || {}).length} docs attached
+            </span>
+          </div>
+          <button
+            type="button"
+            className="review-response-section-chip__edit"
+            onClick={() => (onEditStep ? onEditStep(4, 'notice-step4-docs') : onEditRequest())}
+            aria-label="Edit Supporting Documents"
+          >
+            Edit
+          </button>
+        </div>
       </div>
 
       {/* Why Assessee Review Is Required Banner */}

@@ -108,6 +108,7 @@ export interface ItrCategorySelectionViewProps {
   selectedId?: ItrCategoryId | null
   onSelect?: (id: ItrCategoryId) => void
   onStart?: (id: ItrCategoryId) => void
+  onBack?: () => void
 }
 
 export const ItrCategorySelectionView: React.FC<ItrCategorySelectionViewProps> = ({
@@ -117,6 +118,7 @@ export const ItrCategorySelectionView: React.FC<ItrCategorySelectionViewProps> =
   selectedId,
   onSelect,
   onStart,
+  onBack,
 }) => {
   const activeId = selectedCategoryId ?? selectedId ?? null
   const handleSelect = onSelectCategory || onSelect || (() => {})
@@ -147,15 +149,26 @@ export const ItrCategorySelectionView: React.FC<ItrCategorySelectionViewProps> =
         )}
       </div>
 
-      <button
-        type="button"
-        className={`itr-cat-start-btn ${!activeId ? 'itr-cat-start-btn--disabled' : ''}`}
-        disabled={!activeId}
-        onClick={handleStart}
-      >
-        <span>Start Application</span>
-        <span aria-hidden="true" className="itr-cat-start-arrow">→</span>
-      </button>
+      <div className="itr-cat-action-buttons">
+        {onBack && (
+          <button
+            type="button"
+            className="itr-cat-back-btn"
+            onClick={onBack}
+          >
+            Back
+          </button>
+        )}
+        <button
+          type="button"
+          className={`itr-cat-start-btn ${!activeId ? 'itr-cat-start-btn--disabled' : ''}`}
+          disabled={!activeId}
+          onClick={handleStart}
+        >
+          <span>Start Application</span>
+          <span aria-hidden="true" className="itr-cat-start-arrow">→</span>
+        </button>
+      </div>
     </div>
   )
 

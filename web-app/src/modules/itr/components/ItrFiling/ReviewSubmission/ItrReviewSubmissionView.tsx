@@ -16,17 +16,14 @@ import {
   type FilingTypeOption,
   type FilingBankAccount,
 } from '../itrFiling.constants'
-import { calculateItrTax } from '../itrTaxCalculator'
 import { determineApplicableItrForm } from '../IncomeSources/ItrApplicableReturnFormCard'
-import { ItrReviewEstimatedTaxCard } from './ItrReviewEstimatedTaxCard'
-import { ItrReviewUploadedDocsCard } from './ItrReviewUploadedDocsCard'
 import { ItrDeclarationCard } from './ItrDeclarationCard'
 import './ItrReviewSubmissionView.css'
 
 export interface ItrReviewSubmissionViewProps {
   onBack: () => void
-  /** "Edit" on a review section: opens that step in edit mode */
-  onEditStep?: (step: number) => void
+  /** "Edit" on a review section: opens that step in edit mode, optionally scrolling to section */
+  onEditStep?: (step: number, sectionId?: string) => void
   onSubmit: () => void
   onSaveDraft?: () => void
   assessmentYear: AssessmentYearOption
@@ -39,8 +36,8 @@ export interface ItrReviewSubmissionViewProps {
   capitalGainsDetails?: CapitalGainsDetails
   otherSourcesDetails?: OtherSourcesDetails
   selectedSources?: string[]
-  selectedRegime: 'new' | 'old' | ''
-  deductions: DeductionsData
+  selectedRegime?: 'new' | 'old' | ''
+  deductions?: DeductionsData
   uploadedDocs: Record<string, UploadedDocInfo>
   isSubmitting?: boolean
 }
@@ -52,6 +49,7 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
   onSaveDraft,
   assessmentYear,
   residentialStatus,
+  filingType,
   selectedBank,
   salaryDetails,
   housePropertyDetails,
@@ -59,8 +57,6 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
   capitalGainsDetails,
   otherSourcesDetails,
   selectedSources = [],
-  selectedRegime,
-  deductions,
   uploadedDocs,
   isSubmitting = false,
 }) => {
@@ -80,20 +76,9 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
     residentialStatus,
   })
 
-  const taxResult = calculateItrTax({
-    selectedSources,
-    selectedRegime: selectedRegime || 'new',
-    salaryDetails,
-    housePropertyDetails,
-    businessDetails,
-    capitalGainsDetails,
-    otherSourcesDetails,
-    deductions,
-  })
-
-  const handleEdit = (step: number) => {
+  const handleEdit = (step: number, sectionId?: string) => {
     if (onEditStep) {
-      onEditStep(step)
+      onEditStep(step, sectionId)
     } else {
       onBack()
     }
@@ -115,14 +100,7 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
     return () => window.removeEventListener('step-action-bar:submit-attempt', handleAttempt)
   }, [isDeclared])
 
-  // Bank display formatting
-  const bankLast4 = selectedBank?.accountNumber
-    ? selectedBank.accountNumber.replace(/\D/g, '').slice(-4)
-    : '7673'
-  const bankName = selectedBank?.bankName || 'Bsbsbs'
-  const bankDisplay = `${bankName} (···· ${bankLast4})`
-
-  // Format residential status
+  // Residential Status Label Formatting
   const RESIDENTIAL_STATUS_LABELS: Record<string, string> = {
     resident: 'Resident',
     nri: 'Non-Resident',
@@ -135,6 +113,115 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
     const lower = status.toLowerCase()
     return RESIDENTIAL_STATUS_LABELS[lower] || status.charAt(0).toUpperCase() + status.slice(1)
   }
+
+  // Return Type Formatting
+  const formatReturnType = (type?: FilingTypeOption): string => {
+    if (type === 'revised') return 'Revised Return (139(5))'
+    if (type === 'belated') return 'Belated Return (139(4))'
+    return 'Original Return (139(1))'
+  }
+
+  // Bank Info Formatting
+  const bankLast4 = selectedBank?.accountNumber
+    ? selectedBank.accountNumber.replace(/\D/g, '').slice(-4)
+    : '8558'
+  const bankName = selectedBank?.bankName || 'State Bank of India'
+  const bankIfsc = selectedBank?.ifsc || (selectedBank as unknown as { ifscCode?: string })?.ifscCode || 'SBIN0000123'
+
+  // Declared Income Items
+  interface DeclaredIncomeItem {
+    id: string
+    title: string
+    subtitle: string
+    amount: string
+    elementId: string
+  }
+
+  const incomeItems: DeclaredIncomeItem[] = []
+
+  if (
+    selectedSources.includes('house_property') ||
+    (housePropertyDetails && (housePropertyDetails.propertyType || housePropertyDetails.annualRentReceived))
+  ) {
+    const isLetOut = housePropertyDetails?.propertyType === 'let_out'
+    const rentAmt = Number(housePropertyDetails?.annualRentReceived || 0)
+    incomeItems.push({
+      id: 'house_property',
+      title: 'House Property',
+      subtitle: `${isLetOut ? 'Let-Out' : 'Self-Occupied'} · Rent: ₹${rentAmt.toLocaleString('en-IN')}`,
+      amount: `₹ ${rentAmt.toLocaleString('en-IN')}`,
+      elementId: 'itr-house-property',
+    })
+  }
+
+  if (
+    selectedSources.includes('salary') ||
+    (salaryDetails && (salaryDetails.grossSalary || salaryDetails.employerName))
+  ) {
+    const grossAmt = Number(salaryDetails?.grossSalary || 0)
+    const tdsAmt = Number(salaryDetails?.tdsDeducted || 0)
+    incomeItems.push({
+      id: 'salary',
+      title: 'Salary Income',
+      subtitle: `${salaryDetails?.employerName || 'Employer'} · TDS: ₹${tdsAmt.toLocaleString('en-IN')}`,
+      amount: `₹ ${grossAmt.toLocaleString('en-IN')}`,
+      elementId: 'itr-salary-income',
+    })
+  }
+
+  if (
+    selectedSources.includes('business') ||
+    (businessDetails && (businessDetails.grossTurnover || businessDetails.declaredNetProfit))
+  ) {
+    const turnover = Number(businessDetails?.grossTurnover || 0)
+    const profit = Number(businessDetails?.declaredNetProfit || 0)
+    const method = businessDetails?.reportingMethod ? `Method: ${businessDetails.reportingMethod}` : 'Business'
+    incomeItems.push({
+      id: 'business',
+      title: 'Business / Profession',
+      subtitle: `${method} · Net Profit: ₹${profit.toLocaleString('en-IN')}`,
+      amount: `₹ ${turnover.toLocaleString('en-IN')}`,
+      elementId: 'itr-business-income',
+    })
+  }
+
+  if (
+    selectedSources.includes('capital_gains') ||
+    (capitalGainsDetails && (capitalGainsDetails.stcg || capitalGainsDetails.ltcg))
+  ) {
+    const stcg = Number(capitalGainsDetails?.stcg || 0)
+    const ltcg = Number(capitalGainsDetails?.ltcg || 0)
+    incomeItems.push({
+      id: 'capital_gains',
+      title: 'Capital Gains',
+      subtitle: `STCG: ₹${stcg.toLocaleString('en-IN')} · LTCG: ₹${ltcg.toLocaleString('en-IN')}`,
+      amount: `₹ ${(stcg + ltcg).toLocaleString('en-IN')}`,
+      elementId: 'itr-capital-gains',
+    })
+  }
+
+  if (
+    selectedSources.includes('other_sources') ||
+    (otherSourcesDetails &&
+      (otherSourcesDetails.savingsInterest ||
+        otherSourcesDetails.dividendIncome ||
+        otherSourcesDetails.otherIncome ||
+        otherSourcesDetails.interestIncome))
+  ) {
+    const savings = Number(otherSourcesDetails?.savingsInterest || otherSourcesDetails?.interestIncome || 0)
+    const dividend = Number(otherSourcesDetails?.dividendIncome || 0)
+    const other = Number(otherSourcesDetails?.otherIncome || otherSourcesDetails?.otherMiscellaneous || 0)
+    const total = savings + dividend + other
+    incomeItems.push({
+      id: 'other_sources',
+      title: 'Other Sources',
+      subtitle: 'Interest & Dividend Income',
+      amount: `₹ ${total.toLocaleString('en-IN')}`,
+      elementId: 'itr-other-sources',
+    })
+  }
+
+  const docCount = Object.keys(uploadedDocs).length
 
   return (
     <div className="itr-step-view-container itr-step-review">
@@ -165,7 +252,7 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
         )}
       </div>
 
-      {/* 1. Review Your ITR Application Banner (Full Width) */}
+      {/* 1. Review Your ITR Application Banner */}
       <div className="itr-rv2-alert">
         <div className="itr-rv2-alert__icon" aria-hidden="true">
           <svg
@@ -185,165 +272,261 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
         <div className="itr-rv2-alert__content">
           <div className="itr-rv2-alert__title">Review Your ITR Application</div>
           <div className="itr-rv2-alert__desc">
-            Review your declared income, deductions, and tax summary before submitting for CA review.
+            Review your declared income, refund bank account, and documents before submitting for CA review.
           </div>
         </div>
       </div>
 
-      {/* Desktop 2-Column / Mobile Responsive Grid */}
-      <div className="itr-rv2-desktop-grid">
-        {/* Left Column (Desktop) */}
-        <div className="itr-rv2-left-col">
-          {/* 2. Summary & Declared Income */}
-          <div className="itr-step-card itr-rv2-card-summary">
-            <div className="itr-rv2-section-header-row">
-              <h3 className="itr-rv2-section-title">
-                <svg
-                  viewBox="0 0 24 24"
-                  width="18"
-                  height="18"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="18" cy="5" r="3" />
-                  <circle cx="6" cy="12" r="3" />
-                  <circle cx="18" cy="19" r="3" />
-                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                </svg>
-                <span>Summary &amp; Declared Income</span>
-              </h3>
-              <button
-                type="button"
-                className="itr-rv2-edit-btn"
-                onClick={() => handleEdit(ITR_REVIEW_EDIT_STEPS.income)}
+      {/* 2. Responsive 2x2 Grid (Desktop) / 1-Column Stack (Mobile) */}
+      <div className="itr-rv2-cards-grid">
+        {/* Card 1: Filing & Taxpayer Details */}
+        <div className="itr-step-card itr-rv2-card itr-rv2-card--filing">
+          <div className="itr-rv2-section-header-row">
+            <h3 className="itr-rv2-section-title">
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                Edit
-              </button>
-            </div>
-
-            {/* Inner Box for Taxpayer Identity & Refund Bank Account (matches reference) */}
-            <div className="itr-rv2-identity-box">
-              <div className="itr-rv2-identity-row">
-                <div className="itr-rv2-identity-info">
-                  <div className="itr-rv2-identity-label">Taxpayer Identity</div>
-                  <div className="itr-rv2-identity-val">
-                    PAN: {profile.panNumber || '—'} &bull; Name: {profile.fullName || '—'}
-                  </div>
-                </div>
-                <span className="itr-rv2-badge itr-rv2-badge--green">
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="12"
-                    height="12"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span>Profile Verified</span>
-                </span>
-              </div>
-
-              <div className="itr-rv2-identity-row">
-                <div className="itr-rv2-identity-info">
-                  <div className="itr-rv2-identity-label">Refund Bank Account</div>
-                  <div className="itr-rv2-identity-val">{bankDisplay}</div>
-                </div>
-                <span className="itr-rv2-badge itr-rv2-badge--green">
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="12"
-                    height="12"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span>Selected</span>
-                </span>
-              </div>
-            </div>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span>Filing &amp; Taxpayer Details</span>
+            </h3>
+            <button
+              type="button"
+              className="itr-rv2-edit-btn"
+              onClick={() => handleEdit(ITR_REVIEW_EDIT_STEPS.taxpayer, 'itr-filing-options')}
+              aria-label="Edit Filing & Taxpayer Details"
+            >
+              Edit
+            </button>
           </div>
 
-          {/* 4. Filing & Taxpayer Details */}
-          <div className="itr-step-card itr-rv2-card-filing">
-            <div className="itr-rv2-section-header-row">
-              <h3 className="itr-rv2-section-title">
-                <svg
-                  viewBox="0 0 24 24"
-                  width="18"
-                  height="18"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-                <span>Filing &amp; Taxpayer Details</span>
-              </h3>
-              <button
-                type="button"
-                className="itr-rv2-edit-btn"
-                onClick={() => handleEdit(ITR_REVIEW_EDIT_STEPS.taxpayer)}
-              >
-                Edit
-              </button>
+          <div className="itr-rv2-details-rows">
+            <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">Assessment Year</span>
+              <span className="itr-rv2-detail-row__val">{assessmentYear || 'AY 2025-2026'}</span>
             </div>
-            <div className="itr-rv2-details-rows">
-              <div className="itr-rv2-detail-row">
-                <span className="itr-rv2-detail-row__label">Assessment Year</span>
-                <span className="itr-rv2-detail-row__val">{assessmentYear || 'AY 2026-2027'}</span>
-              </div>
-              <div className="itr-rv2-detail-row">
-                <span className="itr-rv2-detail-row__label">Applicable Return Form</span>
-                <span className="itr-rv2-detail-row__val">{formInfo.form}</span>
-              </div>
-              <div className="itr-rv2-detail-row">
-                <span className="itr-rv2-detail-row__label">Full Name</span>
-                <span className="itr-rv2-detail-row__val">{profile.fullName || '—'}</span>
-              </div>
-              <div className="itr-rv2-detail-row">
-                <span className="itr-rv2-detail-row__label">PAN Number</span>
-                <span className="itr-rv2-detail-row__val">{profile.panNumber || '—'}</span>
-              </div>
-              <div className="itr-rv2-detail-row">
-                <span className="itr-rv2-detail-row__label">Residential Status</span>
-                <span className="itr-rv2-detail-row__val">{formatResidentialStatus(residentialStatus)}</span>
-              </div>
-              <div className="itr-rv2-detail-row">
-                <span className="itr-rv2-detail-row__label">Primary Bank Account</span>
-                <span className="itr-rv2-detail-row__val">{bankDisplay}</span>
-              </div>
+            <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">Return Type</span>
+              <span className="itr-rv2-detail-row__val">{formatReturnType(filingType)}</span>
+            </div>
+            <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">Applicable Form</span>
+              <span className="itr-rv2-detail-row__val">{formInfo.form}</span>
+            </div>
+            <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">Full Name</span>
+              <span className="itr-rv2-detail-row__val">{profile.fullName || '—'}</span>
+            </div>
+            <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">PAN Number</span>
+              <span className="itr-rv2-detail-row__val">{profile.panNumber || '—'}</span>
+            </div>
+            <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">Residential Status</span>
+              <span className="itr-rv2-detail-row__val">{formatResidentialStatus(residentialStatus)}</span>
             </div>
           </div>
-
-          {/* 5. Uploaded Documents */}
-          <ItrReviewUploadedDocsCard
-            uploadedDocs={uploadedDocs}
-            onEdit={() => handleEdit(ITR_REVIEW_EDIT_STEPS.documents)}
-          />
         </div>
 
-        {/* Right Column (Desktop) */}
-        <div className="itr-rv2-right-col">
-          {/* 3. Estimated Tax Summary */}
-          <ItrReviewEstimatedTaxCard
-            selectedRegime={selectedRegime}
-            taxResult={taxResult}
-          />
+        {/* Card 2: Declared Income Breakdown */}
+        <div className="itr-step-card itr-rv2-card itr-rv2-card--income">
+          <div className="itr-rv2-section-header-row">
+            <h3 className="itr-rv2-section-title">
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+                <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+                <path d="M18 12a2 2 0 0 0 0 4h4v-4z" />
+              </svg>
+              <span>Declared Income Breakdown</span>
+            </h3>
+            <button
+              type="button"
+              className="itr-rv2-edit-btn"
+              onClick={() => handleEdit(ITR_REVIEW_EDIT_STEPS.income, 'itr-income-sources')}
+              aria-label="Edit Summary & Declared Income Breakdown"
+            >
+              Edit
+            </button>
+          </div>
+
+          {incomeItems.length === 0 ? (
+            <div className="itr-rv2-no-docs-box">
+              No income sources declared yet
+            </div>
+          ) : (
+            <div className="itr-rv2-income-items-list">
+              {incomeItems.map((item) => (
+                <div key={item.id} className="itr-rv2-income-source-card">
+                  <div className="itr-rv2-income-source-left">
+                    <div className="itr-rv2-income-source-title">{item.title}</div>
+                    <div className="itr-rv2-income-source-sub">{item.subtitle}</div>
+                  </div>
+                  <div className="itr-rv2-income-source-right">
+                    <div className="itr-rv2-income-source-amount">{item.amount}</div>
+                    <div className="itr-rv2-income-badge-row">
+                      <span className="itr-rv2-badge itr-rv2-badge--green">
+                        <svg
+                          viewBox="0 0 24 24"
+                          width="12"
+                          height="12"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        <span>Declared</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Card 3: Refund Bank Account */}
+        <div className="itr-step-card itr-rv2-card itr-rv2-card--bank">
+          <div className="itr-rv2-section-header-row">
+            <h3 className="itr-rv2-section-title">
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="2" y="5" width="20" height="14" rx="2" />
+                <line x1="2" y1="10" x2="22" y2="10" />
+              </svg>
+              <span>Refund Bank Account</span>
+            </h3>
+            <button
+              type="button"
+              className="itr-rv2-edit-btn"
+              onClick={() => handleEdit(ITR_REVIEW_EDIT_STEPS.taxpayer, 'itr-refund-bank-section')}
+              aria-label="Edit Refund Bank Account"
+            >
+              Edit
+            </button>
+          </div>
+
+          <div className="itr-rv2-details-rows">
+            <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">Bank Name</span>
+              <span className="itr-rv2-detail-row__val">{bankName}</span>
+            </div>
+            <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">Account Number</span>
+              <span className="itr-rv2-detail-row__val">···· {bankLast4}</span>
+            </div>
+            <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">IFSC Code</span>
+              <span className="itr-rv2-detail-row__val">{bankIfsc}</span>
+            </div>
+          </div>
+
+          <div className="itr-rv2-bank-badge-container">
+            <div className="itr-rv2-bank-pill-badge">
+              <svg
+                viewBox="0 0 24 24"
+                width="13"
+                height="13"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              <span>Primary Account for Income Tax Refund</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 4: Uploaded Documents */}
+        <div className="itr-step-card itr-rv2-card itr-rv2-card--docs">
+          <div className="itr-rv2-section-header-row">
+            <h3 className="itr-rv2-section-title">
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+              </svg>
+              <span>Uploaded Documents ({docCount})</span>
+            </h3>
+            <button
+              type="button"
+              className="itr-rv2-edit-btn"
+              onClick={() => handleEdit(ITR_REVIEW_EDIT_STEPS.documents, 'itr-documents-checklist')}
+              aria-label="Edit Uploaded Documents"
+            >
+              Edit
+            </button>
+          </div>
+
+          {docCount === 0 ? (
+            <div className="itr-rv2-no-docs-box">
+              No documents uploaded yet
+            </div>
+          ) : (
+            <div className="itr-rv2-doc-list">
+              {Object.entries(uploadedDocs).map(([id, doc]) => (
+                <div key={id} className="itr-rv2-doc-row">
+                  <span className="itr-rv2-doc-check" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="14"
+                      height="14"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </span>
+                  <div className="itr-rv2-doc-info">
+                    <span className="itr-rv2-doc-name">{doc.fileName}</span>
+                    <span className="itr-rv2-doc-meta">
+                      {doc.fileSize} &middot; {doc.uploadedAt}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -394,4 +577,3 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
 }
 
 export default ItrReviewSubmissionView
-

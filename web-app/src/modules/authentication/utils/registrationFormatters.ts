@@ -22,9 +22,53 @@ export const formatNameInput: FieldFormatter = (value: string) => {
     .slice(0, 100)
 }
 
+/**
+ * Universal text formatter for address and general text fields:
+ * - Prevents leading spaces
+ * - Collapses consecutive spaces to a single space
+ */
+export const formatSingleSpaceText = (value: string, max = 150): string => {
+  return value
+    .replace(/^\s+/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .slice(0, max)
+}
+
+export const formatCityInput: FieldFormatter = (value: string) => {
+  return value
+    .replace(/[^a-zA-Z\s.'-]/g, '')
+    .replace(/^[ \-.'\s]+/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/([\-.'\s])\1+/g, '$1')
+    .replace(/[\-.']\s*[\-.']+/g, (m) => m[0])
+    .slice(0, 50)
+}
+
+export const formatAddressInput: FieldFormatter = (value: string) => {
+  return value
+    .replace(/[^\p{L}0-9\s#,\-/.']/gu, '')
+    .replace(/^[ ,\-/.']+/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/([#,\-/.'])\1+/g, '$1')
+    .replace(/[#,\-/.']\s*[#,\-/.']+/g, (m) => m[0])
+    .slice(0, 150)
+}
+
+export const formatEmailInput: FieldFormatter = (value: string) => {
+  return value.replace(/\s/g, '').slice(0, 100)
+}
+
 const FIELD_FORMATTERS: Partial<Record<keyof RegistrationFormState, FieldFormatter>> = {
   fullName: formatNameInput,
   fatherSpouseName: formatNameInput,
+  email: formatEmailInput,
+  addressLine1: formatAddressInput,
+  areaLocality: formatAddressInput,
+  city: formatCityInput,
+  district: formatCityInput,
+  state: formatCityInput,
+  entityName: formatAddressInput,
+  registrationNumber: (value) => formatSingleSpaceText(value, 50),
   pan: (value) => value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10),
   aadhaar: digitsOnly(12),
   pincode: digitsOnly(6),

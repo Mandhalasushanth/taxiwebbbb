@@ -1,10 +1,10 @@
 {
-  "short_name": "TaxEdge",
-  "name": "TaxEdge Fin Solutions",
+  "short_name": "Finsolz",
+  "name": "Finsolz - Simplifying Your Fin Journey",
   "description": "GST, ITR, Loans, Insurance, and Business Accounting Platform",
   "icons": [
     {
-      "src": "/icon.png",
+      "src": "/finsolz-icon.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"

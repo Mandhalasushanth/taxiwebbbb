@@ -128,33 +128,37 @@ export const TaxNoticeAssistance: React.FC = () => {
       <NoticeDocument
         formData={formData}
         onChange={handleUpdateFormData}
-        onBack={() => goToStep(1)}
+        onBack={backOrReview(() => goToStep(1))}
         onSaveDraftAndExit={handleSaveDraftAndExit}
-        onNext={() => goToStep(3)}
+        onNext={nextOrReview(() => goToStep(3))}
+        isEditMode={isEditMode}
       />
     ),
     3: () => (
       <NoticeSummary
         formData={formData}
-        onBack={() => goToStep(2)}
+        onBack={backOrReview(() => goToStep(2))}
         onSaveDraftAndExit={handleSaveDraftAndExit}
-        onNext={() => goToStep(4)}
+        onNext={nextOrReview(() => goToStep(4))}
+        isEditMode={isEditMode}
       />
     ),
     4: () => (
       <SupportingDocuments
         formData={formData}
         onChange={handleUpdateFormData}
-        onBack={() => goToStep(3)}
+        onBack={backOrReview(() => goToStep(3))}
         onSaveDraftAndExit={handleSaveDraftAndExit}
-        onNext={() => goToStep(5)}
+        onNext={nextOrReview(() => goToStep(5))}
+        isEditMode={isEditMode}
       />
     ),
     5: () => (
       <ReviewResponse
         formData={formData}
         userName={user?.fullName || 'Assessee'}
-        onEditRequest={() => reviewEdit.startEdit(() => goToStep(1))}
+        onEditRequest={() => reviewEdit.startEdit(() => goToStep(1), 'notice-step1-info')}
+        onEditStep={(editTargetStep, sectionId) => reviewEdit.startEdit(() => goToStep(editTargetStep as 1 | 2 | 3 | 4 | 5), sectionId)}
         onApproveAndSubmit={handleFinalApproveAndSubmit}
         isSubmitting={isSubmitting}
       />

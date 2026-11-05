@@ -221,7 +221,7 @@ export const GSTCancellationReview: React.FC<GSTCancellationReviewProps> = ({
             className="gst-canc-review-checkbox"
           />
           <label htmlFor="gst-canc-review-declaration" className="gst-canc-review-declaration-label" onClick={(e) => e.stopPropagation()}>
-            I declare that the information provided above is true and correct, and I authorise TaxEdge Fin Solutions to file Form REG-16 on my behalf. <span className="gst-canc-star">*</span>
+            I declare that the information provided above is true and correct, and I authorise Finsolz to file Form REG-16 on my behalf. <span className="gst-canc-star">*</span>
           </label>
         </div>
 

@@ -123,8 +123,12 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
         )) &&
       (!selectedSources.includes("other_sources") ||
         Boolean(
-          otherSourcesDetails.interestIncome?.trim() ||
+          otherSourcesDetails.savingsInterest?.trim() ||
+            otherSourcesDetails.fdInterest?.trim() ||
             otherSourcesDetails.dividendIncome?.trim() ||
+            otherSourcesDetails.familyPension?.trim() ||
+            otherSourcesDetails.otherMiscellaneous?.trim() ||
+            otherSourcesDetails.interestIncome?.trim() ||
             otherSourcesDetails.otherIncome?.trim(),
         )),
   );
@@ -222,7 +226,7 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
         residentialStatus={residentialStatus}
       />
 
-      <div className="itr-step-card">
+      <div className="itr-step-card" id="itr-income-sources" data-section="income-sources">
         <div className="itr-sources-header">
           <h2 className="itr-sources-title">Income Sources &amp; Activity</h2>
           <p className="itr-sources-subtitle">

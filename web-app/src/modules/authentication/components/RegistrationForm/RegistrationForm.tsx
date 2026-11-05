@@ -178,18 +178,42 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     if (key === "mobile" && isMobileVerified) return;
 
     const input = e.target;
-    if (input instanceof HTMLInputElement && (input.type === 'text' || !input.type)) {
-      caretRestoreRef.current = {
-        element: input,
-        rawValue: input.value,
-        caret: input.selectionStart ?? input.value.length,
-      };
+    const isTextInput =
+      input instanceof HTMLInputElement &&
+      (input.type === 'text' || !input.type || input.type === 'email' || input.type === 'password');
+
+    const rawValue = isTextInput ? input.value : e.target.value;
+    let rawCaret = rawValue.length;
+    if (isTextInput) {
+      try {
+        rawCaret = input.selectionStart ?? rawValue.length;
+      } catch {
+        rawCaret = rawValue.length;
+      }
     }
 
     const formatted =
       key === "mobile"
         ? formatMobile(e.target.value)
         : formatRegistrationField(key, e.target.value, values);
+
+    if (isTextInput) {
+      if (input.value !== formatted) {
+        input.value = formatted;
+        const nextCaret = calculateNextCaretPosition(rawValue, rawCaret, formatted);
+        try {
+          input.setSelectionRange(nextCaret, nextCaret);
+        } catch {
+          // Ignore
+        }
+      }
+      caretRestoreRef.current = {
+        element: input,
+        rawValue,
+        caret: rawCaret,
+      };
+    }
+
     const nextValues = {
       ...values,
       [key]: formatted,

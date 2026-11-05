@@ -102,6 +102,7 @@ const SAMPLE_KNOWN_IFSC_MAP: Record<string, { bankName: string; branch: string; 
   HDFC0000001: { bankName: 'HDFC Bank', branch: 'Worli Sandoz House', city: 'Mumbai', state: 'Maharashtra' },
   SBIN0000412: { bankName: 'State Bank of India', branch: 'Commercial Branch - MG Road', city: 'Bengaluru', state: 'Karnataka' },
   SBIN0001234: { bankName: 'State Bank of India', branch: 'Park Street Main Branch', city: 'Kolkata', state: 'West Bengal' },
+  SBIN0002132: { bankName: 'State Bank of India', branch: 'TULI PAPER MILL, MOKOKCHUNG', city: 'Mokokchung', state: 'Nagaland' },
   SBIN0000691: { bankName: 'State Bank of India', branch: 'Parliament Street Main Branch', city: 'New Delhi', state: 'Delhi' },
   ICIC0000001: { bankName: 'ICICI Bank', branch: 'Corporate Hub - BKC', city: 'Mumbai', state: 'Maharashtra' },
   ICIC0000412: { bankName: 'ICICI Bank', branch: 'Cyber City Branch', city: 'Gurugram', state: 'Haryana' },

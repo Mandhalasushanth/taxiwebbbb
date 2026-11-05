@@ -25,37 +25,44 @@ export function calculateNextCaretPosition(
     return Math.min(caret, formattedValue.length)
   }
 
-  // Case 2: Formatting characters like spaces, dashes, slashes, or currency symbols
-  const formattingRegex = /[\s\-_/.,()+₹]/
-  const hasFormattingChars = formattingRegex.test(formattedValue) || formattingRegex.test(rawValue)
-
-  if (hasFormattingChars) {
-    const rawBefore = rawValue.slice(0, caret)
-    const rawCleanBefore = rawBefore.replace(/[\s\-_/.,()+₹]/g, '')
-    const targetCleanCount = rawCleanBefore.length
-
-    if (targetCleanCount === 0) {
-      return 0
-    }
-
-    let cleanSeen = 0
-    let formattedIndex = 0
-    while (formattedIndex < formattedValue.length) {
-      const ch = formattedValue[formattedIndex]
-      if (!formattingRegex.test(ch)) {
-        cleanSeen++
-        if (cleanSeen === targetCleanCount) {
-          return formattedIndex + 1
-        }
-      }
-      formattedIndex++
-    }
+  // If the user was typing at the very end of the input, stay at the end of formatted value
+  if (caret >= rawValue.length) {
     return formattedValue.length
   }
 
-  // Case 3: Character additions / deletions (e.g. stripping invalid characters or trimming)
-  const lenDiff = formattedValue.length - rawValue.length
-  const targetPos = caret + lenDiff
-  return Math.max(0, Math.min(targetPos, formattedValue.length))
+  // Case 2: General character alignment between rawValue and formattedValue
+  let rawIdx = 0
+  let fmtIdx = 0
+
+  while (rawIdx < caret && fmtIdx < formattedValue.length) {
+    const rChar = rawValue[rawIdx].toLowerCase()
+    const fChar = formattedValue[fmtIdx].toLowerCase()
+
+    if (rChar === fChar) {
+      rawIdx++
+      fmtIdx++
+    } else {
+      // Check if formattedValue has an inserted character (mask delimiter like '-', ' ', '/', etc.)
+      let matchedAhead = false
+      for (let lookahead = 1; lookahead <= 3; lookahead++) {
+        if (
+          fmtIdx + lookahead < formattedValue.length &&
+          formattedValue[fmtIdx + lookahead].toLowerCase() === rChar
+        ) {
+          fmtIdx += lookahead + 1
+          rawIdx++
+          matchedAhead = true
+          break
+        }
+      }
+
+      if (!matchedAhead) {
+        // Character in rawValue was stripped/collapsed by the formatter (e.g. extra space, filtered character)
+        rawIdx++
+      }
+    }
+  }
+
+  return Math.min(fmtIdx, formattedValue.length)
 }
 

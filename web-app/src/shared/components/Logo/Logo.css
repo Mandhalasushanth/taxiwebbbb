@@ -30,3 +30,117 @@
 .taxedge-logo--dark .taxedge-logo__brand-edge { color: var(--color-primary); }
 .taxedge-logo__subtitle { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey-500); margin-top: 2px; }
 .taxedge-logo--dark .taxedge-logo__subtitle { color: rgba(255, 255, 255, 0.65); }
+
+/* Finsolz Brand & Tagline */
+.finsolz-brand {
+  display: inline-flex;
+  flex-direction: column;
+  min-width: 0;
+  text-decoration: none;
+  user-select: none;
+}
+
+.finsolz-brand--align-center {
+  align-items: center;
+  text-align: center;
+}
+
+.finsolz-brand--align-left {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.finsolz-brand__name {
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.finsolz-brand--sm .finsolz-brand__name {
+  font-size: 1.15rem;
+}
+
+.finsolz-brand--md .finsolz-brand__name {
+  font-size: 1.45rem;
+}
+
+.finsolz-brand--lg .finsolz-brand__name {
+  font-size: 1.85rem;
+}
+
+.finsolz-brand__fin {
+  background: linear-gradient(180deg, #0088ff 0%, #0050cc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.finsolz-brand__i-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.finsolz-brand__i-dot {
+  position: absolute;
+  top: 0.05em;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0.28em;
+  height: 0.28em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffb300 0%, #ff5500 100%);
+  box-shadow: 0 0 5px rgba(255, 115, 2, 0.85);
+  pointer-events: none;
+}
+
+.finsolz-brand__solz {
+  background: linear-gradient(180deg, #ff9400 0%, #ff5500 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.finsolz-brand__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.finsolz-brand--sm .finsolz-brand__tag {
+  font-size: 0.48rem;
+  margin-top: 2px;
+}
+
+.finsolz-brand--md .finsolz-brand__tag {
+  font-size: 0.56rem;
+  margin-top: 3px;
+}
+
+.finsolz-brand--lg .finsolz-brand__tag {
+  font-size: 0.68rem;
+  margin-top: 4px;
+}
+
+.finsolz-brand__tag-dash {
+  color: #fe7302;
+  font-weight: 700;
+}
+
+.finsolz-brand__tag-text {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.finsolz-brand--light .finsolz-brand__tag-text {
+  color: #ffffff;
+}
+
+.finsolz-brand--dark .finsolz-brand__tag-text {
+  color: #334155;
+}

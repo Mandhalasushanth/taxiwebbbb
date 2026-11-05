@@ -84,7 +84,7 @@ export const ReasonForRevision: React.FC<ReasonForRevisionProps> = ({
     ) : null
 
   return (
-    <div className="step2-reason-for-revision">
+    <div className="step2-reason-for-revision" id="revised-step2-reason" data-section="revised-step2-reason">
       <h2 className="step2-heading">Why are you revising your ITR?</h2>
       {reasonError && <div className="step2-error-banner">{reasonError}</div>}
       <div className="reason-cards-list" role="radiogroup" aria-label="Reasons for revision">

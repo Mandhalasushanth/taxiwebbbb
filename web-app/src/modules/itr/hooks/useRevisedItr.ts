@@ -302,8 +302,8 @@ export const useRevisedItr = () => {
   }, [step, ackNumber, selectedAy, selectedReason, otherReasonText, incomeCorrections, deductionCorrections, bankCorrections, uploadedDocuments, isReturnFound, isEditMode, reviewEdit, handlePaymentSuccess])
 
   /** "Edit" on the review summary: opens that stage in edit mode */
-  const editStep = useCallback((targetStep: 1 | 2 | 3 | 4 | 5) => {
-    reviewEdit.startEdit(() => goToStep(targetStep))
+  const editStep = useCallback((targetStep: 1 | 2 | 3 | 4 | 5, sectionId?: string) => {
+    reviewEdit.startEdit(() => goToStep(targetStep), sectionId)
   }, [reviewEdit, goToStep])
 
   return {

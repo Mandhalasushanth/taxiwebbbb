@@ -87,6 +87,7 @@ export type FilingTypeOption = 'original' | 'belated' | 'revised' | 'updated' | 
 export interface FilingBankAccount {
   id: string
   bankName: string
+  branch?: string
   accountNumber: string
   ifsc: string
   accountType?: 'savings' | 'current'
@@ -134,9 +135,13 @@ export interface CapitalGainsDetails {
 }
 
 export interface OtherSourcesDetails {
-  interestIncome: string
-  dividendIncome: string
-  otherIncome: string
+  savingsInterest?: string
+  fdInterest?: string
+  dividendIncome?: string
+  familyPension?: string
+  otherMiscellaneous?: string
+  interestIncome?: string
+  otherIncome?: string
 }
 
 export const ALL_SOURCES = [
@@ -379,7 +384,15 @@ export const DEFAULT_SALARY_DETAILS: SalaryDetails = { employerName: '', grossSa
 export const DEFAULT_HOUSE_PROPERTY_DETAILS: HousePropertyDetails = { propertyType: 'self_occupied', homeLoanInterest: '', annualRentReceived: '', municipalTaxPaid: '' }
 export const DEFAULT_BUSINESS_DETAILS: BusinessDetails = { reportingMethod: '44AD', grossTurnover: '', declaredNetProfit: '' }
 export const DEFAULT_CAPITAL_GAINS_DETAILS: CapitalGainsDetails = { assetTypes: [], stcg: '', ltcg: '' }
-export const DEFAULT_OTHER_SOURCES_DETAILS: OtherSourcesDetails = { interestIncome: '', dividendIncome: '', otherIncome: '' }
+export const DEFAULT_OTHER_SOURCES_DETAILS: OtherSourcesDetails = {
+  savingsInterest: '',
+  fdInterest: '',
+  dividendIncome: '',
+  familyPension: '',
+  otherMiscellaneous: '',
+  interestIncome: '',
+  otherIncome: '',
+}
 export const DEFAULT_DEDUCTIONS: DeductionsData = {
   epf: '', ppf: '', lic: '', elss: '', childrenTuition: '', housingLoanPrincipal: '', selfInsurance: '', parentInsurance: '',
   parentsSeniorCitizen: false, homeLoanInterest24b: '', otherDeductions: '', section80CTotal: '', section80C: '', section80D: '', homeLoanInterest: '',

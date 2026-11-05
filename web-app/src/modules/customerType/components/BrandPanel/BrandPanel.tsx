@@ -1,9 +1,10 @@
 import type { FC } from 'react'
+import { FinsolzBrand } from '@shared/components'
 import './BrandPanel.css'
 
 export const BrandPanel: FC = () => {
   return (
-    <aside className="brand-panel" aria-label="TaxEdge customer type overview">
+    <aside className="brand-panel" aria-label="Finsolz customer type overview">
       {/* Subtle Background Diagonal Lines & Dots */}
       <div className="brand-panel__pattern" aria-hidden="true" />
       <div className="brand-panel__dots brand-panel__dots--top" aria-hidden="true" />
@@ -13,14 +14,9 @@ export const BrandPanel: FC = () => {
       {/* Top Brand Header */}
       <div className="brand-panel__header">
         <div className="brand-panel__logo-tile">
-          <img src="/assets/images/taxedge-brand-icon.png" alt="TaxEdge" className="brand-panel__logo-img" />
+          <img src="/finsolz-icon.png" alt="Finsolz" className="brand-panel__logo-img" />
         </div>
-        <div className="brand-panel__brand-text">
-          <span className="brand-panel__brand-title">
-            Tax<span className="brand-panel__brand-title-accent">Edge</span>
-          </span>
-          <span className="brand-panel__brand-subtitle">FIN SOLUTIONS</span>
-        </div>
+        <FinsolzBrand size="md" align="center" taglineTone="light" />
       </div>
 
       {/* Main Content */}

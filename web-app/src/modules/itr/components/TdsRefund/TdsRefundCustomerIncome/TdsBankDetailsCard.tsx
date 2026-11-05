@@ -20,7 +20,7 @@ export const TdsBankDetailsCard: React.FC<TdsBankDetailsCardProps> = ({
   handleBankChange,
   handleIfscChange,
 }) => (
-  <div className="tds-card" data-testid="tds-card-bank">
+  <div className="tds-card" id="tds-card-bank" data-section="tds-card-bank" data-testid="tds-card-bank">
     <div className="tds-card-header">
       <div className="tds-card-title-wrap">
         <div

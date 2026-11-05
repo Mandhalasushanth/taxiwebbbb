@@ -49,7 +49,14 @@ export const CaretInput = forwardRef<HTMLInputElement, CaretInputProps>(
       const input = (e.currentTarget || e.target) as HTMLInputElement
       if (input) {
         const rawValue = input.value
-        const caret = typeof input.selectionStart === 'number' ? input.selectionStart : rawValue.length
+        let caret = rawValue.length
+        try {
+          if (typeof input.selectionStart === 'number') {
+            caret = input.selectionStart
+          }
+        } catch {
+          // Unsupported input types in some browsers
+        }
         caretSnapshotRef.current = { rawValue, caret }
 
         // Additional safeguard for microtasks/event queues

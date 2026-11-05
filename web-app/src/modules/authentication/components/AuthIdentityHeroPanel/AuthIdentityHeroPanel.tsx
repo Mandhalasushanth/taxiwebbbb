@@ -1,4 +1,5 @@
 import React from 'react'
+import { FinsolzBrand } from '@shared/components'
 import './AuthIdentityHeroPanel.css'
 
 export const AuthIdentityHeroPanel: React.FC = () => {
@@ -19,18 +20,13 @@ export const AuthIdentityHeroPanel: React.FC = () => {
         </div>
       </div>
 
-      {/* 1. Top Header Bar with Real TaxEdge Logo */}
+      {/* 1. Top Header Bar with Real Finsolz Logo */}
       <div className="identity-hero__top-bar">
         <div className="identity-hero__brand">
           <div className="identity-hero__logo-box">
-            <img src="/icon.png" alt="TaxEdge" className="identity-hero__logo-img" />
+            <img src="/finsolz-icon.png" alt="Finsolz" className="identity-hero__logo-img" />
           </div>
-          <div className="identity-hero__brand-info">
-            <span className="identity-hero__brand-name">
-              Tax<span className="identity-hero__brand-accent">Edge</span>
-            </span>
-            <span className="identity-hero__brand-sub">FIN SOLUTIONS</span>
-          </div>
+          <FinsolzBrand size="md" align="center" taglineTone="light" />
         </div>
       </div>
 

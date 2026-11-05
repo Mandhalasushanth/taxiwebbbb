@@ -117,7 +117,7 @@ export const RevisionDocumentUpload: React.FC<RevisionDocumentUploadProps> = ({
   )
 
   return (
-    <div className="step4-upload-documents">
+    <div className="step4-upload-documents" id="revised-step4-documents" data-section="revised-step4-documents">
       <div className="step4-title-wrap">
         <h2 className="step4-main-heading">Upload Documents</h2>
         <p className="step4-sub-heading">Upload proofs for the corrections made in your revised return.</p>

@@ -153,7 +153,7 @@ export const TdsBusinessDetailsCard: React.FC<TdsBusinessDetailsCardProps> = ({
     handleBusinessChange({ [key]: doc } as Partial<TdsBusinessDetails>);
 
   return (
-    <div className="tds-card" data-testid="tds-card-business">
+    <div className="tds-card" id="tds-card-business" data-section="tds-card-business" data-testid="tds-card-business">
       <div className="tds-card-header">
         <div className="tds-card-title-wrap">
           <div className="tds-card-icon-box tds-card-icon-box--calc" aria-hidden="true">

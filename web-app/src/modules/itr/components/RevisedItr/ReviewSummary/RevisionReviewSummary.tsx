@@ -22,7 +22,7 @@ export interface RevisionReviewSummaryProps {
   bankCorrections: BankCorrectionState
   otherReasonText?: string
   uploadedDocuments: Partial<Record<DocumentTypeId, UploadedDocument>>
-  onEditStep: (step: 1 | 2 | 3 | 4 | 5) => void
+  onEditStep: (step: 1 | 2 | 3 | 4 | 5, sectionId?: string) => void
 }
 
 const formatInr = (val: number | string | undefined): string => {
@@ -130,6 +130,7 @@ export const RevisionReviewSummary: React.FC<RevisionReviewSummaryProps> = ({
   incomeCorrections,
   deductionCorrections,
   bankCorrections,
+  otherReasonText,
   uploadedDocuments,
   onEditStep,
 }) => {
@@ -185,12 +186,13 @@ export const RevisionReviewSummary: React.FC<RevisionReviewSummaryProps> = ({
     title: string,
     ariaLabel: string,
     editStep: 1 | 2 | 3 | 4 | 5,
-    rows: Array<{ label: string; value: string; isMono?: boolean; isAddress?: boolean; isStatus?: boolean }>
+    rows: Array<{ label: string; value: string; isMono?: boolean; isAddress?: boolean; isStatus?: boolean }>,
+    sectionId?: string
   ) => (
-    <div className="step5-review-card">
+    <div className="step5-review-card" id={`revised-review-${sectionId || editStep}`}>
       <div className="card-header-row">
         <h3 className="card-title">{title}</h3>
-        <button type="button" className="edit-pill-btn" onClick={() => onEditStep(editStep)} aria-label={ariaLabel}>
+        <button type="button" className="edit-pill-btn" onClick={() => onEditStep(editStep, sectionId)} aria-label={ariaLabel}>
           Edit
         </button>
       </div>
@@ -220,7 +222,7 @@ export const RevisionReviewSummary: React.FC<RevisionReviewSummaryProps> = ({
             { label: 'Assessment Year', value: selectedAy || 'AY 2025-26' },
             { label: 'ITR Form', value: returnDetails?.itrForm || 'ITR-1' },
             { label: 'Gross Total Income', value: returnDetails?.grossTotalIncome || '₹8,12,400' },
-          ])}
+          ], 'revised-step1-search')}
           {renderCard('Personal Information', 'Edit Personal Information', 1, [
             { label: 'Full Name', value: personalInfo.fullName },
             { label: 'PAN', value: personalInfo.pan, isMono: true },
@@ -228,12 +230,16 @@ export const RevisionReviewSummary: React.FC<RevisionReviewSummaryProps> = ({
             { label: 'Mobile', value: personalInfo.mobile, isMono: true },
             { label: 'Email', value: personalInfo.email },
             { label: 'Address', value: personalInfo.address, isAddress: true },
-          ])}
-          {renderCard('Changes', 'Edit Changes', 3, changeRows)}
+          ], 'revised-step1-details')}
+          {renderCard('Reason for Revision', 'Edit Reason for Revision', 2, [
+            { label: 'Selected Reason', value: selectedReason ? selectedReason.replace(/_/g, ' ').toUpperCase() : 'Not selected' },
+            ...(otherReasonText ? [{ label: 'Explanation', value: otherReasonText }] : []),
+          ], 'revised-step2-reason')}
+          {renderCard('Changes', 'Edit Changes', 3, changeRows, 'revised-step3-changes')}
           {renderCard('Documents', 'Edit Uploaded Documents', 4, [
             { label: 'Uploaded Count', value: `${uploadedCount || 3} of 6 documents` },
             { label: 'Verification Status', value: 'Ready for CA Review', isStatus: true },
-          ])}
+          ], 'revised-step4-documents')}
         </div>
         <div className="step5-col-right">
           <div className="step5-tax-summary-card">

@@ -1,8 +1,12 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { EmptyState, Loader } from '@shared/components'
 import { useAuthStore } from '@store/index'
+import { authStorage, buildProfileCompletionPath } from '@core/auth'
+import { routePaths } from '@core/config'
 import { userStorage, type ApplicationDraft } from '@core/storage/userStorage'
 import { deleteServiceDraft } from '@shared/saveDraft'
+import { calculateProfileProgress, CompleteProfileCard } from '@modules/profile'
 import {
   DashboardHero,
   QuickServices,
@@ -14,12 +18,22 @@ import { useDashboardSummary } from '../../hooks/useDashboardSummary'
 import './CustomerDashboard.css'
 
 export const CustomerDashboard = () => {
-  const user = useAuthStore((state) => state.user)
+  const navigate = useNavigate()
+  const storeUser = useAuthStore((state) => state.user)
+  const user = storeUser || authStorage.getUser()
+  const { percentage, isFullyComplete } = calculateProfileProgress(user)
+
   const { data, isLoading, error } = useDashboardSummary()
   const [drafts, setDrafts] = useState<ApplicationDraft[]>(() => {
     const all = userStorage.getAllDrafts()
     return [...all].sort((a, b) => (b.savedTimestamp || 0) - (a.savedTimestamp || 0))
   })
+
+  const handleCompleteProfile = () => {
+    navigate(buildProfileCompletionPath(routePaths.dashboard), {
+      state: { returnTo: routePaths.dashboard, mobile: user?.mobile },
+    })
+  }
 
   const handleDiscardDraft = (serviceId: string) => {
     // Also clears the auto-saved copy, so reopening the service starts empty
@@ -36,6 +50,14 @@ export const CustomerDashboard = () => {
     <div className="dashboard">
       {/* 1. Hero Banner */}
       <DashboardHero userName={user?.fullName || 'User'} brief={data.brief} />
+
+      {/* Complete Profile Card (shown for new/incomplete users) */}
+      {!isFullyComplete && (
+        <CompleteProfileCard
+          progress={percentage}
+          onCompleteProfile={handleCompleteProfile}
+        />
+      )}
 
       {/* 2. Services Grid */}
       <QuickServices />
@@ -73,4 +95,3 @@ export const CustomerDashboard = () => {
 }
 
 export default CustomerDashboard
-

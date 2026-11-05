@@ -76,10 +76,11 @@ export const ItrFiling: React.FC = () => {
     1: () => (
       <ItrPersonalInfoView
         onBack={backOrReview(() => {
-          if (isDirty) {
-            openModal();
-          } else {
-            setIsStarted(false);
+          setIsStarted(false);
+          try {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          } catch {
+            // ignore
           }
         })}
         onNext={nextOrReview(() => navigateToStep(2))}
@@ -137,7 +138,7 @@ export const ItrFiling: React.FC = () => {
     4: () => (
       <ItrReviewSubmissionView
         onBack={() => navigateToStep(3)}
-        onEditStep={(step) => reviewEdit.startEdit(() => navigateToStep(step))}
+        onEditStep={(step, sectionId) => reviewEdit.startEdit(() => navigateToStep(step), sectionId)}
         onSubmit={handleFinalSubmit}
         onSaveDraft={openModal}
         assessmentYear={assessmentYear}
@@ -182,6 +183,13 @@ export const ItrFiling: React.FC = () => {
             setSelectedCategoryId(id);
             setIsStarted(true);
             setCurrentStep(1);
+          }}
+          onBack={() => {
+            if (isDirty) {
+              openModal();
+            } else {
+              window.history.back();
+            }
           }}
         />
       );

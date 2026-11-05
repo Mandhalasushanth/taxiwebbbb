@@ -8,6 +8,7 @@ export interface NoticeSummaryProps {
   onNext: () => void
   onBack: () => void
   onSaveDraftAndExit: () => void
+  isEditMode?: boolean
 }
 
 export const NoticeSummary: React.FC<NoticeSummaryProps> = ({
@@ -15,6 +16,7 @@ export const NoticeSummary: React.FC<NoticeSummaryProps> = ({
   onNext,
   onBack,
   onSaveDraftAndExit,
+  isEditMode = false,
 }) => {
   const formatDateDisplay = (dateStr: string) => {
     if (!dateStr) return '22 Sep 2026'
@@ -61,7 +63,7 @@ export const NoticeSummary: React.FC<NoticeSummaryProps> = ({
   }
 
   return (
-    <div className="notice-summary-container">
+    <div className="notice-summary-container" id="notice-step3-summary" data-section="notice-step3-summary">
       {/* Header Introduction */}
       <div className="notice-form__intro">
         <h2 className="notice-form__heading">Here's what this notice means</h2>
@@ -215,6 +217,7 @@ export const NoticeSummary: React.FC<NoticeSummaryProps> = ({
         backLabel="Back"
         nextLabel="Continue"
         nextAriaLabel="Upload Supporting Documents"
+        isEditMode={isEditMode}
       />
     </div>
   )

@@ -16,7 +16,7 @@ export const LegalPage = () => {
     <div className="legal-page">
       <header className="legal-page__header">
         <Link to={routePaths.root} className="legal-page__brand">
-          <img src="/assets/images/taxedge-brand-icon.png" alt="" className="legal-page__brand-icon" />
+          <img src="/finsolz-icon.png" alt="" className="legal-page__brand-icon" />
           <span>{appConfig.name}</span>
         </Link>
       </header>

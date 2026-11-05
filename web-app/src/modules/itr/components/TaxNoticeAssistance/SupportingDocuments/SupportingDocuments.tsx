@@ -15,6 +15,7 @@ export interface SupportingDocumentsProps {
   onNext: () => void
   onBack: () => void
   onSaveDraftAndExit: () => void
+  isEditMode?: boolean
 }
 
 export const SupportingDocuments: React.FC<SupportingDocumentsProps> = ({
@@ -23,6 +24,7 @@ export const SupportingDocuments: React.FC<SupportingDocumentsProps> = ({
   onNext,
   onBack,
   onSaveDraftAndExit,
+  isEditMode = false,
 }) => {
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({})
 
@@ -108,7 +110,7 @@ export const SupportingDocuments: React.FC<SupportingDocumentsProps> = ({
   }
 
   return (
-    <div className="supporting-docs-container">
+    <div className="supporting-docs-container" id="notice-step4-docs" data-section="notice-step4-docs">
       {/* Header Introduction */}
       <div className="notice-form__intro">
         <h2 className="notice-form__heading">Upload Supporting Documents</h2>
@@ -198,6 +200,7 @@ export const SupportingDocuments: React.FC<SupportingDocumentsProps> = ({
         nextLabel="Continue"
         nextAriaLabel="Submit Documents & Review Response"
         nextDisabled={!canProceed}
+        isEditMode={isEditMode}
       />
     </div>
   )

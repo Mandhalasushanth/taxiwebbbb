@@ -83,9 +83,13 @@ export function useItrFilingState() {
     readServiceDraft<Record<string, unknown>>(SERVICE_ID, DRAFT_NAMESPACES.itr),
   );
 
-  const [isStarted, setIsStarted] = useState<boolean>(() =>
-    Boolean(existingDraft),
-  );
+  const [isStarted, setIsStarted] = useState<boolean>(() => {
+    if (!existingDraft) return false;
+    if (typeof existingDraft.formData?.isStarted === "boolean") {
+      return existingDraft.formData.isStarted;
+    }
+    return true;
+  });
   const [currentStep, setCurrentStep] = useState<number>(
     // Clamp: drafts saved before the Regime & Deductions step was removed may hold step 5
     () => Math.min(existingDraft?.currentStep || 1, TOTAL_STEPS),
@@ -216,10 +220,12 @@ export function useItrFilingState() {
   };
   const [initialFields] = useState(() => draftFields);
 
+  const hasCategorySelected = Boolean(selectedCategoryId);
   const isDirty = Boolean(
-    isStarted &&
-      !isSubmitted &&
-      (currentStep > 1 ||
+    !isSubmitted &&
+      (hasCategorySelected ||
+        isStarted ||
+        currentStep > 1 ||
         Boolean(existingDraft) ||
         hasFormChanged(draftFields, initialFields)),
   );
@@ -230,7 +236,7 @@ export function useItrFilingState() {
     serviceTitle: "ITR Filing",
     totalSteps: TOTAL_STEPS,
     currentStep,
-    stepLabel: ITR_STEP_LABELS[currentStep - 1] || "Personal & Filing Info",
+    stepLabel: isStarted ? (ITR_STEP_LABELS[currentStep - 1] || "Personal & Filing Info") : "Income Category Selection",
     resumeRoute: routePaths.itr.itrFiling,
     exitRoute: routePaths.itr.root,
     formData: { isStarted, currentStep, ...draftFields },
@@ -239,6 +245,7 @@ export function useItrFilingState() {
     storageNamespace: DRAFT_NAMESPACES.itr,
     onDiscard: () => {
       setIsStarted(false);
+      setSelectedCategoryIdState(null);
       setCurrentStep(1);
     },
   });

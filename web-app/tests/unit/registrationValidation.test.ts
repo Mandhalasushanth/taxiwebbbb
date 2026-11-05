@@ -94,6 +94,72 @@ describe('registrationValidation', () => {
       expect(validateField('district', sampleValidForm)).toBeUndefined()
     })
 
+    it('enforces single space between words and no leading spaces across address fields', () => {
+      expect(validateField('addressLine1', { ...sampleValidForm, addressLine1: '  123 Main' })).toBe(
+        'Address Line 1 cannot start with a space'
+      )
+      expect(validateField('addressLine1', { ...sampleValidForm, addressLine1: '123   Main' })).toBe(
+        'Only one space is allowed between words'
+      )
+      expect(validateField('city', { ...sampleValidForm, city: ' New Delhi' })).toBe(
+        'City cannot start with a space'
+      )
+      expect(validateField('city', { ...sampleValidForm, city: 'New   Delhi' })).toBe(
+        'Only one space is allowed between words'
+      )
+      expect(validateField('district', { ...sampleValidForm, district: ' Pune  West' })).toBe(
+        'District cannot start with a space'
+      )
+      expect(validateField('district', { ...sampleValidForm, district: 'Pune  West' })).toBe(
+        'Only one space is allowed between words'
+      )
+      expect(validateField('state', { ...sampleValidForm, state: ' Maharashtra' })).toBe(
+        'State cannot start with a space'
+      )
+      expect(validateField('state', { ...sampleValidForm, state: 'Maharashtra  UT' })).toBe(
+        'Only one space is allowed between words'
+      )
+    })
+
+    it('rejects disallowed special characters and consecutive special characters in address and city', () => {
+      expect(validateField('addressLine1', { ...sampleValidForm, addressLine1: 'House 12 @@@@@' })).toBe(
+        "Address can only contain letters, numbers, spaces, and (# , - / . ')"
+      )
+      expect(validateField('addressLine1', { ...sampleValidForm, addressLine1: 'House 12,, Street' })).toBe(
+        'Address cannot contain consecutive special characters'
+      )
+      expect(validateField('addressLine1', { ...sampleValidForm, addressLine1: 'House 12,- Street' })).toBe(
+        'Address cannot contain consecutive special characters'
+      )
+      expect(validateField('city', { ...sampleValidForm, city: 'ghjkj--..' })).toBe(
+        'City cannot contain consecutive dots or hyphens'
+      )
+      expect(validateField('city', { ...sampleValidForm, city: '-Delhi' })).toBe(
+        'City must start with a letter'
+      )
+      expect(validateField('city', { ...sampleValidForm, city: 'Delhi123' })).toBe(
+        'City should not contain numbers'
+      )
+    })
+
+    it('allows house numbers with single slash and hyphen (e.g. 3/345-45) but rejects consecutive characters', () => {
+      // Valid house number format with single slash and hyphen
+      expect(validateField('addressLine1', { ...sampleValidForm, addressLine1: '3/345-45' })).toBeUndefined()
+      expect(validateField('addressLine1', { ...sampleValidForm, addressLine1: 'Plot No. 12/A, Street-4' })).toBeUndefined()
+      expect(validateField('addressLine1', { ...sampleValidForm, addressLine1: '#3/345-45, 2nd Cross' })).toBeUndefined()
+
+      // Reject consecutive slash or hyphen
+      expect(validateField('addressLine1', { ...sampleValidForm, addressLine1: '3//45' })).toBe(
+        'Address cannot contain consecutive special characters'
+      )
+      expect(validateField('addressLine1', { ...sampleValidForm, addressLine1: '3--45' })).toBe(
+        'Address cannot contain consecutive special characters'
+      )
+      expect(validateField('addressLine1', { ...sampleValidForm, addressLine1: '3/-45' })).toBe(
+        'Address cannot contain consecutive special characters'
+      )
+    })
+
     it('validates state selection', () => {
       expect(validateField('state', { ...sampleValidForm, state: '' })).toBe(
         'Please select your State / UT'

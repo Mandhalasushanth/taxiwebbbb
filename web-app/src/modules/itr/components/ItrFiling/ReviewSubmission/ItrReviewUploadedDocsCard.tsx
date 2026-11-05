@@ -34,14 +34,15 @@ export const ItrReviewUploadedDocsCard: React.FC<ItrReviewUploadedDocsCardProps>
           type="button"
           className="itr-rv2-edit-btn"
           onClick={onEdit}
+          aria-label="Edit Uploaded Documents"
         >
           Edit
         </button>
       </div>
       {docCount === 0 ? (
-        <p className="itr-rv2-no-docs">
-          No documents uploaded. Your CA will request them separately.
-        </p>
+        <div className="itr-rv2-no-docs-box">
+          No documents uploaded yet
+        </div>
       ) : (
         <div className="itr-rv2-doc-list">
           {Object.entries(uploadedDocs).map(([id, doc]) => (

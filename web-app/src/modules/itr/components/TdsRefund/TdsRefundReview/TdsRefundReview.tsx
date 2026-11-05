@@ -44,7 +44,7 @@ export const TdsRefundReviewSidebar: React.FC = () => (
 
 export interface TdsRefundReviewProps {
   onBack: () => void
-  onEditStep1: () => void
+  onEditStep1: (sectionId?: string) => void
   onNext: () => void
   onSaveDraft?: () => void
   profile?: TdsTaxpayerProfile
@@ -69,7 +69,7 @@ export const TdsRefundReview: React.FC<TdsRefundReviewProps> = ({
 
   const reviewSections = [
     {
-      testId: 'tds-review-personal', title: 'Personal Details', Icon: TdsIcons.User, editTestId: 'edit-personal-btn', onEdit: onEditStep1,
+      testId: 'tds-review-personal', title: 'Personal Details', Icon: TdsIcons.User, editTestId: 'edit-personal-btn', onEdit: () => onEditStep1('tds-card-personal'),
       rows: [
         { label: 'Full Name', value: profile?.fullName || profile?.name || '—' },
         { label: 'PAN', value: profile?.pan || '—', isMono: true },
@@ -79,7 +79,7 @@ export const TdsRefundReview: React.FC<TdsRefundReviewProps> = ({
       ],
     },
     {
-      testId: 'tds-review-business', title: 'Business Details', Icon: TdsIcons.Briefcase, editTestId: 'edit-business-btn', onEdit: onEditStep1,
+      testId: 'tds-review-business', title: 'Business Details', Icon: TdsIcons.Briefcase, editTestId: 'edit-business-btn', onEdit: () => onEditStep1('tds-card-business'),
       rows: [
         { label: 'Legal Name', value: businessDetails?.legalName || '—' },
         { label: 'Business PAN', value: businessDetails?.pan || '—', isMono: true },
@@ -88,7 +88,7 @@ export const TdsRefundReview: React.FC<TdsRefundReviewProps> = ({
       ],
     },
     {
-      testId: 'tds-review-bank', title: 'Bank Details', Icon: TdsIcons.Building, editTestId: 'edit-bank-btn', onEdit: onEditStep1,
+      testId: 'tds-review-bank', title: 'Bank Details', Icon: TdsIcons.Building, editTestId: 'edit-bank-btn', onEdit: () => onEditStep1('tds-card-bank'),
       rows: [
         { label: 'Bank Name', value: bankDetails?.bankName || '—' },
         { label: 'Branch', value: bankDetails?.branch || '—' },
@@ -117,7 +117,7 @@ export const TdsRefundReview: React.FC<TdsRefundReviewProps> = ({
             </section>
           ))}
 
-          <TdsReviewDocumentsCard businessDetails={businessDetails} onEdit={onEditStep1} />
+          <TdsReviewDocumentsCard businessDetails={businessDetails} onEdit={() => onEditStep1('tds-card-business')} />
           <TdsEstimatedComputationCard taxData={taxData} />
         </main>
       </div>
