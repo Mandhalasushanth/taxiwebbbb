@@ -75,7 +75,7 @@ const OriginalReturnFoundCard: React.FC<OriginalReturnFoundCardProps> = ({ detai
   ]
 
   return (
-    <div className="original-return-found-card">
+    <div className="original-return-found-card" id="revised-step1-details" data-section="revised-step1-details">
       <div className="found-card-header">
         <h3 className="found-card-title">Original Return Found</h3>
         <span className="found-card-badge">
@@ -162,7 +162,7 @@ export const FindOriginalReturn: React.FC<FindOriginalReturnProps> = ({
   )
 
   return (
-    <div className="step1-find-original-return">
+    <div className="step1-find-original-return" id="revised-step1-search" data-section="revised-step1-search">
       <h2 className="step1-heading">Find Original Return</h2>
       {renderAckField()}
       {renderAyField()}

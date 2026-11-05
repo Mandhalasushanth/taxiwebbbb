@@ -156,8 +156,8 @@ export const calculateProfileProgress = (
   const remainingChecks = [isPersonalInfoComplete, isDemographicsComplete, isKycComplete, isAddressComplete]
   const completedRemaining = remainingChecks.filter(Boolean).length
 
-  // Initial base progress starts at 50% for newly registered users, progressing to 100%
-  let percentage = 50 + Math.round((completedRemaining / 4) * 50)
+  // Initial base progress starts at 60% for newly registered users, progressing to 100%
+  let percentage = 60 + Math.round((completedRemaining / 4) * 40)
   if (!isMobileVerified) {
     percentage = 0
   }

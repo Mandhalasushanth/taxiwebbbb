@@ -68,7 +68,7 @@ export const FILING_OPTIONS: {
 export const ItrTaxpayerProfileCard: React.FC<{ taxpayerProfile: TaxpayerProfile }> = ({
   taxpayerProfile,
 }) => (
-  <section className="itr-info-card" aria-labelledby="taxpayer-identity-heading">
+  <section className="itr-info-card" id="itr-taxpayer-profile" data-section="profile" aria-labelledby="taxpayer-identity-heading">
     <div className="itr-info-card__top">
       <div className="itr-info-card__title-row">
         <div className="itr-info-card__icon-wrap">
@@ -141,7 +141,7 @@ export const ItrFilingOptionsCard: React.FC<{
 
   return (
     <>
-      <section className={`itr-info-card ${ayError ? 'itr-info-card--error' : ''}`} aria-labelledby="ay-heading">
+      <section className={`itr-info-card ${ayError ? 'itr-info-card--error' : ''}`} id="itr-filing-options" data-section="filing-options" aria-labelledby="ay-heading">
         <div className="itr-info-card__title-row">
           <div className="itr-info-card__icon-wrap">
             <CalendarIcon size={20} />

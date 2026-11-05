@@ -44,15 +44,6 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
     [selectedSources, selectedCategoryId]
   )
 
-  const allVisibleDocs = useMemo(
-    () => [...requiredDocs, ...recommendedDocs, ...optionalDocs],
-    [requiredDocs, recommendedDocs, optionalDocs]
-  )
-
-  const uploadedCount = allVisibleDocs.filter((doc) => Boolean(uploadedDocs[doc.id])).length
-  const totalCount = allVisibleDocs.length
-  const readyPercent = totalCount > 0 ? Math.round((uploadedCount / totalCount) * 100) : 0
-
   const handleFileUpload = (docId: string, file: File) => {
     try {
       onUploadDoc(docId, {
@@ -100,42 +91,8 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
   }
 
   return (
-    <div className="itr-step-view-container itr-docs-step">
+    <div className="itr-step-view-container itr-docs-step" id="itr-documents-checklist" data-section="documents">
       <ItrFilingHeaderStepper currentStepId={3} />
-
-      <div className="itr-docs-summary-card">
-        <div className="itr-docs-summary-header">
-          <span className="itr-docs-summary-title">
-            Documents Uploaded: {uploadedCount} of {totalCount}
-          </span>
-          <span className="itr-docs-summary-badge">
-            {readyPercent}% Ready
-          </span>
-        </div>
-        <div className="itr-docs-info-box">
-          <div className="itr-docs-info-icon" aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              width="22"
-              height="22"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <polyline points="9 12 11 14 15 10" />
-            </svg>
-          </div>
-          <div className="itr-docs-info-content">
-            <div className="itr-docs-info-title">Document Checklist</div>
-            <div className="itr-docs-info-desc">
-              Upload applicable documents for CA review. PAN and Aadhaar identity are pre-verified from your profile.
-            </div>
-          </div>
-        </div>
-      </div>
 
       {requiredDocs.length > 0 && (
         <DocumentSection

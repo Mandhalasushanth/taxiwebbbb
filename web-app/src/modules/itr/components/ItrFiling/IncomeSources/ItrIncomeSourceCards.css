@@ -50,6 +50,12 @@
   gap: 0.15rem;
 }
 
+.itr-salary-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
 .itr-salary-card__title {
   margin: 0;
   font-size: 1.05rem;

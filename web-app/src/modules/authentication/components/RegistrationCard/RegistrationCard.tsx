@@ -18,7 +18,7 @@ export const RegistrationCard: React.FC = () => {
     () =>
       locationState?.customerType ||
       (registrationDraftStore.load(userMobile)?.customerType as CustomerTypeId | undefined) ||
-      'individual'
+      null
   )
   const [error] = useState<string | null>(null)
 

@@ -3,7 +3,6 @@ import { collectGstErrors } from '@modules/gst/validation/gstFieldRules'
 import React, { useState, type FormEvent } from 'react'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
-import { lookupSampleBankByIfsc } from '@shared/services'
 import { ConfirmAccountNumberInput, CaretInput } from '@shared/components'
 import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
 import { useAmendmentFileState } from '../hooks/useAmendmentFileState'
@@ -319,13 +318,7 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
                   const err = rules.ifsc(cleaned)
                   setErrors((prev) => ({ ...prev, ifscCode: err || '' }))
                 }
-                if (cleaned.length >= 4) {
-                  const match = lookupSampleBankByIfsc(cleaned)
-                  if (match) {
-                    setBankName(match.bankName)
-                    if (errors.bankName) setErrors((prev) => ({ ...prev, bankName: '' }))
-                  }
-                }
+                // Auto-fetch bank name removed as requested
               }}
               onBlur={() => {
                 const err = rules.ifsc(ifscCode)

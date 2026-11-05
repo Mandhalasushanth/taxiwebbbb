@@ -286,7 +286,7 @@ export const Settings = () => {
 
         {/* ==================== 3. APP INFORMATION ==================== */}
         <div className="settings-app-info">
-          <span className="settings-app-info__title">TaxEdge Fin Solutions • v1.0.0</span>
+          <span className="settings-app-info__title">Finsolz • Simplifying Your Fin Journey • v1.0.0</span>
           <span className="settings-app-info__meta">
             Encrypted connection • Bank-grade 256-bit SSL security
           </span>

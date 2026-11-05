@@ -24,12 +24,12 @@ const servicesHash = `${routePaths.marketing.home}#${routePaths.marketing.servic
 const faqHash = `${routePaths.marketing.home}#${routePaths.marketing.faqAnchor}`
 
 export const MARKETING_BRAND = {
-  name: appConfig.name,
-  legalName: `${appConfig.name} Fin Solutions`,
-  tagline: 'Simple • Secure • Compliant',
+  name: 'Finsolz',
+  legalName: 'Finsolz - Simplifying Your Fin Journey',
+  tagline: 'Simplifying Your Fin Journey',
   description:
     'Tax, GST, loans, insurance and company compliance handled by experts, tracked in one secure dashboard.',
-  iconSrc: '/assets/images/taxedge-brand-icon.png',
+  iconSrc: '/finsolz-icon.png',
 } as const
 
 export const MARKETING_NAV_LINKS: MarketingNavLink[] = [

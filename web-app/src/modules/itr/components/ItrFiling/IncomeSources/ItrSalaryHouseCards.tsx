@@ -1,4 +1,5 @@
 import React from 'react'
+import { FieldInfoTooltip } from '@shared/components'
 import type { SalaryDetails, HousePropertyDetails } from '../itrFiling.constants'
 import './ItrIncomeSourceCards.css'
 
@@ -21,12 +22,20 @@ export const ItrSalaryIncomeCard: React.FC<ItrSalaryIncomeCardProps> = ({
   }
 
   return (
-    <div className="itr-salary-card">
+    <div className="itr-salary-card" id="itr-salary-income" data-section="salary">
       <div className="itr-salary-card__header">
         <div className="itr-salary-card__left">
           <div className="itr-salary-icon-box" aria-hidden="true">💼</div>
           <div className="itr-salary-card__titles">
-            <h3 className="itr-salary-card__title">Salary Income</h3>
+            <div className="itr-salary-card__title-row">
+              <h3 className="itr-salary-card__title">Salary Income</h3>
+              <FieldInfoTooltip
+                title="Salary Income Information"
+                ariaLabel="Salary Income field guide"
+                iconSize={18}
+                description="Enter your total salary (before deductions), any tax-exempt allowances (e.g., HRA, LTA), and TDS deducted by your employer."
+              />
+            </div>
             <p className="itr-salary-card__sub">Employer Form 16, payslips, TDS credits</p>
           </div>
         </div>
@@ -47,7 +56,9 @@ export const ItrSalaryIncomeCard: React.FC<ItrSalaryIncomeCardProps> = ({
       </div>
 
       <div className="itr-form-group">
-        <label className="itr-form-label" htmlFor="salary-employer-name">Employer Legal Name</label>
+        <label className="itr-form-label" htmlFor="salary-employer-name">
+          Employer Legal Name <span className="itr-required-star">*</span>
+        </label>
         <input
           id="salary-employer-name"
           type="text"
@@ -60,7 +71,9 @@ export const ItrSalaryIncomeCard: React.FC<ItrSalaryIncomeCardProps> = ({
 
       <div className="itr-grid-2col">
         <div className="itr-form-group">
-          <label className="itr-form-label" htmlFor="salary-gross-amount">Gross Salary (Annual)</label>
+          <label className="itr-form-label" htmlFor="salary-gross-amount">
+            Gross Salary (Annual) <span className="itr-required-star">*</span>
+          </label>
           <div className="itr-input-currency-wrap">
             <span className="itr-currency-prefix">₹</span>
             <input
@@ -76,7 +89,9 @@ export const ItrSalaryIncomeCard: React.FC<ItrSalaryIncomeCardProps> = ({
           </div>
         </div>
         <div className="itr-form-group">
-          <label className="itr-form-label" htmlFor="salary-exempt-amount">Exempt Allowances (HRA, LTA)</label>
+          <label className="itr-form-label" htmlFor="salary-exempt-amount">
+            Exempt Allowances <span className="itr-required-star">*</span>
+          </label>
           <div className="itr-input-currency-wrap">
             <span className="itr-currency-prefix">₹</span>
             <input
@@ -94,7 +109,9 @@ export const ItrSalaryIncomeCard: React.FC<ItrSalaryIncomeCardProps> = ({
       </div>
 
       <div className="itr-form-group">
-        <label className="itr-form-label" htmlFor="salary-tds-amount">TDS Deducted by Employer</label>
+        <label className="itr-form-label" htmlFor="salary-tds-amount">
+          TDS Deducted by Employer <span className="itr-required-star">*</span>
+        </label>
         <div className="itr-input-currency-wrap">
           <span className="itr-currency-prefix">₹</span>
           <input
@@ -132,12 +149,20 @@ export const ItrHousePropertyCard: React.FC<ItrHousePropertyCardProps> = ({
   }
 
   return (
-    <div className="itr-salary-card">
+    <div className="itr-salary-card" id="itr-house-property" data-section="house_property">
       <div className="itr-salary-card__header">
         <div className="itr-salary-card__left">
           <div className="itr-salary-icon-box" aria-hidden="true">🏠</div>
           <div className="itr-salary-card__titles">
-            <h3 className="itr-salary-card__title">House Property</h3>
+            <div className="itr-salary-card__title-row">
+              <h3 className="itr-salary-card__title">House Property</h3>
+              <FieldInfoTooltip
+                title="House Property Information"
+                ariaLabel="Property income field guide"
+                iconSize={18}
+                description="Provide details of your house property, including whether it is self-occupied or rented, and the home loan interest paid (if applicable)."
+              />
+            </div>
             <p className="itr-salary-card__sub">Self-occupied home loan or rental income</p>
           </div>
         </div>
@@ -159,7 +184,9 @@ export const ItrHousePropertyCard: React.FC<ItrHousePropertyCardProps> = ({
 
       {/* Property Type Toggle */}
       <div className="itr-form-group">
-        <label className="itr-form-label">Property Classification</label>
+        <label className="itr-form-label">
+          Property Classification <span className="itr-required-star">*</span>
+        </label>
         <div className="itr-toggle-group">
           <button
             type="button"
@@ -178,29 +205,13 @@ export const ItrHousePropertyCard: React.FC<ItrHousePropertyCardProps> = ({
         </div>
       </div>
 
-      {/* Home Loan Interest */}
-      <div className="itr-form-group">
-        <label className="itr-form-label" htmlFor="hp-loan-interest">Home Loan Interest Paid (Sec 24b)</label>
-        <div className="itr-input-currency-wrap">
-          <span className="itr-currency-prefix">₹</span>
-          <input
-            id="hp-loan-interest"
-            type="text"
-            inputMode="numeric"
-            maxLength={14}
-            className="itr-input-currency"
-            placeholder={housePropertyDetails.propertyType === 'self_occupied' ? 'Max ₹2,00,000 for self-occupied' : 'Enter home loan interest'}
-            value={housePropertyDetails.homeLoanInterest}
-            onChange={(e) => handleHousePropertyChange('homeLoanInterest', e.target.value.replace(/[^0-9,]/g, ''))}
-          />
-        </div>
-      </div>
-
-      {/* Let-Out specific fields */}
+      {/* Let-Out specific fields: Annual Rent Received & Municipal Tax Paid (Row 1 side-by-side) */}
       {housePropertyDetails.propertyType === 'let_out' && (
         <div className="itr-grid-2col">
           <div className="itr-form-group">
-            <label className="itr-form-label" htmlFor="hp-rent">Annual Rent Received</label>
+            <label className="itr-form-label" htmlFor="hp-rent">
+              Annual Rent Received <span className="itr-required-star">*</span>
+            </label>
             <div className="itr-input-currency-wrap">
               <span className="itr-currency-prefix">₹</span>
               <input
@@ -216,7 +227,9 @@ export const ItrHousePropertyCard: React.FC<ItrHousePropertyCardProps> = ({
             </div>
           </div>
           <div className="itr-form-group">
-            <label className="itr-form-label" htmlFor="hp-tax">Municipal Tax Paid</label>
+            <label className="itr-form-label" htmlFor="hp-tax">
+              Municipal Tax Paid <span className="itr-required-star">*</span>
+            </label>
             <div className="itr-input-currency-wrap">
               <span className="itr-currency-prefix">₹</span>
               <input
@@ -233,6 +246,26 @@ export const ItrHousePropertyCard: React.FC<ItrHousePropertyCardProps> = ({
           </div>
         </div>
       )}
+
+      {/* Home Loan Interest Paid (Sec 24b) */}
+      <div className="itr-form-group">
+        <label className="itr-form-label" htmlFor="hp-loan-interest">
+          Home Loan Interest Paid (Sec 24b) <span className="itr-required-star">*</span>
+        </label>
+        <div className="itr-input-currency-wrap">
+          <span className="itr-currency-prefix">₹</span>
+          <input
+            id="hp-loan-interest"
+            type="text"
+            inputMode="numeric"
+            maxLength={14}
+            className="itr-input-currency"
+            placeholder={housePropertyDetails.propertyType === 'self_occupied' ? 'Max ₹2,00,000 for self-occupied' : 'Enter home loan interest'}
+            value={housePropertyDetails.homeLoanInterest}
+            onChange={(e) => handleHousePropertyChange('homeLoanInterest', e.target.value.replace(/[^0-9,]/g, ''))}
+          />
+        </div>
+      </div>
     </div>
   )
 }

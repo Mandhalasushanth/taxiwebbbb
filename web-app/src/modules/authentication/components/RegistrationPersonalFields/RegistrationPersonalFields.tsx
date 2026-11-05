@@ -84,6 +84,12 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
     }
   }
 
+  const handleEmailKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === ' ' || e.code === 'Space') {
+      e.preventDefault()
+    }
+  }
+
   return (
     <div className="reg-personal-fields">
       {/* Row 1: Full Name & Email */}
@@ -119,14 +125,16 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
             <span className="reg-field__icon">
               <MailIcon />
             </span>
-            <input
+            <CaretInput
               id="reg-email"
               name="email"
-              type="email"
+              type="text"
+              inputMode="email"
               className="reg-field__input"
               placeholder="Email"
               value={values.email}
               onChange={onChange}
+              onKeyDown={handleEmailKeyDown}
               onBlur={onBlur}
               autoComplete="email"
             />

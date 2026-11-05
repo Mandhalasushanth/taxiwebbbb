@@ -2,15 +2,14 @@ import { Suspense, useEffect, useMemo, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { buildProfileCompletionPath } from '@core/auth'
-import { initialsOf } from '@shared/utils'
-import { CompleteProfileModal, LogoutConfirmModal, LogoutIcon, ScrollToTop } from '@shared/components'
+import { CompleteProfileModal, LogoutConfirmModal, LogoutIcon, ScrollToTop , FinsolzBrand } from '@shared/components'
 import { BackNavigationLogoutGuard, useLogoutConfirm } from '@modules/authentication'
 import { useAuthStore, useNotificationStore } from '@store/index'
 import { navSections } from './navigation'
 import { useDashboardSummary } from '@modules/dashboard'
 import { useApplicationsCount } from '@modules/applications/hooks/useApplicationsCount'
 import { DashboardBreadcrumb } from './DashboardBreadcrumb'
-import { getCustomerId, getCustomerDisplayName, isPlaceholderCustomerName } from '@modules/profile'
+import { isPlaceholderCustomerName } from '@modules/profile'
 import './DashboardLayout.css'
 
 const MenuIcon = () => (
@@ -96,8 +95,6 @@ export const DashboardLayout = () => {
     user?.fullName &&
     !isPlaceholderCustomerName(user.fullName)
   )
-  const customerCode = getCustomerId(user)
-  const displayName = getCustomerDisplayName(user)
 
   return (
     <div className="shell">
@@ -114,7 +111,7 @@ export const DashboardLayout = () => {
       {/* Sidebar (Fixed on Desktop, Slide-over Drawer on Tablet/Mobile) */}
       <aside
         className={`shell__sidebar${isMobileNavOpen ? ' shell__sidebar--mobile-open' : ''}`}
-        aria-label="TaxEdge Dashboard Sidebar"
+        aria-label="Finsolz Dashboard Sidebar"
       >
         <div className="shell__brand-row">
           <NavLink
@@ -123,12 +120,9 @@ export const DashboardLayout = () => {
             onClick={() => setIsMobileNavOpen(false)}
           >
             <div className="shell__brand-logo-box">
-              <img src="/assets/images/taxedge-brand-icon.png" alt="TaxEdge" className="shell__brand-logo-img" />
+              <img src="/finsolz-icon.png" alt="Finsolz" className="shell__brand-logo-img" />
             </div>
-            <div className="shell__brand-text">
-              <span className="shell__brand-name">TAX<span className="shell__brand-name-accent">EDGE</span></span>
-              <span className="shell__brand-tag">FIN SOLUTIONS</span>
-            </div>
+            <FinsolzBrand size="sm" align="center" taglineTone="light" />
           </NavLink>
 
           <button
@@ -169,17 +163,16 @@ export const DashboardLayout = () => {
                         item.icon
                       )}
                     </span>
-                    <span>{item.label}</span>
+                    <span className="shell__nav-label">{item.label}</span>
                   </a>
                 ) : (
                   <NavLink
-                    key={item.to}
+                    key={item.label}
                     to={item.to}
-                    end={item.to === routePaths.dashboard}
-                    className={({ isActive }) => `shell__nav-link${isActive ? ' is-active' : ''}`}
-                    onClick={() => {
-                      setIsMobileNavOpen(false)
-                    }}
+                    className={({ isActive }) =>
+                      `shell__nav-link${isActive ? ' shell__nav-link--active' : ''}`
+                    }
+                    onClick={() => setIsMobileNavOpen(false)}
                   >
                     <span className="shell__nav-icon" aria-hidden="true">
                       {item.iconImg ? (
@@ -188,28 +181,20 @@ export const DashboardLayout = () => {
                         item.icon
                       )}
                     </span>
-                    <span>{item.label}</span>
-                    {item.badgeKey && badges[item.badgeKey] && (
-                      <span className="shell__nav-badge">{badges[item.badgeKey]}</span>
+                    <span className="shell__nav-label">{item.label}</span>
+                    {badges[item.badgeKey as keyof typeof badges] && (
+                      <span className="shell__nav-badge">
+                        {badges[item.badgeKey as keyof typeof badges]}
+                      </span>
                     )}
                   </NavLink>
-                ),
+                )
               )}
             </div>
           ))}
         </nav>
 
         <div className="shell__sidebar-footer">
-          <div className="shell__user">
-            <span className="shell__avatar" aria-hidden="true">
-              {isProfileComplete && user?.fullName ? initialsOf(user.fullName) : 'U'}
-            </span>
-            <div className="shell__user-meta">
-              <span className="shell__user-name" title={displayName}>{displayName}</span>
-              {customerCode && <span className="shell__user-code">{customerCode}</span>}
-            </div>
-          </div>
-
           <button className="shell__signout" type="button" onClick={logout.requestLogout}>
             <LogoutIcon size={14} /> Log out
           </button>

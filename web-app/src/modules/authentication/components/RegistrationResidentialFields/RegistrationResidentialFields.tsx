@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { CaretInput } from '@shared/components'
 import {
   BuildingIcon,
   PinIcon,
@@ -67,7 +68,7 @@ export const RegistrationResidentialFields: React.FC<RegistrationResidentialFiel
           <span className="reg-field__icon">
             <BuildingIcon />
           </span>
-          <input
+          <CaretInput
             id="reg-addressLine1"
             name="addressLine1"
             type="text"
@@ -98,7 +99,7 @@ export const RegistrationResidentialFields: React.FC<RegistrationResidentialFiel
             <span className="reg-field__icon">
               <MapIcon />
             </span>
-            <input
+            <CaretInput
               id="reg-areaLocality"
               name="areaLocality"
               type="text"
@@ -131,7 +132,7 @@ export const RegistrationResidentialFields: React.FC<RegistrationResidentialFiel
             <span className="reg-field__icon">
               <BuildingIcon />
             </span>
-            <input
+            <CaretInput
               id="reg-city"
               name="city"
               type="text"

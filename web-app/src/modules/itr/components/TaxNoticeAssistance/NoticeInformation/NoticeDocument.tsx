@@ -11,6 +11,7 @@ export interface NoticeDocumentProps {
   onNext: () => void
   onSaveDraftAndExit: () => void
   isSubmitting?: boolean
+  isEditMode?: boolean
 }
 
 export const NoticeDocument: React.FC<NoticeDocumentProps> = ({
@@ -20,6 +21,7 @@ export const NoticeDocument: React.FC<NoticeDocumentProps> = ({
   onNext,
   onSaveDraftAndExit,
   isSubmitting = false,
+  isEditMode = false,
 }) => {
   // Shown when Continue is pressed without the notice
   const [uploadError, setUploadError] = useState<string | null>(null)
@@ -69,7 +71,7 @@ export const NoticeDocument: React.FC<NoticeDocumentProps> = ({
   }
 
   return (
-    <div className="notice-upload-container">
+    <div className="notice-upload-container" id="notice-step2-doc" data-section="notice-step2-doc">
       {/* Heading Section */}
       <div className="notice-form__intro">
         <h2 className="notice-form__heading">Upload your Income Tax notice</h2>
@@ -170,6 +172,7 @@ export const NoticeDocument: React.FC<NoticeDocumentProps> = ({
         nextAriaLabel="Continue to staff review"
         nextDisabled={!hasDocument}
         isSubmitting={isSubmitting}
+        isEditMode={isEditMode}
       />
     </div>
   )

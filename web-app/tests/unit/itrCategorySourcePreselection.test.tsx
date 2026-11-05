@@ -707,23 +707,28 @@ describe('ITR Category to Income Source Preselection', () => {
         // Banner
         expect(screen.getByText('Review Your ITR Application')).toBeDefined()
 
-        // Summary & Declared Income
-        expect(screen.getByText(/PAN: GFDHJ5869R/)).toBeDefined()
-        expect(screen.getByText(/Name: Sagarika/)).toBeDefined()
-        expect(screen.getByText('Profile Verified')).toBeDefined()
-        expect(screen.getAllByText(/Bsbsbs \(···· 7673\)/)).toHaveLength(2)
-        expect(screen.getByText('Selected')).toBeDefined()
-
-        // Estimated Tax Summary
-        expect(screen.getByText('Estimated Tax Summary')).toBeDefined()
-        expect(screen.getByText('New Tax Regime')).toBeDefined()
-        expect(screen.getByText('1. Gross Total Income')).toBeDefined()
-        expect(screen.getByText('Net Tax Payable')).toBeDefined()
-
-        // Filing & Taxpayer Details
+        // 1. Filing & Taxpayer Details
+        expect(screen.getByText('Filing & Taxpayer Details')).toBeDefined()
         expect(screen.getByText('AY 2026-2027')).toBeDefined()
         expect(screen.getByText('ITR-1')).toBeDefined()
+        expect(screen.getByText('GFDHJ5869R')).toBeDefined()
+        expect(screen.getByText('Sagarika')).toBeDefined()
         expect(screen.getByText('Resident')).toBeDefined()
+
+        // 2. Declared Income Breakdown
+        expect(screen.getByText('Declared Income Breakdown')).toBeDefined()
+        expect(screen.getByText('Salary Income')).toBeDefined()
+        expect(screen.getAllByText('Declared').length).toBeGreaterThanOrEqual(1)
+
+        // 3. Refund Bank Account
+        expect(screen.getByText('Refund Bank Account')).toBeDefined()
+        expect(screen.getByText('Bsbsbs')).toBeDefined()
+        expect(screen.getByText(/···· 7673/)).toBeDefined()
+        expect(screen.getByText('Primary Account for Income Tax Refund')).toBeDefined()
+
+        // 4. Uploaded Documents
+        expect(screen.getByText('Uploaded Documents (0)')).toBeDefined()
+        expect(screen.getByText('No documents uploaded yet')).toBeDefined()
 
         // Declaration & Submit
         const submitBtn = screen.getByRole('button', { name: /Submit for CA Review/i })

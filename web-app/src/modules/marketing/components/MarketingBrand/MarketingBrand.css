@@ -20,6 +20,17 @@
   box-shadow: var(--shadow-sm);
 }
 
+.mk-brand .finsolz-brand__tag-text {
+  color: #ffffff !important;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.mk-brand .finsolz-brand__tag-dash {
+  color: #fe7302 !important;
+  font-weight: 700;
+}
+
 .mk-brand__text {
   display: flex;
   flex-direction: column;

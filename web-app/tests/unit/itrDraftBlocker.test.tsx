@@ -73,7 +73,7 @@ describe('ITR Module - Save Draft Confirmations', () => {
   })
 
   describe('ITR Filing Flow', () => {
-    it('prompts draft confirm modal on Step 1 Back when started and saves draft', () => {
+    it('prompts draft confirm modal on Step 1 Save Draft and redirects to Income Sources on Back', () => {
       render(
         <MemoryRouter>
           <ItrFiling />
@@ -91,9 +91,9 @@ describe('ITR Module - Save Draft Confirmations', () => {
       // Now on Step 1
       expect(screen.getByText('Taxpayer Identity')).toBeDefined()
 
-      // Click "Back"
-      const backBtn = screen.getByRole('button', { name: /back/i })
-      fireEvent.click(backBtn)
+      // Click "Save as Draft"
+      const saveDraftTrigger = screen.getByTestId('step-save-draft-btn')
+      fireEvent.click(saveDraftTrigger)
 
       // Modal should open
       expect(screen.getByText(/save application progress\?/i)).toBeDefined()
@@ -106,6 +106,61 @@ describe('ITR Module - Save Draft Confirmations', () => {
       const savedDraft = userStorage.getDraft('itr-filing')
       expect(savedDraft).toBeDefined()
       expect(savedDraft?.serviceId).toBe('itr-filing')
+    })
+
+    it('redirects to Select Primary Income category selection when clicking Back on Step 1', () => {
+      userStorage.deleteDraft('itr-filing')
+      render(
+        <MemoryRouter>
+          <ItrFiling />
+        </MemoryRouter>
+      )
+
+      const salariedCard = screen.queryByText('Salaried')
+      if (salariedCard) {
+        fireEvent.click(salariedCard)
+        const continueBtn = screen.getByRole('button', { name: /start application/i })
+        fireEvent.click(continueBtn)
+      }
+
+      expect(screen.getByText('Taxpayer Identity')).toBeDefined()
+
+      const backBtn = screen.getByRole('button', { name: /back/i })
+      fireEvent.click(backBtn)
+
+      // Expect to be back on Select Primary Income (Category Selection view)
+      expect(screen.getByText(/select primary income/i)).toBeDefined()
+      expect(screen.getAllByText('Salaried').length).toBeGreaterThan(0)
+    })
+
+    it('prompts draft confirm modal on Category Selection Back when category is selected', () => {
+      userStorage.deleteDraft('itr-filing')
+      render(
+        <MemoryRouter>
+          <ItrFiling />
+        </MemoryRouter>
+      )
+
+      // Click Multiple Sources category
+      const multiCard = screen.getByText('Multiple Sources')
+      fireEvent.click(multiCard)
+
+      // Click Back button on category selection page
+      const backBtn = screen.getByRole('button', { name: /^back$/i })
+      fireEvent.click(backBtn)
+
+      // Draft modal should appear
+      expect(screen.getByText(/save application progress\?/i)).toBeDefined()
+      expect(screen.getByText(/save as draft & exit/i)).toBeDefined()
+
+      // Click Save as Draft & Exit
+      const saveDraftBtn = screen.getByText(/save as draft & exit/i)
+      fireEvent.click(saveDraftBtn)
+
+      const savedDraft = userStorage.getDraft('itr-filing')
+      expect(savedDraft).toBeDefined()
+      expect(savedDraft?.serviceId).toBe('itr-filing')
+      expect(savedDraft?.formData?.selectedCategoryId).toBe('multiple')
     })
   })
 

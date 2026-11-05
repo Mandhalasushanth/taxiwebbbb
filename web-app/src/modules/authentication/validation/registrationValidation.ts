@@ -239,14 +239,37 @@ export const validateField = (
     }
 
     case 'addressLine1': {
-      const trimmed = String(val ?? '').trim()
-      if (!trimmed) return 'Address Line 1 is required'
+      const raw = String(val ?? '')
+      if (raw.startsWith(' ')) return 'Address Line 1 cannot start with a space'
+      if (/\s{2,}/.test(raw)) return 'Only one space is allowed between words'
+      if (/^[,\-/.']/.test(raw)) return 'Address Line 1 cannot start with punctuation'
+      if (/[^\p{L}0-9\s#,\-/.']/u.test(raw)) {
+        return "Address can only contain letters, numbers, spaces, and (# , - / . ')"
+      }
+      if (/([#,\-/.'])\1+/.test(raw) || /[#,\-/.']\s*[#,\-/.']+/.test(raw)) {
+        return 'Address cannot contain consecutive special characters'
+      }
+      const trimmed = raw.trim()
+      if (!trimmed) {
+        if (options?.isLive) return undefined
+        return 'Address Line 1 is required'
+      }
       if (trimmed.length < 3) return 'Please enter a valid address'
       return undefined
     }
 
     case 'areaLocality': {
-      const trimmed = String(val ?? '').trim()
+      const raw = String(val ?? '')
+      if (raw.startsWith(' ')) return 'Address Line 2 cannot start with a space'
+      if (/\s{2,}/.test(raw)) return 'Only one space is allowed between words'
+      if (/^[,\-/.']/.test(raw)) return 'Address Line 2 cannot start with punctuation'
+      if (/[^\p{L}0-9\s#,\-/.']/u.test(raw)) {
+        return "Address Line 2 can only contain letters, numbers, spaces, and (# , - / . ')"
+      }
+      if (/([#,\-/.'])\1+/.test(raw) || /[#,\-/.']\s*[#,\-/.']+/.test(raw)) {
+        return 'Address Line 2 cannot contain consecutive special characters'
+      }
+      const trimmed = raw.trim()
       if (trimmed && trimmed.length < 2) {
         return 'Please enter a valid area / locality'
       }
@@ -254,8 +277,20 @@ export const validateField = (
     }
 
     case 'city': {
-      const trimmed = String(val ?? '').trim()
-      if (!trimmed) return 'City is required'
+      const raw = String(val ?? '')
+      if (raw.startsWith(' ')) return 'City cannot start with a space'
+      if (/\s{2,}/.test(raw)) return 'Only one space is allowed between words'
+      if (/^[ \-.'\s]+/.test(raw)) return 'City must start with a letter'
+      if (/[0-9]/.test(raw)) return 'City should not contain numbers'
+      if (/[^a-zA-Z\s.'-]/.test(raw)) return 'City should only contain letters, spaces, hyphens, and dots'
+      if (/([\-.'])\1+/.test(raw) || /[\-.']\s*[\-.']+/.test(raw)) {
+        return 'City cannot contain consecutive dots or hyphens'
+      }
+      const trimmed = raw.trim()
+      if (!trimmed) {
+        if (options?.isLive) return undefined
+        return 'City is required'
+      }
       if (!/^[a-zA-Z\s.'-]{2,}$/.test(trimmed)) {
         return 'Please enter a valid city'
       }
@@ -263,8 +298,20 @@ export const validateField = (
     }
 
     case 'district': {
-      const trimmed = String(val ?? '').trim()
-      if (!trimmed) return 'District is required'
+      const raw = String(val ?? '')
+      if (raw.startsWith(' ')) return 'District cannot start with a space'
+      if (/\s{2,}/.test(raw)) return 'Only one space is allowed between words'
+      if (/^[ \-.'\s]+/.test(raw)) return 'District must start with a letter'
+      if (/[0-9]/.test(raw)) return 'District should not contain numbers'
+      if (/[^a-zA-Z\s.'-]/.test(raw)) return 'District should only contain letters, spaces, hyphens, and dots'
+      if (/([\-.'])\1+/.test(raw) || /[\-.']\s*[\-.']+/.test(raw)) {
+        return 'District cannot contain consecutive dots or hyphens'
+      }
+      const trimmed = raw.trim()
+      if (!trimmed) {
+        if (options?.isLive) return undefined
+        return 'District is required'
+      }
       if (!/^[a-zA-Z\s.'-]{2,}$/.test(trimmed)) {
         return 'Please enter a valid district'
       }
@@ -272,7 +319,10 @@ export const validateField = (
     }
 
     case 'state': {
-      const str = String(val ?? '').trim()
+      const raw = String(val ?? '')
+      if (raw.startsWith(' ')) return 'State cannot start with a space'
+      if (/\s{2,}/.test(raw)) return 'Only one space is allowed between words'
+      const str = raw.trim()
       if (!str) return 'Please select your State / UT'
       return undefined
     }

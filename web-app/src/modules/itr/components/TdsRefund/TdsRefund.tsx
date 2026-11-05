@@ -64,7 +64,7 @@ export const TdsRefund: React.FC = () => {
     2: () => (
       <TdsRefundReview
         onBack={() => setCurrentStep(1)}
-        onEditStep1={() => reviewEdit.startEdit(() => setCurrentStep(1))}
+        onEditStep1={(sectionId) => reviewEdit.startEdit(() => setCurrentStep(1), sectionId)}
         onNext={handleFinishSubmission}
         onSaveDraft={openModal}
         profile={profile}

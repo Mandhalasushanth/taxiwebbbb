@@ -1,3 +1,4 @@
+import { FinsolzBrand } from '@shared/components'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
@@ -199,7 +200,7 @@ export const SignInCard: React.FC<SignInCardProps> = ({
     if (authMode === 'otp') return 'Enter the 6-digit OTP sent to your mobile number'
     if (authMode === 'passcode') return 'Enter your 6-digit passcode to sign in'
     if (authMode === 'reset') return 'Set a new 6-digit passcode for your account'
-    return 'Sign in to continue to your TaxEdge account'
+    return 'Sign in to continue to your Finsolz account'
   }
 
   return (
@@ -207,34 +208,22 @@ export const SignInCard: React.FC<SignInCardProps> = ({
       {authMode === 'mobile' ? (
         <div className="sign-in-card__brand sign-in-card__brand--stacked">
           <img
-            src="/assets/images/taxedge-brand-icon.png"
-            alt="TaxEdge"
+            src="/finsolz-icon.png"
+            alt="Finsolz"
             className="sign-in-card__brand-icon sign-in-card__brand-icon--stacked"
           />
-          <div className="sign-in-card__brand-text-block sign-in-card__brand-text-block--stacked">
-            <div className="sign-in-card__brand-title">
-              <span className="brand-title--navy">Tax</span>
-              <span className="brand-title--orange">Edge</span>
-            </div>
-            <span className="sign-in-card__brand-sub">FIN SOLUTIONS</span>
-          </div>
+          <FinsolzBrand size="sm" align="center" taglineTone="dark" />
         </div>
       ) : (
         <div className="sign-in-card__brand sign-in-card__brand--inline">
           <div className="sign-in-card__brand-row">
             <img
-              src="/assets/images/taxedge-brand-icon.png"
-              alt="TaxEdge"
+              src="/finsolz-icon.png"
+              alt="Finsolz"
               className="sign-in-card__brand-icon"
             />
             <div className="sign-in-card__brand-divider" />
-            <div className="sign-in-card__brand-text-block">
-              <div className="sign-in-card__brand-title">
-                <span className="brand-title--navy">Tax</span>
-                <span className="brand-title--orange">Edge</span>
-              </div>
-              <span className="sign-in-card__brand-sub">FIN SOLUTIONS</span>
-            </div>
+            <FinsolzBrand size="sm" align="center" taglineTone="dark" />
           </div>
         </div>
       )}

@@ -117,7 +117,14 @@ export function calculateItrTax(params: ItrTaxCalculationParams): ItrTaxCalculat
     const hpIncome = selected.includes('house_property') ? computeHousePropertyNet(params.housePropertyDetails) : 0
     const bizIncome = selected.includes('business') ? computeBusinessNet(params.businessDetails) : 0
     const cgIncome = selected.includes('capital_gains') && params.capitalGainsDetails ? parseAmount(params.capitalGainsDetails.stcg) + parseAmount(params.capitalGainsDetails.ltcg) : 0
-    const otherIncome = selected.includes('other_sources') && params.otherSourcesDetails ? parseAmount(params.otherSourcesDetails.interestIncome) + parseAmount(params.otherSourcesDetails.dividendIncome) + parseAmount(params.otherSourcesDetails.otherIncome) : 0
+    const otherSources = params.otherSourcesDetails
+    const otherIncome = selected.includes('other_sources') && otherSources
+      ? parseAmount(otherSources.savingsInterest || otherSources.interestIncome) +
+        parseAmount(otherSources.fdInterest) +
+        parseAmount(otherSources.dividendIncome) +
+        parseAmount(otherSources.familyPension) +
+        parseAmount(otherSources.otherMiscellaneous || otherSources.otherIncome)
+      : 0
 
     const grossTotalIncome = Math.max(0, salaryIncome + bizIncome + cgIncome + otherIncome + hpIncome)
     const hasSalary = selected.includes('salary') && salaryIncome > 0

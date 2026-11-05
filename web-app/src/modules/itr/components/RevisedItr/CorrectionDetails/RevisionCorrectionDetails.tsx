@@ -260,7 +260,7 @@ export const RevisionCorrectionDetails: React.FC<RevisionCorrectionDetailsProps>
   }
 
   return (
-    <div className="step3-update-income-details">
+    <div className="step3-update-income-details" id="revised-step3-changes" data-section="revised-step3-changes">
       <div className="step3-title-wrap">
         <h2 className="step3-main-heading">Update only what changed</h2>
         <p className="step3-sub-heading">Edit only the figures that need correcting.</p>

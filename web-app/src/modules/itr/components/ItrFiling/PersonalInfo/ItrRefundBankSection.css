@@ -23,147 +23,218 @@
 .itr-bank-account-card {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 14px;
-  padding: 1.1rem 1.35rem;
+  background: #ffffff;
+  border: 1.5px solid var(--grey-300, #e2e8f0);
+  border-radius: 18px;
+  padding: 1.15rem 1.35rem;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
 }
 
 .itr-bank-account-card:hover {
-  border-color: var(--grey-300);
-  background: var(--palette-slate-50);
+  border-color: #cbd5e1;
+  background: #f8fafc;
 }
 
 .itr-bank-account-card--selected {
-  background: var(--palette-orange-50-fffaf5);
-  border-color: var(--primary-orange);
-  box-shadow: 0 0 0 1px var(--primary-orange);
+  background: #f0fdf4;
+  border: 2px solid #059669;
+  box-shadow: 0 1px 4px rgba(5, 150, 105, 0.08);
 }
 
-.itr-bank-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.itr-bank-card-header {
+.itr-bank-card-main-row {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1.15rem;
+  width: 100%;
 }
 
-.itr-bank-title-box {
+.itr-bank-card-content {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0.2rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.itr-bank-card-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
 }
 
 .itr-bank-name {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 800;
-  color: var(--primary-navy);
+  color: #0f172a;
 }
 
-.itr-bank-type {
-  font-size: 0.75rem;
+.itr-bank-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  color: var(--secondary-text);
+  background: #dcfce7;
+  color: #15803d;
+  padding: 0.2rem 0.55rem;
+  border-radius: 8px;
+  line-height: 1;
+}
+
+.itr-bank-badge-pill svg {
+  flex-shrink: 0;
+}
+
+.itr-bank-account-number {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
   letter-spacing: 0.04em;
+  margin: 0.15rem 0;
 }
 
-.itr-bank-badge-validated {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--primary-navy);
-  background: var(--palette-blue-50);
-  border: 1px solid var(--palette-blue-200);
-  padding: 0.25rem 0.65rem;
-  border-radius: 9999px;
-  white-space: nowrap;
-}
-
-.itr-bank-card-details {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  background: var(--palette-slate-50);
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-}
-
-.itr-bank-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.itr-bank-field-label {
-  font-size: 0.78rem;
+.itr-bank-ifsc-row {
+  font-size: 0.85rem;
   font-weight: 600;
-  color: var(--secondary-text);
+  color: #64748b;
+  letter-spacing: 0.02em;
 }
 
-.itr-bank-field-val {
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: var(--palette-slate-900);
+.itr-bank-edit-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  border: 1px solid transparent;
+  color: #1e293b;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.itr-bank-edit-icon-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Custom Radio */
+.itr-custom-radio {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  background: #ffffff;
+  display: inline-block;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.itr-custom-radio--checked {
+  border-color: #ea580c;
+  background: #ea580c;
+  box-shadow: inset 0 0 0 3px #ffffff;
 }
 
 /* Add Another Bank Account Button */
 .itr-add-bank-row {
   display: flex;
-  justify-content: center;
-  margin-top: 0.25rem;
+  justify-content: stretch;
+  margin-top: 0.4rem;
 }
 
 .itr-btn-add-bank {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  background: var(--surface);
-  border: 1.5px solid var(--grey-300);
-  color: var(--primary-navy);
-  font-size: 0.9rem;
+  gap: 0.55rem;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: var(--primary-navy, #0f172a);
+  font-size: 0.95rem;
   font-weight: 700;
-  padding: 0.65rem 1.65rem;
-  border-radius: 9999px;
+  padding: 0.85rem 1.5rem;
+  border-radius: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
-  max-width: 320px;
+  max-width: 100%;
   justify-content: center;
 }
 
 .itr-btn-add-bank:hover {
-  background: var(--palette-slate-50);
-  border-color: var(--primary-orange);
-  color: var(--primary-orange);
-  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.12);
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* Inline Add Bank Account Form */
 .itr-add-bank-form {
-  background: var(--palette-slate-50);
+  background: var(--surface);
   border: 1.5px solid var(--border);
-  border-radius: 14px;
-  padding: 1.35rem 1.5rem;
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.9rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+}
+
+.itr-add-bank-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: -0.15rem;
+}
+
+.itr-add-bank-header-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.itr-add-bank-header-icon {
+  color: var(--primary-navy);
 }
 
 .itr-add-bank-title {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--primary-navy);
+}
+
+.itr-add-bank-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--palette-slate-400, #94a3b8);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.itr-add-bank-close-btn:hover {
+  background: var(--palette-slate-100);
+  color: var(--palette-slate-800);
+}
+
+.itr-add-bank-subtitle {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  color: var(--secondary-text, #64748b);
+  line-height: 1.45;
 }
 
 .itr-bank-form-error {
@@ -176,17 +247,11 @@
   border-radius: 8px;
 }
 
-.itr-bank-inputs-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.15rem 1.25rem;
+.itr-bank-inputs-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
   width: 100%;
-}
-
-@media (max-width: 600px) {
-  .itr-bank-inputs-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .itr-input-group {
@@ -198,14 +263,10 @@
   box-sizing: border-box;
 }
 
-.itr-input-group--full {
-  grid-column: 1 / -1;
-}
-
 .itr-input-label {
-  font-size: 0.8125rem;
+  font-size: 0.84rem;
   font-weight: 700;
-  color: var(--grey-700);
+  color: var(--palette-slate-800, #1e293b);
   display: flex;
   align-items: center;
   min-height: 1.35rem;
@@ -213,12 +274,65 @@
   white-space: nowrap;
 }
 
-.itr-text-input,
-.itr-select-input {
+.itr-req-star {
+  color: #ef4444;
+  margin-left: 3px;
+  font-weight: 800;
+}
+
+.itr-label-lock-icon {
+  color: #94a3b8;
+  margin-left: 6px;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.itr-input-wrap {
+  position: relative;
   width: 100%;
-  height: 44px;
-  padding: 0 0.85rem;
-  font-size: 0.9rem;
+}
+
+.itr-input-icon-valid {
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.itr-bank-branch-banner {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 9px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.itr-bank-branch-icon {
+  display: inline-flex;
+  align-items: center;
+  color: #16a34a;
+  flex-shrink: 0;
+}
+
+.itr-bank-branch-text {
+  color: #15803d;
+}
+
+.itr-text-input {
+  width: 100%;
+  height: 46px;
+  padding: 0 0.95rem;
+  font-size: 0.92rem;
   border: 1.5px solid var(--grey-300);
   border-radius: 10px;
   background: var(--surface);
@@ -227,61 +341,96 @@
   transition: all 0.2s ease;
 }
 
-.itr-select-input {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23334155' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 16px 16px;
-  padding-right: 2.2rem;
-  cursor: pointer;
-}
-
-.itr-text-input:focus,
-.itr-select-input:focus {
+.itr-text-input:focus {
   outline: none;
   border-color: var(--primary-orange);
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
 }
 
+.itr-text-input--readonly {
+  background: var(--palette-slate-50, #f8fafc);
+  color: var(--palette-slate-700, #334155);
+  border-color: var(--grey-300);
+  cursor: default;
+}
+
+.itr-text-input--readonly:focus {
+  border-color: var(--grey-300);
+  box-shadow: none;
+}
+
+.itr-acc-type-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.itr-acc-type-btn {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1.5px solid var(--border, #cbd5e1);
+  background: var(--surface, #ffffff);
+  color: var(--palette-slate-600, #475569);
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.itr-acc-type-btn:hover {
+  border-color: var(--grey-400);
+}
+
+.itr-acc-type-btn--selected {
+  border: 2px solid #fe7302;
+  background: #fffaf5;
+  color: #ea580c;
+  box-shadow: 0 0 0 1px #fe7302;
+}
+
 .itr-add-bank-actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-top: 0.25rem;
+  width: 100%;
+  margin-top: 0.5rem;
 }
 
-.itr-btn-save-bank {
-  background: var(--primary-orange);
-  color: var(--surface);
+.itr-btn-save-validate {
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fe7302 0%, #ea580c 100%);
+  color: #ffffff;
   border: none;
-  border-radius: 9999px;
-  padding: 0.65rem 1.6rem;
-  font-size: 0.9rem;
+  font-size: 0.98rem;
   font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.itr-btn-save-bank:hover {
-  background: var(--palette-orange-600);
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+.itr-btn-save-validate:hover {
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(234, 88, 12, 0.45);
 }
 
-.itr-btn-cancel-bank {
-  background: var(--surface);
-  color: var(--secondary-text);
-  border: 1.5px solid var(--grey-300);
-  border-radius: 9999px;
-  padding: 0.65rem 1.35rem;
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.itr-text-input--error {
+  border-color: #ef4444 !important;
+  background: #fffafa !important;
+  box-shadow: 0 0 0 1px #ef4444, 0 1px 3px rgba(239, 68, 68, 0.08) !important;
 }
 
-.itr-btn-cancel-bank:hover {
-  background: var(--subtle-border);
-  color: var(--palette-slate-900);
+.itr-field-error-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #ef4444;
+  margin-top: 0.35rem;
+  line-height: 1.35;
+  display: block;
 }

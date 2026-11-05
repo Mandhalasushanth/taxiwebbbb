@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import React, {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type MouseEvent as ReactMouseEvent,
+  type ReactNode,
+} from 'react'
 import { createPortal } from 'react-dom'
 import { Info, X } from 'lucide-react'
 
@@ -7,31 +15,39 @@ import './FieldInfoTooltip.css'
 
 export interface FieldInfoTooltipProps {
   title: string
-  description: string
+  description?: ReactNode
   ariaLabel?: string
   className?: string
+  iconSize?: number
+  children?: ReactNode
+  placement?: 'auto' | 'right' | 'top' | 'bottom'
 }
 
 interface Coords {
   top: number
   left: number
-  arrowLeft: number
-  placement: 'top' | 'bottom'
+  arrowOffset: number
+  placement: 'right' | 'top' | 'bottom'
 }
 
-export const FieldInfoTooltip = ({
+export const FieldInfoTooltip: React.FC<FieldInfoTooltipProps> = ({
   title,
   description,
   ariaLabel,
   className,
-}: FieldInfoTooltipProps) => {
+  iconSize = 16,
+  children,
+  placement = 'auto',
+}) => {
   const [isOpen, setIsOpen] = useState(false)
   const [coords, setCoords] = useState<Coords | null>(null)
 
   const triggerRef = useRef<HTMLButtonElement>(null)
   const popupRef = useRef<HTMLDivElement>(null)
 
-  const id = useId()
+  // Sanitize useId colon tokens (:r0:) for valid CSS selectors and querySelector
+  const rawId = useId()
+  const id = rawId.replace(/[^a-zA-Z0-9_-]/g, '_')
   const titleId = `field-info-title-${id}`
   const descId = `field-info-desc-${id}`
   const popupId = `field-info-popup-${id}`
@@ -41,18 +57,44 @@ export const FieldInfoTooltip = ({
     const triggerRect = triggerRef.current.getBoundingClientRect()
     const popupEl = popupRef.current
 
-    const width = popupEl ? popupEl.offsetWidth : 300
-    const height = popupEl ? popupEl.offsetHeight : 110
+    const width = popupEl ? popupEl.offsetWidth : 360
+    const height = popupEl ? popupEl.offsetHeight : 120
 
-    const gap = 8
+    const gap = 10
     const margin = 12
     const viewportWidth = window.innerWidth
     const viewportHeight = window.innerHeight
 
-    // Check vertical space (default to below, flip to above if not enough space below)
+    // Check if placement should be right (forced or auto when space permits)
+    const spaceRight = viewportWidth - triggerRect.right
+    const canPlaceRight =
+      placement === 'right' ||
+      (placement === 'auto' && spaceRight >= width + gap + margin)
+
+    if (canPlaceRight) {
+      const left = triggerRect.right + gap
+      let top = triggerRect.top + triggerRect.height / 2 - 28
+      top = Math.max(margin, Math.min(top, viewportHeight - height - margin))
+      const arrowOffset = Math.max(
+        14,
+        Math.min(triggerRect.top + triggerRect.height / 2 - top, height - 14)
+      )
+
+      setCoords({
+        top,
+        left,
+        arrowOffset,
+        placement: 'right',
+      })
+      return
+    }
+
+    // Otherwise, place below (or above if forced or space below is tight)
     const spaceBelow = viewportHeight - triggerRect.bottom
     const spaceAbove = triggerRect.top
-    const placeAbove = spaceBelow < height + gap && spaceAbove > spaceBelow
+    const placeAbove =
+      placement === 'top' ||
+      (placement !== 'bottom' && spaceBelow < height + gap && spaceAbove > spaceBelow)
 
     const top = placeAbove
       ? Math.max(margin, triggerRect.top - height - gap)
@@ -67,20 +109,23 @@ export const FieldInfoTooltip = ({
     left = Math.max(margin, Math.min(left, maxLeft))
 
     // Arrow caret position relative to the popup left edge
-    let arrowLeft = triggerCenter - left
-    arrowLeft = Math.max(14, Math.min(arrowLeft, width - 14))
+    let arrowOffset = triggerCenter - left
+    arrowOffset = Math.max(14, Math.min(arrowOffset, width - 14))
 
     setCoords({
       top,
       left,
-      arrowLeft,
+      arrowOffset,
       placement: placeAbove ? 'top' : 'bottom',
     })
-  }, [])
+  }, [placement])
 
   // Position updates and scroll/resize handling
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) {
+      setCoords(null)
+      return
+    }
 
     updatePosition()
 
@@ -88,8 +133,8 @@ export const FieldInfoTooltip = ({
       updatePosition()
     }
 
-    window.addEventListener('resize', handleWindowEvents)
-    window.addEventListener('scroll', handleWindowEvents, true)
+    window.addEventListener('resize', handleWindowEvents, { passive: true })
+    window.addEventListener('scroll', handleWindowEvents, { capture: true, passive: true })
 
     return () => {
       window.removeEventListener('resize', handleWindowEvents)
@@ -105,15 +150,17 @@ export const FieldInfoTooltip = ({
       const target = event.target as Node | null
       if (
         target &&
+        document.contains(target) &&
         !triggerRef.current?.contains(target) &&
         !popupRef.current?.contains(target)
       ) {
         setIsOpen(false)
+        setCoords(null)
       }
     }
 
     document.addEventListener('mousedown', handlePointerDown)
-    document.addEventListener('touchstart', handlePointerDown)
+    document.addEventListener('touchstart', handlePointerDown, { passive: true })
 
     return () => {
       document.removeEventListener('mousedown', handlePointerDown)
@@ -130,6 +177,7 @@ export const FieldInfoTooltip = ({
         event.preventDefault()
         event.stopPropagation()
         setIsOpen(false)
+        setCoords(null)
         triggerRef.current?.focus()
       }
     }
@@ -140,18 +188,21 @@ export const FieldInfoTooltip = ({
     }
   }, [isOpen])
 
-  const handleTriggerClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleTriggerClick = (e: ReactMouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     e.stopPropagation()
     setIsOpen((prev) => !prev)
   }
 
-  const handleClose = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClose = (e: ReactMouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     e.stopPropagation()
     setIsOpen(false)
+    setCoords(null)
     triggerRef.current?.focus()
   }
+
+  const hasBodyContent = Boolean(children ?? description)
 
   return (
     <span className={classNames('field-info-tooltip', className)}>
@@ -164,12 +215,20 @@ export const FieldInfoTooltip = ({
         aria-haspopup="dialog"
         aria-controls={isOpen ? popupId : undefined}
         onClick={handleTriggerClick}
+        onPointerDown={(e) => {
+          // Stop propagation to prevent parent label from focusing input on pointer/mouse
+          e.stopPropagation()
+        }}
         onMouseDown={(e) => {
           // Stop propagation to prevent parent label from focusing input
           e.stopPropagation()
         }}
+        onTouchStart={(e) => {
+          // Stop propagation to prevent mobile labels from stealing focus
+          e.stopPropagation()
+        }}
       >
-        <Info size={16} className="field-info-tooltip__icon" aria-hidden="true" />
+        <Info size={iconSize} className="field-info-tooltip__icon" aria-hidden="true" />
       </button>
 
       {isOpen &&
@@ -180,18 +239,20 @@ export const FieldInfoTooltip = ({
             role="dialog"
             aria-modal="false"
             aria-labelledby={titleId}
-            aria-describedby={descId}
+            aria-describedby={hasBodyContent ? descId : undefined}
             className={classNames(
               'field-info-tooltip__popup',
               coords && `field-info-tooltip__popup--${coords.placement}`
             )}
             style={{
-              top: coords ? `${coords.top}px` : undefined,
-              left: coords ? `${coords.left}px` : undefined,
+              top: coords ? `${coords.top}px` : '0px',
+              left: coords ? `${coords.left}px` : '0px',
               visibility: coords ? 'visible' : 'hidden',
+              pointerEvents: coords ? 'auto' : 'none',
             }}
             onClick={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
           >
             {coords && (
               <span
@@ -199,7 +260,11 @@ export const FieldInfoTooltip = ({
                   'field-info-tooltip__arrow',
                   `field-info-tooltip__arrow--${coords.placement}`
                 )}
-                style={{ left: `${coords.arrowLeft}px` }}
+                style={
+                  coords.placement === 'right'
+                    ? { top: `${coords.arrowOffset}px` }
+                    : { left: `${coords.arrowOffset}px` }
+                }
                 aria-hidden="true"
               />
             )}
@@ -232,9 +297,11 @@ export const FieldInfoTooltip = ({
               </button>
             </div>
 
-            <p id={descId} className="field-info-tooltip__description">
-              {description}
-            </p>
+            {hasBodyContent && (
+              <div id={descId} className="field-info-tooltip__description">
+                {children ?? description}
+              </div>
+            )}
           </div>,
           document.body
         )}

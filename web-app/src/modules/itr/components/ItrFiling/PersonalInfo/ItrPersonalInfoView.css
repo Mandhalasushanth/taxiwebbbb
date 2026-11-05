@@ -423,12 +423,15 @@
 .itr-badge-optional {
   display: inline-flex;
   align-items: center;
-  font: 700 0.78rem inherit;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   border-radius: 9999px;
-  padding: 0.25rem 0.65rem;
+  padding: 0.18rem 0.55rem;
   background: var(--subtle-border);
   border: 1px solid var(--grey-300);
   color: var(--secondary-text);
+  line-height: 1.2;
 }
 
 .itr-btn-accordion-toggle {
