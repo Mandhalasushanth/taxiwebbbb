@@ -245,7 +245,7 @@ export const DobDatePickerModal: React.FC<DobDatePickerModalProps> = ({
           onClick={handleApply}
           disabled={!selectedDate}
         >
-          Apply Date
+          OK
         </button>
       </div>
     </div>

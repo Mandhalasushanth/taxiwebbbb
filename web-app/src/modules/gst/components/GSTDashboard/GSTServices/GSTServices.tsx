@@ -107,13 +107,6 @@ export const GSTServices = ({ services }: GSTServicesProps) => {
 
   return (
     <div className="gst-services-section">
-      <div className="gst-services-section__header">
-        <h2 className="gst-services-section__title">GST Services</h2>
-        <p className="gst-services-section__subtitle">
-          Select a service to start an application or manage your tax compliance
-        </p>
-      </div>
-
       <div className="gst-services-grid">
         {services.map((service) => (
           <div

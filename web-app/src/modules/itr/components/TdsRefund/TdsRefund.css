@@ -53,13 +53,13 @@
 .tds-stepper-track {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   background: transparent;
   border: none;
   box-shadow: none;
   padding: 0 0.5rem;
-  width: 100%;
-  max-width: 860px;
+  width: auto;
+  max-width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
 }
@@ -113,11 +113,13 @@
 }
 
 .tds-stepper-line {
-  flex: 1;
-  min-width: 28px;
+  flex: 0 0 72px;
+  width: 72px;
+  min-width: 48px;
+  max-width: 80px;
   height: 2.5px;
   background-color: var(--grey-300);
-  margin: 0 0.5rem 1.45rem 0.5rem;
+  margin: 0 0.75rem 1.45rem 0.75rem;
   transition: background-color 0.3s ease;
   z-index: 1;
 }
@@ -162,7 +164,9 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .tds-card-icon-box--user {
   background: var(--palette-blue-50);
@@ -193,13 +197,14 @@
 
 @media (max-width: 768px) {
   .tds-stepper-track {
-    overflow-x: auto;
-    justify-content: flex-start;
-    gap: 1.25rem;
+    justify-content: center;
     padding-bottom: 0.5rem;
   }
   .tds-stepper-line {
-    display: none;
+    flex: 0 0 48px;
+    width: 48px;
+    min-width: 36px;
+    margin: 0 0.5rem 1.45rem 0.5rem;
   }
   .tds-payment-page {
     padding: 1rem 1rem 3rem 1rem;

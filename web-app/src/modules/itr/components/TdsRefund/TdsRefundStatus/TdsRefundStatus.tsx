@@ -1,27 +1,28 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { routePaths } from '@core/config/routePaths'
-import { TdsIcons } from '@modules/itr/utils/tdsRefund.constants'
-import { TdsRefundProgressTracker } from '../TdsRefundOverview'
+import {
+  ItrUnifiedApplicationStatusView,
+  formatDisplayDate,
+} from '../../ItrFiling/FilingSubmitted/ItrFilingSubmittedView'
 import './TdsRefundStatus.css'
 
 export interface TdsRefundStatusProps {
   applicationId?: string
-  appliedDate?: string
+  appliedDate?: string | Date
   assessmentYear?: string
+  customerName?: string
   onBack?: () => void
   onBackToDashboard?: () => void
   onContactSupport?: () => void
 }
 
-interface TimelineStage {
+export interface TimelineStage {
   num: number
   title: string
   desc: string
   status: 'completed' | 'active' | 'pending'
 }
 
-const TIMELINE_STAGES: TimelineStage[] = [
+export const TIMELINE_STAGES: TimelineStage[] = [
   { num: 1, title: 'New Request Received', desc: 'Application submitted', status: 'completed' },
   { num: 2, title: 'Documents Received', desc: 'All documents uploaded', status: 'completed' },
   { num: 3, title: 'Under Verification', desc: 'Documents being verified by CA', status: 'active' },
@@ -34,171 +35,30 @@ const TIMELINE_STAGES: TimelineStage[] = [
 ]
 
 export const formatAppliedDate = (dateInput?: string | Date): string => {
-  try {
-    const d = dateInput ? new Date(dateInput) : new Date()
-    const date = isNaN(d.getTime()) ? new Date() : d
-    const day = date.getDate()
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
-    const month = months[date.getMonth()]
-    const year = date.getFullYear()
-    return `${day} ${month} ${year}`
-  } catch {
-    return 'Today'
-  }
+  return formatDisplayDate(dateInput)
 }
 
 export const TdsRefundStatus: React.FC<TdsRefundStatusProps> = ({
-  applicationId = 'TDS-2026-59303',
+  applicationId = 'TDS87F6ACDC716E',
   appliedDate,
-  assessmentYear = '2025-26',
+  customerName,
+  onBack,
   onBackToDashboard,
   onContactSupport,
 }) => {
-  const navigate = useNavigate()
-  const displayAppliedDate = React.useMemo(
-    () => formatAppliedDate(appliedDate),
-    [appliedDate]
-  )
-
-  const overviewMetaItems = [
-    { label: 'Service', value: 'TDS Refund' },
-    { label: 'AY', value: assessmentYear },
-    { label: 'Applied', value: displayAppliedDate },
-  ]
-
-  const renderOverviewCard = () => (
-    <section className="tds-status-card" data-testid="tds-status-overview">
-      <div
-        className="tds-status-success-banner"
-        data-testid="tds-submission-success-banner"
-        style={{
-          background: '#ecfdf5',
-          border: '1px solid #10b981',
-          borderRadius: '10px',
-          padding: '14px 18px',
-          marginBottom: '20px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          color: '#065f46',
-        }}
-      >
-        <span style={{ fontSize: '20px', fontWeight: 'bold' }}>✓</span>
-        <div>
-          <strong style={{ display: 'block', fontSize: '14px', color: '#047857' }}>
-            Application Submitted Successfully
-          </strong>
-          <span style={{ fontSize: '13px', color: '#065f46' }}>
-            Your TDS Refund application has been submitted successfully. Your charges will be finalized after review.
-          </span>
-        </div>
-      </div>
-
-      <div className="tds-status-overview-header">
-        <div className="tds-status-header-left">
-          <div>
-            <div className="tds-status-app-id-label">Application ID</div>
-            <h2 className="tds-status-app-id-val" data-testid="status-application-id">{applicationId}</h2>
-          </div>
-        </div>
-        <span className="tds-status-badge-purple" data-testid="status-badge">
-          <span className="tds-status-badge-dot" />
-          Under CA Review
-        </span>
-      </div>
-
-      <div className="tds-status-grid">
-        {overviewMetaItems.map((item) => (
-          <div key={item.label} className="tds-status-item">
-            <span className="tds-status-item-label">{item.label}</span>
-            <span className="tds-status-item-val">{item.value}</span>
-          </div>
-        ))}
-      </div>
-
-      <div className="tds-status-progress-wrap">
-        <div className="tds-status-progress-track">
-          <div className="tds-status-progress-fill" />
-        </div>
-        <span className="tds-status-progress-label" data-testid="status-progress-label">30% complete</span>
-      </div>
-    </section>
-  )
-
-  const renderTimelineCard = () => (
-    <section className="tds-status-card" data-testid="tds-status-timeline">
-      <div className="tds-timeline-list">
-        {TIMELINE_STAGES.map((stage, idx) => (
-          <div
-            key={stage.num}
-            className={`tds-timeline-item tds-timeline-item--${stage.status}`}
-            data-testid={`timeline-stage-${stage.num}`}
-          >
-            {idx < TIMELINE_STAGES.length - 1 && <div className="tds-timeline-line" />}
-            <div className="tds-timeline-node">
-              {stage.status === 'completed' ? '✓' : stage.num}
-            </div>
-            <div className="tds-timeline-info">
-              <h4 className="tds-timeline-title">{stage.title}</h4>
-              <p className="tds-timeline-desc">{stage.desc}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  )
-
-  const handleDashboardClick = () => {
-    if (onBackToDashboard) {
-      onBackToDashboard()
-    } else {
-      navigate(routePaths.dashboard)
-    }
-  }
-
-  const renderActionsRow = () => (
-    <div className="tds-status-actions-row">
-      <button
-        type="button"
-        className="tds-btn-contact-support"
-        onClick={() => navigate(routePaths.applicationTrack(applicationId))}
-        data-testid="tds-btn-track-app"
-      >
-        Track Application
-      </button>
-      <button
-        type="button"
-        className="tds-btn-contact-support"
-        onClick={onContactSupport}
-        data-testid="tds-btn-contact-support"
-      >
-        <TdsIcons.MessageCircle />
-        Contact Support
-      </button>
-      <button
-        type="button"
-        className="tds-btn-dashboard"
-        onClick={handleDashboardClick}
-        data-testid="tds-btn-dashboard"
-      >
-        Back to Dashboard
-      </button>
-    </div>
-  )
-
   return (
-    <div className="tds-status-page" data-testid="tds-refund-status-page">
-      <div className="tds-status-stepper-wrap">
-        <TdsRefundProgressTracker currentStep={3} />
-      </div>
-      <div className="tds-status-layout">
-        <main className="tds-status-main">
-          {renderOverviewCard()}
-          {renderTimelineCard()}
-          {renderActionsRow()}
-        </main>
-      </div>
-    </div>
+    <ItrUnifiedApplicationStatusView
+      title="TDS Refund"
+      serviceName="TDS Refund"
+      applicationId={applicationId}
+      customerName={customerName}
+      appliedDate={appliedDate || new Date()}
+      estCompletion="1-2 Business Days"
+      statusBadge="Under Verification"
+      onBack={onBack}
+      onBackToDashboard={onBackToDashboard}
+      onContactSupport={onContactSupport}
+    />
   )
 }
 

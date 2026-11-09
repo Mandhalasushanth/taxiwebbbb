@@ -11,7 +11,6 @@ import './TdsRefundReview.css'
 const REVIEW_SIDEBAR_CHECKLIST = [
   { text: 'Step 1: Application Details', status: 'done', icon: '✓' },
   { text: 'Step 2: Review & Submit', status: 'active', icon: '●', isStrong: true },
-  { text: 'Step 3: Application Status', status: 'pending', icon: '○' },
 ]
 
 export const TdsRefundReviewSidebar: React.FC = () => (

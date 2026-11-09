@@ -305,18 +305,20 @@ describe('TDS Refund Payment Flow & Manager Charge Finalization', () => {
     expect(itrTracker?.title).toContain('ITR-1')
   })
 
-  it('9. renders exactly 3 steps in the TDS refund progress tracker and excludes step 4', () => {
-    render(<TdsRefundProgressTracker currentStep={3} />)
+  it('9. renders exactly 2 steps in the TDS refund progress tracker and excludes step 3', () => {
+    render(<TdsRefundProgressTracker currentStep={2} />)
 
-    // Step 1, 2, and 3 must exist
+    // Step 1 and 2 must exist
     expect(screen.getByTestId('tds-step-1')).toBeInTheDocument()
     expect(screen.getByTestId('tds-step-2')).toBeInTheDocument()
-    expect(screen.getByTestId('tds-step-3')).toBeInTheDocument()
 
     // Step labels
     expect(screen.getByText('Application Details')).toBeInTheDocument()
     expect(screen.getByText('Review & Submit')).toBeInTheDocument()
-    expect(screen.getByText('Application Status')).toBeInTheDocument()
+
+    // Step 3 must NOT exist
+    expect(screen.queryByTestId('tds-step-3')).toBeNull()
+    expect(screen.queryByText('Application Status')).toBeNull()
 
     // Step 4 must NOT exist
     expect(screen.queryByTestId('tds-step-4')).toBeNull()

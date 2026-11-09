@@ -16,31 +16,6 @@
   width: 100%;
 }
 
-.itr-review-top-draft-btn {
-  position: absolute;
-  right: 0.5rem;
-  top: 0.25rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.45rem 1rem;
-  border-radius: 9999px;
-  background: var(--surface, #ffffff);
-  border: 1.5px solid var(--border, #e2e8f0);
-  font-size: 0.825rem;
-  font-weight: 700;
-  color: var(--primary-navy, #0f172a);
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  transition: all 0.2s ease;
-  z-index: 5;
-}
-
-.itr-review-top-draft-btn:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-}
-
 /* 1. Review Your ITR Application Banner (Full Width) */
 .itr-rv2-alert {
   width: 100%;
@@ -515,4 +490,118 @@
     padding: 0.75rem 1.25rem;
     font-size: 0.925rem;
   }
+}
+
+/* ==========================================================================
+   Before we continue - Required Documents Attention Banner
+   Matches user uploaded reference image
+   ========================================================================== */
+.itr-attention-banner {
+  width: 100%;
+  background: #fffef2;
+  border: 1.5px solid #fef08a;
+  border-radius: 16px;
+  padding: 1.35rem 1.6rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 14px rgba(234, 179, 8, 0.08);
+}
+
+.itr-attention-banner__header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.itr-attention-banner__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.itr-attention-banner__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #92400e;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.itr-attention-banner__subtitle {
+  margin: 0.45rem 0 1rem 0;
+  font-size: 0.875rem;
+  color: #a16207;
+  line-height: 1.45;
+}
+
+.itr-attention-banner__item {
+  background: #ffffff;
+  border: 1.5px solid #fef08a;
+  border-radius: 12px;
+  padding: 0.75rem 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.itr-attention-banner__item-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.itr-attention-banner__item-x {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.itr-attention-banner__item-text {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1.3;
+}
+
+.itr-attention-banner__upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #fff7ed;
+  border: 1.2px solid #fed7aa;
+  color: #ea580c;
+  padding: 0.45rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(234, 88, 12, 0.08);
+}
+
+.itr-attention-banner__upload-btn:hover {
+  background: #ffedd5;
+  border-color: #fdba74;
+  color: #c2410c;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(234, 88, 12, 0.16);
+}
+
+.itr-attention-banner__upload-btn:active {
+  transform: translateY(0);
+}
+
+.itr-rv2-submit-btn--disabled {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
 }

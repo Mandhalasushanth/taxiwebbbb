@@ -49,7 +49,7 @@ export const navSections: NavSection[] = [
       },
       {
         label: "Projects",
-        to: "#projects",
+        to: routePaths.projects,
         icon: "📋",
         iconImg: "/assets/images/sidebar/nav-projects.png",
       },
@@ -82,12 +82,6 @@ export const navSections: NavSection[] = [
         icon: "☰",
         iconImg: "/assets/images/sidebar/nav-applications.png",
         badgeKey: "applications",
-      },
-      {
-        label: "Document Vault",
-        to: routePaths.documents,
-        icon: "🗎",
-        iconImg: "/assets/images/sidebar/nav-vault.png",
       },
       {
         label: "Payments",

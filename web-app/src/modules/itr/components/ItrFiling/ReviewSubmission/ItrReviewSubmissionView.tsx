@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useAuthStore } from '@store/index'
 import {
   getStoredTaxpayerProfile,
   ItrFilingHeaderStepper,
   ITR_REVIEW_EDIT_STEPS,
+  getItrChecklistSections,
   type SalaryDetails,
   type HousePropertyDetails,
   type BusinessDetails,
@@ -15,6 +16,7 @@ import {
   type ResidentialStatusOption,
   type FilingTypeOption,
   type FilingBankAccount,
+  type ItrCategoryId,
 } from '../itrFiling.constants'
 import { determineApplicableItrForm } from '../IncomeSources/ItrApplicableReturnFormCard'
 import { ItrDeclarationCard } from './ItrDeclarationCard'
@@ -36,6 +38,7 @@ export interface ItrReviewSubmissionViewProps {
   capitalGainsDetails?: CapitalGainsDetails
   otherSourcesDetails?: OtherSourcesDetails
   selectedSources?: string[]
+  selectedCategoryId?: ItrCategoryId | null
   selectedRegime?: 'new' | 'old' | ''
   deductions?: DeductionsData
   uploadedDocs: Record<string, UploadedDocInfo>
@@ -46,7 +49,7 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
   onBack,
   onEditStep,
   onSubmit,
-  onSaveDraft,
+  onSaveDraft: _onSaveDraft,
   assessmentYear,
   residentialStatus,
   filingType,
@@ -57,6 +60,7 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
   capitalGainsDetails,
   otherSourcesDetails,
   selectedSources = [],
+  selectedCategoryId,
   uploadedDocs,
   isSubmitting = false,
 }) => {
@@ -65,6 +69,19 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
 
   const authUser = useAuthStore((state) => state.user)
   const profile = getStoredTaxpayerProfile(authUser)
+
+  const { requiredDocs } = useMemo(
+    () => getItrChecklistSections({ selectedSources, selectedCategoryId }),
+    [selectedSources, selectedCategoryId]
+  )
+
+  const missingRequiredDocs = useMemo(
+    () => requiredDocs.filter((doc) => Boolean(doc.isMandatory) && !uploadedDocs[doc.id]),
+    [requiredDocs, uploadedDocs]
+  )
+
+  const missingDocsCount = missingRequiredDocs.length
+  const hasMissingDocs = missingDocsCount > 0
 
   const formInfo = determineApplicableItrForm({
     selectedSources,
@@ -85,6 +102,18 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
   }
 
   const handleSubmit = () => {
+    if (hasMissingDocs) {
+      setShowError(true)
+      try {
+        const attentionEl = document.querySelector('.itr-attention-banner')
+        if (attentionEl && typeof attentionEl.scrollIntoView === 'function') {
+          attentionEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      } catch {
+        // ignore
+      }
+      return
+    }
     if (!isDeclared) {
       setShowError(true)
       return
@@ -92,13 +121,13 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
     onSubmit()
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleAttempt = () => {
-      if (!isDeclared) setShowError(true)
+      if (!isDeclared || hasMissingDocs) setShowError(true)
     }
     window.addEventListener('step-action-bar:submit-attempt', handleAttempt)
     return () => window.removeEventListener('step-action-bar:submit-attempt', handleAttempt)
-  }, [isDeclared])
+  }, [isDeclared, hasMissingDocs])
 
   // Residential Status Label Formatting
   const RESIDENTIAL_STATUS_LABELS: Record<string, string> = {
@@ -137,29 +166,18 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
     elementId: string
   }
 
-  const incomeItems: DeclaredIncomeItem[] = []
-
-  if (
-    selectedSources.includes('house_property') ||
-    (housePropertyDetails && (housePropertyDetails.propertyType || housePropertyDetails.annualRentReceived))
-  ) {
-    const isLetOut = housePropertyDetails?.propertyType === 'let_out'
-    const rentAmt = Number(housePropertyDetails?.annualRentReceived || 0)
-    incomeItems.push({
-      id: 'house_property',
-      title: 'House Property',
-      subtitle: `${isLetOut ? 'Let-Out' : 'Self-Occupied'} · Rent: ₹${rentAmt.toLocaleString('en-IN')}`,
-      amount: `₹ ${rentAmt.toLocaleString('en-IN')}`,
-      elementId: 'itr-house-property',
-    })
+  const parseNumericAmount = (val: string | undefined | null): number => {
+    if (!val) return 0
+    const cleaned = String(val).replace(/[^0-9]/g, '')
+    const num = Number(cleaned)
+    return isNaN(num) ? 0 : num
   }
 
-  if (
-    selectedSources.includes('salary') ||
-    (salaryDetails && (salaryDetails.grossSalary || salaryDetails.employerName))
-  ) {
-    const grossAmt = Number(salaryDetails?.grossSalary || 0)
-    const tdsAmt = Number(salaryDetails?.tdsDeducted || 0)
+  const incomeItems: DeclaredIncomeItem[] = []
+
+  if (selectedSources.includes('salary')) {
+    const grossAmt = parseNumericAmount(salaryDetails?.grossSalary)
+    const tdsAmt = parseNumericAmount(salaryDetails?.tdsDeducted)
     incomeItems.push({
       id: 'salary',
       title: 'Salary Income',
@@ -169,12 +187,24 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
     })
   }
 
-  if (
-    selectedSources.includes('business') ||
-    (businessDetails && (businessDetails.grossTurnover || businessDetails.declaredNetProfit))
-  ) {
-    const turnover = Number(businessDetails?.grossTurnover || 0)
-    const profit = Number(businessDetails?.declaredNetProfit || 0)
+  if (selectedSources.includes('house_property')) {
+    const isLetOut = housePropertyDetails?.propertyType === 'let_out'
+    const rentAmt = parseNumericAmount(housePropertyDetails?.annualRentReceived)
+    const interestAmt = parseNumericAmount(housePropertyDetails?.homeLoanInterest)
+    incomeItems.push({
+      id: 'house_property',
+      title: 'House Property',
+      subtitle: isLetOut
+        ? `Let-Out · Rent: ₹${rentAmt.toLocaleString('en-IN')}`
+        : `Self-Occupied · Interest Paid: ₹${interestAmt.toLocaleString('en-IN')}`,
+      amount: `₹ ${(isLetOut ? rentAmt : interestAmt).toLocaleString('en-IN')}`,
+      elementId: 'itr-house-property',
+    })
+  }
+
+  if (selectedSources.includes('business')) {
+    const turnover = parseNumericAmount(businessDetails?.grossTurnover)
+    const profit = parseNumericAmount(businessDetails?.declaredNetProfit)
     const method = businessDetails?.reportingMethod ? `Method: ${businessDetails.reportingMethod}` : 'Business'
     incomeItems.push({
       id: 'business',
@@ -185,12 +215,9 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
     })
   }
 
-  if (
-    selectedSources.includes('capital_gains') ||
-    (capitalGainsDetails && (capitalGainsDetails.stcg || capitalGainsDetails.ltcg))
-  ) {
-    const stcg = Number(capitalGainsDetails?.stcg || 0)
-    const ltcg = Number(capitalGainsDetails?.ltcg || 0)
+  if (selectedSources.includes('capital_gains')) {
+    const stcg = parseNumericAmount(capitalGainsDetails?.stcg)
+    const ltcg = parseNumericAmount(capitalGainsDetails?.ltcg)
     incomeItems.push({
       id: 'capital_gains',
       title: 'Capital Gains',
@@ -200,18 +227,13 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
     })
   }
 
-  if (
-    selectedSources.includes('other_sources') ||
-    (otherSourcesDetails &&
-      (otherSourcesDetails.savingsInterest ||
-        otherSourcesDetails.dividendIncome ||
-        otherSourcesDetails.otherIncome ||
-        otherSourcesDetails.interestIncome))
-  ) {
-    const savings = Number(otherSourcesDetails?.savingsInterest || otherSourcesDetails?.interestIncome || 0)
-    const dividend = Number(otherSourcesDetails?.dividendIncome || 0)
-    const other = Number(otherSourcesDetails?.otherIncome || otherSourcesDetails?.otherMiscellaneous || 0)
-    const total = savings + dividend + other
+  if (selectedSources.includes('other_sources')) {
+    const savings = parseNumericAmount(otherSourcesDetails?.savingsInterest || otherSourcesDetails?.interestIncome)
+    const fd = parseNumericAmount(otherSourcesDetails?.fdInterest)
+    const dividend = parseNumericAmount(otherSourcesDetails?.dividendIncome)
+    const pension = parseNumericAmount(otherSourcesDetails?.familyPension)
+    const other = parseNumericAmount(otherSourcesDetails?.otherMiscellaneous || otherSourcesDetails?.otherIncome)
+    const total = savings + fd + dividend + pension + other
     incomeItems.push({
       id: 'other_sources',
       title: 'Other Sources',
@@ -225,31 +247,9 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
 
   return (
     <div className="itr-step-view-container itr-step-review">
-      {/* Header Stepper + Top Draft action */}
+      {/* Header Stepper */}
       <div className="itr-review-header-wrapper">
         <ItrFilingHeaderStepper currentStepId={4} />
-        {onSaveDraft && (
-          <button
-            type="button"
-            className="itr-review-top-draft-btn"
-            onClick={onSaveDraft}
-            aria-label="Save draft"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              width="16"
-              height="16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-            </svg>
-            <span>Draft</span>
-          </button>
-        )}
       </div>
 
       {/* 1. Review Your ITR Application Banner */}
@@ -277,7 +277,53 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
         </div>
       </div>
 
-      {/* 2. Responsive 2x2 Grid (Desktop) / 1-Column Stack (Mobile) */}
+      {/* 2. Before we continue: Pending Items Attention Banner */}
+      {hasMissingDocs && (
+        <div className="itr-attention-banner" role="alert" data-testid="itr-review-attention-banner">
+          <div className="itr-attention-banner__header">
+            <div className="itr-attention-banner__icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+                <circle cx="12" cy="12" r="11" fill="#b45309" />
+                <line x1="12" y1="7.5" x2="12" y2="12.5" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
+                <circle cx="12" cy="16.5" r="1.25" fill="#ffffff" />
+              </svg>
+            </div>
+            <h3 className="itr-attention-banner__title">
+              Before we continue: {missingDocsCount} {missingDocsCount === 1 ? 'items require' : 'items require'} your attention
+            </h3>
+          </div>
+          <p className="itr-attention-banner__subtitle">
+            TaxEdge identified the following pending items for your return. Please review or confirm them prior to submission.
+          </p>
+          <div className="itr-attention-banner__item">
+            <div className="itr-attention-banner__item-left">
+              <span className="itr-attention-banner__item-x" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+                  <circle cx="12" cy="12" r="10" fill="#ef4444" />
+                  <path d="m15 9-6 6m0-6 6 6" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" />
+                </svg>
+              </span>
+              <span className="itr-attention-banner__item-text">
+                {missingDocsCount} required {missingDocsCount === 1 ? 'documents' : 'documents'} missing
+              </span>
+            </div>
+            <button
+              type="button"
+              className="itr-attention-banner__upload-btn"
+              data-testid="review-upload-required-docs-btn"
+              onClick={() => handleEdit(ITR_REVIEW_EDIT_STEPS.documents, 'itr-documents-checklist')}
+              aria-label="Upload required documents"
+            >
+              <span>Upload</span>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 3. Responsive 2x2 Grid (Desktop) / 1-Column Stack (Mobile) */}
       <div className="itr-rv2-cards-grid">
         {/* Card 1: Filing & Taxpayer Details */}
         <div className="itr-step-card itr-rv2-card itr-rv2-card--filing">

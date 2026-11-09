@@ -1,7 +1,8 @@
-import React, { type MouseEvent } from 'react'
+import React, { useState, useRef } from 'react'
 import { CalendarDays } from 'lucide-react'
 import { GSTFieldShell } from './GSTFieldParts'
 import { fieldErrorId } from './gstFieldClasses'
+import { CustomCalendarPopover } from '../../../../shared/components'
 import './GSTFormFields.css'
 
 export interface GSTDateFieldProps {
@@ -18,14 +19,9 @@ export interface GSTDateFieldProps {
 }
 
 /** YYYY-MM-DD → DD-MM-YYYY for display */
-const toDisplayDate = (iso: string) => iso.split('-').reverse().join('-')
-
-const openPicker = (e: MouseEvent<HTMLInputElement>) => {
-  try {
-    e.currentTarget.showPicker?.()
-  } catch {
-    // Browsers without showPicker (or blocked by user-activation rules) fall back to native behaviour
-  }
+const toDisplayDate = (iso: string) => {
+  if (!iso) return ''
+  return iso.split('-').reverse().join('-')
 }
 
 export const GSTDateField = ({
@@ -39,31 +35,51 @@ export const GSTDateField = ({
   onValueChange,
   onBlur,
 }: GSTDateFieldProps) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const anchorRef = useRef<HTMLDivElement>(null)
   const wrapClass = ['gst-date', error ? 'gst-date--error' : ''].filter(Boolean).join(' ')
+
+  const handleApplyDate = (newIsoDate: string) => {
+    onValueChange(newIsoDate)
+    setIsOpen(false)
+  }
 
   return (
     <GSTFieldShell id={id} label={label} error={error}>
-      <div className={wrapClass}>
+      <div
+        ref={anchorRef}
+        className={wrapClass}
+        onClick={() => setIsOpen((prev) => !prev)}
+        style={{ cursor: 'pointer', position: 'relative' }}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            setIsOpen((prev) => !prev)
+          }
+        }}
+        onBlur={onBlur}
+        aria-required="true"
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? fieldErrorId(id) : undefined}
+      >
         <span className="gst-date__icon" aria-hidden="true">
           <CalendarDays />
         </span>
         <span className={`gst-date__text ${value ? '' : 'gst-date__text--empty'}`} aria-hidden="true">
           {value ? toDisplayDate(value) : placeholder}
         </span>
-        <input
-          id={id}
-          name={id}
-          type="date"
-          className="gst-date__native"
+
+        <CustomCalendarPopover
+          isOpen={isOpen}
           value={value}
-          min={min}
-          max={max}
-          onClick={openPicker}
-          onChange={(e) => onValueChange(e.target.value)}
-          onBlur={onBlur}
-          aria-required="true"
-          aria-invalid={Boolean(error)}
-          aria-describedby={error ? fieldErrorId(id) : undefined}
+          format="YYYY-MM-DD"
+          minDate={min}
+          maxDate={max}
+          anchorRef={anchorRef}
+          onChange={handleApplyDate}
+          onClose={() => setIsOpen(false)}
         />
       </div>
     </GSTFieldShell>

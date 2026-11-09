@@ -1,10 +1,14 @@
 import { useEffect } from 'react'
 import { useAsync } from '@shared/hooks'
-import { dashboardService } from '../services/dashboardService'
+import { dashboardService, buildUserDashboardSummary } from '../services/dashboardService'
 import type { DashboardSummary } from '../types/dashboard.types'
 
 export const useDashboardSummary = () => {
-  const result = useAsync<DashboardSummary>(() => dashboardService.getSummary(), [])
+  const result = useAsync<DashboardSummary>(
+    () => dashboardService.getSummary(),
+    [],
+    { initialData: buildUserDashboardSummary() }
+  )
 
   useEffect(() => {
     const handleUpdate = () => {

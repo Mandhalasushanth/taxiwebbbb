@@ -51,6 +51,7 @@ import {
   getHsnSacClassification,
   type HsnSacClassification,
   validateAccountHolderName,
+  validateBankName,
   validateConfirmAccountNumber,
   validateDesignation,
   validateBranch,
@@ -87,6 +88,7 @@ export {
   getHsnSacClassification,
   type HsnSacClassification,
   validateAccountHolderName,
+  validateBankName,
   validateConfirmAccountNumber,
   validateDesignation,
   validateBranch,
@@ -178,7 +180,7 @@ export const isValidName = (name: string): boolean =>
   centralIsValidName(name)
 
 export const validateName = (
-  name: string,
+  name: string | undefined | null,
   optionsOrLabel: string | { label?: string; required?: boolean; isLive?: boolean; minLength?: number; maxLength?: number } = 'Name'
 ): string | null =>
   centralValidateName(name, typeof optionsOrLabel === 'string' ? { label: optionsOrLabel } : optionsOrLabel)
@@ -188,7 +190,7 @@ export const isValidAadhaar = (value: string): boolean =>
   centralIsValidAadhaar(value)
 
 export const validateAadhaar = (
-  aadhaar: string,
+  aadhaar: string | undefined | null,
   optionsOrLabel: string | { label?: string; required?: boolean; isLive?: boolean } = 'Aadhaar number'
 ): string | null =>
   centralValidateAadhaar(aadhaar, typeof optionsOrLabel === 'string' ? { label: optionsOrLabel } : optionsOrLabel)
@@ -198,7 +200,7 @@ export const isValidAddress = (address: string): boolean =>
   centralIsValidAddress(address)
 
 export const validateAddress = (
-  address: string,
+  address: string | undefined | null,
   optionsOrLabel: string | { label?: string; minLength?: number; maxLength?: number } = 'Address'
 ): string | null =>
   centralValidateAddress(address, typeof optionsOrLabel === 'string' ? { label: optionsOrLabel } : optionsOrLabel)
@@ -208,7 +210,7 @@ export const isValidCity = (city: string): boolean =>
   centralIsValidCity(city)
 
 export const validateCity = (
-  city: string,
+  city: string | undefined | null,
   optionsOrLabel: string | { label?: string; required?: boolean; isLive?: boolean; minLength?: number; maxLength?: number } = 'City'
 ): string | null =>
   centralValidateCity(city, typeof optionsOrLabel === 'string' ? { label: optionsOrLabel } : optionsOrLabel)
@@ -235,7 +237,7 @@ export const getCommencementDateBounds = (today: Date = new Date()): { min: stri
   return { min: toIso(min), max: toIso(max) }
 }
 
-export const validateCommencementDate = (date: string, today: Date = new Date()): string | null => centralValidateCommencementDate(date, today)
+export const validateCommencementDate = (date: string | undefined | null, today: Date = new Date()): string | null => centralValidateCommencementDate(date, today)
 
 // HSN_SAC_LENGTHS is exported above
 export const HSN_SAC_LENGTHS = [4, 6, 8] as const

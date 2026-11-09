@@ -120,7 +120,7 @@ export const GSTBankDetails = ({
           placeholder="Enter bank name"
           value={data.bankName}
           error={errors.bankName}
-          onValueChange={(v) => update('bankName', gstInput.letters(v, 100))}
+          onValueChange={(v) => update('bankName', gstInput.bankName(v))}
           onBlur={() => {
             onChange('bankName', data.bankName.trim())
             onBlur?.('bankName')

@@ -15,10 +15,9 @@ export interface TdsRefundProgressTrackerProps {
   currentStep: number
 }
 
-const PROGRESS_STAGES = [
+export const PROGRESS_STAGES = [
   { num: 1, label: 'Application Details' },
   { num: 2, label: 'Review & Submit' },
-  { num: 3, label: 'Application Status' },
 ]
 
 export const TdsRefundProgressTracker: React.FC<TdsRefundProgressTrackerProps> = ({

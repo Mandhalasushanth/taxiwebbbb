@@ -4,6 +4,7 @@ import { FileInput, formatUploadSize } from "@shared/upload";
 import { CaretInput } from "@shared/components";
 import { formatAadhaar, formatMobile, formatPan } from "@shared/utils/formatUtils";
 import type { TdsBusinessDetails, UploadedFileMeta } from "@modules/itr/types/tdsRefund.types";
+import { sanitizeBusinessLegalName } from "./tdsBusinessValidation";
 import "./TdsBusinessDetailsCard.css";
 
 type BusinessDocKey = "panDoc" | "aadhaarDoc";
@@ -12,6 +13,7 @@ interface TdsBusinessDetailsCardProps {
   businessDetails: TdsBusinessDetails;
   fieldErrors: Record<string, string>;
   handleBusinessChange: (updated: Partial<TdsBusinessDetails>) => void;
+  onBlur?: (field: keyof TdsBusinessDetails) => void;
 }
 
 interface UploadFieldProps {
@@ -25,6 +27,7 @@ interface UploadFieldProps {
   isUpper?: boolean;
   doc?: UploadedFileMeta;
   onValueChange: (raw: string) => void;
+  onBlur?: () => void;
   onDocChange: (doc: UploadedFileMeta | undefined) => void;
 }
 
@@ -48,6 +51,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
   isUpper,
   doc,
   onValueChange,
+  onBlur,
   onDocChange,
 }) => {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -79,6 +83,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
             className={`tds-upload-field__input ${isUpper ? "tds-input--upper" : ""}`}
             value={value}
             onChange={(e) => onValueChange(e.target.value)}
+            onBlur={onBlur}
             placeholder={placeholder}
             aria-invalid={Boolean(error)}
             required
@@ -148,6 +153,7 @@ export const TdsBusinessDetailsCard: React.FC<TdsBusinessDetailsCardProps> = ({
   businessDetails,
   fieldErrors,
   handleBusinessChange,
+  onBlur,
 }) => {
   const setDoc = (key: BusinessDocKey) => (doc: UploadedFileMeta | undefined) =>
     handleBusinessChange({ [key]: doc } as Partial<TdsBusinessDetails>);
@@ -176,7 +182,17 @@ export const TdsBusinessDetailsCard: React.FC<TdsBusinessDetailsCardProps> = ({
             maxLength={150}
             className={`tds-input ${fieldErrors.legalName ? "has-error" : ""}`}
             value={businessDetails.legalName}
-            onChange={(e) => handleBusinessChange({ legalName: e.target.value })}
+            onChange={(e) => {
+              const sanitized = sanitizeBusinessLegalName(e.target.value);
+              handleBusinessChange({ legalName: sanitized });
+            }}
+            onBlur={() => {
+              const trimmed = businessDetails.legalName.trim();
+              if (trimmed !== businessDetails.legalName) {
+                handleBusinessChange({ legalName: trimmed });
+              }
+              onBlur?.("legalName");
+            }}
             placeholder="Enter legal name of business"
             aria-invalid={Boolean(fieldErrors.legalName)}
             required
@@ -195,6 +211,7 @@ export const TdsBusinessDetailsCard: React.FC<TdsBusinessDetailsCardProps> = ({
             isUpper
             doc={businessDetails.panDoc}
             onValueChange={(raw) => handleBusinessChange({ pan: formatPan(raw) })}
+            onBlur={() => onBlur?.("pan")}
             onDocChange={setDoc("panDoc")}
           />
           <UploadField
@@ -207,6 +224,7 @@ export const TdsBusinessDetailsCard: React.FC<TdsBusinessDetailsCardProps> = ({
             maxLength={14}
             doc={businessDetails.aadhaarDoc}
             onValueChange={(raw) => handleBusinessChange({ aadhaar: formatAadhaar(raw) })}
+            onBlur={() => onBlur?.("aadhaar")}
             onDocChange={setDoc("aadhaarDoc")}
           />
         </div>
@@ -223,6 +241,7 @@ export const TdsBusinessDetailsCard: React.FC<TdsBusinessDetailsCardProps> = ({
             className={`tds-input ${fieldErrors.mobile ? "has-error" : ""}`}
             value={businessDetails.mobile}
             onChange={(e) => handleBusinessChange({ mobile: formatMobile(e.target.value) })}
+            onBlur={() => onBlur?.("mobile")}
             placeholder="Enter 10-digit Mobile Number"
             aria-invalid={Boolean(fieldErrors.mobile)}
             required

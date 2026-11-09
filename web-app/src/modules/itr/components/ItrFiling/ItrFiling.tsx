@@ -151,6 +151,7 @@ export const ItrFiling: React.FC = () => {
         capitalGainsDetails={capitalGainsDetails}
         otherSourcesDetails={otherSourcesDetails}
         selectedSources={selectedSources}
+        selectedCategoryId={selectedCategoryId}
         selectedRegime={selectedRegime}
         deductions={deductions}
         uploadedDocs={uploadedDocs}

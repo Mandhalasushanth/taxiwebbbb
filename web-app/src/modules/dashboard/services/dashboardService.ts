@@ -79,16 +79,35 @@ export const buildUserDashboardSummary = (): DashboardSummary => {
     (a) => a.statusLabel !== 'Completed' && (a as any).status !== 'Completed'
   )
   const activeCount = activeSubmittedApps.length + drafts.length
-  // Pending documents: calculated strictly from submitted applications (drafts excluded)
+  // Pending documents: only counts documents requested by CA / manager
+  // or flagged as pending / re-upload required for active submitted applications.
   const pendingDocsCount = activeSubmittedApps.reduce((sum, a) => {
-    if (Array.isArray((a as any).documents) && (a as any).documents.length > 0) {
-      const pending = (a as any).documents.filter(
-        (d: any) => d?.status === 'Pending' || d?.status === 'pending'
+    let appPending = 0
+    if (Array.isArray((a as any).documents)) {
+      appPending += (a as any).documents.filter(
+        (d: any) =>
+          d?.status === 'Pending' ||
+          d?.status === 'pending' ||
+          d?.status === 'Requested' ||
+          d?.status === 'requested' ||
+          d?.status === 'rejected' ||
+          d?.status === 'action_required'
       ).length
-      return sum + pending
     }
-    // Each active submitted application under verification has pending documents
-    return sum + 1
+    if (Array.isArray((a as any).requestedDocuments)) {
+      appPending += (a as any).requestedDocuments.filter(
+        (d: any) => d?.status !== 'uploaded' && d?.status !== 'Uploaded'
+      ).length
+    }
+    if (Array.isArray((a as any).caRequestedDocuments)) {
+      appPending += (a as any).caRequestedDocuments.filter(
+        (d: any) => d?.status !== 'uploaded' && d?.status !== 'Uploaded'
+      ).length
+    }
+    if (typeof (a as any).pendingDocumentsCount === 'number') {
+      appPending = Math.max(appPending, (a as any).pendingDocumentsCount)
+    }
+    return sum + appPending
   }, 0)
   const completedApps = applications.filter(
     (a) => a.statusLabel === 'Completed' || (a as any).status === 'Completed'
@@ -204,7 +223,6 @@ export const dashboardService = {
         // Fall back to user storage calculation
       }
     }
-    await new Promise((resolve) => setTimeout(resolve, 150))
     return buildUserDashboardSummary()
   },
 }

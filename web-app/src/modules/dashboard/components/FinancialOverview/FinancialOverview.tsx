@@ -53,13 +53,46 @@ export const FinancialOverview = ({
   const paymentDueStat = stats.find((s) => s.id === 'payment-due')
   const completedStat = stats.find((s) => s.id === 'completed')
 
-  const pendingPaymentApp = userStorage.getUserApplications().find((a) => {
+  const userApps = userStorage.getUserApplications()
+  const pendingPaymentApp = userApps.find((a) => {
     return a.paymentStatus === 'Pending'
   })
 
   const paymentDueLink = pendingPaymentApp
     ? `/payments/checkout/${pendingPaymentApp.code || pendingPaymentApp.id}`
     : routePaths.payments
+
+  // Find if any application has documents requested by CA/manager or pending submission
+  const pendingDocApp = userApps.find((a) => {
+    const docs = (a as any).documents
+    const hasPendingInDocs =
+      Array.isArray(docs) &&
+      docs.some(
+        (d: any) =>
+          d?.status === 'Pending' ||
+          d?.status === 'pending' ||
+          d?.status === 'Requested' ||
+          d?.status === 'requested' ||
+          d?.status === 'rejected' ||
+          d?.status === 'action_required'
+      )
+    const hasRequested =
+      Array.isArray((a as any).requestedDocuments) &&
+      (a as any).requestedDocuments.some(
+        (d: any) => d?.status !== 'uploaded' && d?.status !== 'Uploaded'
+      )
+    const hasCaRequested =
+      Array.isArray((a as any).caRequestedDocuments) &&
+      (a as any).caRequestedDocuments.some(
+        (d: any) => d?.status !== 'uploaded' && d?.status !== 'Uploaded'
+      )
+    const hasCount = Boolean((a as any).pendingDocumentsCount && (a as any).pendingDocumentsCount > 0)
+    return hasPendingInDocs || hasRequested || hasCaRequested || hasCount
+  })
+
+  const pendingDocsLink = pendingDocApp
+    ? `/applications/track/${pendingDocApp.code || pendingDocApp.id}?tab=documents`
+    : routePaths.applications
 
   const items = [
     {
@@ -76,7 +109,7 @@ export const FinancialOverview = ({
       value: pendingDocsCount !== undefined ? String(pendingDocsCount) : pendingDocsStat?.value ?? '0',
       tone: 'orange',
       icon: <DocumentsIcon />,
-      to: routePaths.documents,
+      to: pendingDocsLink,
     },
     {
       id: 'payment-due',

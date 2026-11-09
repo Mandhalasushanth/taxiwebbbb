@@ -388,4 +388,40 @@ describe('GST Filing - Step 3: Review & Summary', () => {
     fireEvent.click(submitBtn)
     expect(handleApprove).toHaveBeenCalledTimes(1)
   })
+
+  it('correctly detects when user has not entered anything vs entered data for Save Draft prompts', async () => {
+    const { hasUserEnteredFilingData, getDefaultFilingData } = await import(
+      '../../src/modules/gst/utils/gstFiling.constants'
+    )
+    const defaults = getDefaultFilingData()
+
+    // 1. Fresh state with untouched defaults: must be false (no draft prompted)
+    expect(hasUserEnteredFilingData(defaults, defaults)).toBe(false)
+    expect(
+      hasUserEnteredFilingData(
+        {
+          ...defaults,
+          baseFee: 2500, // internal calculated field must NOT count as user entry
+        },
+        defaults
+      )
+    ).toBe(false)
+
+    // 2. Selecting any option must trigger draft prompt
+    expect(hasUserEnteredFilingData({ ...defaults, frequency: 'Monthly' }, defaults)).toBe(true)
+    expect(hasUserEnteredFilingData({ ...defaults, financialYear: '2025-26' }, defaults)).toBe(true)
+    expect(hasUserEnteredFilingData({ ...defaults, selectedMonth: 'April' }, defaults)).toBe(true)
+    expect(hasUserEnteredFilingData({ ...defaults, filingType: 'regular' }, defaults)).toBe(true)
+    expect(hasUserEnteredFilingData({ ...defaults, returnType: 'gstr1' }, defaults)).toBe(true)
+    expect(hasUserEnteredFilingData({ ...defaults, calculationMethod: 'ca_calculate' }, defaults)).toBe(true)
+
+    // 3. Typing in any field must trigger draft prompt
+    expect(hasUserEnteredFilingData({ ...defaults, estimatedSales: '50000' }, defaults)).toBe(true)
+    expect(hasUserEnteredFilingData({ ...defaults, estimatedPurchases: '20000' }, defaults)).toBe(true)
+    expect(hasUserEnteredFilingData({ ...defaults, estimatedItc: '1000' }, defaults)).toBe(true)
+
+    // 4. Modifying pre-filled GSTIN or Business Name must trigger draft prompt
+    expect(hasUserEnteredFilingData({ ...defaults, gstin: '27XYZAB1234C1Z9' }, defaults)).toBe(true)
+    expect(hasUserEnteredFilingData({ ...defaults, businessName: 'Custom Enterprise' }, defaults)).toBe(true)
+  })
 })

@@ -163,7 +163,7 @@
   justify-content: center;
   border: 1.5px solid var(--palette-blue-200);
 }
-.tds-card-title { font-size: 1.15rem; font-weight: 800; color: var(--primary-navy); margin: 0; }
+.tds-card-title { font-family: var(--font-sans); font-size: var(--font-size-lg, 1.05rem); font-weight: var(--font-weight-bold, 700); color: var(--primary-navy); margin: 0; line-height: 1.35; }
 .tds-card-subtitle { font-size: 0.8rem; color: var(--secondary-text); }
 .tds-card-edit-btn {
   display: inline-flex;

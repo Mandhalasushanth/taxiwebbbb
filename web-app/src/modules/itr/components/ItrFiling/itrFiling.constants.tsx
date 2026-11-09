@@ -89,6 +89,8 @@ export interface FilingBankAccount {
   bankName: string
   branch?: string
   accountNumber: string
+  rawAccountNumber?: string
+  fullAccountNumber?: string
   ifsc: string
   accountType?: 'savings' | 'current'
   isPrimary: boolean
@@ -151,6 +153,67 @@ export const ALL_SOURCES = [
   { id: 'capital_gains', label: 'Capital Gains' },
   { id: 'other_sources', label: 'Other Sources' },
 ]
+
+export const sortIncomeSources = (sources: string[]): string[] => {
+  const orderMap = new Map(ALL_SOURCES.map((s, index) => [s.id, index]))
+  return [...sources].sort((a, b) => (orderMap.get(a) ?? 999) - (orderMap.get(b) ?? 999))
+}
+
+/**
+ * Sanitizes employer legal name:
+ * - Only letters (a-zA-Z), dot (.), and space
+ * - No numbers, no commas, no symbols
+ * - Only one space between two words (consecutive spaces collapsed)
+ * - Consecutive dots collapsed
+ * - No leading space or dot
+ * - Max length limit (default 75)
+ */
+export const sanitizeEmployerName = (val: string, maxLength: number = 75): string => {
+  return val
+    .replace(/[^a-zA-Z. ]/g, '')
+    .replace(/\.{2,}/g, '.')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/^[\s.]+/, '')
+    .slice(0, maxLength)
+}
+
+/**
+ * Validates employer legal name.
+ * Returns error string or null if valid.
+ */
+export const validateEmployerName = (val: string | undefined | null): string | null => {
+  const raw = String(val ?? '').trim()
+  if (!raw) return 'Employer Legal Name is required'
+  if (raw.length < 2) return 'Employer Legal Name must be at least 2 characters'
+  if (raw.length > 75) return 'Employer Legal Name cannot exceed 75 characters'
+  if (!/[a-zA-Z]/.test(raw)) return 'Employer Legal Name must contain letters'
+  if (!/^[a-zA-Z. ]+$/.test(raw)) {
+    return "Only letters, '.' and single spaces between words are allowed"
+  }
+  if (/\s{2,}/.test(raw)) {
+    return 'Only one space between two words is allowed'
+  }
+  if (/\.{2,}/.test(raw)) {
+    return 'Consecutive dots are not allowed'
+  }
+  if (/\s+\./.test(raw)) {
+    return 'Dot cannot be preceded by a space'
+  }
+  return null
+}
+
+/**
+ * Sanitizes numeric amount inputs for all income source fields:
+ * - Only numbers allowed (no commas, no dots, no symbols, no letters)
+ * - Cannot start with 0 (leading zeros stripped)
+ * - Max length limit (default 14)
+ */
+export const sanitizeIncomeAmount = (val: string, maxLength: number = 14): string => {
+  return val
+    .replace(/[^0-9]/g, '')
+    .replace(/^0+/, '')
+    .slice(0, maxLength)
+}
 
 export const ASSET_TYPE_OPTIONS = ['Equity & Mutual Funds', 'F&O & Intraday Trading', 'Crypto / VDA', 'Real Estate / Land']
 

@@ -70,5 +70,75 @@ describe('ItrRefundBankSection - Manual Input & Layout Matching Image 2', () => 
     expect(accounts[0].branch).toBe('Kurseong Branch')
     expect(accounts[0].ifsc).toBe('SBIN0001234')
     expect(accounts[0].accountNumber).toContain('9012')
+    expect(accounts[0].rawAccountNumber).toBe('123456789012')
+  })
+
+  it('hides top bank account card when editing, and populates full account number in edit form', () => {
+    const onBankAccountsChange = vi.fn()
+    const onSelectedBankIdChange = vi.fn()
+
+    const initialAccounts: FilingBankAccount[] = [
+      {
+        id: 'bank-1',
+        bankName: 'HDFC Bank',
+        branch: 'MG Road Branch',
+        accountNumber: '•••• •••• 7654',
+        rawAccountNumber: '547812345678987654',
+        ifsc: 'HDFC0000123',
+        accountType: 'savings',
+        isPrimary: true,
+        isPreValidated: true,
+      },
+    ]
+
+    const { rerender } = render(
+      <ItrRefundBankSection
+        bankAccounts={initialAccounts}
+        onBankAccountsChange={onBankAccountsChange}
+        selectedBankId="bank-1"
+        onSelectedBankIdChange={onSelectedBankIdChange}
+      />
+    )
+
+    // Top section is visible initially
+    expect(screen.getByText('HDFC Bank')).toBeInTheDocument()
+    expect(screen.getByText('•••• •••• 7654')).toBeInTheDocument()
+    expect(screen.getByText('Validated')).toBeInTheDocument()
+
+    // Click Edit button
+    const editBtn = screen.getByRole('button', { name: /edit hdfc bank details/i })
+    fireEvent.click(editBtn)
+
+    // Top section should NOT show when editing
+    expect(screen.queryByText('•••• •••• 7654')).not.toBeInTheDocument()
+    expect(screen.queryByText('Validated')).not.toBeInTheDocument()
+
+    // Edit form is visible
+    expect(screen.getByText('Edit Bank Account')).toBeInTheDocument()
+
+    // Fields are pre-filled with previously entered details
+    const bankNameInput = screen.getByPlaceholderText('e.g. State Bank of India or HDFC Bank') as HTMLInputElement
+    const branchInput = screen.getByPlaceholderText('e.g. Indiranagar Branch') as HTMLInputElement
+    const ifscInput = screen.getByPlaceholderText('e.g. SBIN0001234') as HTMLInputElement
+    const accInput = screen.getByPlaceholderText('Enter 9 to 18 digit account number') as HTMLInputElement
+
+    expect(bankNameInput.value).toBe('HDFC Bank')
+    expect(branchInput.value).toBe('MG Road Branch')
+    expect(ifscInput.value).toBe('HDFC0000123')
+    // Full account number must be shown, NOT just 4 digits
+    expect(accInput.value).toBe('547812345678987654')
+
+    // Modify branch name
+    fireEvent.change(branchInput, { target: { value: 'Koramangala Branch' } })
+
+    // Save & Validate
+    const submitBtn = screen.getByRole('button', { name: /save & validate account/i })
+    fireEvent.click(submitBtn)
+
+    expect(onBankAccountsChange).toHaveBeenCalledTimes(1)
+    const updated = onBankAccountsChange.mock.calls[0][0] as FilingBankAccount[]
+    expect(updated[0].branch).toBe('Koramangala Branch')
+    expect(updated[0].rawAccountNumber).toBe('547812345678987654')
+    expect(updated[0].accountNumber).toBe('•••• •••• 7654')
   })
 })

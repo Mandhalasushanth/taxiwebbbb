@@ -17,6 +17,7 @@ interface TdsPersonalDetailsCardProps {
   isEditingPersonal: boolean;
   setIsEditingPersonal: React.Dispatch<React.SetStateAction<boolean>>;
   handleProfileChange: (updated: Partial<TdsTaxpayerProfile>) => void;
+  onBlur?: (field: string) => void;
 }
 
 /** Taxpayer personal details: read-only summary with an inline edit form */
@@ -26,6 +27,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
   isEditingPersonal,
   setIsEditingPersonal,
   handleProfileChange,
+  onBlur,
 }) => (
   <div className="tds-card" id="tds-card-personal" data-section="tds-card-personal" data-testid="tds-card-personal">
     <div className="tds-card-header">
@@ -116,6 +118,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
                 name: e.target.value,
               })
             }
+            onBlur={() => onBlur?.('fullName')}
             placeholder="Enter your name"
             required
           />
@@ -139,6 +142,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
             onChange={(e) =>
               handleProfileChange({ pan: e.target.value.toUpperCase() })
             }
+            onBlur={() => onBlur?.('pan')}
             placeholder="Enter your PAN"
             maxLength={10}
             required
@@ -165,6 +169,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
                 aadhaar: e.target.value.replace(/\D/g, "").slice(0, 12),
               })
             }
+            onBlur={() => onBlur?.('aadhaar')}
             placeholder="Enter your Aadhaar number"
             maxLength={12}
           />
@@ -186,6 +191,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
             className="tds-input"
             value={profile.dob}
             onChange={(e) => handleProfileChange({ dob: e.target.value })}
+            onBlur={() => onBlur?.('dob')}
           />
         </div>
         <div className="tds-form-group">
@@ -202,6 +208,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
                 mobile: formatMobile(e.target.value),
               })
             }
+            onBlur={() => onBlur?.('mobile')}
             placeholder="Enter your mobile number"
           />
           {fieldErrors.mobile && (
@@ -224,6 +231,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
             onChange={(e) =>
               handleProfileChange({ email: e.target.value })
             }
+            onBlur={() => onBlur?.('email')}
             placeholder="Enter your email address"
           />
           {fieldErrors.email && (
@@ -246,6 +254,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
             onChange={(e) =>
               handleProfileChange({ address: e.target.value })
             }
+            onBlur={() => onBlur?.('address')}
             placeholder="Enter your address"
           />
         </div>

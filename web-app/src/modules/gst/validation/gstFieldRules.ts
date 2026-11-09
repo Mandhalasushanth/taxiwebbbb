@@ -3,6 +3,7 @@ import {
   isValidGstin,
   validateAccountHolderName,
   validateAddress,
+  validateBankName,
   validateBranch,
   validateBusinessLegalName,
   validateCity,
@@ -33,10 +34,10 @@ const fromShared = (msg: string | null): string | undefined => msg || undefined
 
 export const GST_PATTERNS = {
   PERSON_NAME: /^[A-Za-z][A-Za-z .'-]*$/,
-  CITY_DISTRICT: /^[A-Za-z][A-Za-z -]*$/,
-  PLACE_NAME: /^[A-Za-z][A-Za-z -]*$/,
-  BRANCH: /^[A-Za-z0-9][A-Za-z0-9\s.&'()/#,-]*$/,
-  BANK_NAME: /^[A-Za-z][A-Za-z .&'()-]*$/,
+  CITY_DISTRICT: /^[A-Za-z][A-Za-z .'-]*$/,
+  PLACE_NAME: /^[A-Za-z][A-Za-z .'-]*$/,
+  BRANCH: /^[A-Za-z0-9][A-Za-z0-9\s.,\/-]*$/,
+  BANK_NAME: /^[A-Za-z][A-Za-z .&'-]*$/,
   DESIGNATION: /^[A-Za-z][A-Za-z /'-]*$/,
   BUSINESS_NAME: /^[A-Za-z0-9][A-Za-z0-9 .&'()/,-]*$/,
   ADDRESS: /^[A-Za-z0-9\s,./#()&'-]+$/,
@@ -103,7 +104,7 @@ export const gstFieldRules = {
   hsnSac: (v?: string): string | undefined => fromShared(validateHsnSac(v)),
 
   personName: (label: string): Rule => (v) => {
-    const err = fromShared(validateName(trimmed(v), label))
+    const err = fromShared(validateName(v, label))
     if (err && err.includes('only contain letters')) {
       return `${label} must contain only letters`
     }
@@ -112,47 +113,42 @@ export const gstFieldRules = {
 
   cityDistrict: (label: string): Rule => (v) => {
     const isDistrict = label.toLowerCase().includes('district')
-    return isDistrict ? fromShared(validateDistrict(trimmed(v), label)) : fromShared(validateCity(trimmed(v), { label, minLength: 2, maxLength: 50 }))
+    return isDistrict ? fromShared(validateDistrict(v, label)) : fromShared(validateCity(v, { label, minLength: 2, maxLength: 50 }))
   },
 
-  city: (label = 'City'): Rule => (v) => fromShared(validateCity(trimmed(v), { label, minLength: 2, maxLength: 50 })),
+  city: (label = 'City'): Rule => (v) => fromShared(validateCity(v, { label, minLength: 2, maxLength: 50 })),
 
-  district: (label = 'District'): Rule => (v) => fromShared(validateDistrict(trimmed(v), label)),
+  district: (label = 'District'): Rule => (v) => fromShared(validateDistrict(v, label)),
 
-  legalName: (label = 'Legal Name of Business'): Rule => (v) => fromShared(validateBusinessLegalName(trimmed(v), label)),
+  legalName: (label = 'Legal Name of Business'): Rule => (v) => fromShared(validateBusinessLegalName(v, label)),
 
-  tradeName: (label = 'Trade Name'): Rule => (v) => fromShared(validateTradeName(trimmed(v), label)),
+  tradeName: (label = 'Trade Name'): Rule => (v) => fromShared(validateTradeName(v, label)),
 
   businessName: (label: string): Rule => (v) => {
     const isTrade = /trade|brand/i.test(label)
-    return isTrade ? fromShared(validateTradeName(trimmed(v), label)) : fromShared(validateBusinessLegalName(trimmed(v), label))
+    return isTrade ? fromShared(validateTradeName(v, label)) : fromShared(validateBusinessLegalName(v, label))
   },
 
   placeName: (label: string): Rule => (v) => {
     const value = trimmed(v)
     if (!value) return `${label} is required`
     if (label.toLowerCase().includes('branch')) {
-      return GST_PATTERNS.BRANCH.test(value) ? undefined : `${label} contains invalid characters`
+      return fromShared(validateBranch(v, label))
     }
-    return GST_PATTERNS.PLACE_NAME.test(value) ? undefined : `${label} must contain only letters`
+    return fromShared(validateCity(v, { label, minLength: 2, maxLength: 50 }))
   },
 
-  branch: (v?: string): string | undefined => fromShared(validateBranch(trimmed(v))),
+  branch: (v?: string): string | undefined => fromShared(validateBranch(v)),
 
-  bankName: (v?: string): string | undefined => {
-    const value = trimmed(v)
-    if (!value) return 'Bank name is required'
-    if (!GST_PATTERNS.BANK_NAME.test(value)) return 'Bank name must contain only letters'
-    return value.length < 3 ? 'Please enter the full bank name' : undefined
-  },
+  bankName: (v?: string): string | undefined => fromShared(validateBankName(v)),
 
-  accountHolderName: (label = 'Account holder name'): Rule => (v) => fromShared(validateAccountHolderName(trimmed(v), label)),
+  accountHolderName: (label = 'Account holder name'): Rule => (v) => fromShared(validateAccountHolderName(v, label)),
 
-  designation: (v?: string): string | undefined => fromShared(validateDesignation(trimmed(v))),
+  designation: (v?: string): string | undefined => fromShared(validateDesignation(v)),
 
-  commencementDate: (v?: string): string | undefined => fromShared(validateCommencementDate(trimmed(v))),
+  commencementDate: (v?: string): string | undefined => fromShared(validateCommencementDate(v)),
 
-  address: (label: string): Rule => (v) => fromShared(validateAddress(trimmed(v), { label, minLength: 10, maxLength: 250 })),
+  address: (label: string): Rule => (v) => fromShared(validateAddress(v, { label, minLength: 10, maxLength: 250 })),
 
   /**
    * GST Notice Number / RFN / DIN:
@@ -269,6 +265,7 @@ export const collectGstErrors = (checks: Record<string, string | undefined>): Re
 /** Field kinds recognised from a label/placeholder */
 export type GstFieldKind =
   | 'gstin' | 'pan' | 'ifsc' | 'email' | 'mobile' | 'pinCode' | 'accountNumber'
+  | 'branch' | 'bankName' | 'city' | 'district' | 'designation'
   | 'personName' | 'businessName' | 'address' | 'noticeNumber' | 'arn' | 'reference' | 'text'
 
 const KIND_MATCHERS: [GstFieldKind, RegExp][] = [
@@ -280,6 +277,11 @@ const KIND_MATCHERS: [GstFieldKind, RegExp][] = [
   ['mobile', /mobile|phone/i],
   ['pinCode', /\bpin\s*code\b|\bpincode\b/i],
   ['accountNumber', /account\s*(no|number)/i],
+  ['branch', /\bbranch(\s*name)?\b/i],
+  ['bankName', /\bbank(\s*name)?\b/i],
+  ['city', /\bcity\b/i],
+  ['district', /\bdistrict\b/i],
+  ['designation', /\bdesignation\b/i],
   ['businessName', /business name|trade name|legal name/i],
   ['personName', /signatory name|full name|holder name/i],
   ['address', /address/i],
@@ -312,6 +314,11 @@ export const gstRuleForField = (label = '', placeholder = ''): Rule => {
     mobile: gstFieldRules.mobile,
     pinCode: gstFieldRules.pinCode,
     accountNumber: gstFieldRules.accountNumber,
+    branch: (v) => gstFieldRules.branch(v),
+    bankName: (v) => gstFieldRules.bankName(v),
+    city: gstFieldRules.city(name),
+    district: gstFieldRules.district(name),
+    designation: gstFieldRules.designation,
     personName: gstFieldRules.personName(name),
     businessName: gstFieldRules.businessName(name),
     address: gstFieldRules.address(name),

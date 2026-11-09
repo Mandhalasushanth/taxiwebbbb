@@ -42,9 +42,26 @@ export function formatUppercaseAlphanumeric(val: string, maxLen?: number): strin
   return limit(val.toUpperCase().replace(/[^A-Z0-9]/g, ''), maxLen)
 }
 
-/** Names, bank names, cities: letters, spaces and . ' - & ( ) only */
+/** Names, bank names, cities: letters, spaces and . ' - & only (no numbers, no consecutive special characters) */
 export function formatLettersOnly(val: string, maxLen = 100): string {
-  return val.replace(/[^A-Za-z .'&()-]/g, '').replace(/\s{2,}/g, ' ').slice(0, maxLen)
+  return val
+    .replace(/[^A-Za-z\s.&'-]/g, '')
+    .replace(/^[ \s.&'-]+/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/([.&'-])\1+/g, '$1')
+    .replace(/[.&'-]\s*[.&'-]+/g, (m) => m[0])
+    .slice(0, maxLen)
+}
+
+/** Branch names: letters, numbers, spaces, and single .,/- */
+export function formatBranchName(val: string, maxLen = 60): string {
+  return val
+    .replace(/[^A-Za-z0-9\s.,\/-]/g, '')
+    .replace(/^[ \s.,\/-]+/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/([.,\/-])\1+/g, '$1')
+    .replace(/[.,\/-]\s*[.,\/-]+/g, (m) => m[0])
+    .slice(0, maxLen)
 }
 
 /** Udyam number: auto-formats to UDYAM-XX-00-0000000 or UDYAM-00-XX-00000000 as user types */

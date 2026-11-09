@@ -356,7 +356,8 @@
 }
 
 /* Red outline and subtle background when required document is missing */
-.supporting-doc-item.loan-doc-item--error {
+.supporting-doc-item.loan-doc-item--error,
+.supporting-doc-item.supporting-doc-item--error {
   border-color: var(--palette-red-500) !important;
   background-color: var(--palette-red-50-fffbfb) !important;
   box-shadow:
@@ -416,4 +417,7 @@
   font-weight: 500;
   color: #dc2626;
   line-height: 1.35;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
 }

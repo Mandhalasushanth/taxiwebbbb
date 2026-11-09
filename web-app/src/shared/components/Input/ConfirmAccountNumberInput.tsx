@@ -32,7 +32,7 @@ export const ConfirmAccountNumberInput: React.FC<ConfirmAccountNumberInputProps>
   maxLength = 18,
   disabled = false,
   required = true,
-  autoComplete = 'off',
+  autoComplete = 'new-password',
 }) => {
   const [showPassword, setShowPassword] = useState(false)
 
@@ -60,6 +60,8 @@ export const ConfirmAccountNumberInput: React.FC<ConfirmAccountNumberInputProps>
           disabled={disabled}
           required={required}
           autoComplete={autoComplete}
+          data-lpignore="true"
+          data-1p-ignore="true"
           className={`confirm-acc-input ${className} ${isInvalid ? 'input--invalid has-error input-error' : ''}`}
           aria-invalid={isInvalid}
         />

@@ -28,6 +28,7 @@ import {
   validateGstBusinessForm,
   validateGstBusinessField
 } from '../../src/modules/gst/validation/gstStepBusiness.validator'
+import { gstInput } from '../../src/modules/gst/utils/gstInputFormatters'
 import type { GstBusinessFormData } from '../../src/modules/gst/types/gstBusiness.types'
 
 describe('GST Validations - Centralized & Field-by-Field', () => {
@@ -237,6 +238,28 @@ describe('GST Validations - Centralized & Field-by-Field', () => {
       expect(validateIfscCode('SBIN0000001')).toBeNull()
       expect(validateIfscCode('HDFC1001234')).toBe(VALIDATION_MESSAGES.ifsc)
       expect(validateIfscCode('HDFC')).toBe(VALIDATION_MESSAGES.ifsc)
+    })
+
+    it('validates branch name (no consecutive special characters, no consecutive spaces, valid symbols only)', () => {
+      expect(validateBranch('Commercial Branch - MG Road')).toBeNull()
+      expect(validateBranch('Sector 18 Branch')).toBeNull()
+      expect(validateBranch('Plot 4/B, Indiranagar')).toBeNull()
+      expect(validateBranch('')).toBe('Branch is required')
+      expect(validateBranch('A')).toBe('Branch must be at least 2 characters')
+      expect(validateBranch('123456')).toBe('Branch must contain letters')
+      expect(validateBranch(' Main Branch')).toBe('Branch cannot start with a space')
+      expect(validateBranch('/Main Branch')).toBe('Branch cannot start with a special character')
+      expect(validateBranch('Main   Branch')).toBe('Only one space is allowed between words')
+      expect(validateBranch('Branch//..')).toBe('Branch cannot contain consecutive special characters')
+      expect(validateBranch('234567#&(&#&()DFGH//.,..')).toBe('Branch cannot contain consecutive special characters')
+      expect(validateBranch('Branch#1')).toBe('Branch contains invalid special characters')
+      expect(validateBranch('Branch&Co')).toBe('Branch contains invalid special characters')
+    })
+
+    it('formats branch input on change (strips arbitrary special chars, collapses consecutive punctuation and spaces)', () => {
+      expect(gstInput.branch('234567#&(&#&()DFGH//.,..')).toBe('234567DFGH/')
+      expect(gstInput.branch('Main    Branch')).toBe('Main Branch')
+      expect(gstInput.branch('//Plot 4/B')).toBe('Plot 4/B')
     })
   })
 

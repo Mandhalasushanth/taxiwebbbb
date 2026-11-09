@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Navigate } from 'react-router-dom'
 import type { RouteObject } from 'react-router-dom'
 
@@ -6,6 +7,7 @@ import { DashboardLayout } from '../layouts/DashboardLayout'
 import { NotFound } from '../pages/NotFound'
 
 import { routePaths } from '@core/config'
+import { Loader } from '@shared/components'
 import { applicationsRoutes } from '@modules/applications/routes'
 import { authenticationRoutes } from '@modules/authentication/routes'
 import { businessRoutes } from '@modules/business/routes'
@@ -16,6 +18,7 @@ import { documentsRoutes } from '@modules/documents/routes'
 import { gstRoutes } from '@modules/gst/routes'
 import { incorporationRoutes } from '@modules/incorporation/routes'
 import { insuranceRoutes } from '@modules/insurance/routes'
+import { projectsRoutes } from '@modules/projects'
 import { legalRoutes } from '@modules/legal/routes'
 import { itrRoutes } from '@modules/itr/routes'
 // Import the routes file directly: the loans barrel also exports every loan page, which would defeat lazy loading
@@ -71,7 +74,11 @@ export const routeConfig: RouteObject[] = [
     element: <CustomerRoute />,
     children: [
       {
-        element: <DashboardLayout />,
+        element: (
+          <Suspense fallback={<Loader fullPage />}>
+            <DashboardLayout />
+          </Suspense>
+        ),
         children: [
           { index: true, element: <Navigate to={routePaths.dashboard} replace /> },
           ...dashboardRoutes,
@@ -81,6 +88,7 @@ export const routeConfig: RouteObject[] = [
           ...itrRoutes,
           ...loansRoutes,
           ...insuranceRoutes,
+          ...projectsRoutes,
           ...paymentsRoutes,
           ...documentsRoutes,
           ...applicationsRoutes,

@@ -42,7 +42,7 @@ export const QUICK_SERVICE_LIST: QuickServiceItem[] = [
     id: "projects",
     label: "Projects",
     description: "Project Management",
-    to: "#quick-services",
+    to: routePaths.projects,
     iconImg: "/assets/images/services/service-projects-card.png",
     themeClass: "quick-service-card--projects",
   },

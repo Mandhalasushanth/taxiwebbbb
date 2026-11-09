@@ -4,7 +4,7 @@ import {
   PlusCircleIcon,
   type FilingBankAccount,
 } from '../itrFiling.constants'
-import { isValidIfsc } from '@shared/utils/validationUtils'
+import { isValidIfsc, validateBankName, validateBranch } from '@shared/utils/validationUtils'
 import './ItrRefundBankSection.css'
 
 export interface ItrRefundBankSectionProps {
@@ -75,19 +75,38 @@ export const ItrRefundBankSection: React.FC<ItrRefundBankSectionProps> = ({
     setNewBankName(acc.bankName)
     setNewBranch(acc.branch || '')
     setNewIfsc(acc.ifsc)
-    setNewAccountNumber(acc.accountNumber.replace(/\D/g, ''))
+    const fullAcc =
+      acc.rawAccountNumber ||
+      acc.fullAccountNumber ||
+      (acc.accountNumber.includes('•') ? '' : acc.accountNumber.replace(/\D/g, '')) ||
+      acc.accountNumber.replace(/\D/g, '')
+    setNewAccountNumber(fullAcc)
     setIsIfscValid(isValidIfsc(acc.ifsc))
     setEditingBankId(acc.id)
     setIsAddingBank(true)
   }
 
   const handleBankNameChange = (val: string) => {
-    setNewBankName(val)
+    const cleaned = val
+      .replace(/[^A-Za-z\s.&'-]/g, '')
+      .replace(/^[ \s.&'-]+/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/([.&'-])\1+/g, '$1')
+      .replace(/[.&'-]\s*[.&'-]+/g, (m) => m[0])
+      .slice(0, 100)
+    setNewBankName(cleaned)
     setFieldErrors((prev) => ({ ...prev, bankName: undefined }))
   }
 
   const handleBranchChange = (val: string) => {
-    setNewBranch(val)
+    const cleaned = val
+      .replace(/[^A-Za-z0-9\s.,\/-]/g, '')
+      .replace(/^[ \s.,\/-]+/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/([.,\/-])\1+/g, '$1')
+      .replace(/[.,\/-]\s*[.,\/-]+/g, (m) => m[0])
+      .slice(0, 60)
+    setNewBranch(cleaned)
     setFieldErrors((prev) => ({ ...prev, branch: undefined }))
   }
 
@@ -126,6 +145,14 @@ export const ItrRefundBankSection: React.FC<ItrRefundBankSectionProps> = ({
 
     if (!newBankName.trim()) {
       errors.bankName = 'Bank name is required'
+    } else {
+      const bankErr = validateBankName(newBankName)
+      if (bankErr) errors.bankName = bankErr
+    }
+
+    if (newBranch.trim()) {
+      const branchErr = validateBranch(newBranch, { required: false })
+      if (branchErr) errors.branch = branchErr
     }
 
     const cleanIfsc = newIfsc.trim().toUpperCase()
@@ -157,6 +184,8 @@ export const ItrRefundBankSection: React.FC<ItrRefundBankSectionProps> = ({
           bankName: newBankName.trim(),
           branch: newBranch.trim() || undefined,
           accountNumber: maskedAcc,
+          rawAccountNumber: cleanAcc,
+          fullAccountNumber: cleanAcc,
           ifsc: cleanIfsc,
           isPreValidated: true,
         }
@@ -171,6 +200,8 @@ export const ItrRefundBankSection: React.FC<ItrRefundBankSectionProps> = ({
       bankName: newBankName.trim(),
       branch: newBranch.trim() || undefined,
       accountNumber: maskedAcc,
+      rawAccountNumber: cleanAcc,
+      fullAccountNumber: cleanAcc,
       ifsc: cleanIfsc,
       accountType: 'savings',
       isPrimary: bankAccounts.length === 0,
@@ -204,10 +235,12 @@ export const ItrRefundBankSection: React.FC<ItrRefundBankSectionProps> = ({
       </p>
 
       {bankAccounts.length === 0 ? (
-        <div className="itr-bank-empty-box">
-          No bank accounts added yet. Please add a bank account for refund credit.
-        </div>
-      ) : (
+        !isAddingBank && (
+          <div className="itr-bank-empty-box">
+            No bank accounts added yet. Please add a bank account for refund credit.
+          </div>
+        )
+      ) : !editingBankId ? (
         <div className="itr-bank-accounts-grid">
           {bankAccounts.map((acc) => {
             const isChecked = selectedBankId === acc.id
@@ -266,7 +299,7 @@ export const ItrRefundBankSection: React.FC<ItrRefundBankSectionProps> = ({
             )
           })}
         </div>
-      )}
+      ) : null}
 
       {/* Add Bank Account Form */}
       {!isAddingBank ? (
@@ -340,7 +373,14 @@ export const ItrRefundBankSection: React.FC<ItrRefundBankSectionProps> = ({
                 value={newBranch}
                 onChange={(e) => handleBranchChange(e.target.value)}
                 autoComplete="off"
+                aria-invalid={Boolean(fieldErrors.branch)}
+                aria-describedby={fieldErrors.branch ? 'new-branch-name-error' : undefined}
               />
+              {fieldErrors.branch && (
+                <span id="new-branch-name-error" className="itr-field-error-text" role="alert">
+                  {fieldErrors.branch}
+                </span>
+              )}
             </div>
 
             {/* 3. IFSC Code */}

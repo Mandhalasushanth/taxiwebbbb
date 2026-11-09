@@ -3,6 +3,7 @@ import { Wallet } from 'lucide-react'
 import { FieldInfoTooltip } from '@shared/components'
 import {
   ASSET_TYPE_OPTIONS,
+  sanitizeIncomeAmount,
   type CapitalGainsDetails,
   type OtherSourcesDetails,
 } from '../itrFiling.constants'
@@ -145,11 +146,12 @@ export const ItrCapitalGainsCard: React.FC<ItrCapitalGainsCardProps> = ({
               id="cg-stcg"
               type="text"
               inputMode="numeric"
+              pattern="[1-9][0-9]*"
               maxLength={14}
               className="itr-input-currency"
               placeholder="Enter short-term gains"
               value={capitalGainsDetails.stcg}
-              onChange={(e) => handleCapitalGainsChange('stcg', e.target.value.replace(/[^0-9,]/g, ''))}
+              onChange={(e) => handleCapitalGainsChange('stcg', sanitizeIncomeAmount(e.target.value))}
               required
             />
           </div>
@@ -167,11 +169,12 @@ export const ItrCapitalGainsCard: React.FC<ItrCapitalGainsCardProps> = ({
               id="cg-ltcg"
               type="text"
               inputMode="numeric"
+              pattern="[1-9][0-9]*"
               maxLength={14}
               className="itr-input-currency"
               placeholder="Enter long-term gains"
               value={capitalGainsDetails.ltcg}
-              onChange={(e) => handleCapitalGainsChange('ltcg', e.target.value.replace(/[^0-9,]/g, ''))}
+              onChange={(e) => handleCapitalGainsChange('ltcg', sanitizeIncomeAmount(e.target.value))}
               required
             />
           </div>
@@ -191,12 +194,14 @@ export interface ItrOtherSourcesCardProps {
   otherSourcesDetails: OtherSourcesDetails
   onOtherSourcesDetailsChange: (details: OtherSourcesDetails) => void
   onToggle: () => void
+  showErrors?: boolean
 }
 
 export const ItrOtherSourcesCard: React.FC<ItrOtherSourcesCardProps> = ({
   otherSourcesDetails,
   onOtherSourcesDetailsChange,
   onToggle,
+  showErrors = false,
 }) => {
   const handleOtherSourcesChange = (field: keyof OtherSourcesDetails, val: string) => {
     const updated: OtherSourcesDetails = { ...otherSourcesDetails, [field]: val }
@@ -213,6 +218,10 @@ export const ItrOtherSourcesCard: React.FC<ItrOtherSourcesCardProps> = ({
   const dividendVal = otherSourcesDetails.dividendIncome ?? ''
   const pensionVal = otherSourcesDetails.familyPension ?? ''
   const miscVal = otherSourcesDetails.otherMiscellaneous ?? otherSourcesDetails.otherIncome ?? ''
+
+  const hasAnyOtherSource = Boolean(
+    savingsVal.trim() || fdVal.trim() || dividendVal.trim() || pensionVal.trim() || miscVal.trim()
+  )
 
   return (
     <div className="itr-salary-card" id="itr-other-sources" data-section="other_sources">
@@ -261,18 +270,19 @@ export const ItrOtherSourcesCard: React.FC<ItrOtherSourcesCardProps> = ({
               id="os-savings"
               type="text"
               inputMode="numeric"
+              pattern="[1-9][0-9]*"
               maxLength={14}
               className="itr-input-currency"
               placeholder="e.g. 10000 (0 if none)"
               value={savingsVal}
-              onChange={(e) => handleOtherSourcesChange('savingsInterest', e.target.value.replace(/[^0-9,]/g, ''))}
+              onChange={(e) => handleOtherSourcesChange('savingsInterest', sanitizeIncomeAmount(e.target.value))}
             />
           </div>
         </div>
 
         <div className="itr-form-group">
           <label className="itr-form-label" htmlFor="os-fd">
-            FD / Term Interest <span className="itr-required-star">*</span>
+            FD / Term Interest
           </label>
           <div className="itr-input-currency-wrap">
             <span className="itr-currency-prefix">₹</span>
@@ -280,11 +290,12 @@ export const ItrOtherSourcesCard: React.FC<ItrOtherSourcesCardProps> = ({
               id="os-fd"
               type="text"
               inputMode="numeric"
+              pattern="[1-9][0-9]*"
               maxLength={14}
               className="itr-input-currency"
               placeholder="e.g. 25000 (0 if none)"
               value={fdVal}
-              onChange={(e) => handleOtherSourcesChange('fdInterest', e.target.value.replace(/[^0-9,]/g, ''))}
+              onChange={(e) => handleOtherSourcesChange('fdInterest', sanitizeIncomeAmount(e.target.value))}
             />
           </div>
         </div>
@@ -293,7 +304,7 @@ export const ItrOtherSourcesCard: React.FC<ItrOtherSourcesCardProps> = ({
       <div className="itr-grid-2col">
         <div className="itr-form-group">
           <label className="itr-form-label" htmlFor="os-dividend">
-            Dividend Income <span className="itr-required-star">*</span>
+            Dividend Income
           </label>
           <div className="itr-input-currency-wrap">
             <span className="itr-currency-prefix">₹</span>
@@ -301,18 +312,19 @@ export const ItrOtherSourcesCard: React.FC<ItrOtherSourcesCardProps> = ({
               id="os-dividend"
               type="text"
               inputMode="numeric"
+              pattern="[1-9][0-9]*"
               maxLength={14}
               className="itr-input-currency"
               placeholder="e.g. 5000 (0 if none)"
               value={dividendVal}
-              onChange={(e) => handleOtherSourcesChange('dividendIncome', e.target.value.replace(/[^0-9,]/g, ''))}
+              onChange={(e) => handleOtherSourcesChange('dividendIncome', sanitizeIncomeAmount(e.target.value))}
             />
           </div>
         </div>
 
         <div className="itr-form-group">
           <label className="itr-form-label" htmlFor="os-pension">
-            Family Pension <span className="itr-required-star">*</span>
+            Family Pension
           </label>
           <div className="itr-input-currency-wrap">
             <span className="itr-currency-prefix">₹</span>
@@ -320,11 +332,12 @@ export const ItrOtherSourcesCard: React.FC<ItrOtherSourcesCardProps> = ({
               id="os-pension"
               type="text"
               inputMode="numeric"
+              pattern="[1-9][0-9]*"
               maxLength={14}
               className="itr-input-currency"
               placeholder="e.g. 0 if none"
               value={pensionVal}
-              onChange={(e) => handleOtherSourcesChange('familyPension', e.target.value.replace(/[^0-9,]/g, ''))}
+              onChange={(e) => handleOtherSourcesChange('familyPension', sanitizeIncomeAmount(e.target.value))}
             />
           </div>
         </div>
@@ -332,7 +345,7 @@ export const ItrOtherSourcesCard: React.FC<ItrOtherSourcesCardProps> = ({
 
       <div className="itr-form-group">
         <label className="itr-form-label" htmlFor="os-misc">
-          Other Miscellaneous <span className="itr-required-star">*</span>
+          Other Miscellaneous
         </label>
         <div className="itr-input-currency-wrap">
           <span className="itr-currency-prefix">₹</span>
@@ -340,14 +353,19 @@ export const ItrOtherSourcesCard: React.FC<ItrOtherSourcesCardProps> = ({
             id="os-misc"
             type="text"
             inputMode="numeric"
+            pattern="[1-9][0-9]*"
             maxLength={14}
             className="itr-input-currency"
             placeholder="e.g. 0 if none"
             value={miscVal}
-            onChange={(e) => handleOtherSourcesChange('otherMiscellaneous', e.target.value.replace(/[^0-9,]/g, ''))}
+            onChange={(e) => handleOtherSourcesChange('otherMiscellaneous', sanitizeIncomeAmount(e.target.value))}
           />
         </div>
       </div>
+
+      {showErrors && !hasAnyOtherSource && (
+        <span className="itr-field-error-text">Please declare at least one other income source amount</span>
+      )}
     </div>
   )
 }

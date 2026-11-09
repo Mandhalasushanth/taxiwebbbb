@@ -1,0 +1,2 @@
+export { projectsRoutes } from './routes'
+

@@ -27,3 +27,78 @@ h3 { font-size: var(--font-size-lg); line-height: var(--line-height-tight); }
   border: 3px solid var(--color-bg);
   border-radius: var(--radius-pill);
 }
+
+/* Disable native calendar picker indicator so custom calendar popup with Cancel/OK is used */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none !important;
+}
+
+/* ==========================================================================
+   Global Unified Form & Card Typography Across All Modules
+   (GST, ITR, Loans, Incorporation, Profile, Payments)
+   ========================================================================== */
+
+/* Unified Section & Card Headings */
+.card-title,
+.card__title,
+.hl-card__title,
+.pl-card__title,
+.msme-card__title,
+.mach-card__title,
+.veh-card__title,
+.prop-card__title,
+.bwc-card__title,
+.itr-info-card__title,
+.itr-bank-card-title,
+.tds-card-title,
+.gst-reg-step-title,
+.gst-amend-info-card__title,
+.gst-comp-card__title,
+.gst-filing-period__card-title,
+.gst-review-card__title,
+.notice-upload-card__title,
+.notice-summary-card__title,
+.correction-card-title,
+.reason-card-title,
+.found-card-title,
+.prev-itr-step-card-title,
+.company-details-card__title,
+.pf-inner-item-card__title,
+.pf-parcel-card__title {
+  font-family: var(--font-sans) !important;
+  font-size: var(--font-size-lg, 1.05rem) !important;
+  font-weight: var(--font-weight-bold, 700) !important;
+  color: var(--primary-navy) !important;
+  line-height: 1.35 !important;
+  letter-spacing: -0.01em;
+}
+
+/* Unified Card Subtitles / Section Descriptions */
+.hl-card__subtitle,
+.itr-info-card__desc,
+.gst-reg-step-subtitle,
+.gst-amend-info-card__desc,
+.tds-card-subtitle,
+.notice-summary-card__subtitle {
+  font-family: var(--font-sans) !important;
+  font-size: var(--font-size-sm, 0.875rem) !important;
+  font-weight: 400 !important;
+  color: var(--secondary-text, var(--color-text-muted)) !important;
+  line-height: 1.5 !important;
+}
+
+/* Unified Mandatory Asterisk across all forms */
+.required-star,
+.required-asterisk,
+.itr-required-star,
+.gst-required-star,
+.hl-required-star,
+span.required {
+  color: #ef4444 !important;
+  font-weight: 500 !important;
+  font-size: 0.9em !important;
+  margin-left: 0.2rem !important;
+  display: inline-block;
+  vertical-align: baseline;
+}
