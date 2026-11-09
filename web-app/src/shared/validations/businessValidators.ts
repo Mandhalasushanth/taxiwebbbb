@@ -239,6 +239,7 @@ export const validateCommencementDate = (
  * Validates District Name:
  * - Unicode alphabets, single spaces, and hyphens
  * - Rejects numbers and unsupported special characters
+ * - Rejects consecutive spaces or hyphens
  * - Length: 2 to 50 characters
  */
 export const validateDistrict = (
@@ -248,28 +249,50 @@ export const validateDistrict = (
   const opts: BaseValidationOptions = typeof options === 'string' ? { label: options } : options || {}
   const label = opts.label || 'District'
   const required = opts.required !== false
-  const raw = String(district ?? '').trim()
+  const raw = String(district ?? '')
 
-  if (!raw) {
+  if (!raw.trim()) {
     return required ? `${label} is required` : null
   }
 
-  const min = opts.minLength ?? 2
-  const max = opts.maxLength ?? 50
-
-  if (raw.length < min) {
-    return `${label} must be at least ${min} characters`
+  if (raw.startsWith(' ')) {
+    return `${label} cannot start with a space`
   }
-  if (raw.length > max) {
-    return `${label} cannot exceed ${max} characters`
+
+  const trimmed = raw.trim()
+
+  if (/^[ \-.'\s]+/.test(trimmed)) {
+    return `${label} must start with a letter`
+  }
+
+  if (/\s{2,}/.test(raw)) {
+    return 'Only one space is allowed between words'
   }
 
   if (/\d/.test(raw)) {
     return `${label} must contain only letters`
   }
 
-  if (!/^[\p{L}\s-]+$/u.test(raw)) {
+  if (/([\-.'])\1+/.test(raw) || /[\-.']\s*[\-.']+/.test(raw)) {
+    return `${label} cannot contain consecutive dots or hyphens`
+  }
+
+  const min = opts.minLength ?? 2
+  const max = opts.maxLength ?? 50
+
+  if (trimmed.length < min) {
+    return `${label} must be at least ${min} characters`
+  }
+  if (trimmed.length > max) {
+    return `${label} cannot exceed ${max} characters`
+  }
+
+  if (!/^[\p{L}\s.'-]+$/u.test(trimmed)) {
     return `${label} must contain only letters`
+  }
+
+  if (/[\-.']$/.test(trimmed)) {
+    return `${label} cannot end with a special character`
   }
 
   return null
@@ -381,7 +404,8 @@ export const getHsnSacClassification = (
 
 /**
  * Validates Account Holder Name:
- * - Allows alphabets, numbers where legitimately present in entity names, single spaces, & , . - '
+ * - Allows alphabets, single spaces, & , . - '
+ * - Rejects numbers, consecutive spaces, and consecutive punctuation
  * - Length: 2 to 100 characters
  */
 export const validateAccountHolderName = (
@@ -391,20 +415,34 @@ export const validateAccountHolderName = (
   const opts: BaseValidationOptions = typeof options === 'string' ? { label: options } : options || {}
   const label = opts.label || 'Account holder name'
   const required = opts.required !== false
-  const raw = String(name ?? '').trim()
+  const raw = String(name ?? '')
 
-  if (!raw) {
+  if (!raw.trim()) {
     return required ? `${label} is required` : null
   }
 
-  if (raw.length < 2) {
+  if (raw.startsWith(' ')) {
+    return `${label} cannot start with a space`
+  }
+
+  const trimmed = raw.trim()
+
+  if (/^[ .'-]/.test(trimmed)) {
+    return `${label} cannot start with a special character`
+  }
+
+  if (/\s{2,}/.test(raw)) {
+    return 'Only one space is allowed between words'
+  }
+
+  if (trimmed.length < 2) {
     return `${label} must be at least 2 characters`
   }
-  if (raw.length > 100) {
+  if (trimmed.length > 100) {
     return `${label} cannot exceed 100 characters`
   }
 
-  if (!/\p{L}/u.test(raw)) {
+  if (!/\p{L}/u.test(trimmed)) {
     return `${label} must contain letters`
   }
 
@@ -412,8 +450,79 @@ export const validateAccountHolderName = (
     return `${label} must contain only letters`
   }
 
-  if (!/^[\p{L}\s.'-]+$/u.test(raw)) {
+  if (/([.'-])\1+/.test(raw) || /[.'-]\s*[.'-]+/.test(raw)) {
+    return `${label} cannot contain consecutive special characters`
+  }
+
+  if (!/^[\p{L}\s.'-]+$/u.test(trimmed)) {
     return `${label} must contain only letters`
+  }
+
+  if (/[.'-]$/.test(trimmed)) {
+    return `${label} cannot end with a special character`
+  }
+
+  return null
+}
+
+/* -------------------------------------------------------------------------- */
+/* Bank Name                                                                  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Validates Bank Name:
+ * - Allows letters, single spaces, and punctuation: . & - '
+ * - Rejects numbers, consecutive spaces, and consecutive punctuation
+ * - Length: 2 to 100 characters
+ */
+export const validateBankName = (
+  bankName: string | undefined | null,
+  options?: BaseValidationOptions | string
+): string | null => {
+  const opts: BaseValidationOptions = typeof options === 'string' ? { label: options } : options || {}
+  const label = opts.label || 'Bank name'
+  const required = opts.required !== false
+  const raw = String(bankName ?? '')
+
+  if (!raw.trim()) {
+    return required ? `${label} is required` : null
+  }
+
+  if (raw.startsWith(' ')) {
+    return `${label} cannot start with a space`
+  }
+
+  const trimmed = raw.trim()
+
+  if (/^[ .&'-]/.test(trimmed)) {
+    return `${label} cannot start with a special character`
+  }
+
+  if (/\s{2,}/.test(raw)) {
+    return 'Only one space is allowed between words'
+  }
+
+  if (/\d/.test(raw)) {
+    return `${label} must contain only letters`
+  }
+
+  if (/([.&'-])\1+/.test(raw) || /[.&'-]\s*[.&'-]+/.test(raw)) {
+    return `${label} cannot contain consecutive special characters`
+  }
+
+  if (trimmed.length < 2) {
+    return `${label} must be at least 2 characters`
+  }
+  if (trimmed.length > 100) {
+    return `${label} cannot exceed 100 characters`
+  }
+
+  if (!/^[\p{L}\s.&'-]+$/u.test(trimmed)) {
+    return `${label} must contain only letters`
+  }
+
+  if (/[.&'-]$/.test(trimmed)) {
+    return `${label} cannot end with a special character`
   }
 
   return null
@@ -456,21 +565,47 @@ export const validateDesignation = (
   const opts: BaseValidationOptions = typeof options === 'string' ? { label: options } : options || {}
   const label = opts.label || 'Designation'
   const required = opts.required !== false
-  const raw = String(designation ?? '').trim()
+  const raw = String(designation ?? '')
 
-  if (!raw) {
+  if (!raw.trim()) {
     return required ? `${label} is required` : null
   }
 
-  if (raw.length < 2) {
+  if (raw.startsWith(' ')) {
+    return `${label} cannot start with a space`
+  }
+
+  const trimmed = raw.trim()
+
+  if (/^[ /.'-]/.test(trimmed)) {
+    return `${label} cannot start with a special character`
+  }
+
+  if (/\s{2,}/.test(raw)) {
+    return 'Only one space is allowed between words'
+  }
+
+  if (/\d/.test(raw)) {
+    return `${label} must contain only letters`
+  }
+
+  if (/([/.'-])\1+/.test(raw) || /[/.'-]\s*[/.'-]+/.test(raw)) {
+    return `${label} cannot contain consecutive special characters`
+  }
+
+  if (trimmed.length < 2) {
     return `${label} must be at least 2 characters`
   }
-  if (raw.length > 60) {
+  if (trimmed.length > 60) {
     return `${label} cannot exceed 60 characters`
   }
 
-  if (!/^[\p{L}\s/.'-]+$/u.test(raw)) {
+  if (!/^[\p{L}\s/.'-]+$/u.test(trimmed)) {
     return `${label} must contain only letters`
+  }
+
+  if (/[/.'-]$/.test(trimmed)) {
+    return `${label} cannot end with a special character`
   }
 
   return null
@@ -487,21 +622,49 @@ export const validateBranch = (
   const opts: BaseValidationOptions = typeof options === 'string' ? { label: options } : options || {}
   const label = opts.label || 'Branch'
   const required = opts.required !== false
-  const raw = String(branch ?? '').trim()
+  const raw = String(branch ?? '')
 
-  if (!raw) {
+  if (!raw.trim()) {
     return required ? `${label} is required` : null
   }
 
-  if (raw.length < 2) {
+  if (raw.startsWith(' ')) {
+    return `${label} cannot start with a space`
+  }
+
+  const trimmed = raw.trim()
+
+  if (/^[ .,\/-]/.test(trimmed)) {
+    return `${label} cannot start with a special character`
+  }
+
+  if (/\s{2,}/.test(raw)) {
+    return 'Only one space is allowed between words'
+  }
+
+  if (/([.,\/-])\1+/.test(raw) || /[.,\/-]\s*[.,\/-]+/.test(raw)) {
+    return `${label} cannot contain consecutive special characters`
+  }
+
+  if (trimmed.length < 2) {
     return `${label} must be at least 2 characters`
   }
-  if (raw.length > 60) {
+  if (trimmed.length > 60) {
     return `${label} cannot exceed 60 characters`
   }
 
-  if (!/^[\p{L}\p{N}\s.&'()/#,-]+$/u.test(raw)) {
-    return `${label} contains invalid characters`
+  // Must contain letters
+  if (!/\p{L}/u.test(trimmed)) {
+    return `${label} must contain letters`
+  }
+
+  // Allowed characters: letters, numbers, spaces, and single .,/-
+  if (!/^[\p{L}\p{N}\s.,\/-]+$/u.test(trimmed)) {
+    return `${label} contains invalid special characters`
+  }
+
+  if (/[.,\/-]$/.test(trimmed)) {
+    return `${label} cannot end with a special character`
   }
 
   return null

@@ -1,6 +1,6 @@
-@import './colors.css';
-@import './palette.css';
-@import './typography.css';
+@import "./colors.css";
+@import "./palette.css";
+@import "./typography.css";
 
 :root {
   color-scheme: light;
@@ -35,7 +35,7 @@
   --color-deep-navy: var(--deep-dark-navy);
   --color-navy-panel: var(--navy-800);
   --color-navy-surface: var(--navy-700);
-  --color-navy-border: #143865;
+  --color-navy-border: #1a467e;
   --color-accent: var(--feature-orange);
   --color-accent-hover: var(--orange-600);
   --color-accent-soft: var(--light-orange);
@@ -90,29 +90,29 @@
 }
 
 /* Official TaxEdge Dark Mode */
-[data-theme='dark'] {
+[data-theme="dark"] {
   color-scheme: dark;
 
-  --color-bg: #0F172A;
-  --color-surface: #1E293B;
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
   --color-surface-alt: #162032;
   --color-border: #334155;
   --color-border-strong: #475569;
 
-  --color-text: #F8FAFC;
-  --color-text-muted: #94A3B8;
+  --color-text: #f8fafc;
+  --color-text-muted: #94a3b8;
   --color-text-inverse: #172033;
 
-  --color-primary: #38BDF8;
-  --color-primary-hover: #0EA5E9;
-  --color-primary-active: #0284C7;
+  --color-primary: #38bdf8;
+  --color-primary-hover: #0ea5e9;
+  --color-primary-active: #0284c7;
   --color-primary-soft: rgba(56, 189, 248, 0.15);
-  --color-on-primary: #FFFFFF;
+  --color-on-primary: #ffffff;
 
-  --color-accent: #FB923C;
-  --color-accent-hover: #F97316;
-  --color-on-accent: #FFFFFF;
+  --color-accent: #fb923c;
+  --color-accent-hover: #ff8c00;
+  --color-on-accent: #ffffff;
 
-  --color-success: #22C55E;
-  --color-danger: #EF4444;
+  --color-success: #22c55e;
+  --color-danger: #ef4444;
 }

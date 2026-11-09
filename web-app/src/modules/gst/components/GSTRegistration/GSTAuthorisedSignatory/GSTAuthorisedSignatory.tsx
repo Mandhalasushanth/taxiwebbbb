@@ -114,6 +114,9 @@ export const GSTAuthorisedSignatory = ({
         />
         <GSTTextField
           id="signatoryEmail"
+          autoComplete="off"
+          data-lpignore="true"
+          data-1p-ignore="true"
           label="Signatory Email"
           type="email"
           inputMode="email"

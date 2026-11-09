@@ -71,6 +71,7 @@ export const routePaths = {
   loansProjectFinance: '/loans/project-finance',
   loansStatus: (id = ':id') => `/loans/status/${id}`,
   insurance: '/insurance',
+  projects: '/projects',
   incorporation: {
     root: '/incorporation',
     selectType: '/incorporation/select-type',

@@ -2,12 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useAuthStore } from "@store/index";
 import { authStorage } from "@core/auth";
 import { StepActionBar } from "@shared/components";
-import { fetchBankDetailsByIfsc } from "@shared/services";
 import {
   validatePan,
   validateMobileNumber,
-  validateIfsc,
-  validateBankAccNumber,
   validateName,
   validateEmail,
 } from "@shared/utils/validationUtils";
@@ -27,7 +24,15 @@ import { getResolvedProfile } from "./tdsCustomerIncome.helpers";
 import { TdsPersonalDetailsCard } from "./TdsPersonalDetailsCard";
 import { TdsBankDetailsCard } from "./TdsBankDetailsCard";
 import { TdsBusinessDetailsCard } from "./TdsBusinessDetailsCard";
-import { getBusinessDetailsErrors, isBusinessDetailsValid } from "./tdsBusinessValidation";
+import {
+  getBusinessDetailsErrors,
+  isBusinessDetailsValid,
+  validateBusinessField,
+  validateIfscCode,
+  validateAccountNumber,
+  validateConfirmAccountNumber,
+  validateAccountHolder,
+} from "./tdsBusinessValidation";
 import "./TdsRefundCustomerIncome.css";
 import "./TdsRefundCustomerIncome.part2.css";
 import "./TdsRefundFieldError.css";
@@ -77,15 +82,18 @@ export const TdsRefundCustomerIncome: React.FC<
   const [isEditingPersonal, setIsEditingPersonal] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [isFetchingIfsc, setIsFetchingIfsc] = useState(false);
   const [bankDetails, setBankDetails] = useState<TdsBankDetails>(
     initialBankDetails || { ...EMPTY_BANK },
   );
   const [businessDetails, setBusinessDetails] = useState<TdsBusinessDetails>(
     initialBusinessDetails || { ...EMPTY_BUSINESS },
   );
-  // Kept apart from fieldErrors: business PAN / mobile would otherwise share keys with the personal ones
   const [businessErrors, setBusinessErrors] = useState<Record<string, string>>({});
+
+  // Touch tracking to know when a field has been visited or interacted with
+  const [businessTouched, setBusinessTouched] = useState<Record<string, boolean>>({});
+  const [bankTouched, setBankTouched] = useState<Record<string, boolean>>({});
+  const [personalTouched, setPersonalTouched] = useState<Record<string, boolean>>({});
 
   // Auto-fetch and sync personal details if authUser is loaded or updated
   useEffect(() => {
@@ -137,15 +145,72 @@ export const TdsRefundCustomerIncome: React.FC<
     onBankChange,
   ]);
 
+  /* ------------------- Personal Details Validation ------------------- */
+  const validatePersonalField = (field: string, currentProfile: TdsTaxpayerProfile): string | null => {
+    switch (field) {
+      case 'fullName':
+        if (!currentProfile.fullName?.trim()) return 'Name is required';
+        return validateName(currentProfile.fullName);
+      case 'pan':
+        if (!currentProfile.pan?.trim()) return 'PAN is required';
+        return validatePan(currentProfile.pan);
+      case 'mobile':
+        if (!currentProfile.mobile?.trim()) return null;
+        return validateMobileNumber(currentProfile.mobile.replace(/\D/g, '').replace(/^91/, ''));
+      case 'aadhaar':
+        if (!currentProfile.aadhaar?.trim()) return null;
+        return currentProfile.aadhaar.replace(/\D/g, '').length === 12 ? null : 'Enter a valid 12-digit Aadhaar number';
+      case 'email':
+        if (!currentProfile.email?.trim()) return null;
+        return validateEmail(currentProfile.email);
+      default:
+        return null;
+    }
+  };
+
+  const handlePersonalBlur = (field: string) => {
+    setPersonalTouched((prev) => ({ ...prev, [field]: true }));
+    const err = validatePersonalField(field, profile);
+    setFieldErrors((prev) => {
+      const next = { ...prev };
+      if (err) next[field] = err;
+      else delete next[field];
+      return next;
+    });
+  };
+
   const handleProfileChange = (updated: Partial<TdsTaxpayerProfile>) => {
     if (error) setError(null);
     const next = { ...profile, ...updated };
     setProfile(next);
     onProfileChange?.(next);
+
     const changedKey = Object.keys(updated)[0];
-    if (changedKey && fieldErrors[changedKey]) {
-      setFieldErrors((prev) => ({ ...prev, [changedKey]: "" }));
+    if (changedKey) {
+      const isTouched = personalTouched[changedKey];
+      const hasExistingError = Boolean(fieldErrors[changedKey]);
+      if (isTouched || hasExistingError) {
+        const err = validatePersonalField(changedKey, next);
+        setFieldErrors((prev) => {
+          const nextErrs = { ...prev };
+          if (err) nextErrs[changedKey] = err;
+          else delete nextErrs[changedKey];
+          return nextErrs;
+        });
+      }
     }
+  };
+
+  /* ------------------- Business Details Validation ------------------- */
+  const handleBusinessBlur = (field: keyof TdsBusinessDetails) => {
+    setBusinessTouched((prev) => ({ ...prev, [field]: true }));
+    const err = validateBusinessField(field, businessDetails);
+    setBusinessErrors((prev) => {
+      const next = { ...prev };
+      if (err) next[field] = err;
+      else delete next[field];
+      return next;
+    });
   };
 
   const handleBusinessChange = (updated: Partial<TdsBusinessDetails>) => {
@@ -153,10 +218,63 @@ export const TdsRefundCustomerIncome: React.FC<
     const next = { ...businessDetails, ...updated };
     setBusinessDetails(next);
     onBusinessChange?.(next);
-    const changedKey = Object.keys(updated)[0];
-    if (changedKey && businessErrors[changedKey]) {
-      setBusinessErrors((prev) => ({ ...prev, [changedKey]: "" }));
+
+    const changedField = Object.keys(updated)[0] as keyof TdsBusinessDetails | undefined;
+    if (changedField) {
+      const val = (next[changedField] as string) || '';
+      const isTouched = businessTouched[changedField];
+      const hasExistingError = Boolean(businessErrors[changedField]);
+
+      let shouldValidateLive = isTouched || hasExistingError;
+
+      // Key milestone typing triggers:
+      if (changedField === 'pan' && val.length === 10) shouldValidateLive = true;
+      if (changedField === 'aadhaar' && val.replace(/\D/g, '').length === 12) shouldValidateLive = true;
+      if (changedField === 'mobile' && val.replace(/\D/g, '').length === 10) shouldValidateLive = true;
+
+      if (shouldValidateLive) {
+        const err = validateBusinessField(changedField, next);
+        setBusinessErrors((prev) => {
+          const updatedErrs = { ...prev };
+          if (err) updatedErrs[changedField] = err;
+          else delete updatedErrs[changedField];
+          return updatedErrs;
+        });
+      }
     }
+  };
+
+  /* ------------------- Bank Details Validation ------------------- */
+  const validateBankField = (field: string, currentBank: TdsBankDetails): string | null => {
+    switch (field) {
+      case 'accountHolder':
+        return validateAccountHolder(currentBank.accountHolder);
+      case 'accountNumber':
+        return validateAccountNumber(currentBank.accountNumber);
+      case 'confirmAccountNumber':
+        return validateConfirmAccountNumber(currentBank.confirmAccountNumber, currentBank.accountNumber);
+      case 'ifsc':
+        return validateIfscCode(currentBank.ifsc);
+      default:
+        return null;
+    }
+  };
+
+  const handleBankBlur = (field: string) => {
+    setBankTouched((prev) => ({ ...prev, [field]: true }));
+    const err = validateBankField(field, bankDetails);
+    setFieldErrors((prev) => {
+      const next = { ...prev };
+      if (err) next[field] = err;
+      else delete next[field];
+
+      if (field === 'accountNumber' && bankDetails.confirmAccountNumber) {
+        const confirmErr = validateConfirmAccountNumber(bankDetails.confirmAccountNumber, bankDetails.accountNumber);
+        if (confirmErr) next.confirmAccountNumber = confirmErr;
+        else delete next.confirmAccountNumber;
+      }
+      return next;
+    });
   };
 
   const handleBankChange = (updated: Partial<TdsBankDetails>) => {
@@ -164,44 +282,77 @@ export const TdsRefundCustomerIncome: React.FC<
     const next = { ...bankDetails, ...updated };
     setBankDetails(next);
     onBankChange?.(next);
-    const changedKey = Object.keys(updated)[0];
-    if (changedKey && fieldErrors[changedKey]) {
-      setFieldErrors((prev) => ({ ...prev, [changedKey]: "" }));
-    }
-  };
 
-  const handleIfscChange = async (rawVal: string) => {
-    try {
-      const formatted = rawVal
-        .toUpperCase()
-        .replace(/[^A-Z0-9]/g, "")
-        .slice(0, 11);
-      handleBankChange({ ifsc: formatted });
-      if (formatted.length === 11) {
-        setIsFetchingIfsc(true);
-        try {
-          const match = await fetchBankDetailsByIfsc(formatted, { usePublicDirectory: true });
-          if (match)
-            handleBankChange({
-              ifsc: formatted,
-              bankName: match.bankName,
-              branch: match.branch,
-            });
-        } finally {
-          setIsFetchingIfsc(false);
+    const changedField = Object.keys(updated)[0];
+    if (changedField) {
+      const isTouched = bankTouched[changedField];
+      const hasExistingError = Boolean(fieldErrors[changedField]);
+      let shouldValidateLive = isTouched || hasExistingError;
+
+      if (changedField === 'confirmAccountNumber') {
+        const val = (next.confirmAccountNumber || '').trim();
+        const acc = next.accountNumber.trim();
+        if (val.length === acc.length && val.length >= 9) {
+          shouldValidateLive = true;
         }
-      } else if (formatted === "") {
-        handleBankChange({ ifsc: "", bankName: "", branch: "" });
       }
-    } catch {
-      setIsFetchingIfsc(false);
+
+      if (shouldValidateLive) {
+        const err = validateBankField(changedField, next);
+        setFieldErrors((prev) => {
+          const updatedErrs = { ...prev };
+          if (err) updatedErrs[changedField] = err;
+          else delete updatedErrs[changedField];
+          return updatedErrs;
+        });
+      }
     }
   };
 
+  const handleIfscChange = (rawVal: string) => {
+    if (error) setError(null);
+    const formatted = rawVal
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(0, 11);
+
+    const next = { ...bankDetails, ifsc: formatted };
+    setBankDetails(next);
+    onBankChange?.(next);
+
+    const isTouched = bankTouched.ifsc;
+    const hasExistingError = Boolean(fieldErrors.ifsc);
+
+    if (formatted.length === 11) {
+      const err = validateIfscCode(formatted);
+      setFieldErrors((prev) => {
+        const updatedErrs = { ...prev };
+        if (err) updatedErrs.ifsc = err;
+        else delete updatedErrs.ifsc;
+        return updatedErrs;
+      });
+    } else if (isTouched || hasExistingError) {
+      const err = formatted ? "IFSC code must be exactly 11 characters" : "IFSC code is required";
+      setFieldErrors((prev) => {
+        const updatedErrs = { ...prev };
+        if (err) updatedErrs.ifsc = err;
+        else delete updatedErrs.ifsc;
+        return updatedErrs;
+      });
+    }
+  };
+
+  /* ------------------- Continue / Submission ------------------- */
   const handleContinue = (e?: React.FormEvent) => {
     try {
       if (e) e.preventDefault();
       setError(null);
+
+      // Mark all fields touched
+      setBusinessTouched({ legalName: true, pan: true, aadhaar: true, mobile: true });
+      setBankTouched({ accountHolder: true, accountNumber: true, confirmAccountNumber: true, ifsc: true });
+      setPersonalTouched({ fullName: true, pan: true });
+
       const errs: Record<string, string> = {};
 
       if (!profile.fullName?.trim()) {
@@ -239,47 +390,30 @@ export const TdsRefundCustomerIncome: React.FC<
         if (err) errs.email = err;
       }
 
-      if (!bankDetails.accountHolder?.trim()) {
-        errs.accountHolder = "Account holder name is required";
-      }
+      const holderErr = validateAccountHolder(bankDetails.accountHolder);
+      if (holderErr) errs.accountHolder = holderErr;
 
-      const acct = bankDetails.accountNumber?.trim() || "";
-      const confirmAcct = bankDetails.confirmAccountNumber?.trim() || "";
-      const ifsc = bankDetails.ifsc?.trim() || "";
+      const acctErr = validateAccountNumber(bankDetails.accountNumber);
+      if (acctErr) errs.accountNumber = acctErr;
 
-      if (!acct) {
-        errs.accountNumber = "Bank account number is required";
-      } else {
-        const err = validateBankAccNumber(acct);
-        if (err) errs.accountNumber = err;
-      }
+      const confirmErr = validateConfirmAccountNumber(bankDetails.confirmAccountNumber, bankDetails.accountNumber);
+      if (confirmErr) errs.confirmAccountNumber = confirmErr;
 
-      if (!confirmAcct) {
-        errs.confirmAccountNumber = "Bank account number is required";
-      } else if (acct !== confirmAcct) {
-        errs.confirmAccountNumber = "Account numbers do not match";
-      }
-
-      if (!ifsc) {
-        errs.ifsc = "IFSC code is required";
-      } else {
-        const err = validateIfsc(ifsc);
-        if (err) errs.ifsc = err;
-      }
+      const ifscErr = validateIfscCode(bankDetails.ifsc);
+      if (ifscErr) errs.ifsc = ifscErr;
 
       const bizErrs = getBusinessDetailsErrors(businessDetails);
       setBusinessErrors(bizErrs);
+      setFieldErrors(errs);
 
       if (Object.keys(errs).length > 0 || Object.keys(bizErrs).length > 0) {
-        setFieldErrors(errs);
-        setError(Object.values(errs)[0] || Object.values(bizErrs)[0]);
+        setError(Object.values(bizErrs)[0] || Object.values(errs)[0]);
         if (errs.fullName || errs.pan) {
           setIsEditingPersonal(true);
         }
         return;
       }
 
-      setFieldErrors({});
       onNext();
     } catch {
       onNext();
@@ -291,17 +425,19 @@ export const TdsRefundCustomerIncome: React.FC<
     profile.pan?.trim() &&
     profile.pan.trim().length === 10,
   );
+  const isBankValid = Boolean(
+    bankDetails.accountHolder?.trim() &&
+    bankDetails.accountNumber?.trim() &&
+    bankDetails.accountNumber.trim().length >= 9 &&
+    bankDetails.accountNumber.trim().length <= 18 &&
+    bankDetails.confirmAccountNumber?.trim() &&
+    bankDetails.accountNumber.trim() === bankDetails.confirmAccountNumber.trim() &&
+    validateIfscCode(bankDetails.ifsc) === null
+  );
   const isFormValid = Boolean(
     isProfileValid &&
     isBusinessDetailsValid(businessDetails) &&
-    bankDetails.accountHolder?.trim() &&
-    bankDetails.accountNumber?.trim() &&
-    bankDetails.accountNumber.trim().length >= 10 &&
-    bankDetails.accountNumber.trim().length <= 15 &&
-    bankDetails.confirmAccountNumber?.trim() &&
-    bankDetails.accountNumber.trim() ===
-      bankDetails.confirmAccountNumber.trim() &&
-    bankDetails.ifsc?.trim().length === 11,
+    isBankValid
   );
 
   const handleContinueRef = React.useRef(handleContinue);
@@ -332,20 +468,22 @@ export const TdsRefundCustomerIncome: React.FC<
             isEditingPersonal={isEditingPersonal}
             setIsEditingPersonal={setIsEditingPersonal}
             handleProfileChange={handleProfileChange}
+            onBlur={handlePersonalBlur}
           />
 
           <TdsBusinessDetailsCard
             businessDetails={businessDetails}
             fieldErrors={businessErrors}
             handleBusinessChange={handleBusinessChange}
+            onBlur={handleBusinessBlur}
           />
 
           <TdsBankDetailsCard
             bankDetails={bankDetails}
             fieldErrors={fieldErrors}
-            isFetchingIfsc={isFetchingIfsc}
             handleBankChange={handleBankChange}
             handleIfscChange={handleIfscChange}
+            onBlur={handleBankBlur}
           />
         </form>
       </div>

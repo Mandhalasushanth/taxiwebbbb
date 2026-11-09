@@ -40,6 +40,12 @@ describe('bankService - IFSC Auto-Fetch', () => {
     expect(lookupSampleBankByIfsc('')).toBeNull()
   })
 
+  it('returns null for invalid IFSC codes where 5th char is not 0 (e.g. HJYTRAQWERT)', () => {
+    expect(lookupSampleBankByIfsc('HJYTRAQWERT')).toBeNull()
+    expect(lookupSampleBankByIfsc('SBIN1001234')).toBeNull()
+    expect(lookupSampleBankByIfsc('12340001234')).toBeNull()
+  })
+
   it('fetchBankDetailsByIfsc resolves asynchronously', async () => {
     const result = await fetchBankDetailsByIfsc('HDFC0000412')
     expect(result).not.toBeNull()

@@ -1,6 +1,12 @@
 import React from 'react'
 import { FieldInfoTooltip } from '@shared/components'
-import type { SalaryDetails, HousePropertyDetails } from '../itrFiling.constants'
+import {
+  type SalaryDetails,
+  type HousePropertyDetails,
+  sanitizeEmployerName,
+  validateEmployerName,
+  sanitizeIncomeAmount,
+} from '../itrFiling.constants'
 import './ItrIncomeSourceCards.css'
 
 /* ==========================================================================
@@ -10,16 +16,24 @@ export interface ItrSalaryIncomeCardProps {
   salaryDetails: SalaryDetails
   onSalaryDetailsChange: (details: SalaryDetails) => void
   onToggle: () => void
+  showErrors?: boolean
 }
 
 export const ItrSalaryIncomeCard: React.FC<ItrSalaryIncomeCardProps> = ({
   salaryDetails,
   onSalaryDetailsChange,
   onToggle,
+  showErrors = false,
 }) => {
   const handleSalaryChange = (field: keyof SalaryDetails, val: string) => {
     onSalaryDetailsChange({ ...salaryDetails, [field]: val })
   }
+
+  const employerNameError = showErrors ? validateEmployerName(salaryDetails.employerName) : null
+  const grossSalaryError = showErrors && !salaryDetails.grossSalary?.trim() ? 'Gross Salary is required' : null
+  const exemptAllowancesError =
+    showErrors && !salaryDetails.exemptAllowances?.trim() ? 'Exempt Allowances is required' : null
+  const tdsDeductedError = showErrors && !salaryDetails.tdsDeducted?.trim() ? 'TDS Deducted is required' : null
 
   return (
     <div className="itr-salary-card" id="itr-salary-income" data-section="salary">
@@ -62,11 +76,13 @@ export const ItrSalaryIncomeCard: React.FC<ItrSalaryIncomeCardProps> = ({
         <input
           id="salary-employer-name"
           type="text"
-          className="itr-input-text"
-          placeholder="Enter employer name"
+          maxLength={75}
+          className={`itr-input-text ${employerNameError ? 'itr-input-text--error' : ''}`}
+          placeholder="Enter employer legal name (letters and . only)"
           value={salaryDetails.employerName}
-          onChange={(e) => handleSalaryChange('employerName', e.target.value)}
+          onChange={(e) => handleSalaryChange('employerName', sanitizeEmployerName(e.target.value))}
         />
+        {employerNameError && <span className="itr-field-error-text">{employerNameError}</span>}
       </div>
 
       <div className="itr-grid-2col">
@@ -74,37 +90,41 @@ export const ItrSalaryIncomeCard: React.FC<ItrSalaryIncomeCardProps> = ({
           <label className="itr-form-label" htmlFor="salary-gross-amount">
             Gross Salary (Annual) <span className="itr-required-star">*</span>
           </label>
-          <div className="itr-input-currency-wrap">
+          <div className={`itr-input-currency-wrap ${grossSalaryError ? 'itr-input-currency-wrap--error' : ''}`}>
             <span className="itr-currency-prefix">₹</span>
             <input
               id="salary-gross-amount"
               type="text"
               inputMode="numeric"
+              pattern="[1-9][0-9]*"
               maxLength={14}
               className="itr-input-currency"
               placeholder="Enter gross salary"
               value={salaryDetails.grossSalary}
-              onChange={(e) => handleSalaryChange('grossSalary', e.target.value.replace(/[^0-9,]/g, ''))}
+              onChange={(e) => handleSalaryChange('grossSalary', sanitizeIncomeAmount(e.target.value))}
             />
           </div>
+          {grossSalaryError && <span className="itr-field-error-text">{grossSalaryError}</span>}
         </div>
         <div className="itr-form-group">
           <label className="itr-form-label" htmlFor="salary-exempt-amount">
             Exempt Allowances <span className="itr-required-star">*</span>
           </label>
-          <div className="itr-input-currency-wrap">
+          <div className={`itr-input-currency-wrap ${exemptAllowancesError ? 'itr-input-currency-wrap--error' : ''}`}>
             <span className="itr-currency-prefix">₹</span>
             <input
               id="salary-exempt-amount"
               type="text"
               inputMode="numeric"
+              pattern="[1-9][0-9]*"
               maxLength={14}
               className="itr-input-currency"
               placeholder="Enter exempt allowances"
               value={salaryDetails.exemptAllowances}
-              onChange={(e) => handleSalaryChange('exemptAllowances', e.target.value.replace(/[^0-9,]/g, ''))}
+              onChange={(e) => handleSalaryChange('exemptAllowances', sanitizeIncomeAmount(e.target.value))}
             />
           </div>
+          {exemptAllowancesError && <span className="itr-field-error-text">{exemptAllowancesError}</span>}
         </div>
       </div>
 
@@ -112,19 +132,21 @@ export const ItrSalaryIncomeCard: React.FC<ItrSalaryIncomeCardProps> = ({
         <label className="itr-form-label" htmlFor="salary-tds-amount">
           TDS Deducted by Employer <span className="itr-required-star">*</span>
         </label>
-        <div className="itr-input-currency-wrap">
+        <div className={`itr-input-currency-wrap ${tdsDeductedError ? 'itr-input-currency-wrap--error' : ''}`}>
           <span className="itr-currency-prefix">₹</span>
           <input
             id="salary-tds-amount"
             type="text"
             inputMode="numeric"
+            pattern="[1-9][0-9]*"
             maxLength={14}
             className="itr-input-currency"
             placeholder="Enter TDS deducted"
             value={salaryDetails.tdsDeducted}
-            onChange={(e) => handleSalaryChange('tdsDeducted', e.target.value.replace(/[^0-9,]/g, ''))}
+            onChange={(e) => handleSalaryChange('tdsDeducted', sanitizeIncomeAmount(e.target.value))}
           />
         </div>
+        {tdsDeductedError && <span className="itr-field-error-text">{tdsDeductedError}</span>}
       </div>
     </div>
   )
@@ -137,16 +159,31 @@ export interface ItrHousePropertyCardProps {
   housePropertyDetails: HousePropertyDetails
   onHousePropertyDetailsChange: (details: HousePropertyDetails) => void
   onToggle: () => void
+  showErrors?: boolean
 }
 
 export const ItrHousePropertyCard: React.FC<ItrHousePropertyCardProps> = ({
   housePropertyDetails,
   onHousePropertyDetailsChange,
   onToggle,
+  showErrors = false,
 }) => {
   const handleHousePropertyChange = (field: keyof HousePropertyDetails, val: string) => {
     onHousePropertyDetailsChange({ ...housePropertyDetails, [field]: val })
   }
+
+  const rentError =
+    showErrors && housePropertyDetails.propertyType === 'let_out' && !housePropertyDetails.annualRentReceived?.trim()
+      ? 'Annual Rent Received is required'
+      : null
+  const municipalTaxError =
+    showErrors && housePropertyDetails.propertyType === 'let_out' && !housePropertyDetails.municipalTaxPaid?.trim()
+      ? 'Municipal Tax Paid is required'
+      : null
+  const homeLoanError =
+    showErrors && !housePropertyDetails.homeLoanInterest?.trim()
+      ? 'Home Loan Interest Paid is required'
+      : null
 
   return (
     <div className="itr-salary-card" id="itr-house-property" data-section="house_property">
@@ -212,37 +249,41 @@ export const ItrHousePropertyCard: React.FC<ItrHousePropertyCardProps> = ({
             <label className="itr-form-label" htmlFor="hp-rent">
               Annual Rent Received <span className="itr-required-star">*</span>
             </label>
-            <div className="itr-input-currency-wrap">
+            <div className={`itr-input-currency-wrap ${rentError ? 'itr-input-currency-wrap--error' : ''}`}>
               <span className="itr-currency-prefix">₹</span>
               <input
                 id="hp-rent"
                 type="text"
                 inputMode="numeric"
+                pattern="[1-9][0-9]*"
                 maxLength={14}
                 className="itr-input-currency"
                 placeholder="Enter annual rent received"
                 value={housePropertyDetails.annualRentReceived}
-                onChange={(e) => handleHousePropertyChange('annualRentReceived', e.target.value.replace(/[^0-9,]/g, ''))}
+                onChange={(e) => handleHousePropertyChange('annualRentReceived', sanitizeIncomeAmount(e.target.value))}
               />
             </div>
+            {rentError && <span className="itr-field-error-text">{rentError}</span>}
           </div>
           <div className="itr-form-group">
             <label className="itr-form-label" htmlFor="hp-tax">
               Municipal Tax Paid <span className="itr-required-star">*</span>
             </label>
-            <div className="itr-input-currency-wrap">
+            <div className={`itr-input-currency-wrap ${municipalTaxError ? 'itr-input-currency-wrap--error' : ''}`}>
               <span className="itr-currency-prefix">₹</span>
               <input
                 id="hp-tax"
                 type="text"
                 inputMode="numeric"
+                pattern="[1-9][0-9]*"
                 maxLength={14}
                 className="itr-input-currency"
                 placeholder="Enter municipal tax paid"
                 value={housePropertyDetails.municipalTaxPaid}
-                onChange={(e) => handleHousePropertyChange('municipalTaxPaid', e.target.value.replace(/[^0-9,]/g, ''))}
+                onChange={(e) => handleHousePropertyChange('municipalTaxPaid', sanitizeIncomeAmount(e.target.value))}
               />
             </div>
+            {municipalTaxError && <span className="itr-field-error-text">{municipalTaxError}</span>}
           </div>
         </div>
       )}
@@ -252,19 +293,21 @@ export const ItrHousePropertyCard: React.FC<ItrHousePropertyCardProps> = ({
         <label className="itr-form-label" htmlFor="hp-loan-interest">
           Home Loan Interest Paid (Sec 24b) <span className="itr-required-star">*</span>
         </label>
-        <div className="itr-input-currency-wrap">
+        <div className={`itr-input-currency-wrap ${homeLoanError ? 'itr-input-currency-wrap--error' : ''}`}>
           <span className="itr-currency-prefix">₹</span>
           <input
             id="hp-loan-interest"
             type="text"
             inputMode="numeric"
+            pattern="[1-9][0-9]*"
             maxLength={14}
             className="itr-input-currency"
             placeholder={housePropertyDetails.propertyType === 'self_occupied' ? 'Max ₹2,00,000 for self-occupied' : 'Enter home loan interest'}
             value={housePropertyDetails.homeLoanInterest}
-            onChange={(e) => handleHousePropertyChange('homeLoanInterest', e.target.value.replace(/[^0-9,]/g, ''))}
+            onChange={(e) => handleHousePropertyChange('homeLoanInterest', sanitizeIncomeAmount(e.target.value))}
           />
         </div>
+        {homeLoanError && <span className="itr-field-error-text">{homeLoanError}</span>}
       </div>
     </div>
   )

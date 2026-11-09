@@ -66,6 +66,9 @@ export const validateName = (
   if (/\.{2,}/.test(raw)) {
     return label ? `${label} should not contain consecutive dots` : VALIDATION_MESSAGES.name
   }
+  if (/([.'-])\1+/.test(raw) || /[.'-]\s*[.'-]+/.test(raw)) {
+    return label ? `${label} must be a valid name (no consecutive special characters)` : VALIDATION_MESSAGES.name
+  }
 
   // Reject numbers
   if (/[0-9]/.test(raw)) {
@@ -273,7 +276,7 @@ export const validateAddress = (
   }
 
   // Reject consecutive duplicate punctuation e.g. ,, or .. or @@ or // or ** or !!
-  if (/([,./#'!@$%^&*-])\1+/.test(raw) || /[,./#'-]{2,}/.test(raw)) {
+  if (/([,./#'!@$%^&*-])\1+/.test(raw) || /[,./#'-]{2,}/.test(raw) || /[,./#'-]\s*[,./#'-]+/.test(raw)) {
     return opts.label ? `${opts.label} contains invalid special characters` : VALIDATION_MESSAGES.address
   }
 
@@ -332,8 +335,8 @@ export const validateCity = (
   }
 
   // Reject consecutive spaces, dots, or hyphens
-  if (/\s{2,}/.test(raw) || /\.{2,}/.test(raw) || /-{2,}/.test(raw)) {
-    return VALIDATION_MESSAGES.city
+  if (/\s{2,}/.test(raw) || /\.{2,}/.test(raw) || /-{2,}/.test(raw) || /([\-.'])\1+/.test(raw) || /[\-.']\s*[\-.']+/.test(raw)) {
+    return opts.label ? `${opts.label} cannot contain consecutive dots or hyphens` : VALIDATION_MESSAGES.city
   }
 
   // Reject numbers or emojis/unsupported symbols

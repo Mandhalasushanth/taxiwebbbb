@@ -98,6 +98,79 @@ describe('ITR Review Section Edit Redirection Across Services', () => {
       fireEvent.click(editDocsBtn)
       expect(onEditStep).toHaveBeenCalledWith(3, 'itr-documents-checklist')
     })
+    it('shows Before we continue attention banner when mandatory documents are missing for selected sources and redirects to document checklist on Upload click', () => {
+      const onEditStep = vi.fn()
+      const onSubmit = vi.fn()
+
+      const { rerender } = render(
+        <ItrReviewSubmissionView
+          onBack={vi.fn()}
+          onEditStep={onEditStep}
+          onSubmit={onSubmit}
+          assessmentYear="AY 2026-27"
+          residentialStatus="resident"
+          filingType="original"
+          salaryDetails={{ employerName: '', grossSalary: '', exemptAllowances: '', tdsDeducted: '' }}
+          businessDetails={{
+            grossTurnover: '80000000',
+            declaredNetProfit: '2800000',
+            reportingMethod: '44ADA',
+          }}
+          selectedSources={['business']}
+          uploadedDocs={{}}
+        />
+      )
+
+      // Attention banner should be visible because business source requires mandatory business_turnover
+      expect(screen.getByTestId('itr-review-attention-banner')).toBeDefined()
+      expect(screen.getByText(/Before we continue: 1 items require your attention/i)).toBeDefined()
+      expect(screen.getByText(/1 required documents missing/i)).toBeDefined()
+
+      // Submit button should be disabled
+      const submitBtn = screen.getByRole('button', { name: /Submit for CA Review/i })
+      expect((submitBtn as HTMLButtonElement).disabled).toBe(true)
+
+      // Even if declared, submit cannot proceed while mandatory documents are missing
+      const checkbox = screen.getByRole('checkbox')
+      fireEvent.click(checkbox)
+      fireEvent.click(submitBtn)
+      expect(onSubmit).not.toHaveBeenCalled()
+
+      // Clicking Upload button redirects to step 3 (Document Checklist)
+      const uploadBtn = screen.getByTestId('review-upload-required-docs-btn')
+      fireEvent.click(uploadBtn)
+      expect(onEditStep).toHaveBeenCalledWith(3, 'itr-documents-checklist')
+
+      // When the mandatory document is uploaded, attention banner disappears
+      rerender(
+        <ItrReviewSubmissionView
+          onBack={vi.fn()}
+          onEditStep={onEditStep}
+          onSubmit={onSubmit}
+          assessmentYear="AY 2026-27"
+          residentialStatus="resident"
+          filingType="original"
+          salaryDetails={{ employerName: '', grossSalary: '', exemptAllowances: '', tdsDeducted: '' }}
+          businessDetails={{
+            grossTurnover: '80000000',
+            declaredNetProfit: '2800000',
+            reportingMethod: '44ADA',
+          }}
+          selectedSources={['business']}
+          uploadedDocs={{
+            business_turnover: {
+              id: 'business_turnover',
+              fileName: 'Turnover_Statement.pdf',
+              fileSize: '1.2 MB',
+              uploadedAt: '10:00 AM',
+            },
+          }}
+        />
+      )
+
+      expect(screen.queryByTestId('itr-review-attention-banner')).toBeNull()
+    })
+
   })
 
   describe('TDS Refund Review Section Redirection', () => {

@@ -27,6 +27,9 @@ export interface ApplicationDocumentItem {
   date?: string
   url?: string
   file?: File | Blob | null
+  status?: 'uploaded' | 'pending' | 'requested' | 'rejected'
+  rejectionReason?: string
+  requestMessage?: string
 }
 
 export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ customId }) => {
@@ -239,9 +242,88 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
           date: matchedRawDoc?.date || (d as any).date || data.appliedDate || '3 Nov 2026',
           url: matchedRawDoc?.url || (d as any).url || (d as any).fileHash,
           file: resolvedFile,
+          status: matchedRawDoc?.status || d.status || 'uploaded',
+          rejectionReason: matchedRawDoc?.rejectionReason || (d as any).rejectionReason,
+          requestMessage: matchedRawDoc?.requestMessage || (d as any).requestMessage,
         }
       })
     : []
+
+  // Include any extra documents explicitly requested by CA / manager if not already in list
+  const extraRequested = (
+    ((data.rawApplication as any)?.requestedDocuments ||
+      (data.rawApplication as any)?.caRequestedDocuments) as any[] | undefined
+  )
+  if (Array.isArray(extraRequested)) {
+    extraRequested.forEach((rd, idx) => {
+      const alreadyPresent = displayDocuments.some(
+        (dd) => dd.id === rd.id || dd.name.toLowerCase() === (rd.name || '').toLowerCase()
+      )
+      if (!alreadyPresent) {
+        displayDocuments.unshift({
+          id: rd.id || `req-doc-${idx + 1}`,
+          name: rd.name || 'Requested Document',
+          meta: rd.reason || rd.meta || 'Requested by CA · Pending submission',
+          date: rd.date || data.appliedDate,
+          status: (rd.status as any) || 'requested',
+          rejectionReason: rd.reason || rd.rejectionReason,
+          requestMessage: rd.message || rd.requestMessage,
+        })
+      }
+    })
+  }
+
+  const handleUploadRequestedDoc = (doc: ApplicationDocumentItem, file: File) => {
+    const fileKey = doc.id || `doc-${Date.now()}`
+    gstUploadedFiles.set(fileKey, file)
+
+    const rawApps = userStorage.getUserApplications()
+    const appIndex = rawApps.findIndex((a) => a.id === data.appId || a.code === data.appId)
+    if (appIndex >= 0) {
+      const app = rawApps[appIndex]
+      const docs = Array.isArray((app as any).documents) ? [...(app as any).documents] : []
+      const docIdx = docs.findIndex(
+        (d: any) => d.id === doc.id || d.name?.toLowerCase() === doc.name.toLowerCase()
+      )
+      const newDocEntry = {
+        id: fileKey,
+        name: doc.name,
+        status: 'uploaded' as const,
+        fileName: file.name,
+        meta: `${(file.size / (1024 * 1024)).toFixed(2)} MB · Uploaded`,
+        date: new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
+      }
+      if (docIdx >= 0) {
+        docs[docIdx] = { ...docs[docIdx], ...newDocEntry }
+      } else {
+        docs.push(newDocEntry)
+      }
+
+      let reqDocs = (app as any).requestedDocuments
+      if (Array.isArray(reqDocs)) {
+        reqDocs = reqDocs.filter(
+          (r: any) => r.id !== doc.id && r.name?.toLowerCase() !== doc.name.toLowerCase()
+        )
+      }
+      let caReqDocs = (app as any).caRequestedDocuments
+      if (Array.isArray(caReqDocs)) {
+        caReqDocs = caReqDocs.filter(
+          (r: any) => r.id !== doc.id && r.name?.toLowerCase() !== doc.name.toLowerCase()
+        )
+      }
+
+      const updatedApp = {
+        ...app,
+        documents: docs,
+        requestedDocuments: reqDocs,
+        caRequestedDocuments: caReqDocs,
+        pendingDocumentsCount: Math.max(0, ((app as any).pendingDocumentsCount || 1) - 1),
+      }
+      userStorage.saveUserApplication(updatedApp)
+      setData(getApplicationTrackerData(appId))
+      pushToast(`Document "${doc.name}" uploaded successfully!`, 'success')
+    }
+  }
 
   const isAwaitingVerification =
     data.paymentSummary.paymentStatus === 'Awaiting Verification' ||
@@ -421,6 +503,7 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
                   fileUrl: doc.url,
                 })
               }}
+              onUploadDoc={handleUploadRequestedDoc}
             />
           )}
 

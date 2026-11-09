@@ -7,6 +7,8 @@
  * it will query the API and gracefully fallback to sample data.
  */
 
+import { isValidIfsc } from '../validations'
+
 export interface BankDetailsLookupResult {
   ifsc: string
   bankName: string
@@ -153,6 +155,9 @@ export function lookupSampleBankByIfsc(rawIfsc: string): BankDetailsLookupResult
   if (!rawIfsc) return null
   const ifsc = rawIfsc.trim().toUpperCase().replace(/[^A-Z0-9]/g, '')
   if (ifsc.length < 4) return null
+  if (!/^[A-Z]{4}/.test(ifsc)) return null
+  if (ifsc.length >= 5 && ifsc[4] !== '0') return null
+  if (ifsc.length === 11 && !isValidIfsc(ifsc)) return null
 
   // 1. Direct exact match in known sample dictionary
   if (SAMPLE_KNOWN_IFSC_MAP[ifsc]) {
@@ -194,7 +199,8 @@ export async function fetchBankDetailsByIfsc(
   options: BankLookupOptions = {},
 ): Promise<BankDetailsLookupResult | null> {
   const ifsc = rawIfsc.trim().toUpperCase().replace(/[^A-Z0-9]/g, '')
-  if (ifsc.length < 4) return null
+  if (ifsc.length < 4 || (ifsc.length >= 5 && ifsc[4] !== '0')) return null
+  if (ifsc.length === 11 && !isValidIfsc(ifsc)) return null
 
   // 1. Backend API, when one is configured
   const envApiUrl = import.meta.env.VITE_API_BASE_URL

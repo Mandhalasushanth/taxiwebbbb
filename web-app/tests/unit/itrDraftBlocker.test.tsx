@@ -133,7 +133,7 @@ describe('ITR Module - Save Draft Confirmations', () => {
       expect(screen.getAllByText('Salaried').length).toBeGreaterThan(0)
     })
 
-    it('prompts draft confirm modal on Category Selection Back when category is selected', () => {
+    it('category selection footer renders Start Application without a back button', () => {
       userStorage.deleteDraft('itr-filing')
       render(
         <MemoryRouter>
@@ -145,22 +145,10 @@ describe('ITR Module - Save Draft Confirmations', () => {
       const multiCard = screen.getByText('Multiple Sources')
       fireEvent.click(multiCard)
 
-      // Click Back button on category selection page
-      const backBtn = screen.getByRole('button', { name: /^back$/i })
-      fireEvent.click(backBtn)
-
-      // Draft modal should appear
-      expect(screen.getByText(/save application progress\?/i)).toBeDefined()
-      expect(screen.getByText(/save as draft & exit/i)).toBeDefined()
-
-      // Click Save as Draft & Exit
-      const saveDraftBtn = screen.getByText(/save as draft & exit/i)
-      fireEvent.click(saveDraftBtn)
-
-      const savedDraft = userStorage.getDraft('itr-filing')
-      expect(savedDraft).toBeDefined()
-      expect(savedDraft?.serviceId).toBe('itr-filing')
-      expect(savedDraft?.formData?.selectedCategoryId).toBe('multiple')
+      // Start application button should exist, but no back button beside it
+      const startBtn = screen.getByRole('button', { name: /start application/i })
+      expect(startBtn).toBeDefined()
+      expect(screen.queryByRole('button', { name: /^back$/i })).toBeNull()
     })
   })
 

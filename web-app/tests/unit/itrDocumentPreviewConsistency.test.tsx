@@ -248,4 +248,35 @@ describe('ITR Modules Document Preview Consistency', () => {
     expect(viewUploadedDocument({ id: 'missing-doc', title: 'Missing', fileName: 'Never_Uploaded.pdf' })).toBe(false)
     expect(window.open).not.toHaveBeenCalled()
   })
-})
+  it('ITR Documents Checklist: shows warning error down side when Continue is clicked without mandatory doc', async () => {
+    const onContinue = vi.fn()
+    render(
+      <MemoryRouter>
+        <ItrDocumentsChecklistView
+          uploadedDocs={{}}
+          selectedSources={['capital_gains']}
+          onUploadDoc={vi.fn()}
+          onRemoveDoc={vi.fn()}
+          onContinue={onContinue}
+        />
+      </MemoryRouter>
+    )
+
+    // Initially no error is shown
+    expect(screen.queryByText(/Please upload Capital Gains Statement/i)).toBeNull()
+
+    // Click Continue
+    const continueBtn = screen.getByTestId('step-continue-btn')
+    fireEvent.click(continueBtn)
+
+    // onContinue must not proceed
+    expect(onContinue).not.toHaveBeenCalled()
+
+    // Warning error is displayed down side of the mandatory document
+    expect(screen.getByText(/Please upload Capital Gains Statement \/ P&L to proceed/i)).toBeDefined()
+
+    // Card has error outline styling class
+    const card = screen.getByTestId('doc-card-capital_gains_statement')
+    expect(card.className).toContain('supporting-doc-item--error')
+  })
+});

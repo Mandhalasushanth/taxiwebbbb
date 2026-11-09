@@ -1,24 +1,23 @@
 import React from "react";
 import { Landmark } from "lucide-react";
 import { ConfirmAccountNumberInput } from "@shared/components";
-import { TdsIcons } from "@modules/itr/utils/tdsRefund.constants";
 import type { TdsBankDetails } from "@modules/itr/types/tdsRefund.types";
 
 interface TdsBankDetailsCardProps {
   bankDetails: TdsBankDetails;
   fieldErrors: Record<string, string>;
-  isFetchingIfsc: boolean;
   handleBankChange: (updated: Partial<TdsBankDetails>) => void;
-  handleIfscChange: (rawVal: string) => Promise<void>;
+  handleIfscChange: (rawVal: string) => void;
+  onBlur?: (field: string) => void;
 }
 
-/** Refund bank account: holder, account number (with confirmation) and IFSC lookup */
+/** Refund bank account: holder, account number (with confirmation) and manual bank/branch */
 export const TdsBankDetailsCard: React.FC<TdsBankDetailsCardProps> = ({
   bankDetails,
   fieldErrors,
-  isFetchingIfsc,
   handleBankChange,
   handleIfscChange,
+  onBlur,
 }) => (
   <div className="tds-card" id="tds-card-bank" data-section="tds-card-bank" data-testid="tds-card-bank">
     <div className="tds-card-header">
@@ -47,16 +46,22 @@ export const TdsBankDetailsCard: React.FC<TdsBankDetailsCardProps> = ({
           type="text"
           className={`tds-input ${fieldErrors.accountHolder ? "has-error" : ""}`}
           value={bankDetails.accountHolder}
-          onChange={(e) =>
-            handleBankChange({ accountHolder: e.target.value })
-          }
+          onChange={(e) => {
+            const cleaned = e.target.value
+              .replace(/[^A-Za-z .'-]/g, '')
+              .replace(/^[ .'-]+/g, '')
+              .replace(/\s{2,}/g, ' ')
+              .replace(/([.'-])\1+/g, '$1')
+              .replace(/[.'-]\s*[.'-]+/g, (m) => m[0])
+              .slice(0, 100)
+            handleBankChange({ accountHolder: cleaned })
+          }}
+          onBlur={() => onBlur?.('accountHolder')}
           placeholder="Enter account holder name"
           required
         />
         {fieldErrors.accountHolder && (
-          <span
-            className="tds-field-error"
-          >
+          <span className="tds-field-error">
             {fieldErrors.accountHolder}
           </span>
         )}
@@ -81,13 +86,12 @@ export const TdsBankDetailsCard: React.FC<TdsBankDetailsCardProps> = ({
                   .slice(0, 18),
               })
             }
+            onBlur={() => onBlur?.('accountNumber')}
             placeholder="Enter your bank account number"
             required
           />
           {fieldErrors.accountNumber && (
-            <span
-              className="tds-field-error"
-            >
+            <span className="tds-field-error">
               {fieldErrors.accountNumber}
             </span>
           )}
@@ -106,6 +110,7 @@ export const TdsBankDetailsCard: React.FC<TdsBankDetailsCardProps> = ({
             onChange={(val) =>
               handleBankChange({ confirmAccountNumber: val })
             }
+            onBlur={() => onBlur?.('confirmAccountNumber')}
             placeholder="Enter your bank account number"
             hasError={Boolean(fieldErrors.confirmAccountNumber)}
             error={fieldErrors.confirmAccountNumber}
@@ -124,20 +129,14 @@ export const TdsBankDetailsCard: React.FC<TdsBankDetailsCardProps> = ({
             className={`tds-input tds-input--upper ${fieldErrors.ifsc ? "has-error" : ""}`}
             value={bankDetails.ifsc}
             onChange={(e) => handleIfscChange(e.target.value)}
+            onBlur={() => onBlur?.('ifsc')}
             placeholder="Enter your IFSC code"
             maxLength={11}
             required
           />
           {fieldErrors.ifsc && (
-            <span
-              className="tds-field-error"
-            >
+            <span className="tds-field-error">
               {fieldErrors.ifsc}
-            </span>
-          )}
-          {isFetchingIfsc && (
-            <span className="tds-field-hint tds-field-hint--warning">
-              Fetching bank details...
             </span>
           )}
         </div>
@@ -150,9 +149,17 @@ export const TdsBankDetailsCard: React.FC<TdsBankDetailsCardProps> = ({
             type="text"
             className="tds-input"
             value={bankDetails.bankName}
-            onChange={(e) =>
-              handleBankChange({ bankName: e.target.value })
-            }
+            onChange={(e) => {
+              const cleaned = e.target.value
+                .replace(/[^A-Za-z\s.&'-]/g, '')
+                .replace(/^[ \s.&'-]+/g, '')
+                .replace(/\s{2,}/g, ' ')
+                .replace(/([.&'-])\1+/g, '$1')
+                .replace(/[.&'-]\s*[.&'-]+/g, (m) => m[0])
+                .slice(0, 100)
+              handleBankChange({ bankName: cleaned })
+            }}
+            onBlur={() => onBlur?.('bankName')}
             placeholder="Enter your bank name"
           />
         </div>
@@ -165,41 +172,19 @@ export const TdsBankDetailsCard: React.FC<TdsBankDetailsCardProps> = ({
             type="text"
             className="tds-input"
             value={bankDetails.branch}
-            onChange={(e) =>
-              handleBankChange({ branch: e.target.value })
-            }
+            onChange={(e) => {
+              const cleaned = e.target.value
+                .replace(/[^A-Za-z0-9\s.,\/-]/g, '')
+                .replace(/^[ \s.,\/-]+/g, '')
+                .replace(/\s{2,}/g, ' ')
+                .replace(/([.,\/-])\1+/g, '$1')
+                .replace(/[.,\/-]\s*[.,\/-]+/g, (m) => m[0])
+                .slice(0, 60)
+              handleBankChange({ branch: cleaned })
+            }}
+            onBlur={() => onBlur?.('branch')}
             placeholder="Enter branch name"
           />
-        </div>
-      </div>
-      {bankDetails.bankName && bankDetails.branch && (
-        <div
-          className="tds-bank-status-pill"
-          data-testid="tds-bank-verified-pill"
-        >
-          <span className="tds-bank-status-icon">
-            <TdsIcons.Checkmark />
-          </span>
-          <span className="tds-bank-status-text">
-            {bankDetails.bankName} • {bankDetails.branch}
-          </span>
-        </div>
-      )}
-      <div className="tds-form-group">
-        <span className="tds-label">Account Type</span>
-        <div className="tds-type-pills">
-          {(["savings", "current"] as const).map((type) => (
-            <button
-              key={type}
-              type="button"
-              className={`tds-type-pill ${bankDetails.accountType === type ? "tds-type-pill--active" : ""}`}
-              onClick={() => handleBankChange({ accountType: type })}
-            >
-              {type === "savings"
-                ? "Savings Account"
-                : "Current Account"}
-            </button>
-          ))}
         </div>
       </div>
     </div>

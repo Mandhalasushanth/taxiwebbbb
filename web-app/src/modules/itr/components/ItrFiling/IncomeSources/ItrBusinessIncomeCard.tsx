@@ -1,22 +1,27 @@
 import React from 'react'
 import { FieldInfoTooltip } from '@shared/components'
-import { BUSINESS_METHODS, type BusinessDetails } from '../itrFiling.constants'
+import { BUSINESS_METHODS, sanitizeIncomeAmount, type BusinessDetails } from '../itrFiling.constants'
 import './ItrIncomeSourceCards.css'
 
 export interface ItrBusinessIncomeCardProps {
   businessDetails: BusinessDetails
   onBusinessDetailsChange: (details: BusinessDetails) => void
   onToggle: () => void
+  showErrors?: boolean
 }
 
 export const ItrBusinessIncomeCard: React.FC<ItrBusinessIncomeCardProps> = ({
   businessDetails,
   onBusinessDetailsChange,
   onToggle,
+  showErrors = false,
 }) => {
   const handleBusinessChange = (field: keyof BusinessDetails, val: string) => {
     onBusinessDetailsChange({ ...businessDetails, [field]: val })
   }
+
+  const turnoverError = showErrors && !businessDetails.grossTurnover?.trim() ? 'Gross Turnover is required' : null
+  const profitError = showErrors && !businessDetails.declaredNetProfit?.trim() ? 'Declared Profit is required' : null
 
   return (
     <div className="itr-salary-card" id="itr-business-income" data-section="business">
@@ -84,37 +89,41 @@ export const ItrBusinessIncomeCard: React.FC<ItrBusinessIncomeCardProps> = ({
           <label className="itr-form-label" htmlFor="biz-turnover">
             Gross Turnover <span className="itr-required-star">*</span>
           </label>
-          <div className="itr-input-currency-wrap">
+          <div className={`itr-input-currency-wrap ${turnoverError ? 'itr-input-currency-wrap--error' : ''}`}>
             <span className="itr-currency-prefix">₹</span>
             <input
               id="biz-turnover"
               type="text"
               inputMode="numeric"
+              pattern="[1-9][0-9]*"
               maxLength={14}
               className="itr-input-currency"
               placeholder="Enter gross turnover"
               value={businessDetails.grossTurnover}
-              onChange={(e) => handleBusinessChange('grossTurnover', e.target.value.replace(/[^0-9,]/g, ''))}
+              onChange={(e) => handleBusinessChange('grossTurnover', sanitizeIncomeAmount(e.target.value))}
             />
           </div>
+          {turnoverError && <span className="itr-field-error-text">{turnoverError}</span>}
         </div>
         <div className="itr-form-group">
           <label className="itr-form-label" htmlFor="biz-profit">
             Declared Profit <span className="itr-required-star">*</span>
           </label>
-          <div className="itr-input-currency-wrap">
+          <div className={`itr-input-currency-wrap ${profitError ? 'itr-input-currency-wrap--error' : ''}`}>
             <span className="itr-currency-prefix">₹</span>
             <input
               id="biz-profit"
               type="text"
               inputMode="numeric"
+              pattern="[1-9][0-9]*"
               maxLength={14}
               className="itr-input-currency"
               placeholder="Enter declared profit"
               value={businessDetails.declaredNetProfit}
-              onChange={(e) => handleBusinessChange('declaredNetProfit', e.target.value.replace(/[^0-9,]/g, ''))}
+              onChange={(e) => handleBusinessChange('declaredNetProfit', sanitizeIncomeAmount(e.target.value))}
             />
           </div>
+          {profitError && <span className="itr-field-error-text">{profitError}</span>}
         </div>
       </div>
     </div>

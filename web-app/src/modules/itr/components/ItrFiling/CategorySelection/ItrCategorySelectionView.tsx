@@ -118,7 +118,7 @@ export const ItrCategorySelectionView: React.FC<ItrCategorySelectionViewProps> =
   selectedId,
   onSelect,
   onStart,
-  onBack,
+  onBack: _onBack,
 }) => {
   const activeId = selectedCategoryId ?? selectedId ?? null
   const handleSelect = onSelectCategory || onSelect || (() => {})
@@ -150,15 +150,6 @@ export const ItrCategorySelectionView: React.FC<ItrCategorySelectionViewProps> =
       </div>
 
       <div className="itr-cat-action-buttons">
-        {onBack && (
-          <button
-            type="button"
-            className="itr-cat-back-btn"
-            onClick={onBack}
-          >
-            Back
-          </button>
-        )}
         <button
           type="button"
           className={`itr-cat-start-btn ${!activeId ? 'itr-cat-start-btn--disabled' : ''}`}

@@ -1,2 +1,2 @@
-export { ItrFilingSubmittedView } from './ItrFilingSubmittedView'
-export type { ItrFilingSubmittedViewProps } from './ItrFilingSubmittedView'
+export { ItrFilingSubmittedView, ItrUnifiedApplicationStatusView } from './ItrFilingSubmittedView'
+export type { ItrFilingSubmittedViewProps, ItrUnifiedApplicationStatusProps } from './ItrFilingSubmittedView'

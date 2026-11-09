@@ -1,5 +1,5 @@
 import { formatUploadSize, viewUploadedDocument } from '@shared/upload'
-import React, { useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { StepActionBar, DocumentSection, UploadDocument } from '@shared/components'
 import {
   type UploadedDocInfo,
@@ -37,6 +37,7 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
   selectedSources = [],
   selectedCategoryId,
 }) => {
+  const [showErrors, setShowErrors] = useState(false)
   const handleProceed = onNext || onContinue || (() => {})
 
   const { requiredDocs, recommendedDocs, optionalDocs } = useMemo(
@@ -46,6 +47,7 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
 
   const handleFileUpload = (docId: string, file: File) => {
     try {
+      setShowErrors(false)
       onUploadDoc(docId, {
         id: docId,
         fileName: file.name,
@@ -62,13 +64,52 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
     (doc) => !doc.isMandatory || Boolean(uploadedDocs[doc.id])
   )
 
+  const scrollToFirstError = () => {
+    try {
+      const firstInvalid = document.querySelector(
+        '.supporting-doc-item--error, .supporting-doc-item__error'
+      )
+      if (firstInvalid) {
+        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    } catch {
+      // Fallback
+    }
+  }
+
+  const handleNext = () => {
+    if (!isDocumentsValid) {
+      setShowErrors(true)
+      scrollToFirstError()
+      return
+    }
+    handleProceed()
+  }
+
+  useEffect(() => {
+    const handleAttempt = () => {
+      if (!isDocumentsValid) {
+        setShowErrors(true)
+        scrollToFirstError()
+      }
+    }
+    window.addEventListener('step-action-bar:submit-attempt', handleAttempt)
+    return () => window.removeEventListener('step-action-bar:submit-attempt', handleAttempt)
+  }, [isDocumentsValid])
+
   const renderDocCard = (doc: ChecklistDocConfig) => {
     const uploaded = uploadedDocs[doc.id]
+    const docCleanTitle = doc.title.replace(/\s*\*+$/, '').trim()
+    const isMissingMandatory = showErrors && Boolean(doc.isMandatory) && !uploaded
+    const errorMessage = isMissingMandatory
+      ? `Please upload ${docCleanTitle} to proceed`
+      : undefined
+
     return (
       <UploadDocument
         key={doc.id}
         id={doc.id}
-        title={doc.title.replace(/\s*\*+$/, '')}
+        title={docCleanTitle}
         subtitle={doc.desc}
         isRequired={Boolean(doc.isMandatory)}
         icon={<doc.Icon />}
@@ -76,6 +117,7 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
         fileName={uploaded?.fileName}
         fileSize={uploaded?.fileSize}
         file={uploaded?.file}
+        error={errorMessage}
         onView={(d) => {
           viewUploadedDocument({
             id: d.id,
@@ -129,7 +171,7 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
 
       <StepActionBar
         onBack={onBack}
-        onNext={handleProceed}
+        onNext={handleNext}
         onSaveDraft={onSaveDraft}
         isEditMode={isEditMode}
         backLabel="Back"
@@ -141,4 +183,3 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
 }
 
 export default ItrDocumentsChecklistView
-

@@ -5,6 +5,8 @@ import {
   CheckIcon,
   ItrFilingHeaderStepper,
   getDefaultSourcesForCategory,
+  sortIncomeSources,
+  validateEmployerName,
   type ItrCategoryId,
   type ResidentialStatusOption,
   type SalaryDetails,
@@ -76,18 +78,21 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
   const fallbackDefaults = getDefaultSourcesForCategory(selectedCategoryId);
 
   const [internalSources, setInternalSources] = useState<string[]>(() =>
-    initialSelectedSources !== undefined && initialSelectedSources.length > 0
-      ? initialSelectedSources
-      : fallbackDefaults,
+    sortIncomeSources(
+      initialSelectedSources !== undefined && initialSelectedSources.length > 0
+        ? initialSelectedSources
+        : fallbackDefaults,
+    ),
   );
 
-  const selectedSources = initialSelectedSources ?? internalSources;
+  const selectedSources = sortIncomeSources(initialSelectedSources ?? internalSources);
 
   const toggleSource = (id: string) => {
     try {
-      const updated = selectedSources.includes(id)
+      const rawUpdated = selectedSources.includes(id)
         ? selectedSources.filter((s) => s !== id)
         : [...selectedSources, id];
+      const updated = sortIncomeSources(rawUpdated);
 
       setInternalSources(updated);
       if (onSourcesChange) {
@@ -104,8 +109,8 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
     selectedSources.length > 0 &&
       (!selectedSources.includes("salary") ||
         Boolean(
-          salaryDetails.grossSalary?.trim() ||
-            salaryDetails.employerName?.trim(),
+          salaryDetails.grossSalary?.trim() &&
+            validateEmployerName(salaryDetails.employerName) === null,
         )) &&
       (!selectedSources.includes("house_property") ||
         housePropertyDetails.propertyType === "self_occupied" ||
@@ -167,6 +172,7 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
             salaryDetails={salaryDetails}
             onSalaryDetailsChange={onSalaryDetailsChange}
             onToggle={() => toggleSource("salary")}
+            showErrors={showErrors}
           />
         );
       case "house_property":
@@ -176,6 +182,7 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
             housePropertyDetails={housePropertyDetails}
             onHousePropertyDetailsChange={onHousePropertyDetailsChange}
             onToggle={() => toggleSource("house_property")}
+            showErrors={showErrors}
           />
         );
       case "business":
@@ -185,6 +192,7 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
             businessDetails={businessDetails}
             onBusinessDetailsChange={onBusinessDetailsChange}
             onToggle={() => toggleSource("business")}
+            showErrors={showErrors}
           />
         );
       case "capital_gains":
@@ -204,6 +212,7 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
             otherSourcesDetails={otherSourcesDetails}
             onOtherSourcesDetailsChange={onOtherSourcesDetailsChange}
             onToggle={() => toggleSource("other_sources")}
+            showErrors={showErrors}
           />
         );
       default:

@@ -184,7 +184,7 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
     <div
       id={id}
       data-doc-id={id}
-      className={`supporting-doc-item ${effectiveIsUploaded ? "supporting-doc-item--uploaded" : ""} ${className}`}
+      className={`supporting-doc-item ${effectiveIsUploaded ? "supporting-doc-item--uploaded" : ""} ${activeError ? "supporting-doc-item--error loan-doc-item--error" : ""} ${className}`}
       data-testid={`doc-card-${id}`}
     >
       <FileInput
@@ -237,7 +237,23 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
             )}
             {activeError && (
               <p className="supporting-doc-item__error" role="alert">
-                {activeError}
+                <svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  style={{ flexShrink: 0 }}
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <span>{activeError}</span>
               </p>
             )}
             {effectiveIsUploaded && (

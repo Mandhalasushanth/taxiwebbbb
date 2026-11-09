@@ -76,6 +76,7 @@ export const TdsRefund: React.FC = () => {
     3: () => (
       <TdsRefundStatus
         applicationId={tdsRef}
+        customerName={profile.fullName || businessDetails.legalName}
         appliedDate={new Date().toISOString()}
         assessmentYear={(profile.assessmentYear || '2025-26').replace(/^AY\s*/i, '')}
         onBackToDashboard={() => navigate(routePaths.dashboard)}

@@ -68,7 +68,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(1rem, 2vh, 2rem) clamp(1rem, 2vw, 2.5rem);
+  padding: clamp(0.75rem, 1.5vh, 1.5rem) clamp(1rem, 2vw, 2.5rem);
   box-sizing: border-box;
   overflow-y: auto;
 }
@@ -92,7 +92,7 @@
   max-width: 760px;
   box-sizing: border-box;
   margin: auto;
-  padding: 0.5rem 0;
+  padding: 0;
 }
 
 /* Tablet Layout (768px - 1024px) */

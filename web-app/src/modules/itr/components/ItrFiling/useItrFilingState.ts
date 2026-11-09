@@ -13,6 +13,7 @@ import {
   DEFAULT_DEDUCTIONS,
   ITR_STEP_LABELS,
   getDefaultSourcesForCategory,
+  sortIncomeSources,
   type ItrCategoryId,
   type AssessmentYearOption,
   type ResidentialStatusOption,
@@ -124,19 +125,31 @@ export function useItrFilingState() {
       DEFAULT_PREVIOUS_ITR,
   );
 
-  const [selectedSources, setSelectedSources] = useState<string[]>(() => {
+  const [selectedSources, setSelectedSourcesState] = useState<string[]>(() => {
     if (
       existingDraft?.formData?.selectedSources &&
       Array.isArray(existingDraft.formData.selectedSources) &&
       existingDraft.formData.selectedSources.length > 0
     ) {
-      return existingDraft.formData.selectedSources as string[];
+      return sortIncomeSources(existingDraft.formData.selectedSources as string[]);
     }
     const cat = existingDraft?.formData?.selectedCategoryId as
       | ItrCategoryId
       | undefined;
-    return cat ? getDefaultSourcesForCategory(cat) : [];
+    return cat ? sortIncomeSources(getDefaultSourcesForCategory(cat)) : [];
   });
+
+  const setSelectedSources = (
+    sourcesOrUpdater: string[] | ((prev: string[]) => string[]),
+  ) => {
+    setSelectedSourcesState((prev) => {
+      const next =
+        typeof sourcesOrUpdater === "function"
+          ? sourcesOrUpdater(prev)
+          : sourcesOrUpdater;
+      return sortIncomeSources(next);
+    });
+  };
 
   const setSelectedCategoryId = (cat: ItrCategoryId | null) => {
     setSelectedCategoryIdState(cat);

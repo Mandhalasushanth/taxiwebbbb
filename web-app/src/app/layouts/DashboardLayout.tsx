@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { buildProfileCompletionPath } from '@core/auth'
@@ -9,7 +9,8 @@ import { navSections } from './navigation'
 import { useDashboardSummary } from '@modules/dashboard'
 import { useApplicationsCount } from '@modules/applications/hooks/useApplicationsCount'
 import { DashboardBreadcrumb } from './DashboardBreadcrumb'
-import { isPlaceholderCustomerName } from '@modules/profile'
+import { initialsOf } from '@shared/utils'
+import { getCustomerId, getCustomerDisplayName, isPlaceholderCustomerName } from '@modules/profile'
 import './DashboardLayout.css'
 
 const MenuIcon = () => (
@@ -95,6 +96,11 @@ export const DashboardLayout = () => {
     user?.fullName &&
     !isPlaceholderCustomerName(user.fullName)
   )
+  const customerCode = getCustomerId(user)
+  const displayName = getCustomerDisplayName(user)
+  const avatarInitials = user?.fullName && !isPlaceholderCustomerName(user.fullName)
+    ? initialsOf(user.fullName)
+    : 'U'
 
   return (
     <div className="shell">
@@ -195,6 +201,21 @@ export const DashboardLayout = () => {
         </nav>
 
         <div className="shell__sidebar-footer">
+          <NavLink
+            to={routePaths.profile}
+            className="shell__user"
+            onClick={() => setIsMobileNavOpen(false)}
+            title="View Profile"
+          >
+            <span className="shell__avatar" aria-hidden="true">
+              {avatarInitials}
+            </span>
+            <div className="shell__user-meta">
+              <span className="shell__user-name" title={displayName}>{displayName}</span>
+              {customerCode && <span className="shell__user-code">{customerCode}</span>}
+            </div>
+          </NavLink>
+
           <button className="shell__signout" type="button" onClick={logout.requestLogout}>
             <LogoutIcon size={14} /> Log out
           </button>
@@ -239,9 +260,7 @@ export const DashboardLayout = () => {
         </header>
 
         <main className="shell__content">
-          <Suspense fallback={<div className="shell__loading">Loading...</div>}>
-            <Outlet />
-          </Suspense>
+          <Outlet />
         </main>
       </div>
 

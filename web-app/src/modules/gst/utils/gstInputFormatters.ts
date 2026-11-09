@@ -15,28 +15,79 @@ export const gstInput = {
   hsnSac: (v: string): string => v.replace(/\D/g, '').slice(0, 8),
   /** Person names: text only (letters, spaces and . ' -). No numbers or unwanted special characters */
   personName: (v: string, max = 100): string =>
-    v.replace(/[^A-Za-z .'-]/g, '').replace(/\s{2,}/g, ' ').slice(0, max),
-  /** City and District: text only (letters, spaces and -). No numbers, no special characters */
+    v
+      .replace(/[^A-Za-z .'-]/g, '')
+      .replace(/^[ .'-]+/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/([.'-])\1+/g, '$1')
+      .replace(/[.'-]\s*[.'-]+/g, (m) => m[0])
+      .slice(0, max),
+  /** City and District: text only (letters, spaces and - . '). No numbers, no special characters */
   cityDistrict: (v: string, max = 50): string =>
-    v.replace(/[^A-Za-z -]/g, '').replace(/\s{2,}/g, ' ').slice(0, max),
-  /** Branch names: letters, digits, spaces, and allowed punctuation -, ., /, &, ', (, ), #, , */
+    v
+      .replace(/[^A-Za-z .'-]/g, '')
+      .replace(/^[ .'-]+/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/([.'-])\1+/g, '$1')
+      .replace(/[.'-]\s*[.'-]+/g, (m) => m[0])
+      .slice(0, max),
+  /** Branch names: letters, digits, spaces, and allowed punctuation -, ., /, , (no arbitrary symbols, no consecutive special characters) */
   branch: (v: string, max = 60): string =>
-    v.replace(/[^A-Za-z0-9\s.&'()/#,-]/g, '').replace(/\s{2,}/g, ' ').slice(0, max),
+    v
+      .replace(/[^A-Za-z0-9\s.,\/-]/g, '')
+      .replace(/^[ \s.,\/-]+/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/([.,\/-])\1+/g, '$1')
+      .replace(/[.,\/-]\s*[.,\/-]+/g, (m) => m[0])
+      .slice(0, max),
   /** Designation: text only (letters, spaces, / and -). No numbers, no symbols */
-  designation: (v: string): string =>
-    v.replace(/[^A-Za-z /'-]/g, '').replace(/\s{2,}/g, ' ').slice(0, 60),
+  designation: (v: string, max = 60): string =>
+    v
+      .replace(/[^A-Za-z \/'-]/g, '')
+      .replace(/^[ \/'-]+/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/([\/'-])\1+/g, '$1')
+      .replace(/[\/'-]\s*[\/'-]+/g, (m) => m[0])
+      .slice(0, max),
   /** Business / trade names: letters, digits and allowed punctuation . & ' - ( ) / , */
-  businessName: (v: string): string =>
-    v.replace(/[^A-Za-z0-9 .&'()/,-]/g, '').replace(/\s{2,}/g, ' ').trimStart().slice(0, 150),
+  businessName: (v: string, max = 150): string =>
+    v
+      .replace(/[^A-Za-z0-9\s.&'()\/,-]/g, '')
+      .replace(/^[ \s.&'()\/,-]+/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/([.&'\/,-])\1+/g, '$1')
+      .replace(/[.&'\/,-]\s*[.&'\/,-]+/g, (m) => m[0])
+      .slice(0, max),
   /** Registered address: letters, numbers, spaces, and address punctuation , . / # ( ) & ' - */
-  address: (v: string): string =>
-    v.replace(/[^A-Za-z0-9\s,./#()&'-]/g, '').replace(/\s{2,}/g, ' ').trimStart().slice(0, 250),
+  address: (v: string, max = 250): string =>
+    v
+      .replace(/[^A-Za-z0-9\s,.\/#()&'-]/g, '')
+      .replace(/^[ \s,.\/#()&'-]+/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/([,.\/#&'-])\1+/g, '$1')
+      .replace(/[,.\/#&'-]\s*[,.\/#&'-]+/g, (m) => m[0])
+      .slice(0, max),
   /** Email: lowercase letters, numbers, and allowed email special characters @ . _ - + */
   email: (v: string): string =>
     v.toLowerCase().replace(/[^a-z0-9@._+-]/g, '').slice(0, 100),
-  /** Names, cities, bank names: letters, spaces and . ' - */
+  /** Names, cities, bank names: letters, spaces and . ' - & */
   letters: (v: string, max = 100): string =>
-    v.replace(/[^A-Za-z .'-]/g, '').replace(/\s{2,}/g, ' ').slice(0, max),
+    v
+      .replace(/[^A-Za-z\s.&'-]/g, '')
+      .replace(/^[ \s.&'-]+/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/([.&'-])\1+/g, '$1')
+      .replace(/[.&'-]\s*[.&'-]+/g, (m) => m[0])
+      .slice(0, max),
+  /** Bank Name: letters, spaces, and single . & - ' (no numbers) */
+  bankName: (v: string, max = 100): string =>
+    v
+      .replace(/[^A-Za-z\s.&'-]/g, '')
+      .replace(/^[ \s.&'-]+/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/([.&'-])\1+/g, '$1')
+      .replace(/[.&'-]\s*[.&'-]+/g, (m) => m[0])
+      .slice(0, max),
   /** Notice number / RFN / DIN: uppercase letters, numbers, / and -, capped at 20 chars */
   noticeNumber: (v: string): string => v.toUpperCase().replace(/[^A-Z0-9/-]/g, '').slice(0, 20),
   /** GST Application Reference Number (ARN): 15 alphanumeric characters */
@@ -81,6 +132,7 @@ export const gstInputForKind = (kind: string): ((v: string) => string) =>
     city: (v: string) => gstInput.cityDistrict(v, 50),
     district: (v: string) => gstInput.cityDistrict(v, 50),
     branch: (v: string) => gstInput.branch(v),
+    bankName: (v: string) => gstInput.bankName(v),
     designation: gstInput.designation,
     businessName: gstInput.businessName,
     address: gstInput.address,

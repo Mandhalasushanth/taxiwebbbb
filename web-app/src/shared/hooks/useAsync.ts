@@ -15,10 +15,14 @@ export interface UseAsyncResult<T> extends AsyncState<T> {
 export const useAsync = <T,>(
   fetcher: () => Promise<T>,
   deps: readonly unknown[] = [],
-  options: { immediate?: boolean } = {},
+  options: { immediate?: boolean; initialData?: T } = {},
 ): UseAsyncResult<T> => {
-  const { immediate = true } = options
-  const [state, setState] = useState<AsyncState<T>>({ data: null, isLoading: immediate, error: null })
+  const { immediate = true, initialData } = options
+  const [state, setState] = useState<AsyncState<T>>({
+    data: initialData ?? null,
+    isLoading: initialData !== undefined ? false : immediate,
+    error: null,
+  })
   const mounted = useRef(true)
   const fetcherRef = useRef(fetcher)
   fetcherRef.current = fetcher

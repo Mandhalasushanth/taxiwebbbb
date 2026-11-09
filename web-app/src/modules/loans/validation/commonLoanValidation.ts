@@ -6,6 +6,10 @@ import {
   isValidAadhaar as sharedIsValidAadhaar,
   isValidGstin as sharedIsValidGstin,
   validateMobileNumber,
+  validateName,
+  validateBankName,
+  validateBranch,
+  validateCity,
 } from '@shared/utils/validationUtils'
 import { REGEX } from '@shared/constants'
 
@@ -126,29 +130,19 @@ const startOfToday = (): Date => {
 
 export const loanFieldRules = {
   personName: (val: string | undefined, label: string): string | undefined => {
-    const v = (val || '').trim()
-    if (!v) return `${label} is required`
-    if (!LOAN_PATTERNS.PERSON_NAME.test(v)) return `${label} must contain only letters and spaces`
-    if (v.length < 3) return `${label} must be at least 3 characters`
-    if (v.length > 100) return `${label} cannot exceed 100 characters`
-    return undefined
+    return validateName(val, { label, minLength: 3, maxLength: 100 }) || undefined
   },
 
   bankName: (val: string | undefined): string | undefined => {
-    const v = (val || '').trim()
-    if (!v) return 'Bank name is required'
-    if (!LOAN_PATTERNS.BANK_NAME.test(v)) return 'Bank name must contain only letters'
-    if (v.length < 3) return 'Please enter the full bank name'
-    if (v.length > 100) return 'Bank name cannot exceed 100 characters'
-    return undefined
+    return validateBankName(val, { label: 'Bank name', minLength: 3, maxLength: 100 }) || undefined
+  },
+
+  branch: (val: string | undefined, label = 'Branch'): string | undefined => {
+    return validateBranch(val, { label, minLength: 2, maxLength: 60 }) || undefined
   },
 
   placeName: (val: string | undefined, label: string): string | undefined => {
-    const v = (val || '').trim()
-    if (!v) return `${label} is required`
-    if (!LOAN_PATTERNS.PLACE_NAME.test(v)) return `${label} must contain only letters`
-    if (v.length < 2) return `Please enter a valid ${label.toLowerCase()}`
-    return undefined
+    return validateCity(val, { label, minLength: 2, maxLength: 50 }) || undefined
   },
 
   text: (val: string | undefined, label: string, min = 3, max = 250): string | undefined => {

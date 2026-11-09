@@ -128,14 +128,6 @@ export const Applications: React.FC = () => {
 
   return (
     <div className="applications-web-container">
-      {/* Desktop Web Header */}
-      <header className="applications-web-header">
-        <div className="applications-web-header__left">
-          <h1 className="applications-web-header__title">My Applications</h1>
-          <p className="applications-web-header__subtitle">Track all your service applications</p>
-        </div>
-      </header>
-
       {/* 1st: Application Overview Metric Cards */}
       <ApplicationOverviewCards
         stats={stats}

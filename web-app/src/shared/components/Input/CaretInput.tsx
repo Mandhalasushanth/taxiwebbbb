@@ -1,5 +1,6 @@
-import React, { forwardRef, useLayoutEffect, useRef } from 'react'
+import React, { forwardRef, useLayoutEffect, useRef, useState } from 'react'
 import { calculateNextCaretPosition } from '../../utils/caretUtils'
+import { CustomCalendarPopover } from './CustomCalendarPopover'
 
 export interface CaretInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   /** Optional callback invoked with the calculated target caret */
@@ -11,14 +12,24 @@ export interface CaretInputProps extends React.InputHTMLAttributes<HTMLInputElem
  * It prevents the cursor from jumping to the end when state updates transform the text
  * (such as .toUpperCase(), regex masking, or alphanumeric filtering) while the user is
  * editing characters in the middle of a string.
+ *
+ * When type="date" is passed, it renders a custom calendar popover with Cancel (left)
+ * and OK (right) buttons instead of the browser native date picker.
  */
 export const CaretInput = forwardRef<HTMLInputElement, CaretInputProps>(
-  ({ onChange, value, onCaretChange, ...props }, forwardedRef) => {
+  ({ onChange, value, onCaretChange, type, onClick, min, max, ...props }, forwardedRef) => {
     const internalRef = useRef<HTMLInputElement | null>(null)
+    const containerRef = useRef<HTMLDivElement | null>(null)
     const caretSnapshotRef = useRef<{ rawValue: string; caret: number } | null>(null)
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
     const setRef = (node: HTMLInputElement | null) => {
       internalRef.current = node
+      if (node && type === 'date') {
+        node.showPicker = () => {
+          setIsCalendarOpen(true)
+        }
+      }
       if (typeof forwardedRef === 'function') {
         forwardedRef(node)
       } else if (forwardedRef) {
@@ -73,9 +84,50 @@ export const CaretInput = forwardRef<HTMLInputElement, CaretInputProps>(
       onChange?.(e)
     }
 
+    if (type === 'date') {
+      const handleDatePicked = (selectedStr: string) => {
+        if (internalRef.current) {
+          internalRef.current.value = selectedStr
+        }
+        onChange?.({
+          target: {
+            name: props.name || props.id || '',
+            value: selectedStr,
+          },
+        } as React.ChangeEvent<HTMLInputElement>)
+      }
+
+      return (
+        <div ref={containerRef} style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
+          <input
+            {...props}
+            ref={setRef}
+            type="text"
+            value={value}
+            onClick={(e) => {
+              setIsCalendarOpen(true)
+              onClick?.(e)
+            }}
+            onChange={handleChange}
+          />
+          <CustomCalendarPopover
+            isOpen={isCalendarOpen}
+            value={String(value || '')}
+            format="YYYY-MM-DD"
+            minDate={min as string | undefined}
+            maxDate={max as string | undefined}
+            anchorRef={containerRef}
+            onChange={handleDatePicked}
+            onClose={() => setIsCalendarOpen(false)}
+          />
+        </div>
+      )
+    }
+
     return (
       <input
         {...props}
+        type={type}
         ref={setRef}
         value={value}
         onChange={handleChange}

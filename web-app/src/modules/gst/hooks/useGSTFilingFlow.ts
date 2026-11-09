@@ -5,8 +5,8 @@ import { localStore } from '@core/storage'
 import { userStorage } from '@core/storage/userStorage'
 import { formatGstFileSize } from '@modules/gst/utils/gstFile'
 import { generateGstReference } from '@modules/gst/utils/gstFormat'
-import { getDefaultFilingData, STEP_LABELS } from '@modules/gst/utils/gstFiling.constants'
-import { useServiceDraft, readServiceDraft, hasFormChanged, DRAFT_NAMESPACES } from '@shared/saveDraft'
+import { getDefaultFilingData, STEP_LABELS, hasUserEnteredFilingData } from '@modules/gst/utils/gstFiling.constants'
+import { useServiceDraft, readServiceDraft, deleteServiceDraft, DRAFT_NAMESPACES } from '@shared/saveDraft'
 import { useReviewEdit } from '@shared/edit'
 import { useGSTReviewEditNavigation } from '@modules/gst/shared/useGSTSectionFocus'
 import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
@@ -61,8 +61,21 @@ const withoutKey = <V>(record: Record<string, V>, key: string): Record<string, V
 export const useGSTFilingFlow = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const [savedDraft] = useState(() => readServiceDraft<FilingDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst))
   const [defaultFilingData] = useState(getDefaultFilingData)
+  const [savedDraft] = useState(() => {
+    const d = readServiceDraft<FilingDraft>(SERVICE_ID, DRAFT_NAMESPACES.gst)
+    if (!d) return null
+    const hasData =
+      (d.currentStep && d.currentStep > 1) ||
+      hasUserEnteredFilingData(d.formData?.filingData, getDefaultFilingData()) ||
+      (d.formData?.uploadedFiles && Object.keys(d.formData.uploadedFiles).length > 0) ||
+      (d.formData?.notApplicableDocs && Object.keys(d.formData.notApplicableDocs).length > 0)
+    if (!hasData) {
+      deleteServiceDraft(SERVICE_ID)
+      return null
+    }
+    return d
+  })
   const [filingRef] = useState(() => generateGstReference('GST-FIL'))
 
   const [currentStep, setCurrentStep] = useState<FilingStep>(() => {
@@ -143,11 +156,11 @@ export const useGSTFilingFlow = () => {
     }
   }, [location.pathname, savedDraft, navigate])
 
-  const hasEnteredData =
-    currentStep > 1 ||
-    hasFormChanged(filingData, defaultFilingData) ||
+  const hasEnteredData = Boolean(
+    hasUserEnteredFilingData(filingData, defaultFilingData) ||
     Object.keys(uploadedFiles).length > 0 ||
     Object.keys(notApplicableDocs).length > 0
+  )
 
   const draft = useServiceDraft<FilingDraft>({
     storageNamespace: DRAFT_NAMESPACES.gst,

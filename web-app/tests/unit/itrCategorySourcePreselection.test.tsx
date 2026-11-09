@@ -18,6 +18,10 @@ import { localStore } from '../../src/core/storage/localStorage'
 import {
   getDefaultSourcesForCategory,
   getItrChecklistSections,
+  sortIncomeSources,
+  sanitizeEmployerName,
+  validateEmployerName,
+  sanitizeIncomeAmount,
   DEFAULT_SALARY_DETAILS,
   DEFAULT_HOUSE_PROPERTY_DETAILS,
   DEFAULT_BUSINESS_DETAILS,
@@ -741,10 +745,273 @@ describe('ITR Category to Income Source Preselection', () => {
         })
         expect((submitBtn as HTMLButtonElement).disabled).toBe(false)
 
+        // Missing required documents (Form 16 for salary) blocks submission and shows attention banner
         act(() => {
           submitBtn.click()
         })
-        expect(onSubmit).toHaveBeenCalled()
+        expect(onSubmit).not.toHaveBeenCalled()
+        expect(screen.getByText(/1 items require your attention/i)).toBeDefined()
+        expect(screen.getByText(/1 required documents missing/i)).toBeDefined()
+      })
+    })
+  })
+
+  describe('Income Sources Fixed Canonical Ordering', () => {
+    it('sorts income sources in canonical order: salary, house_property, business, capital_gains, other_sources', () => {
+      expect(sortIncomeSources(['house_property', 'salary'])).toEqual(['salary', 'house_property'])
+      expect(sortIncomeSources(['other_sources', 'house_property', 'salary'])).toEqual([
+        'salary',
+        'house_property',
+        'other_sources',
+      ])
+      expect(sortIncomeSources(['other_sources', 'business', 'house_property', 'salary'])).toEqual([
+        'salary',
+        'house_property',
+        'business',
+        'other_sources',
+      ])
+      expect(
+        sortIncomeSources(['capital_gains', 'other_sources', 'business', 'house_property', 'salary'])
+      ).toEqual(['salary', 'house_property', 'business', 'capital_gains', 'other_sources'])
+    })
+
+    it('renders income source cards in canonical order regardless of selection click order', () => {
+      let currentSources: string[] = []
+      const onSourcesChange = vi.fn((sources: string[]) => {
+        currentSources = sources
+      })
+
+      const { rerender } = render(
+        <ItrIncomeSourcesView
+          onBack={vi.fn()}
+          onNext={vi.fn()}
+          salaryDetails={DEFAULT_SALARY_DETAILS}
+          onSalaryDetailsChange={vi.fn()}
+          housePropertyDetails={DEFAULT_HOUSE_PROPERTY_DETAILS}
+          onHousePropertyDetailsChange={vi.fn()}
+          businessDetails={DEFAULT_BUSINESS_DETAILS}
+          onBusinessDetailsChange={vi.fn()}
+          capitalGainsDetails={DEFAULT_CAPITAL_GAINS_DETAILS}
+          onCapitalGainsDetailsChange={vi.fn()}
+          otherSourcesDetails={DEFAULT_OTHER_SOURCES_DETAILS}
+          onOtherSourcesDetailsChange={vi.fn()}
+          selectedSources={currentSources}
+          onSourcesChange={onSourcesChange}
+        />
+      )
+
+      // 1. Select House Property first
+      const housePill = screen.getByRole('button', { name: /house property/i })
+      act(() => {
+        housePill.click()
+      })
+      expect(currentSources).toEqual(['house_property'])
+
+      rerender(
+        <ItrIncomeSourcesView
+          onBack={vi.fn()}
+          onNext={vi.fn()}
+          salaryDetails={DEFAULT_SALARY_DETAILS}
+          onSalaryDetailsChange={vi.fn()}
+          housePropertyDetails={DEFAULT_HOUSE_PROPERTY_DETAILS}
+          onHousePropertyDetailsChange={vi.fn()}
+          businessDetails={DEFAULT_BUSINESS_DETAILS}
+          onBusinessDetailsChange={vi.fn()}
+          capitalGainsDetails={DEFAULT_CAPITAL_GAINS_DETAILS}
+          onCapitalGainsDetailsChange={vi.fn()}
+          otherSourcesDetails={DEFAULT_OTHER_SOURCES_DETAILS}
+          onOtherSourcesDetailsChange={vi.fn()}
+          selectedSources={currentSources}
+          onSourcesChange={onSourcesChange}
+        />
+      )
+
+      // 2. Select Salary / Pension -> must come above House Property
+      const salaryPill = screen.getByRole('button', { name: /salary \/ pension/i })
+      act(() => {
+        salaryPill.click()
+      })
+      expect(currentSources).toEqual(['salary', 'house_property'])
+
+      rerender(
+        <ItrIncomeSourcesView
+          onBack={vi.fn()}
+          onNext={vi.fn()}
+          salaryDetails={DEFAULT_SALARY_DETAILS}
+          onSalaryDetailsChange={vi.fn()}
+          housePropertyDetails={DEFAULT_HOUSE_PROPERTY_DETAILS}
+          onHousePropertyDetailsChange={vi.fn()}
+          businessDetails={DEFAULT_BUSINESS_DETAILS}
+          onBusinessDetailsChange={vi.fn()}
+          capitalGainsDetails={DEFAULT_CAPITAL_GAINS_DETAILS}
+          onCapitalGainsDetailsChange={vi.fn()}
+          otherSourcesDetails={DEFAULT_OTHER_SOURCES_DETAILS}
+          onOtherSourcesDetailsChange={vi.fn()}
+          selectedSources={currentSources}
+          onSourcesChange={onSourcesChange}
+        />
+      )
+
+      // 3. Select Other Sources -> must come below House Property
+      const otherPill = screen.getByRole('button', { name: /other sources/i })
+      act(() => {
+        otherPill.click()
+      })
+      expect(currentSources).toEqual(['salary', 'house_property', 'other_sources'])
+
+      rerender(
+        <ItrIncomeSourcesView
+          onBack={vi.fn()}
+          onNext={vi.fn()}
+          salaryDetails={DEFAULT_SALARY_DETAILS}
+          onSalaryDetailsChange={vi.fn()}
+          housePropertyDetails={DEFAULT_HOUSE_PROPERTY_DETAILS}
+          onHousePropertyDetailsChange={vi.fn()}
+          businessDetails={DEFAULT_BUSINESS_DETAILS}
+          onBusinessDetailsChange={vi.fn()}
+          capitalGainsDetails={DEFAULT_CAPITAL_GAINS_DETAILS}
+          onCapitalGainsDetailsChange={vi.fn()}
+          otherSourcesDetails={DEFAULT_OTHER_SOURCES_DETAILS}
+          onOtherSourcesDetailsChange={vi.fn()}
+          selectedSources={currentSources}
+          onSourcesChange={onSourcesChange}
+        />
+      )
+
+      // 4. Select Business / Profession -> must come between House Property and Other Sources
+      const businessPill = screen.getByRole('button', { name: /business \/ profession/i })
+      act(() => {
+        businessPill.click()
+      })
+      expect(currentSources).toEqual(['salary', 'house_property', 'business', 'other_sources'])
+
+      rerender(
+        <ItrIncomeSourcesView
+          onBack={vi.fn()}
+          onNext={vi.fn()}
+          salaryDetails={DEFAULT_SALARY_DETAILS}
+          onSalaryDetailsChange={vi.fn()}
+          housePropertyDetails={DEFAULT_HOUSE_PROPERTY_DETAILS}
+          onHousePropertyDetailsChange={vi.fn()}
+          businessDetails={DEFAULT_BUSINESS_DETAILS}
+          onBusinessDetailsChange={vi.fn()}
+          capitalGainsDetails={DEFAULT_CAPITAL_GAINS_DETAILS}
+          onCapitalGainsDetailsChange={vi.fn()}
+          otherSourcesDetails={DEFAULT_OTHER_SOURCES_DETAILS}
+          onOtherSourcesDetailsChange={vi.fn()}
+          selectedSources={currentSources}
+          onSourcesChange={onSourcesChange}
+        />
+      )
+
+      // 5. Select Capital Gains -> must come after Business and before Other Sources
+      const capitalPill = screen.getByRole('button', { name: /capital gains/i })
+      act(() => {
+        capitalPill.click()
+      })
+      expect(currentSources).toEqual(['salary', 'house_property', 'business', 'capital_gains', 'other_sources'])
+    })
+  })
+
+  describe('Income Sources Field Validation & Sanitization', () => {
+    describe('Employer Legal Name', () => {
+      it('rejects numbers, commas, and invalid symbols from Employer Legal Name', () => {
+        expect(sanitizeEmployerName('34567898')).toBe('')
+        expect(sanitizeEmployerName('Acme 123 Corp')).toBe('Acme Corp')
+        expect(sanitizeEmployerName('Alphabet, Inc.')).toBe('Alphabet Inc.')
+        expect(sanitizeEmployerName('Test@#$ Company')).toBe('Test Company')
+      })
+
+      it('allows only letters, dot, and a single space between words', () => {
+        expect(sanitizeEmployerName('TCS Ltd.')).toBe('TCS Ltd.')
+        expect(sanitizeEmployerName('Infosys   Technologies  Private.  Limited.')).toBe(
+          'Infosys Technologies Private. Limited.'
+        )
+      })
+
+      it('strips leading space and leading dots', () => {
+        expect(sanitizeEmployerName('   Google')).toBe('Google')
+        expect(sanitizeEmployerName('...Wipro')).toBe('Wipro')
+      })
+
+      it('enforces maxLength limit', () => {
+        const longName = 'A'.repeat(100)
+        expect(sanitizeEmployerName(longName, 75).length).toBe(75)
+      })
+
+      it('validates employer name correctly with validateEmployerName', () => {
+        expect(validateEmployerName('')).toBe('Employer Legal Name is required')
+        expect(validateEmployerName('A')).toBe('Employer Legal Name must be at least 2 characters')
+        expect(validateEmployerName('...')).toBe('Employer Legal Name must contain letters')
+        expect(validateEmployerName('Google India Pvt. Ltd.')).toBeNull()
+      })
+    })
+
+    describe('Numeric Amount Sanitization Across All 5 Income Sources', () => {
+      it('allows only numbers and rejects commas, dots, and letters', () => {
+        expect(sanitizeIncomeAmount(',,,,,,,,,,,,,,,')).toBe('')
+        expect(sanitizeIncomeAmount('..........')).toBe('')
+        expect(sanitizeIncomeAmount('50,000.00')).toBe('5000000')
+        expect(sanitizeIncomeAmount('abc')).toBe('')
+        expect(sanitizeIncomeAmount('₹ 12000')).toBe('12000')
+      })
+
+      it('rejects values starting with 0 and strips leading zeros', () => {
+        expect(sanitizeIncomeAmount('0')).toBe('')
+        expect(sanitizeIncomeAmount('0000')).toBe('')
+        expect(sanitizeIncomeAmount('050000')).toBe('50000')
+        expect(sanitizeIncomeAmount('00123')).toBe('123')
+      })
+
+      it('allows valid numbers not starting with 0', () => {
+        expect(sanitizeIncomeAmount('50000')).toBe('50000')
+        expect(sanitizeIncomeAmount('1200000')).toBe('1200000')
+      })
+
+      it('Review Submission page displays ONLY currently selected sources, hiding unselected ones and preventing NaN', () => {
+        render(
+          <ItrReviewSubmissionView
+            onBack={vi.fn()}
+            onSubmit={vi.fn()}
+            assessmentYear="AY 2026-2027"
+            filingType="original"
+            residentialStatus="resident"
+            salaryDetails={{
+              employerName: '34567898',
+              grossSalary: '',
+              exemptAllowances: '',
+              tdsDeducted: '',
+            }}
+            housePropertyDetails={{
+              propertyType: 'self_occupied',
+              homeLoanInterest: '7654334567890',
+              annualRentReceived: '7654334567890',
+              municipalTaxPaid: '',
+            }}
+            businessDetails={{
+              reportingMethod: 'regular',
+              grossTurnover: '5000000',
+              declaredNetProfit: '800000',
+            }}
+            capitalGainsDetails={DEFAULT_CAPITAL_GAINS_DETAILS}
+            otherSourcesDetails={DEFAULT_OTHER_SOURCES_DETAILS}
+            selectedSources={['business']}
+            selectedRegime="new"
+            deductions={DEFAULT_DEDUCTIONS}
+            uploadedDocs={{}}
+          />
+        )
+
+        // Only Business / Profession should be present
+        expect(screen.getByText('Business / Profession')).toBeDefined()
+        expect(screen.queryByText('Salary Income')).toBeNull()
+        expect(screen.queryByText('House Property')).toBeNull()
+        expect(screen.queryByText('Capital Gains')).toBeNull()
+        expect(screen.queryByText('Other Sources')).toBeNull()
+
+        // Amount should be valid and formatted, never NaN
+        expect(screen.getByText('₹ 50,00,000')).toBeDefined()
+        expect(screen.queryByText(/NaN/)).toBeNull()
       })
     })
   })
