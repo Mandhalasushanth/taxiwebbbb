@@ -17,6 +17,7 @@ export interface ConfirmAccountNumberInputProps {
   disabled?: boolean
   required?: boolean
   autoComplete?: string
+  ariaLabel?: string
 }
 
 export const ConfirmAccountNumberInput: React.FC<ConfirmAccountNumberInputProps> = ({
@@ -33,6 +34,7 @@ export const ConfirmAccountNumberInput: React.FC<ConfirmAccountNumberInputProps>
   disabled = false,
   required = true,
   autoComplete = 'new-password',
+  ariaLabel,
 }) => {
   const [showPassword, setShowPassword] = useState(false)
 
@@ -42,6 +44,7 @@ export const ConfirmAccountNumberInput: React.FC<ConfirmAccountNumberInputProps>
   }
 
   const isInvalid = Boolean(hasError || error)
+  const toggleLabel = ariaLabel || (name === 'accountNumber' || id === 'accountNumber' ? 'account number' : 'confirm account number')
 
   return (
     <div className="confirm-acc-input-container">
@@ -70,7 +73,7 @@ export const ConfirmAccountNumberInput: React.FC<ConfirmAccountNumberInputProps>
           tabIndex={-1}
           onClick={() => setShowPassword((prev) => !prev)}
           className="confirm-acc-toggle"
-          aria-label={showPassword ? 'Hide confirm account number' : 'Show confirm account number'}
+          aria-label={showPassword ? `Hide ${toggleLabel}` : `Show ${toggleLabel}`}
         >
           {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
         </button>

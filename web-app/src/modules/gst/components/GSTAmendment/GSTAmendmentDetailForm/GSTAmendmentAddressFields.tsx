@@ -119,14 +119,7 @@ export const GSTAmendmentAddressFields: React.FC<GSTAmendmentAddressFieldsProps>
               onBlur={onPinCodeBlur}
               className={`gst-amend-text-input ${errors.pinCode ? 'has-error' : ''}`}
             />
-            <div className="gst-amend-subrow-hint">
-              {errors.pinCode ? (
-                <span className="gst-amend-error-msg">{errors.pinCode}</span>
-              ) : (
-                <span />
-              )}
-              <span className="gst-amend-counter-hint">{pinCode.length} / 6 digits</span>
-            </div>
+            {errors.pinCode && <span className="gst-amend-error-msg">{errors.pinCode}</span>}
           </div>
         </>
       ) : (
@@ -210,14 +203,7 @@ export const GSTAmendmentAddressFields: React.FC<GSTAmendmentAddressFieldsProps>
                 onBlur={onPinCodeBlur}
                 className={`gst-amend-text-input ${errors.pinCode ? 'has-error' : ''}`}
               />
-              <div className="gst-amend-subrow-hint">
-                {errors.pinCode ? (
-                  <span className="gst-amend-error-msg">{errors.pinCode}</span>
-                ) : (
-                  <span />
-                )}
-                <span className="gst-amend-counter-hint">{pinCode.length} / 6 digits</span>
-              </div>
+              {errors.pinCode && <span className="gst-amend-error-msg">{errors.pinCode}</span>}
             </div>
           </div>
         </>

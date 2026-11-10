@@ -1,7 +1,7 @@
 .set-passcode-form {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: clamp(0.75rem, 1.8vh, 1.25rem);
   width: 100%;
 }
 
@@ -11,19 +11,19 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.35rem;
-  padding: 0.65rem 0.9rem;
+  padding: clamp(0.65rem, 1.2vh, 0.85rem) 0.9rem;
   background: var(--palette-slate-50);
   border: 1.5px solid var(--border);
-  border-radius: 12px;
+  border-radius: clamp(10px, 1.3vh, 13px);
 }
 
 .set-passcode-form__mobile-label {
-  font-size: 0.8125rem;
+  font-size: clamp(0.8125rem, 0.9vw, 0.875rem);
   color: var(--secondary-text);
 }
 
 .set-passcode-form__mobile-value {
-  font-size: 0.9375rem;
+  font-size: clamp(0.9375rem, 1.05vw, 1.05rem);
   font-weight: 600;
   color: var(--primary-text);
   letter-spacing: 0.04em;
@@ -32,7 +32,7 @@
 .set-passcode-form__field {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: clamp(0.4rem, 0.8vh, 0.65rem);
   width: 100%;
 }
 
@@ -43,7 +43,7 @@
 }
 
 .set-passcode-form__label {
-  font-size: 0.8125rem;
+  font-size: clamp(0.85rem, 0.95vw, 0.95rem);
   font-weight: 600;
   color: var(--primary-text);
 }
@@ -52,7 +52,7 @@
   background: transparent;
   border: none;
   color: var(--primary-blue);
-  font-size: 0.8125rem;
+  font-size: clamp(0.8125rem, 0.92vw, 0.925rem);
   font-weight: 600;
   cursor: pointer;
   padding: 0;
@@ -65,14 +65,14 @@
 }
 
 .set-passcode-form__error-msg {
-  font-size: 0.75rem;
+  font-size: clamp(0.75rem, 0.85vw, 0.825rem);
   color: var(--error);
   font-weight: 500;
 }
 
 .set-passcode-form__hint {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: clamp(0.75rem, 0.85vw, 0.825rem);
   color: var(--secondary-text);
   line-height: 1.45;
 }
@@ -81,19 +81,23 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.65rem;
+  gap: clamp(0.65rem, 1.2vh, 0.95rem);
   width: 100%;
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .set-passcode-form__btn-primary {
   width: 100%;
-  padding: 0.72rem 1.25rem;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
+  height: clamp(48px, 5.8vh, 56px);
+  padding: 0 1.25rem;
+  border-radius: clamp(12px, 1.5vh, 16px);
+  font-size: clamp(1rem, 1.15vw, 1.15rem);
+  font-weight: 700;
   border: none;
   font-family: inherit;
   transition: all 180ms ease;
+  box-sizing: border-box;
 }
 
 .set-passcode-form__btn-primary--active {
@@ -115,5 +119,5 @@
 }
 
 .set-passcode-form__cancel {
-  font-size: 0.8125rem;
+  font-size: clamp(0.8125rem, 0.92vw, 0.925rem);
 }

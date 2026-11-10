@@ -53,6 +53,29 @@ export const maskAadhaar = (val?: string | null, fallback = '—'): string => {
 }
 
 /**
+ * Masks an Aadhaar number using asterisks for display:
+ * "234567898557" -> "**** **** 8557"
+ */
+export const maskAadhaarAsterisk = (val?: string | null, fallback = '—'): string => {
+  const digits = (val ?? '').replace(/\D/g, '')
+  if (digits.length < AADHAAR_VISIBLE_DIGITS) return fallback
+  return `**** **** ${digits.slice(-AADHAAR_VISIBLE_DIGITS)}`
+}
+
+/**
+ * Masks a PAN number for display:
+ * "CASPJ7434E" -> "CASPJ****E" (shows first 5 characters and last 1 character, masks the 4 digits)
+ */
+export const maskPan = (val?: string | null, fallback = '—'): string => {
+  if (!val) return fallback
+  const cleaned = val.trim().toUpperCase()
+  if (cleaned.length === 10) {
+    return `${cleaned.slice(0, 5)}****${cleaned.slice(9)}`
+  }
+  return cleaned
+}
+
+/**
  * Formats PAN to uppercase alphanumeric max 10 chars
  */
 export const formatPan = (val: string): string => {

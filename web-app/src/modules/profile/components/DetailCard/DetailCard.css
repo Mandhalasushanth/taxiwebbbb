@@ -152,6 +152,15 @@
   width: fit-content;
 }
 
+.profile-detail-card__footer-note {
+  padding: 16px clamp(20px, 3vw, 36px);
+  border-top: 1px solid var(--subtle-border, #f1f5f9);
+  color: #64748b;
+  font-size: 13.5px;
+  line-height: 1.5;
+  background-color: var(--surface, #ffffff);
+}
+
 @media (max-width: 1280px) {
   .profile-detail-card__body {
     grid-template-columns: repeat(3, minmax(0, 1fr));

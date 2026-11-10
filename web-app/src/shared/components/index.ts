@@ -51,6 +51,3 @@ export { FieldInfoTooltip } from "./FieldInfoTooltip";
 export type { FieldInfoTooltipProps } from "./FieldInfoTooltip";
 
 export * from "./ScrollToTop";
-
-export { CustomCalendarPopover } from "./Input/CustomCalendarPopover";
-export type { CustomCalendarPopoverProps } from "./Input/CustomCalendarPopover";

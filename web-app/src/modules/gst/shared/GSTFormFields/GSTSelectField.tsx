@@ -12,6 +12,7 @@ export interface GSTSelectOptionState {
 export interface GSTSelectFieldProps {
   id: string
   label: string
+  infoTooltip?: React.ReactNode
   value: string
   placeholder: string
   options: readonly string[]
@@ -25,6 +26,7 @@ export interface GSTSelectFieldProps {
 export const GSTSelectField = ({
   id,
   label,
+  infoTooltip,
   value,
   placeholder,
   options,
@@ -45,7 +47,7 @@ export const GSTSelectField = ({
   }
 
   return (
-    <GSTFieldShell id={id} label={label} error={error}>
+    <GSTFieldShell id={id} label={label} infoTooltip={infoTooltip} error={error}>
       <div className="gst-field__select-wrap">
         <select
           id={id}

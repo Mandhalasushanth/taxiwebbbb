@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { routePaths } from '@core/config'
 import { useAuthStore } from '@store/index'
-import { authStorage, userRepository } from '@core/auth'
+import { authStorage } from '@core/auth'
 import { LogoutConfirmModal } from '@shared/components'
 import { useLogoutConfirm } from '@modules/authentication'
-import { PASSCODE_LENGTH, validateNewPasscode, validateConfirmPasscode } from '@modules/authentication/validation/passcodeValidation'
+import { authFlowService } from '@modules/authentication/services/authFlowService'
 import './Settings.css'
 
 const STORAGE_KEY_NOTIFICATIONS = 'taxedge_push_notifications_enabled'
@@ -58,13 +60,6 @@ const IconCheck = () => (
   </svg>
 )
 
-const IconClose = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="6" x2="6" y2="18"></line>
-    <line x1="6" y1="6" x2="18" y2="18"></line>
-  </svg>
-)
-
 export const Settings = () => {
   const storeUser = useAuthStore((state) => state.user)
   const user = storeUser || authStorage.getUser()
@@ -82,16 +77,11 @@ export const Settings = () => {
   // Toast feedback
   const [toastMessage, setToastMessage] = useState<string | null>(null)
 
-  // Passcode modal state
-  const [isPasscodeModalOpen, setIsPasscodeModalOpen] = useState(false)
-  const [newPasscode, setNewPasscode] = useState('')
-  const [confirmPasscode, setConfirmPasscode] = useState('')
-  const [showDigits, setShowDigits] = useState(false)
-  const [passcodeError, setPasscodeError] = useState<string | null>(null)
-  const [isSavingPasscode, setIsSavingPasscode] = useState(false)
-  const [passcodeSuccess, setPasscodeSuccess] = useState(false)
+  // Passcode reset redirect state
+  const [isInitiatingPasscodeReset, setIsInitiatingPasscodeReset] = useState(false)
 
-  // Logout confirm modal hook
+  // Navigation & Logout confirm modal hook
+  const navigate = useNavigate()
   const logout = useLogoutConfirm()
 
   const handleToggleNotifications = () => {
@@ -112,54 +102,32 @@ export const Settings = () => {
     }, 2800)
   }
 
-  const handleOpenPasscodeModal = () => {
-    setNewPasscode('')
-    setConfirmPasscode('')
-    setPasscodeError(null)
-    setPasscodeSuccess(false)
-    setIsPasscodeModalOpen(true)
-  }
-
-  const handleClosePasscodeModal = () => {
-    if (isSavingPasscode) return
-    setIsPasscodeModalOpen(false)
-    setNewPasscode('')
-    setConfirmPasscode('')
-    setPasscodeError(null)
-    setPasscodeSuccess(false)
-  }
-
-  const handleSavePasscode = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setPasscodeError(null)
-
-    const mobile = user?.mobile || ''
-    const errNew = validateNewPasscode(newPasscode, mobile)
-    if (errNew) {
-      setPasscodeError(errNew)
-      return
-    }
-
-    const errConfirm = validateConfirmPasscode(newPasscode, confirmPasscode)
-    if (errConfirm) {
-      setPasscodeError(errConfirm)
+  const handleChangePasscode = async () => {
+    if (isInitiatingPasscodeReset) return
+    const rawMobile = user?.mobile || authStorage.getUser()?.mobile || ''
+    const clean = rawMobile.replace(/\D/g, '')
+    if (!clean) {
+      showToast('No registered mobile number found to reset passcode.')
       return
     }
 
     try {
-      setIsSavingPasscode(true)
-      if (mobile) {
-        userRepository.savePasscodeState(mobile, newPasscode)
-      }
-      setPasscodeSuccess(true)
-      showToast('Security passcode updated successfully')
-      setTimeout(() => {
-        handleClosePasscodeModal()
-      }, 1500)
-    } catch {
-      setPasscodeError('Failed to save passcode. Please try again.')
+      setIsInitiatingPasscodeReset(true)
+      await authFlowService.sendOtp(clean)
+      useAuthStore.getState().signOut()
+      authStorage.clear()
+      navigate(routePaths.auth.login, {
+        state: {
+          mode: 'otp',
+          mobile: clean,
+          isResetFlow: true,
+        },
+        replace: true,
+      })
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Failed to send verification code. Please try again.')
     } finally {
-      setIsSavingPasscode(false)
+      setIsInitiatingPasscodeReset(false)
     }
   }
 
@@ -242,7 +210,8 @@ export const Settings = () => {
             <button
               type="button"
               className="settings-action-row"
-              onClick={handleOpenPasscodeModal}
+              onClick={handleChangePasscode}
+              disabled={isInitiatingPasscodeReset}
             >
               <div className="settings-action-row__icon-box settings-action-row__icon-box--purple">
                 <IconKey />
@@ -250,7 +219,7 @@ export const Settings = () => {
               <div className="settings-action-row__label-group">
                 <span className="settings-action-row__label">Change Passcode</span>
                 <span className="settings-action-row__sublabel">
-                  Update your 6-digit security PIN
+                  {isInitiatingPasscodeReset ? 'Sending reset code...' : 'Update your 6-digit security PIN'}
                 </span>
               </div>
               <span className="settings-action-row__chevron">
@@ -292,131 +261,6 @@ export const Settings = () => {
           </span>
         </div>
       </div>
-
-      {/* Change Passcode Modal */}
-      {isPasscodeModalOpen && (
-        <div className="settings-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="passcode-modal-title">
-          <div className="settings-modal">
-            <div className="settings-modal__header">
-              <div className="settings-modal__title-row">
-                <div className="settings-modal__icon-badge">
-                  <IconKey />
-                </div>
-                <div>
-                  <h3 id="passcode-modal-title" className="settings-modal__title">Change Security Passcode</h3>
-                  <p className="settings-modal__subtitle">Update your 6-digit security PIN</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                className="settings-modal__close-btn"
-                onClick={handleClosePasscodeModal}
-                disabled={isSavingPasscode}
-                aria-label="Close dialog"
-              >
-                <IconClose />
-              </button>
-            </div>
-
-            {passcodeSuccess ? (
-              <div className="settings-modal__success-body">
-                <div className="settings-modal__success-icon">
-                  <IconCheck />
-                </div>
-                <h4 className="settings-modal__success-title">Passcode Updated</h4>
-                <p className="settings-modal__success-subtitle">
-                  Your new 6-digit PIN has been saved securely.
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleSavePasscode} className="settings-modal__form">
-                <div className="settings-modal__field">
-                  <div className="settings-modal__field-header">
-                    <label htmlFor="new-passcode-input" className="settings-modal__label">
-                      New 6-Digit Passcode
-                    </label>
-                    <button
-                      type="button"
-                      className="settings-modal__toggle-visibility"
-                      onClick={() => setShowDigits((prev) => !prev)}
-                    >
-                      {showDigits ? 'Hide PIN' : 'Show PIN'}
-                    </button>
-                  </div>
-                  <input
-                    id="new-passcode-input"
-                    type={showDigits ? 'text' : 'password'}
-                    inputMode="numeric"
-                    maxLength={PASSCODE_LENGTH}
-                    pattern="[0-9]*"
-                    autoComplete="new-password"
-                    value={newPasscode}
-                    onChange={(e) => {
-                      const val = e.target.value.replace(/\D/g, '')
-                      setNewPasscode(val)
-                      setPasscodeError(null)
-                    }}
-                    placeholder="Enter 6 digits"
-                    className={`settings-modal__input ${passcodeError ? 'settings-modal__input--error' : ''}`}
-                    autoFocus
-                  />
-                </div>
-
-                <div className="settings-modal__field">
-                  <label htmlFor="confirm-passcode-input" className="settings-modal__label">
-                    Confirm New Passcode
-                  </label>
-                  <input
-                    id="confirm-passcode-input"
-                    type={showDigits ? 'text' : 'password'}
-                    inputMode="numeric"
-                    maxLength={PASSCODE_LENGTH}
-                    pattern="[0-9]*"
-                    autoComplete="new-password"
-                    value={confirmPasscode}
-                    onChange={(e) => {
-                      const val = e.target.value.replace(/\D/g, '')
-                      setConfirmPasscode(val)
-                      setPasscodeError(null)
-                    }}
-                    placeholder="Re-enter 6 digits"
-                    className={`settings-modal__input ${passcodeError ? 'settings-modal__input--error' : ''}`}
-                  />
-                </div>
-
-                {passcodeError && (
-                  <div className="settings-modal__error-box">
-                    <span>{passcodeError}</span>
-                  </div>
-                )}
-
-                <div className="settings-modal__hint-box">
-                  <IconInfo />
-                  <span>Choose 6 numbers that are easy for you to remember and hard for others to guess. Avoid repeating digits (e.g. 111111).</span>
-                </div>
-
-                <div className="settings-modal__actions">
-                  <button
-                    type="button"
-                    className="settings-modal__btn-secondary"
-                    onClick={handleClosePasscodeModal}
-                    disabled={isSavingPasscode}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="settings-modal__btn-primary"
-                    disabled={newPasscode.length !== PASSCODE_LENGTH || confirmPasscode.length !== PASSCODE_LENGTH || isSavingPasscode}
-                  >
-                    {isSavingPasscode ? 'Saving...' : 'Update Passcode'}
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Logout Confirmation Modal */}
       <LogoutConfirmModal

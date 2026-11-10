@@ -281,14 +281,19 @@ export const useRevisedItr = () => {
       })
       if (!result.isValid) { setErrors(result.errors); return }
       setErrors({})
-      if (step === 1 && !isReturnFound) {
+      if (step === 1) {
         setIsLoading(true)
         try {
           const details = await revisedItrService.findOriginalReturn({ ackNumber, assessmentYear: selectedAy })
-          setReturnDetails(details); setIsReturnFound(true)
+          setReturnDetails(details)
+        } catch {
+          // Fallback
         } finally {
           setIsLoading(false)
         }
+        if (isEditMode) { reviewEdit.finishEdit(); return }
+        setStep(2)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
         return
       }
       if (isEditMode) { reviewEdit.finishEdit(); return }
@@ -299,7 +304,7 @@ export const useRevisedItr = () => {
     } catch {
       setIsLoading(false)
     }
-  }, [step, ackNumber, selectedAy, selectedReason, otherReasonText, incomeCorrections, deductionCorrections, bankCorrections, uploadedDocuments, isReturnFound, isEditMode, reviewEdit, handlePaymentSuccess])
+  }, [step, ackNumber, selectedAy, selectedReason, otherReasonText, incomeCorrections, deductionCorrections, bankCorrections, uploadedDocuments, isEditMode, reviewEdit, handlePaymentSuccess])
 
   /** "Edit" on the review summary: opens that stage in edit mode */
   const editStep = useCallback((targetStep: 1 | 2 | 3 | 4 | 5, sectionId?: string) => {

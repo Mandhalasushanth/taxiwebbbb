@@ -25,10 +25,9 @@ export const sanitizeBusinessLegalName = (value: string): string => {
 export const validateBusinessLegalName = (name: string): string | null => {
   const trimmed = (name || '').trim()
   if (!trimmed) return 'Legal name of business is required'
+  if (/\d/.test(trimmed)) return 'Legal name cannot contain numbers'
   if (trimmed.length < 3) return 'Enter the legal name exactly as on the PAN (min 3 characters)'
-  if (!/[A-Za-z]/.test(trimmed)) return 'Legal name of business must contain letters'
-  if (!/^[A-Za-z0-9]/.test(trimmed)) return 'Legal name must start with a letter or digit'
-  if (!/^[A-Za-z0-9\s.]+$/.test(trimmed)) return 'Only letters, numbers, spaces, and dot are allowed'
+  if (!/^[A-Za-z\s.]+$/.test(trimmed)) return 'Only letters, spaces, and dot are allowed'
   if (/\.{2,}/.test(trimmed)) return 'Legal name of business should not contain consecutive dots'
   if (/\s{2,}/.test(name || '')) return 'Legal name of business should not contain consecutive spaces'
   return null

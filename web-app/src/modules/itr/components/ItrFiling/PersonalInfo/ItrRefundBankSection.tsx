@@ -245,9 +245,18 @@ export const ItrRefundBankSection: React.FC<ItrRefundBankSectionProps> = ({
           {bankAccounts.map((acc) => {
             const isChecked = selectedBankId === acc.id
             return (
-              <label
+              <div
                 key={acc.id}
                 className={`itr-bank-account-card ${isChecked ? 'itr-bank-account-card--selected' : ''}`}
+                onClick={() => handleBankSelect(acc.id)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault()
+                    handleBankSelect(acc.id)
+                  }
+                }}
               >
                 <div className="itr-bank-card-main-row">
                   <span className={`itr-custom-radio ${isChecked ? 'itr-custom-radio--checked' : ''}`} />
@@ -259,12 +268,6 @@ export const ItrRefundBankSection: React.FC<ItrRefundBankSectionProps> = ({
                         <CheckBadgeCircleIcon size={14} />
                         <span>Validated</span>
                       </span>
-                      {isChecked && (
-                        <span className="itr-bank-badge-pill itr-bank-badge-selected">
-                          <CheckBadgeCircleIcon size={14} />
-                          <span>Selected</span>
-                        </span>
-                      )}
                     </div>
 
                     <div className="itr-bank-account-number itr-mono">
@@ -279,7 +282,10 @@ export const ItrRefundBankSection: React.FC<ItrRefundBankSectionProps> = ({
                   <button
                     type="button"
                     className="itr-bank-edit-icon-btn"
-                    onClick={(e) => handleEditBank(acc, e)}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleEditBank(acc, e)
+                    }}
                     aria-label={`Edit ${acc.bankName} details`}
                     title="Edit Bank Details"
                   >
@@ -293,9 +299,10 @@ export const ItrRefundBankSection: React.FC<ItrRefundBankSectionProps> = ({
                   value={acc.id}
                   checked={isChecked}
                   onChange={() => handleBankSelect(acc.id)}
+                  onClick={(e) => e.stopPropagation()}
                   className="itr-sr-only"
                 />
-              </label>
+              </div>
             )
           })}
         </div>

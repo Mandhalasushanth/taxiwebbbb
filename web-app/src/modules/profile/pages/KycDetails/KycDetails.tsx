@@ -2,9 +2,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@store/index'
 import { authStorage, buildProfileCompletionPath } from '@core/auth'
 import { routePaths } from '@core/config'
-import { maskAadhaar } from '@shared/utils'
-import { DetailCard } from '../../components/DetailCard/DetailCard'
-import { formatFullAddress } from '../../utils/profileProgress'
+import { maskPan, maskAadhaarAsterisk } from '@shared/utils'
+import { DetailCard, type DetailCardItem } from '../../components/DetailCard/DetailCard'
 import '../PersonalInformation/ProfileDetails.css'
 
 export const KycDetails = () => {
@@ -28,11 +27,36 @@ export const KycDetails = () => {
     })
   }
 
-  const identityItems = [
-    { label: 'PAN NUMBER', value: user.pan ? user.pan.toUpperCase() : null },
-    // Never show the full Aadhaar number: only the last 4 digits (XXXX XXXX 1234)
-    { label: 'AADHAAR NUMBER', value: user.aadhaar ? maskAadhaar(user.aadhaar) : null },
-    { label: 'ADDRESS', value: formatFullAddress(user), isFullWidth: true },
+  const isVerified = Boolean((user.pan && user.aadhaar) || user.isProfileComplete || user.pan)
+
+  const identityItems: DetailCardItem[] = [
+    { label: 'PAN Number', value: user.pan ? maskPan(user.pan) : null },
+    { label: 'Aadhaar Number', value: user.aadhaar ? maskAadhaarAsterisk(user.aadhaar) : null },
+    {
+      label: 'Verification Status',
+      value: isVerified ? (
+        <span className="profile-verified-badge" data-testid="kyc-verification-status">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          <span>Verified</span>
+        </span>
+      ) : (
+        <span className="profile-pending-badge" data-testid="kyc-pending-status">
+          Pending
+        </span>
+      ),
+    },
   ]
 
   return (
@@ -42,6 +66,7 @@ export const KycDetails = () => {
           title="KYC Details"
           items={identityItems}
           onEdit={handleEdit}
+          footerNote="Status reflects the PAN and Aadhaar documents uploaded against your applications."
           icon={
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>

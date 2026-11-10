@@ -1,12 +1,16 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import { ItrRefundBankSection } from '../../src/modules/itr/components/ItrFiling/PersonalInfo/ItrRefundBankSection'
 import type { FilingBankAccount } from '../../src/modules/itr/components/ItrFiling/itrFiling.constants'
 
 describe('ItrRefundBankSection - Manual Input & Layout Matching Image 2', () => {
+  afterEach(() => {
+    cleanup()
+  })
+
   it('renders fields matching Image 2 order and placeholders, with no auto-fetch on IFSC', () => {
     const onBankAccountsChange = vi.fn()
     const onSelectedBankIdChange = vi.fn()
@@ -140,5 +144,72 @@ describe('ItrRefundBankSection - Manual Input & Layout Matching Image 2', () => 
     expect(updated[0].branch).toBe('Koramangala Branch')
     expect(updated[0].rawAccountNumber).toBe('547812345678987654')
     expect(updated[0].accountNumber).toBe('•••• •••• 7654')
+  })
+
+  it('selects account when clicking card body without opening edit view, and only opens edit view when clicking edit pen icon', () => {
+    const onBankAccountsChange = vi.fn()
+    const onSelectedBankIdChange = vi.fn()
+
+    const initialAccounts: FilingBankAccount[] = [
+      {
+        id: 'bank-1',
+        bankName: 'HDFC Bank',
+        branch: 'MG Road',
+        accountNumber: '•••• •••• 8909',
+        rawAccountNumber: '12345678908909',
+        ifsc: 'HDFC0000123',
+        accountType: 'savings',
+        isPrimary: true,
+        isPreValidated: true,
+      },
+      {
+        id: 'bank-2',
+        bankName: 'State Bank of India',
+        branch: 'Main Branch',
+        accountNumber: '•••• •••• 5434',
+        rawAccountNumber: '98765432105434',
+        ifsc: 'SBIN0000012',
+        accountType: 'savings',
+        isPrimary: false,
+        isPreValidated: true,
+      },
+    ]
+
+    render(
+      <ItrRefundBankSection
+        bankAccounts={initialAccounts}
+        onBankAccountsChange={onBankAccountsChange}
+        selectedBankId="bank-1"
+        onSelectedBankIdChange={onSelectedBankIdChange}
+      />
+    )
+
+    // Verify both bank accounts are displayed
+    expect(screen.getByText('HDFC Bank')).toBeInTheDocument()
+    expect(screen.getByText('State Bank of India')).toBeInTheDocument()
+
+    // Verify "Selected" text/badge is NOT rendered (selected state is communicated by radio and green card)
+    expect(screen.queryByText('Selected')).not.toBeInTheDocument()
+    expect(screen.getAllByText('Validated')).toHaveLength(2)
+
+    // Click anywhere on the body of the 2nd bank account card (e.g. on the text or card)
+    const sbiText = screen.getByText('State Bank of India')
+    fireEvent.click(sbiText)
+
+    // Should call onSelectedBankIdChange with 'bank-2'
+    expect(onSelectedBankIdChange).toHaveBeenCalledWith('bank-2')
+
+    // Edit view should NOT be opened
+    expect(screen.queryByText('Edit Bank Account')).not.toBeInTheDocument()
+    expect(screen.getByText('HDFC Bank')).toBeInTheDocument()
+    expect(screen.getByText('State Bank of India')).toBeInTheDocument()
+
+    // Now click the edit button (pen icon) on the 2nd bank account
+    const sbiEditBtn = screen.getByRole('button', { name: /edit state bank of india details/i })
+    fireEvent.click(sbiEditBtn)
+
+    // Edit view should now be opened
+    expect(screen.getByText('Edit Bank Account')).toBeInTheDocument()
+    expect(screen.queryByText('•••• •••• 5434')).not.toBeInTheDocument()
   })
 })

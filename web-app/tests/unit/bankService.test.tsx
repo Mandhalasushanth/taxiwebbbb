@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import '@testing-library/jest-dom/vitest'
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import {
@@ -117,5 +118,45 @@ describe('GSTBankDetails Component - Manual Bank Details Input', () => {
     expect(branchInput.tagName).toBe('INPUT')
     fireEvent.change(branchInput, { target: { value: 'Fort Branch' } })
     expect(handleChange).toHaveBeenCalledWith('branch', 'Fort Branch')
+  })
+
+  it('renders eye toggle icon on both Bank Account Number and Confirm Account Number fields', () => {
+    const initialData = {
+      accountHolderName: 'Sagarika Jena',
+      accountNumber: '918273645012',
+      confirmAccountNumber: '918273645012',
+      ifscCode: 'HDFC0000412',
+      bankName: 'HDFC Bank',
+      branch: 'Fort Branch',
+      accountType: 'Current',
+    }
+
+    render(
+      <GSTBankDetails
+        data={initialData}
+        onChange={vi.fn()}
+      />
+    )
+
+    const accInput = screen.getByPlaceholderText('Enter account number')
+    const confirmInput = screen.getByPlaceholderText('Re-enter account number')
+
+    // Both start masked as password
+    expect(accInput).toHaveAttribute('type', 'password')
+    expect(confirmInput).toHaveAttribute('type', 'password')
+
+    // Eye toggle button for Bank Account Number exists and toggles
+    const accToggle = screen.getByRole('button', { name: /Show account number/i })
+    expect(accToggle).toBeInTheDocument()
+    fireEvent.click(accToggle)
+    expect(accInput).toHaveAttribute('type', 'text')
+    expect(screen.getByRole('button', { name: /Hide account number/i })).toBeInTheDocument()
+
+    // Eye toggle button for Confirm Account Number exists and toggles
+    const confirmToggle = screen.getByRole('button', { name: /Show confirm account number/i })
+    expect(confirmToggle).toBeInTheDocument()
+    fireEvent.click(confirmToggle)
+    expect(confirmInput).toHaveAttribute('type', 'text')
+    expect(screen.getByRole('button', { name: /Hide confirm account number/i })).toBeInTheDocument()
   })
 })

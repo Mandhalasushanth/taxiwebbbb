@@ -52,10 +52,13 @@ describe('GST Validations - Centralized & Field-by-Field', () => {
     it('rejects invalid business legal names', () => {
       expect(validateBusinessLegalName('')).toBe('Legal Name of Business is required')
       expect(validateBusinessLegalName('A')).toBe('Legal Name of Business must be at least 2 characters')
-      expect(validateBusinessLegalName('123456789')).toBe('Legal Name of Business must contain letters')
+      expect(validateBusinessLegalName('123456789')).toBe('Legal name cannot contain numbers')
+      expect(validateBusinessLegalName('vgh3456789')).toBe('Legal name cannot contain numbers')
       expect(validateBusinessLegalName('Tata..Consultancy')).toBe('Legal Name of Business should not contain consecutive punctuation')
       expect(validateBusinessLegalName('Tata  Consultancy')).toBe('Legal Name of Business should not contain consecutive spaces')
       expect(validateBusinessLegalName('Tata @#$ Motors')).toBe('Legal Name of Business contains invalid special characters')
+      expect(validateBusinessLegalName('---...')).toBe('Legal Name of Business must contain letters')
+      expect(validateBusinessLegalName('usdsudhs)(&')).toMatch(/invalid punctuation|unmatched parentheses|consecutive punctuation/)
     })
   })
 
@@ -80,6 +83,7 @@ describe('GST Validations - Centralized & Field-by-Field', () => {
       expect(validateTradeName('$$$%%%')).toBe('Trade Name must contain letters or numbers')
       expect(validateTradeName('Quick..Fix')).toBe('Trade Name should not contain consecutive punctuation')
       expect(validateTradeName('   ')).toBe('Trade Name is required')
+      expect(validateTradeName('sgjdkdh&(&')).toMatch(/invalid punctuation|unmatched parentheses|consecutive punctuation/)
     })
   })
 
@@ -139,7 +143,7 @@ describe('GST Validations - Centralized & Field-by-Field', () => {
     it('rejects future dates', () => {
       const nextYear = new Date().getFullYear() + 1
       const futureDate = `01-01-${nextYear}`
-      expect(validateCommencementDate(futureDate)).toBe('Commencement date cannot be more than 30 days in the future')
+      expect(validateCommencementDate(futureDate)).toBe('Date of commencement cannot be in the future')
     })
 
     it('rejects dates older than 100 years', () => {
@@ -302,6 +306,24 @@ describe('GST Validations - Centralized & Field-by-Field', () => {
       expect(validateEmail('invalid-email')).toBe(VALIDATION_MESSAGES.email)
       expect(validateEmail('user@')).toBe(VALIDATION_MESSAGES.email)
     })
+
+    it('validates designation (letters, spaces, single / and -, length 2 to 60)', () => {
+      expect(validateDesignation('Managing Director')).toBeNull()
+      expect(validateDesignation('Proprietor / Partner')).toBeNull()
+      expect(validateDesignation('CEO / Founder')).toBeNull()
+      expect(validateDesignation('Director-General')).toBeNull()
+      expect(validateDesignation('')).toBe('Designation is required')
+      expect(validateDesignation('   ')).toBe('Designation is required')
+      expect(validateDesignation('D')).toBe('Designation must be at least 2 characters')
+      expect(validateDesignation('a'.repeat(61))).toBe('Designation cannot exceed 60 characters')
+      expect(validateDesignation(' Director')).toBe('Designation cannot start with a space')
+      expect(validateDesignation('/Director')).toBe('Designation cannot start with a special character')
+      expect(validateDesignation('Director/')).toBe('Designation cannot end with a special character')
+      expect(validateDesignation('Director//Partner')).toBe('Designation cannot contain consecutive special characters')
+      expect(validateDesignation('Managing   Director')).toBe('Only one space is allowed between words')
+      expect(validateDesignation('Director 123')).toBe('Designation must contain only letters')
+      expect(validateDesignation('Director@Co')).toBe('Designation must contain only letters')
+    })
   })
 
   describe('8. GST Step Business Form Level & OnBlur Field Validation', () => {
@@ -355,7 +377,7 @@ describe('GST Validations - Centralized & Field-by-Field', () => {
       }
       const errors = validateGstBusinessForm(invalidData)
       expect(Object.keys(errors).length).toBeGreaterThan(0)
-      expect(errors.legalName).toBe('Legal Name of Business (as per PAN) must contain letters')
+      expect(errors.legalName).toBe('Legal name cannot contain numbers')
       expect(errors.businessPan).toContain('4th character must be "C"')
       expect(errors.confirmAccountNumber).toBe('Account numbers do not match.')
       expect(errors.hsnSacCode).toBe('HSN / SAC code must be 4, 6 or 8 digits')
@@ -366,6 +388,7 @@ describe('GST Validations - Centralized & Field-by-Field', () => {
     it('supports granular single-field validation on blur (validateGstBusinessField)', () => {
       // Test Legal Name on blur
       expect(validateGstBusinessField('legalName', { ...validFormData, legalName: '' })).toBe('Legal Name of Business (as per PAN) is required')
+      expect(validateGstBusinessField('legalName', { ...validFormData, legalName: 'vgh3456789' })).toBe('Legal name cannot contain numbers')
       expect(validateGstBusinessField('legalName', { ...validFormData, legalName: 'Reliance Retail Limited' })).toBeUndefined()
 
       // Test Confirm Account Number on blur

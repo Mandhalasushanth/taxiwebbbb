@@ -47,13 +47,43 @@ export const SignInCard: React.FC<SignInCardProps> = ({
   const getPostLoginPath = () => resolvePostLoginPath(location.search, location.state, routePaths.dashboard)
   const signIn = useAuthStore((state) => state.signIn)
 
-  const [authMode, setAuthMode] = useState<AuthMode>(initialMode)
-  const [mobile, setMobile] = useState(initialMobile)
+  const [authMode, setAuthMode] = useState<AuthMode>(() => {
+    const navState = location.state as { mode?: AuthMode } | null
+    const paramMode = new URLSearchParams(location.search).get('mode') as AuthMode | null
+    if (navState?.mode) return navState.mode
+    if (paramMode && ['mobile', 'otp', 'passcode', 'reset'].includes(paramMode)) return paramMode
+    return initialMode
+  })
+  const [mobile, setMobile] = useState<string>(() => {
+    const navState = location.state as { mobile?: string } | null
+    const paramMobile = new URLSearchParams(location.search).get('mobile')
+    return navState?.mobile || paramMobile || initialMobile
+  })
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const [isResetFlow, setIsResetFlow] = useState(false)
-  const [notice, setNotice] = useState<string | null>(null)
+  const [isResetFlow, setIsResetFlow] = useState<boolean>(() => {
+    const navState = location.state as { isResetFlow?: boolean } | null
+    const paramReset = new URLSearchParams(location.search).get('reset') === 'true'
+    return typeof navState?.isResetFlow === 'boolean' ? navState.isResetFlow : paramReset
+  })
+  const [notice, setNotice] = useState<string | null>(() => {
+    const navState = location.state as { notice?: string } | null
+    return navState?.notice || null
+  })
+
+  useEffect(() => {
+    const navState = location.state as {
+      mode?: AuthMode
+      mobile?: string
+      isResetFlow?: boolean
+      notice?: string
+    } | null
+    if (navState?.mode) setAuthMode(navState.mode)
+    if (navState?.mobile) setMobile(formatMobile(navState.mobile))
+    if (typeof navState?.isResetFlow === 'boolean') setIsResetFlow(navState.isResetFlow)
+    if (navState?.notice) setNotice(navState.notice)
+  }, [location.state])
 
   // Login supports Indian numbers only (OTP + validation are +91-specific)
   const selectedCountry = COUNTRY_CODES[0]
@@ -96,14 +126,15 @@ export const SignInCard: React.FC<SignInCardProps> = ({
         otp,
       })
 
+      // If in reset flow, OTP verified ownership -> proceed to Set/Reset Passcode
+      if (isResetFlow) {
+        setAuthMode('reset')
+        return
+      }
+
       // Check dynamically if user has created a passcode
       const userHasPasscode = authFlowService.hasPasscode(cleanMobile)
       if (userHasPasscode) {
-        if (isResetFlow) {
-          // Forgot passcode: OTP proves ownership, so let them choose a new passcode right here
-          setAuthMode('reset')
-          return
-        }
         // For users who have created a passcode: OTP is verified, now prompt for passcode
         setAuthMode('passcode')
         return
@@ -149,7 +180,7 @@ export const SignInCard: React.FC<SignInCardProps> = ({
   const handleCancelReset = () => {
     setIsResetFlow(false)
     setError(null)
-    setAuthMode('passcode')
+    setAuthMode(authFlowService.hasPasscode(cleanMobile) ? 'passcode' : 'mobile')
   }
 
   const handlePasscodeLogin = async (passcode: string) => {
@@ -197,7 +228,11 @@ export const SignInCard: React.FC<SignInCardProps> = ({
 
 
   const getSubtitle = () => {
-    if (authMode === 'otp') return 'Enter the 6-digit OTP sent to your mobile number'
+    if (authMode === 'otp') {
+      return isResetFlow
+        ? 'Enter the 6-digit reset code sent to your mobile number'
+        : 'Enter the 6-digit OTP sent to your mobile number'
+    }
     if (authMode === 'passcode') return 'Enter your 6-digit passcode to sign in'
     if (authMode === 'reset') return 'Set a new 6-digit passcode for your account'
     return 'Sign in to continue to your Finsolz account'
@@ -212,7 +247,7 @@ export const SignInCard: React.FC<SignInCardProps> = ({
             alt="Finsolz"
             className="sign-in-card__brand-icon sign-in-card__brand-icon--stacked"
           />
-          <FinsolzBrand size="sm" align="center" taglineTone="dark" />
+          <FinsolzBrand size="md" align="center" taglineTone="dark" />
         </div>
       ) : (
         <div className="sign-in-card__brand sign-in-card__brand--inline">
@@ -223,7 +258,7 @@ export const SignInCard: React.FC<SignInCardProps> = ({
               className="sign-in-card__brand-icon"
             />
             <div className="sign-in-card__brand-divider" />
-            <FinsolzBrand size="sm" align="center" taglineTone="dark" />
+            <FinsolzBrand size="md" align="center" taglineTone="dark" />
           </div>
         </div>
       )}
@@ -259,6 +294,7 @@ export const SignInCard: React.FC<SignInCardProps> = ({
           onResendOtp={handleResendOtp}
           isSubmitting={isSubmitting}
           error={error}
+          isResetFlow={isResetFlow}
         />
       )}
 

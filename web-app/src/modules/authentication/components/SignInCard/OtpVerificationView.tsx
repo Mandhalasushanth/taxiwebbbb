@@ -9,6 +9,7 @@ export interface OtpVerificationViewProps {
   onResendOtp: () => void
   isSubmitting: boolean
   error: string | null
+  isResetFlow?: boolean
 }
 
 const OTP_LENGTH = 6
@@ -22,6 +23,7 @@ export const OtpVerificationView: React.FC<OtpVerificationViewProps> = ({
   onResendOtp,
   isSubmitting,
   error,
+  isResetFlow = false,
 }) => {
   const [digits, setDigits] = useState<string[]>(Array.from({ length: OTP_LENGTH }, () => ''))
   const [countdown, setCountdown] = useState<number>(COUNTDOWN_SECONDS)
@@ -120,7 +122,9 @@ export const OtpVerificationView: React.FC<OtpVerificationViewProps> = ({
 
         {/* OTP Field */}
         <div className="otp-verification-form__field">
-          <label className="otp-verification-form__label">Enter 6-Digit OTP</label>
+          <label className="otp-verification-form__label">
+            {isResetFlow ? 'Enter 6-Digit Reset Code' : 'Enter 6-Digit OTP'}
+          </label>
           <div className="otp-verification-form__boxes" onPaste={handlePaste}>
             {digits.map((digit, idx) => (
               <input
@@ -176,7 +180,7 @@ export const OtpVerificationView: React.FC<OtpVerificationViewProps> = ({
           }`}
           disabled={!isOtpComplete || isSubmitting}
         >
-          <span>{isSubmitting ? 'Verifying...' : 'Verify OTP'}</span>
+          <span>{isSubmitting ? 'Verifying...' : isResetFlow ? 'Verify Reset Code' : 'Verify OTP'}</span>
         </button>
       </div>
     </form>

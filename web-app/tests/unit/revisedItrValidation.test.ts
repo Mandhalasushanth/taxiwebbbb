@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import {
+  getAssessmentYearOptions,
+  AY_OPTIONS,
+} from '../../src/modules/itr/types/revisedItr.types'
+import {
   validateAckNumber,
   validateAssessmentYear,
   validateRevisionReason,
@@ -33,12 +37,40 @@ describe('revisedItrValidation', () => {
     })
   })
 
+  describe('getAssessmentYearOptions & AY_OPTIONS rolling years', () => {
+    it('returns exactly 3 assessment years [2024-2025, 2025-2026, 2026-2027] for current year 2026', () => {
+      const opts2026 = getAssessmentYearOptions(new Date('2026-11-09T00:00:00Z'))
+      expect(opts2026).toEqual(['2024-2025', '2025-2026', '2026-2027'])
+      expect(opts2026).toHaveLength(3)
+    })
+
+    it('automatically drops the oldest year and appends newest year when next year (2027) comes', () => {
+      const opts2027 = getAssessmentYearOptions(new Date('2027-04-01T00:00:00Z'))
+      expect(opts2027).toEqual(['2025-2026', '2026-2027', '2027-2028'])
+      expect(opts2027).toHaveLength(3)
+    })
+
+    it('rolls forward continuously for 2028 without modifying logic', () => {
+      const opts2028 = getAssessmentYearOptions(new Date('2028-01-01T00:00:00Z'))
+      expect(opts2028).toEqual(['2026-2027', '2027-2028', '2028-2029'])
+      expect(opts2028).toHaveLength(3)
+    })
+
+    it('exports AY_OPTIONS containing exactly 3 rolling years', () => {
+      expect(AY_OPTIONS).toHaveLength(3)
+      expect(AY_OPTIONS).toContain('2024-2025')
+      expect(AY_OPTIONS).toContain('2025-2026')
+      expect(AY_OPTIONS).toContain('2026-2027')
+    })
+  })
+
   describe('validateAssessmentYear', () => {
     it('returns error when unselected', () => {
       expect(validateAssessmentYear('')).toBe('Please select an Assessment Year.')
     })
 
     it('returns null when valid year selected', () => {
+      expect(validateAssessmentYear('2025-2026')).toBeNull()
       expect(validateAssessmentYear('AY 2025-26')).toBeNull()
     })
   })

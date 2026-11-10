@@ -16,6 +16,8 @@ export interface DetailCardProps {
   icon?: React.ReactNode
   onEdit?: () => void
   editLabel?: string
+  footerNote?: React.ReactNode
+  children?: React.ReactNode
 }
 
 const EditPencilIcon = () => (
@@ -57,6 +59,8 @@ export const DetailCard: React.FC<DetailCardProps> = ({
   icon,
   onEdit,
   editLabel = 'Edit Details',
+  footerNote,
+  children,
 }) => {
   return (
     <div className="profile-detail-card" data-testid={`profile-detail-card-${title.toLowerCase().replace(/\s+/g, '-')}`}>
@@ -119,6 +123,14 @@ export const DetailCard: React.FC<DetailCardProps> = ({
           )
         })}
       </div>
+
+      {footerNote && (
+        <div className="profile-detail-card__footer-note" data-testid="profile-detail-card-footer-note">
+          {footerNote}
+        </div>
+      )}
+
+      {children}
     </div>
   )
 }

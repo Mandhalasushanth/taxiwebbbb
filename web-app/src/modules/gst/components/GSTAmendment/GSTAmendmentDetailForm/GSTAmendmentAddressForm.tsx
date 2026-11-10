@@ -237,10 +237,6 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
                             ? `${currentDetails.city}, ${currentDetails.state}`
                             : '-, ---',
                       },
-                      {
-                        label: 'Premises Proof',
-                        value: currentDetails?.natureOfPremises || '-',
-                      },
                     ]
               }
             />

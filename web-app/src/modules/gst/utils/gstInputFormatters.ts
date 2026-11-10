@@ -55,8 +55,7 @@ export const gstInput = {
       .replace(/[^A-Za-z0-9\s.&'()\/,-]/g, '')
       .replace(/^[ \s.&'()\/,-]+/g, '')
       .replace(/\s{2,}/g, ' ')
-      .replace(/([.&'\/,-])\1+/g, '$1')
-      .replace(/[.&'\/,-]\s*[.&'\/,-]+/g, (m) => m[0])
+      .replace(/([.&'\/,()\-]\s*){2,}/g, (m) => m.trim().charAt(0))
       .slice(0, max),
   /** Registered address: letters, numbers, spaces, and address punctuation , . / # ( ) & ' - */
   address: (v: string, max = 250): string =>

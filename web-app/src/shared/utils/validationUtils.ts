@@ -225,7 +225,7 @@ export const validateDobSignatory = (dob: string): string | null => {
   }) || null
 }
 
-export const COMMENCEMENT_DATE_LIMITS = { maxYearsInPast: 100, maxDaysInFuture: 30 } as const
+export const COMMENCEMENT_DATE_LIMITS = { maxYearsInPast: 100, maxDaysInFuture: 0 } as const
 
 export const getCommencementDateBounds = (today: Date = new Date()): { min: string; max: string } => {
   const toIso = (d: Date) =>

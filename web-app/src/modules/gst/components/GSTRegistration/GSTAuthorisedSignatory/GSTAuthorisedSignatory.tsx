@@ -35,6 +35,9 @@ export const GSTAuthorisedSignatory = ({
 }: GSTAuthorisedSignatoryProps) => {
   const update = <K extends SignatoryField>(field: K, value: GstBusinessFormData[K]) => {
     onChange(field, value)
+    if (field === 'designation' && typeof value === 'string' && /\d/.test(value)) {
+      return
+    }
     onClearError?.(field)
   }
 
@@ -93,7 +96,7 @@ export const GSTAuthorisedSignatory = ({
         placeholder="Proprietor / Director / Partner"
         value={data.designation}
         error={errors.designation}
-        onValueChange={(v) => update('designation', gstInput.designation(v))}
+        onValueChange={(v) => update('designation', v)}
         onBlur={() => {
           onChange('designation', data.designation.trim())
           onBlur?.('designation')

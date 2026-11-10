@@ -13,8 +13,12 @@ export const PublicRoute = () => {
   const location = useLocation()
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
   const user = useAuthStore((state) => state.user)
+  const isResetFlow = Boolean(
+    (location.state as { isResetFlow?: boolean } | null)?.isResetFlow ||
+    new URLSearchParams(location.search).get('reset') === 'true'
+  )
 
-  return isAuthenticated && user?.isProfileComplete ? (
+  return isAuthenticated && user?.isProfileComplete && !isResetFlow ? (
     <Navigate to={resolvePostLoginPath(location.search, location.state, routePaths.dashboard)} replace />
   ) : (
     <Outlet />

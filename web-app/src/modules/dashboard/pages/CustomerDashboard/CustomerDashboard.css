@@ -5,3 +5,111 @@
   width: 100%;
 }
 
+.dashboard-support-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #0d5c3a;
+  border-radius: 20px;
+  padding: 18px 28px;
+  margin-top: 0.5rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 4px 16px rgba(13, 92, 58, 0.16);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.dashboard-support-banner__left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dashboard-support-banner__icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dashboard-support-banner__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dashboard-support-banner__title {
+  margin: 0;
+  color: #ffffff;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.dashboard-support-banner__subtitle {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.dashboard-support-banner__chat-btn {
+  background-color: #ffffff;
+  color: #0d5c3a;
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 30px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+
+.dashboard-support-banner__chat-btn:hover {
+  transform: translateY(-1px);
+  background-color: #f8fafc;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-support-banner__chat-btn:active {
+  transform: translateY(0);
+}
+
+.dashboard-support-banner__chat-btn:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .dashboard-support-banner {
+    padding: 16px 20px;
+    border-radius: 16px;
+    gap: 14px;
+  }
+
+  .dashboard-support-banner__icon-wrap {
+    width: 42px;
+    height: 42px;
+  }
+
+  .dashboard-support-banner__title {
+    font-size: 17px;
+  }
+
+  .dashboard-support-banner__subtitle {
+    font-size: 13px;
+  }
+
+  .dashboard-support-banner__chat-btn {
+    padding: 8px 22px;
+    font-size: 14px;
+  }
+}
+
+

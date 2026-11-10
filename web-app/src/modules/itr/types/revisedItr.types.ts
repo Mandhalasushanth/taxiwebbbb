@@ -1,6 +1,21 @@
-export type AssessmentYear = 'AY 2025-26' | 'AY 2024-25' | 'AY 2023-24'
+/**
+ * Generates rolling Assessment Years (always keeping exactly 3 years).
+ * In 2026: ['2024-2025', '2025-2026', '2026-2027']
+ * In 2027: ['2025-2026', '2026-2027', '2027-2028']
+ * Every time only keep 3: if next year arrives, removes the oldest year and adds the newest year automatically.
+ */
+export const getAssessmentYearOptions = (referenceDate: Date = new Date()): string[] => {
+  const currentYear = referenceDate.getFullYear()
+  return [
+    `${currentYear - 2}-${currentYear - 1}`,
+    `${currentYear - 1}-${currentYear}`,
+    `${currentYear}-${currentYear + 1}`,
+  ]
+}
 
-export const AY_OPTIONS: AssessmentYear[] = ['AY 2025-26', 'AY 2024-25', 'AY 2023-24']
+export type AssessmentYear = string
+
+export const AY_OPTIONS: string[] = getAssessmentYearOptions()
 
 export type RevisionReasonKey =
   | 'missed_income'
@@ -100,7 +115,7 @@ export interface RevisedItrFormState {
   step: 1 | 2 | 3 | 4 | 5
   ackNumber: string
   selectedAy: string
-  isReturnFound: boolean
+  isReturnFound?: boolean
   returnDetails: OriginalReturnDetails | null
   selectedReason: RevisionReasonKey | null
   otherReasonText: string

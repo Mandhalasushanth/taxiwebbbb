@@ -362,32 +362,38 @@
 
 .itr-radio-outer {
   position: relative;
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--grey-300);
-  border-radius: 50%;
-  background: var(--surface);
-  display: grid;
-  place-items: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   margin-top: 2px;
-  transition: border-color 0.2s ease;
 }
 
 .itr-filing-option-card--active .itr-radio-outer {
-  border-color: var(--primary-orange);
+  border-color: transparent;
 }
 
 .itr-custom-radio {
-  width: 10px;
-  height: 10px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: transparent;
-  transition: background-color 0.2s ease;
+  border: 2px solid #94a3b8;
+  background-color: #ffffff;
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
-.itr-custom-radio--checked {
-  background: var(--primary-orange);
+.itr-custom-radio--checked,
+.itr-filing-option-card--active .itr-custom-radio {
+  border-color: #ea580c;
+  background-color: #ea580c;
+  box-shadow: inset 0 0 0 3.5px #ffffff;
 }
 
 .itr-filing-radio-input {

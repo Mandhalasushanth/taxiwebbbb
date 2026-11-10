@@ -4,7 +4,7 @@
   height: 100vh;
   min-height: 100vh;
   max-height: 100vh;
-  width: 100vw;
+  width: 100%;
   margin: 0;
   padding: 0;
   position: relative;
@@ -23,7 +23,7 @@
   padding: 0;
   margin: 0;
   background: var(--palette-blue-900-030a17);
-  overflow-y: auto;
+  overflow: hidden; /* Fix: background never scrolls or moves on cursor scroll */
   box-sizing: border-box;
 }
 
@@ -36,24 +36,28 @@
   max-height: 100vh;
   width: 100%;
   min-width: 0;
-  padding: clamp(1.5rem, 3.5vw, 4rem);
+  padding: clamp(14px, 2.5vh, 26px) clamp(1rem, 2vw, 2.5rem);
   background: var(--surface);
-  overflow-y: auto;
+  overflow: hidden; /* Fix: background never scrolls */
   box-sizing: border-box;
   box-shadow: -15px 0 45px rgba(0, 0, 0, 0.35);
 }
 
 .create-profile-page__card-container {
   width: 100%;
-  max-width: clamp(580px, 46vw, 840px);
+  max-width: 780px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-sizing: border-box;
-  margin: auto;
+  margin: 0 auto;
 }
 
 /* Tablet / Small Laptop Layout (768px - 1024px): Keep both panels */
 @media (max-width: 1024px) and (min-width: 768px) {
   .create-profile-page__right-section {
-    padding: 1.5rem 1rem;
+    padding: clamp(12px, 2vh, 20px) 1rem;
   }
   .create-profile-page__card-container {
     max-width: 100%;
@@ -81,9 +85,11 @@
     width: 100%;
     padding: 1.5rem 1rem 2.5rem;
     box-shadow: none;
+    overflow-y: visible;
   }
 
   .create-profile-page__card-container {
     max-width: 100%;
+    height: auto;
   }
 }
