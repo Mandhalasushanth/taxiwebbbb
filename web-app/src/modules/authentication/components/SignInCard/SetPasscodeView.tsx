@@ -33,6 +33,7 @@ export const SetPasscodeView: React.FC<SetPasscodeViewProps> = ({
   const [passcode, setPasscode] = useState('')
   const [confirmPasscode, setConfirmPasscode] = useState('')
   const [showPasscode, setShowPasscode] = useState(false)
+  const [showConfirmPasscode, setShowConfirmPasscode] = useState(false)
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
   const isComplete = passcode.length === PASSCODE_LENGTH && confirmPasscode.length === PASSCODE_LENGTH
@@ -72,11 +73,12 @@ export const SetPasscodeView: React.FC<SetPasscodeViewProps> = ({
 
       <div className="set-passcode-form__field">
         <div className="set-passcode-form__label-row">
-          <label className="set-passcode-form__label">New 6–Digit Passcode</label>
+          <label className="set-passcode-form__label">New Passcode</label>
           <button
             type="button"
             className="set-passcode-form__link-btn"
             onClick={() => setShowPasscode((prev) => !prev)}
+            aria-label={showPasscode ? 'Hide passcode' : 'Show passcode'}
           >
             {showPasscode ? 'Hide' : 'Show'}
           </button>
@@ -94,13 +96,23 @@ export const SetPasscodeView: React.FC<SetPasscodeViewProps> = ({
       </div>
 
       <div className="set-passcode-form__field">
-        <label className="set-passcode-form__label">Confirm New Passcode</label>
+        <div className="set-passcode-form__label-row">
+          <label className="set-passcode-form__label">Confirm Passcode</label>
+          <button
+            type="button"
+            className="set-passcode-form__link-btn"
+            onClick={() => setShowConfirmPasscode((prev) => !prev)}
+            aria-label={showConfirmPasscode ? 'Hide confirm passcode' : 'Show confirm passcode'}
+          >
+            {showConfirmPasscode ? 'Hide' : 'Show'}
+          </button>
+        </div>
         <PasscodeDigitInput
           value={confirmPasscode}
           onChange={handleConfirmChange}
           length={PASSCODE_LENGTH}
           label="Confirm passcode"
-          masked={!showPasscode}
+          masked={!showConfirmPasscode}
           hasError={Boolean(fieldErrors.confirmPasscode)}
         />
         {renderFieldError(fieldErrors.confirmPasscode)}
@@ -118,7 +130,7 @@ export const SetPasscodeView: React.FC<SetPasscodeViewProps> = ({
           className={`set-passcode-form__btn-primary ${canSubmit ? 'set-passcode-form__btn-primary--active' : 'set-passcode-form__btn-primary--disabled'}`}
           disabled={!canSubmit}
         >
-          {isSubmitting ? 'Saving...' : 'Set New Passcode'}
+          {isSubmitting ? 'Resetting...' : 'Reset Passcode'}
         </button>
         <button type="button" className="set-passcode-form__link-btn set-passcode-form__cancel" onClick={onCancel}>
           Back to Sign In

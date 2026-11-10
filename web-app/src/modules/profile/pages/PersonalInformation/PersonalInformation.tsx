@@ -1,16 +1,45 @@
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
 import { useAuthStore } from '@store/index'
-import { authStorage, buildProfileCompletionPath } from '@core/auth'
-import { routePaths } from '@core/config'
+import { authStorage } from '@core/auth'
+import type { AuthUser } from '@core/auth'
 import { formatMobile } from '@shared/utils'
-import { DetailCard } from '../../components/DetailCard/DetailCard'
-import { formatCustomerType, formatGender, isPlaceholderCustomerName, isMockEmail } from '../../utils/profileProgress'
+import { DetailCard, type DetailCardItem } from '../../components/DetailCard/DetailCard'
+import { formatCustomerType, isPlaceholderCustomerName, isMockEmail } from '../../utils/profileProgress'
 import './ProfileDetails.css'
 
+const formatFullAddress = (u: Partial<AuthUser> | null | undefined): string | null => {
+  if (!u) return null
+  if (u.address && u.address.trim()) return u.address.trim()
+  const parts = [
+    u.addressLine1,
+    u.addressLine2 || u.areaLocality,
+    u.city,
+    u.state,
+    u.pincode,
+  ].filter((p): p is string => Boolean(p && String(p).trim()))
+  return parts.length > 0 ? parts.join(', ') : null
+}
+
+const UserCardIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+    <circle cx="12" cy="7" r="4"></circle>
+  </svg>
+)
+
 export const PersonalInformation = () => {
-  const navigate = useNavigate()
   const storeUser = useAuthStore((state) => state.user)
   const user = storeUser || authStorage.getUser()
+
+  const [isEditing, setIsEditing] = useState(false)
+  const [formData, setFormData] = useState({
+    fullName: '',
+    mobile: '',
+    email: '',
+    dob: '',
+    customerType: '',
+    address: '',
+  })
 
   if (!user) {
     return (
@@ -22,67 +51,191 @@ export const PersonalInformation = () => {
     )
   }
 
-  const handleEdit = () => {
-    navigate(buildProfileCompletionPath(routePaths.profilePersonal), {
-      state: { returnTo: routePaths.profilePersonal, mobile: user.mobile },
-    })
-  }
-
   const cleanMobile = formatMobile(user.mobile || '')
   const hasValidName = user.fullName && !isPlaceholderCustomerName(user.fullName) ? user.fullName : null
   const hasValidEmail = user.email && !isMockEmail(user.email) ? user.email : null
-  const addressLine2 = (user.addressLine2 || user.areaLocality || '').trim()
+  const fullAddress = formatFullAddress(user)
 
-  const personalItems = [
+  // A user who only logged in with mobile and has not completed registration/profile should have customerType as Pending
+  const isFreshUnregisteredUser = !user.isProfileComplete && !hasValidName
+  const hasValidCustomerType =
+    isFreshUnregisteredUser
+      ? null
+      : (user.customerType ? formatCustomerType(user.customerType) : null)
+
+  const handleStartEdit = () => {
+    setFormData({
+      fullName: hasValidName || '',
+      mobile: cleanMobile,
+      email: hasValidEmail || '',
+      dob: user.dob || '',
+      customerType: hasValidCustomerType ? (user.customerType?.toLowerCase() || '') : '',
+      address: fullAddress || '',
+    })
+    setIsEditing(true)
+  }
+
+  const handleCancelEdit = () => {
+    setIsEditing(false)
+  }
+
+  const handleSaveEdit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault()
+
+    const rawMobile = formData.mobile.replace(/\D/g, '').slice(0, 10)
+    const updatedUser: AuthUser = {
+      ...user,
+      fullName: formData.fullName.trim(),
+      mobile: rawMobile || user.mobile,
+      email: formData.email.trim(),
+      dob: formData.dob.trim(),
+      customerType: formData.customerType ? formData.customerType.trim() : undefined,
+      address: formData.address.trim(),
+      addressLine1: formData.address.trim(),
+    }
+
+    useAuthStore.getState().setUser(updatedUser)
+    authStorage.setUser(updatedUser)
+    setIsEditing(false)
+  }
+
+  const personalItems: DetailCardItem[] = [
     { label: 'FULL NAME', value: hasValidName },
-    { label: 'EMAIL ADDRESS', value: hasValidEmail },
     {
       label: 'MOBILE NUMBER',
       value: cleanMobile ? `+91 ${cleanMobile}` : null,
       isVerified: Boolean(cleanMobile),
     },
-    { label: 'CUSTOMER TYPE', value: formatCustomerType(user.customerType) },
-    { label: 'GENDER', value: formatGender(user.gender) },
-    { label: 'DATE OF BIRTH', value: user.dob },
-    { label: 'FATHER/SPOUSE NAME', value: user.fatherSpouseName },
-  ]
-
-  const addressItems = [
-    { label: 'ADDRESS LINE 1', value: user.addressLine1 || user.address, isFullWidth: true },
-    ...(addressLine2 ? [{ label: 'ADDRESS LINE 2', value: addressLine2, isFullWidth: true }] : []),
-    { label: 'CITY / TOWN', value: user.city },
-    { label: 'STATE', value: user.state },
-    { label: 'PIN CODE', value: user.pincode },
+    { label: 'EMAIL ADDRESS', value: hasValidEmail },
+    { label: 'DATE OF BIRTH', value: user.dob || null },
+    { label: 'CUSTOMER TYPE', value: hasValidCustomerType },
+    { label: 'ADDRESS', value: fullAddress, isFullWidth: true },
   ]
 
   return (
     <div className="profile-details-page" data-testid="personal-information-page">
       <div className="profile-details-page__content">
-        {/* Personal Information Card matching Image 4 */}
-        <DetailCard
-          title="Personal Information"
-          items={personalItems}
-          onEdit={handleEdit}
-          icon={
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          }
-        />
+        {!isEditing ? (
+          <DetailCard
+            title="Personal Information"
+            items={personalItems}
+            onEdit={handleStartEdit}
+            icon={<UserCardIcon />}
+          />
+        ) : (
+          <div className="profile-detail-card" data-testid="profile-detail-card-personal-information">
+            <div className="profile-detail-card__header">
+              <div className="profile-detail-card__header-left">
+                <div className="profile-detail-card__icon">
+                  <UserCardIcon />
+                </div>
+                <h3 className="profile-detail-card__title">Personal Information</h3>
+              </div>
+            </div>
 
-        {/* Residential Address Card */}
-        <DetailCard
-          title="Residential Address"
-          items={addressItems}
-          onEdit={handleEdit}
-          icon={
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-              <polyline points="9 22 9 12 15 12 15 22"></polyline>
-            </svg>
-          }
-        />
+            <form className="profile-edit-form" onSubmit={handleSaveEdit}>
+              <div className="profile-edit-grid">
+                <div className="profile-edit-field">
+                  <label className="profile-edit-field__label" htmlFor="edit-fullName">Full Name</label>
+                  <input
+                    id="edit-fullName"
+                    type="text"
+                    className="profile-edit-field__input"
+                    placeholder="Enter full name"
+                    value={formData.fullName}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, fullName: e.target.value }))}
+                  />
+                </div>
+
+                <div className="profile-edit-field">
+                  <label className="profile-edit-field__label" htmlFor="edit-mobile">Mobile Number</label>
+                  <input
+                    id="edit-mobile"
+                    type="tel"
+                    className="profile-edit-field__input"
+                    placeholder="Enter 10-digit mobile"
+                    maxLength={10}
+                    value={formData.mobile}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, mobile: e.target.value.replace(/\D/g, '').slice(0, 10) }))}
+                  />
+                </div>
+
+                <div className="profile-edit-field">
+                  <label className="profile-edit-field__label" htmlFor="edit-email">Email Address</label>
+                  <input
+                    id="edit-email"
+                    type="email"
+                    className="profile-edit-field__input"
+                    placeholder="Enter email address"
+                    value={formData.email}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                  />
+                </div>
+
+                <div className="profile-edit-field">
+                  <label className="profile-edit-field__label" htmlFor="edit-dob">Date of Birth</label>
+                  <input
+                    id="edit-dob"
+                    type="text"
+                    className="profile-edit-field__input"
+                    placeholder="DD-MM-YYYY"
+                    value={formData.dob}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, dob: e.target.value }))}
+                  />
+                </div>
+
+                <div className="profile-edit-field">
+                  <label className="profile-edit-field__label" htmlFor="edit-customerType">Customer Type</label>
+                  <select
+                    id="edit-customerType"
+                    className="profile-edit-field__select"
+                    value={formData.customerType}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, customerType: e.target.value }))}
+                  >
+                    <option value="">Select Customer Type</option>
+                    <option value="individual">Individual</option>
+                    <option value="salaried">Salaried</option>
+                    <option value="business">Business</option>
+                    <option value="freelancer">Freelancer</option>
+                    <option value="proprietorship">Proprietorship</option>
+                    <option value="partnership">Partnership</option>
+                    <option value="llp">LLP</option>
+                    <option value="pvtltd">Private Limited</option>
+                    <option value="huf">HUF</option>
+                  </select>
+                </div>
+
+                <div className="profile-edit-field profile-edit-field--full">
+                  <label className="profile-edit-field__label" htmlFor="edit-address">Address</label>
+                  <textarea
+                    id="edit-address"
+                    rows={3}
+                    className="profile-edit-field__textarea"
+                    placeholder="Enter residential address"
+                    value={formData.address}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))}
+                  />
+                </div>
+              </div>
+
+              <div className="profile-edit-actions">
+                <button
+                  type="button"
+                  className="profile-edit-btn profile-edit-btn--cancel"
+                  onClick={handleCancelEdit}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="profile-edit-btn profile-edit-btn--ok"
+                >
+                  OK
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   )

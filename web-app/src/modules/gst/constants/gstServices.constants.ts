@@ -41,6 +41,6 @@ export const GST_SERVICES: readonly GstService[] = [
   { id: '2', title: 'GST Filing', description: 'File monthly or quarterly returns', price: formatRupees(GST_FEES.filingCombo), priceType: 'per period', iconType: 'filing', badge: 'Periodic', turnaround: 'Same Day' },
   { id: '3', title: 'GST Compliance', description: 'Stay compliant with GST requirements', price: formatRupees(GST_FEES.compliance), priceType: 'per year', iconType: 'compliance', badge: 'Annual', turnaround: 'Comprehensive' },
   { id: '4', title: 'GST Amendment', description: 'Update your GST registration details', price: formatRupees(GST_FEES.amendment), priceType: 'per change', iconType: 'amendment', badge: 'Modification', turnaround: '24–48 hrs' },
-  { id: '5', title: 'GST Cancellation', description: 'Cancel your GST registration', price: formatRupees(GST_FEES.cancellation), priceType: 'one time', iconType: 'cancellation', badge: 'Closure', turnaround: '5–7 days' },
+  // { id: '5', title: 'GST Cancellation', description: 'Cancel your GST registration', price: formatRupees(GST_FEES.cancellation), priceType: 'one time', iconType: 'cancellation', badge: 'Closure', turnaround: '5–7 days' },
   { id: '6', title: 'GST Certificate', description: 'Download your GST certificate', price: formatRupees(GST_FEES.certificate), priceType: 'per copy', iconType: 'certificate', badge: 'Official', turnaround: 'Instant' },
 ]

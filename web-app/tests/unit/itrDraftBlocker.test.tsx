@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import '@testing-library/jest-dom/vitest'
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { cleanup, render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
@@ -179,6 +180,56 @@ describe('ITR Module - Save Draft Confirmations', () => {
       const savedDraft = userStorage.getDraft('revised-itr')
       expect(savedDraft).toBeDefined()
       expect(savedDraft?.serviceId).toBe('revised-itr')
+    })
+
+    it('displays 3 rolling assessment years and navigates directly to Step 2 without showing Original Return Found', async () => {
+      render(
+        <MemoryRouter>
+          <RevisedItr />
+        </MemoryRouter>
+      )
+
+      // Open Assessment Year dropdown
+      const aySelectBtn = screen.getByRole('button', { name: /select assessment year/i })
+      fireEvent.click(aySelectBtn)
+
+      // Verify the 3 rolling assessment years
+      expect(screen.getByRole('option', { name: '2024-2025' })).toBeInTheDocument()
+      expect(screen.getByRole('option', { name: '2025-2026' })).toBeInTheDocument()
+      expect(screen.getByRole('option', { name: '2026-2027' })).toBeInTheDocument()
+
+      // Select '2025-2026'
+      fireEvent.click(screen.getByRole('option', { name: '2025-2026' }))
+
+      // Enter acknowledgment number
+      const ackInput = screen.getByPlaceholderText(/enter acknowledgement number/i)
+      fireEvent.change(ackInput, { target: { value: '123456789012345' } })
+
+      // Click Continue
+      const continueBtn = screen.getByRole('button', { name: /continue/i })
+      fireEvent.click(continueBtn)
+
+      // Should directly advance to the inside page (Step 2: Reason for Revision)
+      expect(await screen.findByText('Why are you revising your ITR?')).toBeInTheDocument()
+      expect(screen.getByText('Missed Income')).toBeInTheDocument()
+
+      // "Original Return Found" section should NOT be shown
+      expect(screen.queryByText(/original return found/i)).not.toBeInTheDocument()
+
+      // Select 'Missed Income' reason
+      fireEvent.click(screen.getByText('Missed Income'))
+
+      // Continue to Step 3 (Income Correction)
+      const step2ContinueBtn = screen.getByRole('button', { name: /continue/i })
+      fireEvent.click(step2ContinueBtn)
+
+      // Step 3 should be displayed
+      expect(await screen.findByText('Update only what changed')).toBeInTheDocument()
+      expect(screen.getByText(/salary \/ business income/i)).toBeInTheDocument()
+
+      // Neither "Original" label nor original amount row should exist in any card
+      expect(screen.queryByText(/^Original$/i)).not.toBeInTheDocument()
+      expect(document.querySelector('.correction-original-row')).toBeNull()
     })
   })
 

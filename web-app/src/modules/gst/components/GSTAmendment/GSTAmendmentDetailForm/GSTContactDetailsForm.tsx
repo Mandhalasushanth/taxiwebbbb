@@ -170,36 +170,6 @@ export const GSTContactDetailsForm: React.FC<GSTContactDetailsFormProps> = ({
       </div>
 
       <form onSubmit={handleSubmitForm} noValidate>
-        {/* Card 1: Currently Registered on Portal */}
-        <div className="gst-amend-card-box">
-          <div className="gst-amend-card-box__header-flex">
-            <div className="gst-amend-card-header-icon-box gst-amend-card-header-icon-box--building">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
-                <path d="M9 22v-4h6v4" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="gst-amend-card-box__title">Currently Registered on Portal</h3>
-              <p className="gst-amend-card-box__subtitle">Read-only baseline from GST profile</p>
-            </div>
-          </div>
-          <div className="gst-amend-readonly-multiline-list">
-            <div className="gst-amend-readonly-row">
-              <span className="gst-amend-readonly-label">Registered Mobile</span>
-              <span className="gst-amend-readonly-value">
-                {_currentDetailsProp?.mobile && _currentDetailsProp.mobile !== '—' ? _currentDetailsProp.mobile : '-'}
-              </span>
-            </div>
-            <div className="gst-amend-readonly-row">
-              <span className="gst-amend-readonly-label">Registered Email</span>
-              <span className="gst-amend-readonly-value">
-                {_currentDetailsProp?.email && _currentDetailsProp.email !== '—' ? _currentDetailsProp.email : '-'}
-              </span>
-            </div>
-          </div>
-        </div>
-
         {/* Card 2: Amended details */}
         <div className="gst-amend-card-box" id="gst-amend-details">
           <div className="gst-amend-card-box__header-flex">

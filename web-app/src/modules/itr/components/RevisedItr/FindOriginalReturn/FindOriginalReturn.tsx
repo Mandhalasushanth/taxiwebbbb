@@ -1,6 +1,6 @@
 import React from 'react'
 import { CaretInput } from '@shared/components'
-import { AY_OPTIONS, type OriginalReturnDetails } from '@modules/itr/types/revisedItr.types'
+import { AY_OPTIONS } from '@modules/itr/types/revisedItr.types'
 import { ChevronDown as ChevronDownIcon, Check as CheckIcon } from 'lucide-react'
 import './FindOriginalReturn.css'
 
@@ -62,45 +62,10 @@ const AssessmentYearDropdown: React.FC<AssessmentYearDropdownProps> = ({
   )
 }
 
-interface OriginalReturnFoundCardProps {
-  details: OriginalReturnDetails | null
-}
-
-const OriginalReturnFoundCard: React.FC<OriginalReturnFoundCardProps> = ({ details }) => {
-  const foundRows = [
-    { label: 'Filed:', value: details?.status || 'Verified from IT Portal', isDash: false },
-    { label: 'Assessment Year:', value: details?.assessmentYear || '—', isDash: false },
-    { label: 'ITR Form:', value: details?.itrForm || 'ITR Form', isDash: false },
-    { label: 'Gross Total Income:', value: details?.grossTotalIncome || '—', isDash: true },
-  ]
-
-  return (
-    <div className="original-return-found-card" id="revised-step1-details" data-section="revised-step1-details">
-      <div className="found-card-header">
-        <h3 className="found-card-title">Original Return Found</h3>
-        <span className="found-card-badge">
-          <CheckIcon size={14} />
-        </span>
-      </div>
-
-      <div className="found-card-body">
-        {foundRows.map((row) => (
-          <div key={row.label} className="found-card-row">
-            <span className="row-label">{row.label}</span>
-            <span className={`row-value ${row.isDash ? 'row-dash' : ''}`}>{row.value}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
 export interface FindOriginalReturnProps {
   ackNumber: string
   selectedAy: string
   isDropdownOpen: boolean
-  isReturnFound: boolean
-  returnDetails: OriginalReturnDetails | null
   ackError?: string | null
   ayError?: string | null
   dropdownRef: React.RefObject<HTMLDivElement | null>
@@ -114,8 +79,6 @@ export const FindOriginalReturn: React.FC<FindOriginalReturnProps> = ({
   ackNumber,
   selectedAy,
   isDropdownOpen,
-  isReturnFound,
-  returnDetails,
   ackError,
   ayError,
   dropdownRef,
@@ -166,7 +129,6 @@ export const FindOriginalReturn: React.FC<FindOriginalReturnProps> = ({
       <h2 className="step1-heading">Find Original Return</h2>
       {renderAckField()}
       {renderAyField()}
-      {isReturnFound && <OriginalReturnFoundCard details={returnDetails} />}
     </div>
   )
 }

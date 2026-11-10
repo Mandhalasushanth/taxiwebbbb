@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@store/index'
 import { authStorage, buildProfileCompletionPath } from '@core/auth'
@@ -15,7 +15,7 @@ import { ProfileSectionModal, type ProfileModalType } from '../../components/Pro
 import { UnavailableModal } from '../../components/UnavailableModal/UnavailableModal'
 import { calculateProfileProgress } from '../../utils/profileProgress'
 import { useApplications } from '@modules/applications'
-import { profileSectionsConfig, PROFILE_NAV_SCROLL_OFFSET } from './profileConfig'
+import { profileSectionsConfig } from './profileConfig'
 import './Profile.css'
 
 export const Profile = () => {
@@ -28,10 +28,8 @@ export const Profile = () => {
   const completedAppsCount = applications?.filter((app) => app.status === 'COMPLETED' || app.status === 'Completed').length ?? 0
   const totalPaidAmount = applications?.reduce((sum, app) => sum + (app.amount || 0), 0) ?? 0
   const UNAVAILABLE_ITEM_IDS = ['password', '2fa', 'history', 'privacy', 'rate', 'terms', 'policy']
-  const [activeSection, setActiveSection] = useState('account')
   const [activeModal, setActiveModal] = useState<ProfileModalType | null>(null)
   const [unavailableTitle, setUnavailableTitle] = useState<string | null>(null)
-  const observer = useRef<IntersectionObserver | null>(null)
 
   const handleItemClick = (itemId: string, itemLabel: string) => {
     if (itemId === 'gst' || itemId === 'itr' || itemId === 'loan') {
@@ -41,33 +39,6 @@ export const Profile = () => {
       setUnavailableTitle(itemLabel)
     }
   }
-
-  useEffect(() => {
-    observer.current = new IntersectionObserver(
-      (entries) => {
-        const visibleSections = entries.filter((entry) => entry.isIntersecting)
-        if (visibleSections.length > 0) {
-          // Find the topmost visible section
-          visibleSections.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
-          setActiveSection(visibleSections[0].target.id)
-        }
-      },
-      {
-        rootMargin: `-${PROFILE_NAV_SCROLL_OFFSET}px 0px -50% 0px`, // Offset for the sticky header + nav
-        threshold: 0.1,
-      }
-    )
-
-    profileSectionsConfig.map((section) => {
-      const el = document.getElementById(section.title.toLowerCase())
-      if (el && observer.current) observer.current.observe(el)
-      return el
-    })
-
-    return () => {
-      if (observer.current) observer.current.disconnect()
-    }
-  }, [])
 
   const logout = useLogoutConfirm()
 
@@ -92,32 +63,6 @@ export const Profile = () => {
         totalPaidAmount={totalPaidAmount}
         onEditAvatar={handleEditAvatar}
       />
-
-      <nav className="profile-page-view__sticky-nav" aria-label="Profile sections">
-        <div className="profile-page-view__sticky-nav-container">
-          {profileSectionsConfig.map((section) => {
-            const id = section.title.toLowerCase()
-            return (
-              <button
-                key={id}
-                type="button"
-                aria-current={activeSection === id ? 'true' : undefined}
-                className={`profile-page-view__nav-btn ${activeSection === id ? 'profile-page-view__nav-btn--active' : ''}`}
-                onClick={() => {
-                  setActiveSection(id)
-                  const el = document.getElementById(id)
-                  if (el) {
-                    const y = el.getBoundingClientRect().top + window.scrollY - PROFILE_NAV_SCROLL_OFFSET
-                    window.scrollTo({ top: y, behavior: 'smooth' })
-                  }
-                }}
-              >
-                {section.title}
-              </button>
-            )
-          })}
-        </div>
-      </nav>
 
       <div className="profile-page-view__content">
         {/* Prominent Complete Profile CTA card */}

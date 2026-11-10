@@ -1,6 +1,15 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, afterEach } from 'vitest'
 
+const mockNavigate = vi.fn()
+vi.mock('react-router-dom', async (importOriginal) => {
+  const actual: any = await importOriginal()
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  }
+})
+
 vi.mock('@core/config/environment', () => ({
   env: {
     appName: 'TaxEdge',
@@ -153,7 +162,7 @@ describe('DashboardOverviewGrid Recent Applications', () => {
 })
 
 describe('CustomerDashboard Incomplete Drafts Limit and Alternating Colors', () => {
-  it('renders only the latest 3 draft banners with alternating colors: 1st orange, 2nd navy blue, 3rd orange', () => {
+  it('renders only the latest 2 draft banners with alternating colors and no cross delete button', () => {
     // Mock userStorage.getAllDrafts to return 5 drafts
     const mockDrafts: ApplicationDraft[] = [
       {
@@ -216,9 +225,9 @@ describe('CustomerDashboard Incomplete Drafts Limit and Alternating Colors', () 
       </MemoryRouter>
     )
 
-    // Banners container should have exactly 3 banners
+    // Banners container should have exactly 2 banners
     const banners = container.querySelectorAll('.incomplete-banners-list .incomplete-banner')
-    expect(banners.length).toBe(3)
+    expect(banners.length).toBe(2)
 
     // 1st card -> Orange theme
     expect(banners[0].classList.contains('incomplete-banner--orange')).toBe(true)
@@ -228,16 +237,53 @@ describe('CustomerDashboard Incomplete Drafts Limit and Alternating Colors', () 
     expect(banners[1].classList.contains('incomplete-banner--navy')).toBe(true)
     expect(banners[1].classList.contains('incomplete-banner--filing')).toBe(true)
 
-    // 3rd card -> Orange theme
-    expect(banners[2].classList.contains('incomplete-banner--orange')).toBe(true)
-    expect(banners[2].classList.contains('incomplete-banner--application')).toBe(true)
-
-    // Verify 4th and 5th draft titles do not appear in the banners list
+    // Verify 3rd, 4th and 5th draft titles do not appear in the banners list
     const bannerTitles = Array.from(container.querySelectorAll('.incomplete-banner__title')).map((el) => el.textContent)
-    expect(bannerTitles).toEqual(['GST Registration', 'GST Amendment', 'GST Compliance'])
+    expect(bannerTitles).toEqual(['GST Registration', 'GST Amendment'])
+    expect(bannerTitles).not.toContain('GST Compliance')
     expect(bannerTitles).not.toContain('GST Filing')
     expect(bannerTitles).not.toContain('ITR Filing')
 
+    // Discard cross button should NOT be rendered on dashboard draft cards
+    const discardBtns = container.querySelectorAll('.incomplete-banner__discard-btn')
+    expect(discardBtns.length).toBe(0)
+
     getAllDraftsSpy.mockRestore()
+  })
+
+  it('does not render Financial Overview or Overview Grid on CustomerDashboard', () => {
+    render(
+      <MemoryRouter>
+        <CustomerDashboard />
+      </MemoryRouter>
+    )
+
+    // Financial Overview section should not be rendered
+    expect(screen.queryByText('Your Financial Overview')).toBeNull()
+    expect(screen.queryByText('Active Applications')).toBeNull()
+
+    // Upcoming Deadlines and Recent Applications grid should not be rendered
+    expect(screen.queryByText('Upcoming Deadlines')).toBeNull()
+    expect(screen.queryByText('Recent Applications')).toBeNull()
+  })
+
+  it('renders Support Chat banner at the end of CustomerDashboard and redirects to /support on Chat click', () => {
+    mockNavigate.mockClear()
+    render(
+      <MemoryRouter>
+        <CustomerDashboard />
+      </MemoryRouter>
+    )
+
+    const banner = screen.getByTestId('dashboard-support-banner')
+    expect(banner).toBeTruthy()
+    expect(screen.getByText('Need Help?')).toBeTruthy()
+    expect(screen.getByText('Our experts are available 24/7')).toBeTruthy()
+
+    const chatBtn = screen.getByRole('button', { name: /chat with support/i })
+    expect(chatBtn).toBeTruthy()
+    expect(chatBtn.textContent).toBe('Chat')
+    fireEvent.click(chatBtn)
+    expect(mockNavigate).toHaveBeenCalledWith('/support')
   })
 })

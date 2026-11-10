@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react'
-import { CaretInput, CustomCalendarPopover } from '@shared/components'
+import React, { useRef } from 'react'
+import { CaretInput } from '@shared/components'
 import {
   UserIcon,
   MailIcon,
@@ -35,43 +35,46 @@ export interface RegistrationPersonalFieldsProps {
   onApplyDate?: (formattedDate: string) => void
 }
 
+/** Convert DD-MM-YYYY to YYYY-MM-DD for native date picker */
+const toIsoDate = (dmy: string): string => {
+  if (!dmy) return ''
+  const parts = dmy.split('-')
+  if (parts.length === 3 && parts[2]?.length === 4) {
+    return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`
+  }
+  return ''
+}
 
+/** Convert YYYY-MM-DD to DD-MM-YYYY */
+const toDmyDate = (iso: string): string => {
+  if (!iso) return ''
+  const parts = iso.split('-')
+  if (parts.length === 3) {
+    return `${parts[2]}-${parts[1]}-${parts[0]}`
+  }
+  return iso
+}
 
 export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProps> = ({
   values,
   errors,
   onChange,
   onBlur,
-  onOpenCalendar,
-  isCalendarOpen: propIsCalendarOpen,
-  onToggleCalendar,
-  onCloseCalendar,
   onApplyDate,
 }) => {
-  const [localIsCalendarOpen, setLocalIsCalendarOpen] = useState(false)
-  const isControlled = typeof propIsCalendarOpen === 'boolean'
-  const isCalendarOpen = isControlled ? propIsCalendarOpen : localIsCalendarOpen
-  const dobControlRef = useRef<HTMLDivElement>(null)
+  const nativeDateRef = useRef<HTMLInputElement>(null)
 
   const handleOpenPicker = () => {
-    if (onToggleCalendar) {
-      onToggleCalendar()
-    } else if (onOpenCalendar) {
-      onOpenCalendar()
-    } else {
-      setLocalIsCalendarOpen((prev) => !prev)
+    try {
+      nativeDateRef.current?.showPicker?.()
+    } catch {
+      nativeDateRef.current?.focus()
     }
   }
 
-  const handleCloseCalendar = () => {
-    if (onCloseCalendar) {
-      onCloseCalendar()
-    } else {
-      setLocalIsCalendarOpen(false)
-    }
-  }
-
-  const handleApplyCalendarDate = (dmy: string) => {
+  const handleNativeDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const dmy = toDmyDate(e.target.value)
+    if (!dmy) return
     if (onApplyDate) {
       onApplyDate(dmy)
     } else {
@@ -79,7 +82,6 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
         target: { name: 'dob', value: dmy },
       } as React.ChangeEvent<HTMLInputElement>)
     }
-    handleCloseCalendar()
   }
 
   const handleEmailKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -168,23 +170,29 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
           <label className="reg-field__label" htmlFor="reg-dob">
             Date of Birth <span className="reg-field__required">*</span>
           </label>
-          <div
-            ref={dobControlRef}
-            className={`reg-field__control ${errors.dob ? 'reg-field__control--error' : ''}`}
-            style={{ position: 'relative' }}
-          >
+          <div className={`reg-field__control ${errors.dob ? 'reg-field__control--error' : ''}`}>
             <CaretInput
               id="reg-dob"
               name="dob"
               type="text"
+              inputMode="numeric"
               className="reg-field__input"
               placeholder="DD-MM-YYYY"
               maxLength={10}
               value={values.dob}
-              onClick={handleOpenPicker}
               onChange={onChange}
               onBlur={onBlur}
               autoComplete="bday"
+            />
+            <input
+              ref={nativeDateRef}
+              type="date"
+              tabIndex={-1}
+              aria-hidden="true"
+              className="reg-field__hidden-date"
+              max={new Date().toISOString().slice(0, 10)}
+              value={toIsoDate(values.dob)}
+              onChange={handleNativeDateChange}
             />
             <button
               type="button"
@@ -195,15 +203,6 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
             >
               <CalendarIcon />
             </button>
-            <CustomCalendarPopover
-              isOpen={isCalendarOpen}
-              value={values.dob}
-              format="DD-MM-YYYY"
-              maxDate={new Date()}
-              anchorRef={dobControlRef}
-              onChange={handleApplyCalendarDate}
-              onClose={handleCloseCalendar}
-            />
           </div>
           {errors.dob && <p className="reg-field__error">{errors.dob}</p>}
         </div>

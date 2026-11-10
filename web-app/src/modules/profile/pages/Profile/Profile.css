@@ -20,6 +20,7 @@
   padding: 32px 24px;
   width: 100%;
   max-width: 1000px;
+  margin-top: 56px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -133,16 +134,7 @@
   .profile-page-view__content {
     padding: 20px 16px;
     gap: 22px;
-  }
-
-  .profile-page-view__sticky-nav {
     margin-top: 52px;
-    padding: 10px 16px;
-  }
-
-  .profile-page-view__nav-btn {
-    font-size: 13px;
-    padding: 8px 14px;
   }
 }
 

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, fireEvent, cleanup } from '@testing-library/react'
+import { render, screen, fireEvent, cleanup, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { FieldInfoTooltip } from '@shared/components'
 import { GSTBusinessIdentitySection } from '../../src/modules/gst/components/GSTRegistration/GSTBusinessDetails/GSTBusinessGeneralSection'
@@ -10,6 +10,7 @@ import { GSTPeriodFields } from '../../src/modules/gst/components/GSTFiling/GSTF
 import { GSTCompliance } from '../../src/modules/gst/components/GSTCompliance/GSTCompliance'
 import { GSTNoticeResponseFields } from '../../src/modules/gst/shared/GSTComplianceCard/GSTNoticeResponseFields'
 import { GSTAmendmentSelection } from '../../src/modules/gst/components/GSTAmendment/GSTAmendmentSelection/GSTAmendmentSelection'
+import { GSTCertificateForm } from '../../src/modules/gst/components/GSTCertificate/GSTCertificateForm/GSTCertificateForm'
 import {
   ItrSalaryIncomeCard,
   ItrHousePropertyCard,
@@ -171,6 +172,64 @@ describe('GST Module - FieldInfoTooltip Integration Across Specified Fields', ()
     ).toBeInTheDocument()
   })
 
+  it('1b. GST Registration: renders Nature of Business tooltip with correct copy', () => {
+    render(
+      <GSTBusinessIdentitySection
+        data={{
+          legalName: '',
+          tradeName: '',
+          constitution: '',
+          businessPan: '',
+          natureOfBusiness: '',
+          commencementDate: '',
+          registrationReason: '',
+          compositionScheme: 'No',
+        }}
+        onChange={vi.fn()}
+      />
+    )
+
+    const trigger = screen.getByRole('button', { name: 'Nature of Business Information' })
+    expect(trigger).toBeInTheDocument()
+
+    fireEvent.click(trigger)
+    const dialog = screen.getByRole('dialog')
+    expect(within(dialog).getByText('Nature of Business')).toBeInTheDocument()
+    expect(
+      within(dialog).getByText(
+        'Select the primary category of business activities carried out by your business (e.g. Trader, Manufacturer, Service Provider).'
+      )
+    ).toBeInTheDocument()
+  })
+
+  it('1c. GST Registration: renders Date of Commencement of Business tooltip as shown in the mockup', () => {
+    render(
+      <GSTBusinessIdentitySection
+        data={{
+          legalName: '',
+          tradeName: '',
+          constitution: '',
+          businessPan: '',
+          natureOfBusiness: '',
+          commencementDate: '',
+          registrationReason: '',
+          compositionScheme: 'No',
+        }}
+        onChange={vi.fn()}
+      />
+    )
+
+    const trigger = screen.getByRole('button', { name: 'Date of Commencement of Business Information' })
+    expect(trigger).toBeInTheDocument()
+
+    fireEvent.click(trigger)
+    const dialog = screen.getByRole('dialog')
+    expect(within(dialog).getByText('Date of Commencement of Business')).toBeInTheDocument()
+    expect(
+      within(dialog).getByText('Enter the date when your business started its actual operations.')
+    ).toBeInTheDocument()
+  })
+
   it('2. GST Registration: renders SAC Code Information tooltip with exact required copy', () => {
     render(
       <GSTBusinessAddressSection
@@ -301,6 +360,32 @@ describe('GST Module - FieldInfoTooltip Integration Across Specified Fields', ()
     expect(
       screen.getByText(
         'Enter the 15-digit GSTIN of the existing GST registration for which you want to request an amendment. Ensure you select the correct registration.'
+      )
+    ).toBeInTheDocument()
+  })
+
+  it('7. GST Certificate: renders GSTIN Information tooltip on GSTIN Number field', () => {
+    render(
+      <GSTCertificateForm
+        values={{
+          gstin: '',
+          requestType: 'New Registration Certificate',
+        }}
+        onChange={vi.fn()}
+        errors={{}}
+        contact={null}
+        onSubmit={vi.fn()}
+      />
+    )
+
+    const trigger = screen.getByRole('button', { name: /Field information/i })
+    expect(trigger).toBeInTheDocument()
+
+    fireEvent.click(trigger)
+    expect(screen.getByText('GSTIN Information')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'Enter your valid 15-digit GST Identification Number. Ensure it matches your GST registration.'
       )
     ).toBeInTheDocument()
   })

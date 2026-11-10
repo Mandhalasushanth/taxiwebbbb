@@ -42,6 +42,9 @@ const SCHEME_FIELDS = ['registrationReason', 'compositionScheme'] as const
 const createGeneralFieldUpdater = ({ onChange, onClearError }: GSTBusinessGeneralSectionProps) =>
   <K extends GeneralField>(field: K, value: GstBusinessFormData[K]) => {
     onChange(field, value)
+    if (field === 'legalName' && typeof value === 'string' && /\d/.test(value)) {
+      return
+    }
     onClearError?.(field)
     if (field === 'compositionScheme') {
       onClearError?.('natureOfBusiness')
@@ -137,6 +140,13 @@ export const GSTBusinessIdentitySection: React.FC<GSTBusinessGeneralSectionProps
         <GSTSelectField
           id="natureOfBusiness"
           label="Nature of Business"
+          infoTooltip={
+            <FieldInfoTooltip
+              title="Nature of Business"
+              description="Select the primary category of business activities carried out by your business (e.g. Trader, Manufacturer, Service Provider)."
+              ariaLabel="Nature of Business Information"
+            />
+          }
           placeholder="Select nature of business"
           options={NATURE_OF_BUSINESS_OPTIONS}
           value={data.natureOfBusiness}
@@ -148,6 +158,13 @@ export const GSTBusinessIdentitySection: React.FC<GSTBusinessGeneralSectionProps
         <GSTDateField
           id="commencementDate"
           label="Date of Commencement of Business"
+          infoTooltip={
+            <FieldInfoTooltip
+              title="Date of Commencement of Business"
+              description="Enter the date when your business started its actual operations."
+              ariaLabel="Date of Commencement of Business Information"
+            />
+          }
           min={dateBounds.min}
           max={dateBounds.max}
           value={data.commencementDate}

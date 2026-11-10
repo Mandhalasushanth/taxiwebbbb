@@ -40,12 +40,13 @@ describe('TDS Refund - Business Details & Bank Validation Suite', () => {
       expect(validateBusinessLegalName('')).toBe('Legal name of business is required')
       expect(validateBusinessLegalName('   ')).toBe('Legal name of business is required')
       expect(validateBusinessLegalName('AB')).toBe('Enter the legal name exactly as on the PAN (min 3 characters)')
-      expect(validateBusinessLegalName('12345')).toBe('Legal name of business must contain letters')
+      expect(validateBusinessLegalName('12345')).toBe('Legal name cannot contain numbers')
+      expect(validateBusinessLegalName('f456')).toBe('Legal name cannot contain numbers')
       expect(validateBusinessLegalName('Acme..Solutions')).toBe(
         'Legal name of business should not contain consecutive dots'
       )
       expect(validateBusinessLegalName('Acme @#$ Solutions')).toBe(
-        'Only letters, numbers, spaces, and dot are allowed'
+        'Only letters, spaces, and dot are allowed'
       )
       expect(validateBusinessLegalName('Acme Solutions Pvt Ltd')).toBeNull()
       expect(validateBusinessLegalName('Acme Solutions Pvt. Ltd.')).toBeNull()
@@ -166,6 +167,27 @@ describe('TDS Refund - Business Details & Bank Validation Suite', () => {
 
       // Verified pill is NOT rendered
       expect(screen.queryByTestId('tds-bank-verified-pill')).toBeNull()
+    })
+
+    it('renders live error below Legal Name field when numbers are entered (e.g. f456) and clears when removed', () => {
+      render(<TdsRefundCustomerIncome {...defaultProps} />)
+      const legalNameInput = screen.getByPlaceholderText(/Enter legal name of business/i)
+
+      // Enter numbers in legal name
+      act(() => {
+        fireEvent.change(legalNameInput, { target: { value: 'f456' } })
+      })
+
+      // Error appears immediately below field
+      expect(screen.getByText('Legal name cannot contain numbers')).toBeInTheDocument()
+
+      // Remove numbers and enter letters
+      act(() => {
+        fireEvent.change(legalNameInput, { target: { value: 'Tata Sons Pvt. Ltd.' } })
+      })
+
+      // Error disappears
+      expect(screen.queryByText('Legal name cannot contain numbers')).toBeNull()
     })
   })
 })

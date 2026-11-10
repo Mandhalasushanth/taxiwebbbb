@@ -14,8 +14,133 @@
   box-sizing: border-box;
 }
 
+/* Inline Edit Form within Personal Information Card */
+.profile-edit-form {
+  padding: 24px clamp(20px, 3vw, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: clamp(24px, 3vw, 40px);
+  row-gap: 22px;
+}
+
+.profile-edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-edit-field--full {
+  grid-column: 1 / -1;
+}
+
+.profile-edit-field__label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.profile-edit-field__input,
+.profile-edit-field__select,
+.profile-edit-field__textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 500;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.profile-edit-field__input:focus,
+.profile-edit-field__select:focus,
+.profile-edit-field__textarea:focus {
+  outline: none;
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+.profile-edit-field__textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.profile-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.profile-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 28px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.profile-edit-btn--cancel {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #64748b;
+}
+
+.profile-edit-btn--cancel:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #334155;
+}
+
+.profile-edit-btn--ok {
+  background: #0284c7;
+  border: 1.5px solid #0284c7;
+  color: #ffffff;
+}
+
+.profile-edit-btn--ok:hover {
+  background: #0369a1;
+  border-color: #0369a1;
+}
+
+@media (max-width: 860px) {
+  .profile-edit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
   .profile-details-page {
     padding: 16px 16px 48px;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-edit-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-edit-actions {
+    flex-direction: column-reverse;
+  }
+
+  .profile-edit-btn {
+    width: 100%;
   }
 }

@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 process.env.VITE_API_BASE_URL = 'http://localhost:3000'
 
+import React, { useState } from 'react'
 import '@testing-library/jest-dom/vitest'
 import { afterEach, beforeEach, describe, it, expect } from 'vitest'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
@@ -15,6 +16,7 @@ import { validateBusinessPan, getCompositionConflicts } from '../../src/modules/
 import { gstInput } from '../../src/modules/gst/utils/gstInputFormatters'
 import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '../../src/shared/saveDraft'
 import { useGstRegistrationState } from '../../src/modules/gst/hooks/useGstRegistrationState'
+import { GSTStepBusiness } from '../../src/modules/gst/components/GSTRegistration/GSTStepBusiness/GSTStepBusiness'
 import type { GstBusinessFormData } from '../../src/modules/gst/types/gstBusiness.types'
 import { INITIAL_DOCUMENTS } from '../../src/modules/gst/utils/gstDocuments.constants'
 import { ALL_BANKS } from '../../src/modules/gst/types/gstPayment.types'
@@ -71,12 +73,14 @@ describe('BUG-GST-002: Date of commencement range', () => {
   const today = new Date('2026-10-05T00:00:00')
   it('rejects implausible past and far-future dates', () => {
     expect(validateCommencementDate('1900-01-01', today)).toMatch(/100 years in the past/)
-    expect(validateCommencementDate('2027-01-01', today)).toMatch(/30 days in the future/)
+    expect(validateCommencementDate('2027-01-01', today)).toMatch(/future/)
     expect(validateCommencementDate('2023-02-30', today)).toBe('Please select a valid date')
   })
-  it('accepts recent and near-future dates', () => {
+  it('accepts recent past and today dates and rejects future dates', () => {
     expect(validateCommencementDate('1990-06-01', today)).toBeNull()
-    expect(validateCommencementDate('2026-10-20', today)).toBeNull()
+    expect(validateCommencementDate('2026-10-04', today)).toBeNull()
+    expect(validateCommencementDate('2026-10-05', today)).toBeNull()
+    expect(validateCommencementDate('2026-10-20', today)).toMatch(/future/)
   })
 })
 
@@ -460,5 +464,61 @@ describe('Field-type strict validations & character restrictions', () => {
     expect(ALL_BANKS).toContain('Punjab National Bank')
     expect(ALL_BANKS).toContain('State Bank of India')
     expect(ALL_BANKS).toContain('Union Bank of India')
+  })
+
+  it('rejects numbers in legalName and gives error that legal name cannot contain numbers', () => {
+    expect(errorsFor({ legalName: 'vgh3456789' }).legalName).toBe('Legal name cannot contain numbers')
+    expect(errorsFor({ legalName: '123456' }).legalName).toBe('Legal name cannot contain numbers')
+    expect(errorsFor({ legalName: 'Acme 99' }).legalName).toBe('Legal name cannot contain numbers')
+  })
+
+  it('renders live error below the Legal Name field when user enters numbers in GSTStepBusiness', () => {
+    const Component = () => {
+      const [form, setForm] = useState<GstBusinessFormData>(VALID_FORM)
+      return (
+        <GSTStepBusiness
+          data={form}
+          onChange={(field, val) => setForm((prev) => ({ ...prev, [field]: val }))}
+          onNext={() => {}}
+        />
+      )
+    }
+    render(<Component />)
+
+    const input = screen.getByLabelText(/Legal Name of Business \(as per PAN\)/i)
+    expect(screen.queryByText('Legal name cannot contain numbers')).not.toBeInTheDocument()
+
+    // User enters numbers in Legal Name
+    fireEvent.change(input, { target: { value: 'vgh3456789' } })
+    expect(screen.getByText('Legal name cannot contain numbers')).toBeInTheDocument()
+
+    // User removes numbers
+    fireEvent.change(input, { target: { value: 'Tanvox Technologies Pvt Ltd' } })
+    expect(screen.queryByText('Legal name cannot contain numbers')).not.toBeInTheDocument()
+  })
+
+  it('renders live error below the Designation field when user enters numbers in GSTStepBusiness', () => {
+    const Component = () => {
+      const [form, setForm] = useState<GstBusinessFormData>(VALID_FORM)
+      return (
+        <GSTStepBusiness
+          data={form}
+          onChange={(field, val) => setForm((prev) => ({ ...prev, [field]: val }))}
+          onNext={() => {}}
+        />
+      )
+    }
+    render(<Component />)
+
+    const input = screen.getByLabelText(/^Designation/i)
+    expect(screen.queryByText('Designation must contain only letters')).not.toBeInTheDocument()
+
+    // User enters numbers in Designation
+    fireEvent.change(input, { target: { value: 'Director123' } })
+    expect(screen.getByText('Designation must contain only letters')).toBeInTheDocument()
+
+    // User removes numbers
+    fireEvent.change(input, { target: { value: 'Director' } })
+    expect(screen.queryByText('Designation must contain only letters')).not.toBeInTheDocument()
   })
 })

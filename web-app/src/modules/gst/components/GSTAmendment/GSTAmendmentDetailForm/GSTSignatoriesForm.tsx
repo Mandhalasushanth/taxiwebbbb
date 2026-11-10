@@ -6,7 +6,6 @@ import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
 import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
 import { useAmendmentFileState } from '../hooks/useAmendmentFileState'
-import { GSTCurrentPortalCard } from './GSTCurrentPortalCard'
 import { GSTAmendmentActionBar } from './GSTAmendmentActionBar'
 import './GSTSignatoriesForm.css'
 import './GSTAmendmentDetailForm.css'
@@ -187,26 +186,6 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
       </div>
 
       <form onSubmit={handleSubmitForm} noValidate>
-        {/* Card 1: Currently Registered on Portal */}
-        <GSTCurrentPortalCard
-          rows={[
-            {
-              label: 'Signatory Name',
-              value: _currentDetailsProp?.name && _currentDetailsProp.name !== '—' ? _currentDetailsProp.name : '-',
-            },
-            {
-              label: 'Designation',
-              value: _currentDetailsProp?.designation && _currentDetailsProp.designation !== '—' ? _currentDetailsProp.designation : '-',
-            },
-            {
-              label: 'Contact',
-              value: _currentDetailsProp?.mobile && _currentDetailsProp.mobile !== '—'
-                ? _currentDetailsProp.mobile
-                : (_currentDetailsProp?.email && _currentDetailsProp.email !== '—' ? _currentDetailsProp.email : '-'),
-            },
-          ]}
-        />
-
         {/* Card 2: Amended details */}
         <div className="gst-amend-card-box" id="gst-amend-details">
           <div className="gst-amend-card-box__header-flex">
@@ -330,16 +309,28 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
               placeholder="Enter designation"
               value={designation}
               onChange={(e) => {
-                const val = gstInput.designation(e.target.value)
+                const val = e.target.value
                 setDesignation(val)
-                if (errors.designation) {
-                  const err = rules.designation(val)
-                  setErrors((prev) => ({ ...prev, designation: err || '' }))
+                const err = rules.designation(val)
+                if (err && (/\d/.test(val) || errors.designation)) {
+                  setErrors((prev) => ({ ...prev, designation: err }))
+                } else if (!err && errors.designation) {
+                  setErrors((prev) => {
+                    const { designation: _, ...rest } = prev
+                    return rest
+                  })
                 }
               }}
               onBlur={() => {
-                const err = rules.designation(designation)
-                setErrors((prev) => ({ ...prev, designation: err || '' }))
+                const trimmed = designation.trim()
+                setDesignation(trimmed)
+                const err = rules.designation(trimmed)
+                setErrors((prev) => {
+                  const next = { ...prev }
+                  if (err) next.designation = err
+                  else delete next.designation
+                  return next
+                })
               }}
               className={`gst-amend-text-input ${errors.designation ? 'has-error' : ''}`}
             />

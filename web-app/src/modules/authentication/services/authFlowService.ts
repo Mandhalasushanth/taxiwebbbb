@@ -65,7 +65,7 @@ const mockUser = (mobile: string): AuthUser => {
     email: '',
     mobile: clean,
     role: 'CUSTOMER',
-    customerType: 'INDIVIDUAL',
+    customerType: undefined,
     permissions: [],
     isProfileComplete: false,
   }
@@ -271,12 +271,13 @@ export const authFlowService = {
     }
   },
 
-  /** Replaces the passcode of an existing account after its OTP has been verified (Forgot Passcode). */
+  /** Replaces the passcode of an existing account after its OTP has been verified (Forgot Passcode / Change Passcode). */
   async resetPasscode(payload: ResetPasscodePayload): Promise<void> {
     const clean = payload.mobile.replace(/\D/g, '')
     if (env.enableMocks) {
       await delay(300)
-      if (!this.hasPasscode(clean)) {
+      const userExists = Boolean(this.hasPasscode(clean) || userRepository.getUserByMobile(clean) || authStorage.getRegisteredUser(clean))
+      if (!userExists) {
         throw new Error('No registered account found for this mobile number.')
       }
       userRepository.savePasscodeState(clean, payload.passcode)

@@ -5,7 +5,7 @@
   position: relative;
   display: grid;
   grid-template-columns: 45% 55%;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   max-height: 100vh;
   margin: 0;
@@ -43,16 +43,8 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  overflow-y: auto;
+  overflow: hidden; /* Fix: background never scrolls or moves on mouse cursor scroll */
   background: transparent;
-}
-
-.register-screen__left::-webkit-scrollbar {
-  width: 5px;
-}
-.register-screen__left::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 999px;
 }
 
 /* ── Right Card Slot ── */
@@ -68,30 +60,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(0.75rem, 1.5vh, 1.5rem) clamp(1rem, 2vw, 2.5rem);
+  padding: clamp(14px, 2.5vh, 26px) clamp(1rem, 2vw, 2.5rem);
   box-sizing: border-box;
-  overflow-y: auto;
-}
-
-.register-screen__right::-webkit-scrollbar {
-  width: 6px;
-}
-.register-screen__right::-webkit-scrollbar-track {
-  background: transparent;
-}
-.register-screen__right::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 999px;
-}
-.register-screen__right::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.35);
+  overflow: hidden; /* Fix: background never scrolls */
 }
 
 .register-screen__card-box {
   width: 100%;
-  max-width: 760px;
+  max-width: 780px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-sizing: border-box;
-  margin: auto;
+  margin: 0 auto;
   padding: 0;
 }
 
@@ -101,7 +83,7 @@
     grid-template-columns: 42% 58%;
   }
   .register-screen__right {
-    padding: 1.25rem 1rem;
+    padding: clamp(12px, 2vh, 20px) 1rem;
   }
 }
 
@@ -124,8 +106,10 @@
     width: 100%;
     padding: 1.5rem 1rem 2.5rem;
     background: transparent;
+    overflow-y: visible;
   }
   .register-screen__card-box {
     max-width: 100%;
+    height: auto;
   }
 }

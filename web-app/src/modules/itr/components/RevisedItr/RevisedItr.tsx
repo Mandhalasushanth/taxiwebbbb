@@ -19,7 +19,6 @@ export const RevisedItr: React.FC = () => {
     ackNumber,
     selectedAy,
     isDropdownOpen,
-    isReturnFound,
     returnDetails,
     selectedReason,
     otherReasonText,
@@ -61,8 +60,6 @@ export const RevisedItr: React.FC = () => {
         ackNumber={ackNumber}
         selectedAy={selectedAy}
         isDropdownOpen={isDropdownOpen}
-        isReturnFound={isReturnFound}
-        returnDetails={returnDetails}
         ackError={errors.ackError}
         ayError={errors.ayError}
         dropdownRef={dropdownRef}

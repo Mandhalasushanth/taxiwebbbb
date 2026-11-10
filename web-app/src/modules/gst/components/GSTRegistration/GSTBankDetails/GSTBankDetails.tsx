@@ -76,16 +76,20 @@ export const GSTBankDetails = ({
       />
 
       <div className="gst-form-row gst-form-row--split">
-        <GSTTextField
-          id="accountNumber"
-          label="Bank Account Number"
-          placeholder="Enter account number"
-          inputMode="numeric"
-          value={data.accountNumber}
-          error={errors.accountNumber}
-          onValueChange={(v) => update('accountNumber', gstInput.accountNumber(v))}
-          onBlur={() => onBlur?.('accountNumber')}
-        />
+        <GSTFieldShell id="accountNumber" label="Bank Account Number">
+          <ConfirmAccountNumberInput
+            id="accountNumber"
+            name="accountNumber"
+            className={fieldInputClass(errors.accountNumber)}
+            placeholder="Enter account number"
+            value={data.accountNumber}
+            onChange={(v) => update('accountNumber', gstInput.accountNumber(v))}
+            onBlur={() => onBlur?.('accountNumber')}
+            hasError={Boolean(errors.accountNumber)}
+            error={errors.accountNumber}
+            ariaLabel="account number"
+          />
+        </GSTFieldShell>
         <GSTFieldShell id="confirmAccountNumber" label="Confirm Account Number">
           <ConfirmAccountNumberInput
             id="confirmAccountNumber"

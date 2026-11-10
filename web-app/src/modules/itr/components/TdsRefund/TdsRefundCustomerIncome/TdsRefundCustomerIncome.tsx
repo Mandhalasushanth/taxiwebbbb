@@ -228,6 +228,24 @@ export const TdsRefundCustomerIncome: React.FC<
       let shouldValidateLive = isTouched || hasExistingError;
 
       // Key milestone typing triggers:
+      if (changedField === 'legalName') {
+        if (/\d/.test(val)) {
+          setBusinessErrors((prev) => ({
+            ...prev,
+            legalName: 'Legal name cannot contain numbers',
+          }));
+          return;
+        } else if (businessErrors.legalName === 'Legal name cannot contain numbers') {
+          if (!isTouched) {
+            setBusinessErrors((prev) => {
+              const nextErrs = { ...prev };
+              delete nextErrs.legalName;
+              return nextErrs;
+            });
+            return;
+          }
+        }
+      }
       if (changedField === 'pan' && val.length === 10) shouldValidateLive = true;
       if (changedField === 'aadhaar' && val.replace(/\D/g, '').length === 12) shouldValidateLive = true;
       if (changedField === 'mobile' && val.replace(/\D/g, '').length === 10) shouldValidateLive = true;

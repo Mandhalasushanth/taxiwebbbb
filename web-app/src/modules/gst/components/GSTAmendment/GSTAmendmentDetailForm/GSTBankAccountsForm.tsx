@@ -6,7 +6,6 @@ import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
 import { ConfirmAccountNumberInput, CaretInput } from '@shared/components'
 import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
 import { useAmendmentFileState } from '../hooks/useAmendmentFileState'
-import { GSTCurrentPortalCard } from './GSTCurrentPortalCard'
 import { GSTAmendmentActionBar } from './GSTAmendmentActionBar'
 import './GSTBankAccountsForm.css'
 
@@ -183,24 +182,6 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
       </div>
 
       <form onSubmit={handleSubmitForm} noValidate>
-        {/* Card 1: Currently Registered on Portal */}
-        <GSTCurrentPortalCard
-          rows={[
-            {
-              label: 'Bank Name',
-              value: _currentDetailsProp?.bankName && _currentDetailsProp.bankName !== '—' ? _currentDetailsProp.bankName : '-',
-            },
-            {
-              label: 'Account Number',
-              value: _currentDetailsProp?.accountNumber && _currentDetailsProp.accountNumber !== '—' ? _currentDetailsProp.accountNumber : '-',
-            },
-            {
-              label: 'IFSC Code',
-              value: _currentDetailsProp?.ifscCode && _currentDetailsProp.ifscCode !== '—' ? _currentDetailsProp.ifscCode : '-',
-            },
-          ]}
-        />
-
         {/* Card 2: Amended details */}
         <div className="gst-amend-card-box" id="gst-amend-details">
           <div className="gst-amend-card-box__header-flex">
@@ -248,13 +229,12 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
             <label htmlFor="account-no-input" className="gst-amend-field-label">
               New Bank Account Number <span className="gst-amend-star">*</span>
             </label>
-            <input
+            <ConfirmAccountNumberInput
               id="account-no-input"
-              type="text"
+              name="accountNumber"
               placeholder="Enter bank account number"
               value={accountNumber}
-              onChange={(e) => {
-                const val = gstInput.accountNumber(e.target.value)
+              onChange={(val) => {
                 setAccountNumber(val)
                 if (errors.accountNumber) {
                   const err = rules.accountNumber(val)
@@ -270,8 +250,10 @@ export const GSTBankAccountsForm: React.FC<GSTBankAccountsFormProps> = ({
                 setErrors((prev) => ({ ...prev, accountNumber: err || '' }))
               }}
               className={`gst-amend-text-input ${errors.accountNumber ? 'has-error' : ''}`}
+              hasError={Boolean(errors.accountNumber)}
+              error={errors.accountNumber}
+              ariaLabel="new bank account number"
             />
-            {errors.accountNumber && <span className="gst-amend-error-msg">{errors.accountNumber}</span>}
           </div>
 
           {/* Field 3: Confirm Bank Account Number */}

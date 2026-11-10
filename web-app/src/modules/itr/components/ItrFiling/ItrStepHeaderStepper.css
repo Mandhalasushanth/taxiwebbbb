@@ -33,13 +33,13 @@
   color: var(--primary-orange); /* Orange accent */
 }
 
-/* 5-Step Desktop Stepper Track - Full Width Responsive */
+/* 5-Step Desktop Stepper Track - Compact Connected Layout */
 .itr-stepper-track {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   width: 100%;
-  max-width: 100%;
+  max-width: 580px;
   margin: 0.75rem 0 0 0;
   padding: 0 0.5rem;
   box-sizing: border-box;

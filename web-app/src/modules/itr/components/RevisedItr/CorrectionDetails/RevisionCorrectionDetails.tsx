@@ -33,8 +33,6 @@ export const RevisionAmountCard: React.FC<RevisionAmountCardProps> = ({
   onKeyDown,
 }) => {
   const { changeText, tone } = calculateIncomeChange(originalAmount, revisedValue)
-  const formattedOriginal =
-    originalAmount > 0 ? `₹ ${new Intl.NumberFormat('en-IN').format(originalAmount)}` : '₹'
 
   return (
     <div className="revision-amount-card">
@@ -42,11 +40,6 @@ export const RevisionAmountCard: React.FC<RevisionAmountCardProps> = ({
         <span className="correction-card-title">
           {title} {isRequired && <span className="required-star">*</span>}
         </span>
-      </div>
-
-      <div className="correction-original-row">
-        <span className="original-label">Original</span>
-        <span className="original-value">{formattedOriginal}</span>
       </div>
 
       <div className="correction-input-group">

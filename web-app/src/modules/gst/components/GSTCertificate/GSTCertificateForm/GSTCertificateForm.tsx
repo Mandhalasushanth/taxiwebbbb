@@ -1,5 +1,5 @@
 import type { ChangeEvent, FormEvent } from 'react'
-import { CaretInput } from '@shared/components'
+import { CaretInput, FieldInfoTooltip } from '@shared/components'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { GST_CERTIFICATE_REQUEST_TYPES } from '@modules/gst/data/gstCertificateData'
 import type { CertificateFields } from '@modules/gst/hooks/useGSTCertificateFlow'
@@ -86,9 +86,15 @@ export const GSTCertificateForm = ({
                   <line x1="17" y1="8" x2="17" y2="16" />
                 </svg>
               </div>
-              <label htmlFor="gst-cert-gstin-input" className="gst-cert-card__label">
-                GSTIN Number <span className="gst-cert-required">*</span>
-              </label>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <label htmlFor="gst-cert-gstin-input" className="gst-cert-card__label">
+                  GSTIN Number <span className="gst-cert-required">*</span>
+                </label>
+                <FieldInfoTooltip
+                  title="GSTIN Information"
+                  description="Enter your valid 15-digit GST Identification Number. Ensure it matches your GST registration."
+                />
+              </div>
             </div>
 
             <div className="gst-cert-field-wrap">
