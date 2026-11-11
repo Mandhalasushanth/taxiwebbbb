@@ -74,7 +74,18 @@ export const GSTCancellationCard: React.FC<GSTCancellationCardProps> = ({
         gstin={gstin}
         cancellationDate={cancellationDate}
         onBackToForm={() => setIsSubmitted(false)}
-        onAllForms={onAllForms ?? (() => navigate(routePaths.gst.root))}
+        onBackToDashboard={() => {
+          setIsSubmitted(false)
+          navigate(routePaths.dashboard)
+        }}
+        onTrackApplications={() => {
+          setIsSubmitted(false)
+          navigate(routePaths.applications)
+        }}
+        onContactSupport={() => {
+          setIsSubmitted(false)
+          navigate(routePaths.support)
+        }}
       />
     )
   }

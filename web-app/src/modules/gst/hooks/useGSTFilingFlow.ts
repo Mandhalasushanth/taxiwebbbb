@@ -162,19 +162,21 @@ export const useGSTFilingFlow = () => {
     Object.keys(notApplicableDocs).length > 0
   )
 
+  const isComplete = currentStep >= STATUS_STEP
+
   const draft = useServiceDraft<FilingDraft>({
     storageNamespace: DRAFT_NAMESPACES.gst,
     serviceId: SERVICE_ID,
     serviceTitle: SERVICE_TITLE,
     totalSteps: TOTAL_STEPS,
-    currentStep: Math.min(currentStep, TOTAL_STEPS),
+    currentStep,
     stepLabel: STEP_LABELS[currentStep] || 'Return Filing',
     resumeRoute: FILING_PATH_BY_STEP[currentStep as FilingStep] || routePaths.gst.filing,
     reviewRoute: routePaths.gst.fileReview,
     exitRoute: routePaths.gst.root,
     formData: { filingData, uploadedFiles, notApplicableDocs },
-    hasEnteredData,
-    isComplete: currentStep > TOTAL_STEPS,
+    hasEnteredData: !isComplete && hasEnteredData,
+    isComplete,
     isFlowRoute: isFilingRoute,
     onDiscard: () => {
       Object.keys(uploadedFiles).forEach((id) => gstUploadedFiles.remove(`filing_${id}`))
@@ -338,6 +340,7 @@ export const useGSTFilingFlow = () => {
   return {
     navigate,
     currentStep,
+    isComplete,
     goToStep,
     filingData,
     setFilingData,

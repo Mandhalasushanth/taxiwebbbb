@@ -10,6 +10,8 @@ import {
   remapPeriodToFinancialYear,
   getReturnTypeOptions,
   FINANCIAL_YEAR_OPTIONS,
+  GST_FILING_FINANCIAL_YEAR_OPTIONS,
+  GST_COMPLIANCE_FINANCIAL_YEAR_OPTIONS,
 } from '../../src/modules/gst/utils/gstPeriodOptions'
 import { GSTFilingPeriod } from '../../src/modules/gst/components/GSTFiling/GSTFilingPeriod/GSTFilingPeriod'
 import { DEFAULT_DOCUMENT_ITEMS } from '../../src/modules/gst/utils/gstDocumentsData'
@@ -40,13 +42,34 @@ describe('GST Dynamic Filing Period Utils', () => {
     })
   })
 
-  it('provides exactly 4 financial year options: FY 2022-23 to FY 2025-26', () => {
-    expect(FINANCIAL_YEAR_OPTIONS.map((opt) => opt.value)).toEqual([
+  it('provides 10 financial year options for GST filing: FY 2017-18 to FY 2026-27', () => {
+    expect(GST_FILING_FINANCIAL_YEAR_OPTIONS.map((opt) => opt.value)).toEqual([
+      'FY 2017-18',
+      'FY 2018-19',
+      'FY 2019-20',
+      'FY 2020-21',
+      'FY 2021-22',
+      'FY 2022-23',
+      'FY 2023-24',
+      'FY 2024-25',
+      'FY 2025-26',
+      'FY 2026-27',
+    ])
+  })
+
+  it('provides 4 financial year options for GST compliance: FY 2022-23 to FY 2025-26', () => {
+    expect(GST_COMPLIANCE_FINANCIAL_YEAR_OPTIONS.map((opt) => opt.value)).toEqual([
       'FY 2022-23',
       'FY 2023-24',
       'FY 2024-25',
       'FY 2025-26',
     ])
+  })
+
+  it('ensures GST Filing and GST Compliance have different financial year options', () => {
+    expect(GST_FILING_FINANCIAL_YEAR_OPTIONS.length).toBe(10)
+    expect(GST_COMPLIANCE_FINANCIAL_YEAR_OPTIONS.length).toBe(4)
+    expect(GST_FILING_FINANCIAL_YEAR_OPTIONS).not.toEqual(GST_COMPLIANCE_FINANCIAL_YEAR_OPTIONS)
   })
 
   it('generates 12 monthly options starting from April (startYear) to March (endYear)', () => {
@@ -115,6 +138,34 @@ describe('GST Dynamic Filing Period Utils', () => {
 })
 
 describe('GSTFilingPeriod Component Dynamic Behavior', () => {
+  it('renders all 10 financial years from FY 2017-18 to FY 2026-27 in the FY select', () => {
+    render(
+      <GSTFilingPeriod
+        onContinue={vi.fn()}
+        onCancel={vi.fn()}
+      />
+    )
+
+    const fySelect = screen.getByLabelText(/Financial Year/i) as HTMLSelectElement
+    const fyOptions = Array.from(fySelect.options)
+      .map((o) => o.value)
+      .filter(Boolean)
+
+    expect(fyOptions).toEqual([
+      'FY 2017-18',
+      'FY 2018-19',
+      'FY 2019-20',
+      'FY 2020-21',
+      'FY 2021-22',
+      'FY 2022-23',
+      'FY 2023-24',
+      'FY 2024-25',
+      'FY 2025-26',
+      'FY 2026-27',
+    ])
+    expect(fyOptions).toHaveLength(10)
+  })
+
   it('renders monthly options starting from April of selected financial year', () => {
     render(
       <GSTFilingPeriod

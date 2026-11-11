@@ -235,6 +235,15 @@ export const gstFieldRules = {
     return date > new Date() ? `${label} cannot be in the future` : undefined
   },
 
+  /** Date (YYYY-MM-DD) that is required and must be a valid date */
+  validDate: (label: string): Rule => (v) => {
+    const value = trimmed(v)
+    if (!value) return `${label} is required`
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) return `Enter a valid ${label.toLowerCase()}`
+    return undefined
+  },
+
   /** Wraps a rule so an empty value is allowed */
   optional: (rule: Rule): Rule => (v) => (trimmed(v) ? rule(v) : undefined),
 }

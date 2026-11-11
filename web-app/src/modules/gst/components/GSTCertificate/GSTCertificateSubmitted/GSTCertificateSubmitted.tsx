@@ -1,223 +1,43 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routePaths } from '@core/config'
-import { useAppStore } from '@store/index'
-import './GSTCertificateSubmitted.css'
+import { GSTApplicationSubmitted } from '@modules/gst/shared/GSTApplicationSubmitted/GSTApplicationSubmitted'
 
-interface GSTCertificateSubmittedProps {
+export interface GSTCertificateSubmittedProps {
   applicationId?: string
   gstin?: string
+  businessName?: string
   requestType?: string
-  onBackToForm: (section?: string) => void
+  onBackToForm?: (section?: string) => void
   onAllForms?: () => void
+  onBackToDashboard?: () => void
+  onTrackApplications?: () => void
+  onContactSupport?: () => void
 }
 
-/**
- * Screen 2: GST Certificate Ready (REG-06)
- * Replicates the mobile screen 2 reference with the 3 navigation actions
- * (Go to Dashboard, My Applications, Chat with CA) using Finsolz color codes.
- */
 export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = ({
-  gstin = '',
-  onBackToForm,
+  applicationId,
+  businessName,
+  onAllForms,
+  onBackToDashboard,
+  onTrackApplications,
+  onContactSupport,
 }) => {
   const navigate = useNavigate()
-  const pushToast = useAppStore((state) => state.pushToast)
-
-  const handleShareOrDownload = () => {
-    const filename = gstin ? `GST-Certificate-${gstin}.pdf` : 'GST-Certificate.pdf'
-    const certificateText = `GOVERNMENT OF INDIA\nREGISTRATION CERTIFICATE (Form GST REG-06)\n\nGSTIN: ${gstin || '—'}\nForm: Form GST REG-06\nStatus: Active & Verified\nDate of Issue: ${new Date().toLocaleDateString('en-IN')}\n\nThis is an official computer-generated Registration Certificate issued under the Goods and Services Tax Act.`
-    const blob = new Blob([certificateText], { type: 'application/pdf' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = filename
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-
-    pushToast(`Certificate ${filename} saved successfully!`, 'success')
-
-    if (navigator.share) {
-      navigator.share({
-        title: 'GST Registration Certificate (REG-06)',
-        text: gstin ? `GST Certificate for ${gstin}` : 'GST Certificate',
-        url: window.location.href,
-      }).catch(() => {
-        // Share dismissed or unsupported
-      })
-    }
-  }
-
-  const handleGoToDashboard = () => {
-    navigate(routePaths.dashboard)
-  }
-
-  const handleMyApplications = () => {
-    navigate(routePaths.applications)
-  }
+  const displayAppId = applicationId || `GST-2026-${Math.floor(10000 + Math.random() * 90000)}`
 
   return (
-    <div className="gst-cert-ready-container">
-      {/* ── Top Bar Header (Standard Web Desktop) ── */}
-      <div className="gst-cert-ready-top-bar">
-        <h2 className="gst-cert-top-title">GST Certificate (REG-06)</h2>
-      </div>
-
-      {/* ── Hero Certificate Illustration ── */}
-      <div className="gst-cert-ready-hero" aria-hidden="true">
-        <div className="gst-cert-ready-slot-wrap">
-          {/* Paper emerging from slot */}
-          <div className="gst-cert-ready-paper">
-            <span className="gst-cert-ready-paper-text">GST</span>
-            <div className="gst-cert-ready-paper-lines">
-              <span className="gst-cert-ready-paper-line" />
-              <span className="gst-cert-ready-paper-line gst-cert-ready-paper-line--short" />
-            </div>
-          </div>
-          {/* Base Slot Platform */}
-          <div className="gst-cert-ready-slot">
-            <div className="gst-cert-ready-slot-inner" />
-          </div>
-          {/* Circular Badge Checkmark in center */}
-          <div className="gst-cert-ready-check-badge">
-            <svg viewBox="0 0 24 24" className="gst-cert-ready-check-svg" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Title & Subtitle ── */}
-      <div className="gst-cert-ready-text-block">
-        <h1 className="gst-cert-ready-title">Certificate Ready!</h1>
-        <p className="gst-cert-ready-subtitle">
-          Your official <strong>Form GST REG-06</strong> certificate has been generated successfully.
-        </p>
-      </div>
-
-      {/* ── Summary Details Card ── */}
-      <div className="gst-cert-ready-card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--secondary-text, #64748b)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Certificate Details</span>
-          {onBackToForm && (
-            <button
-              type="button"
-              onClick={() => onBackToForm('gst-cert-gstin')}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                background: 'none',
-                border: 'none',
-                color: '#ea580c',
-                fontSize: '0.88rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
-              aria-label="Edit Certificate Request"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="14" height="14">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-              </svg>
-              <span>Edit Details</span>
-            </button>
-          )}
-        </div>
-
-        {/* Row 1: GSTIN */}
-        <div className="gst-cert-ready-row">
-          <div className="gst-cert-ready-row-left">
-            <div className="gst-cert-ready-icon-box">
-              <svg viewBox="0 0 24 24" className="gst-cert-ready-row-icon" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 5v14" /><path d="M8 5v14" /><path d="M12 5v14" /><path d="M17 5v14" /><path d="M21 5v14" />
-              </svg>
-            </div>
-            <span className="gst-cert-ready-label">GSTIN</span>
-          </div>
-          <span className="gst-cert-ready-value">{gstin || '—'}</span>
-        </div>
-
-        <div className="gst-cert-ready-divider" />
-
-        {/* Row 2: Form */}
-        <div className="gst-cert-ready-row">
-          <div className="gst-cert-ready-row-left">
-            <div className="gst-cert-ready-icon-box">
-              <svg viewBox="0 0 24 24" className="gst-cert-ready-row-icon" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-              </svg>
-            </div>
-            <span className="gst-cert-ready-label">Form</span>
-          </div>
-          <span className="gst-cert-ready-value">Form GST REG-06</span>
-        </div>
-
-        <div className="gst-cert-ready-divider" />
-
-        {/* Row 3: Status */}
-        <div className="gst-cert-ready-row">
-          <div className="gst-cert-ready-row-left">
-            <div className="gst-cert-ready-icon-box gst-cert-ready-icon-box--green">
-              <svg viewBox="0 0 24 24" className="gst-cert-ready-row-icon" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                <polyline points="22 4 12 14.01 9 11.01" />
-              </svg>
-            </div>
-            <span className="gst-cert-ready-label">Status</span>
-          </div>
-          <span className="gst-cert-ready-status-pill">Generated &amp; Saved</span>
-        </div>
-      </div>
-
-      {/* ── Actions: Go to Dashboard, My Applications, Share / Save Certificate (One Row) ── */}
-      <div className="gst-cert-ready-actions-row">
-        {/* 1. Go to Dashboard */}
-        <button
-          type="button"
-          className="gst-cert-btn-nav gst-cert-btn-nav--dashboard"
-          onClick={handleGoToDashboard}
-        >
-          <svg viewBox="0 0 24 24" className="gst-cert-nav-icon" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" />
-          </svg>
-          <span>Go to Dashboard</span>
-        </button>
-
-        {/* 2. My Applications */}
-        <button
-          type="button"
-          className="gst-cert-btn-nav gst-cert-btn-nav--applications"
-          onClick={handleMyApplications}
-        >
-          <svg viewBox="0 0 24 24" className="gst-cert-nav-icon" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-            <line x1="16" y1="13" x2="8" y2="13" />
-            <line x1="16" y1="17" x2="8" y2="17" />
-          </svg>
-          <span>My Applications</span>
-        </button>
-
-        {/* 3. Share / Save Certificate */}
-        <button
-          type="button"
-          className="gst-cert-btn-nav gst-cert-btn-nav--share"
-          onClick={handleShareOrDownload}
-        >
-          <svg viewBox="0 0 24 24" className="gst-cert-nav-icon" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-            <polyline points="16 6 12 2 8 6" />
-            <line x1="12" y1="2" x2="12" y2="15" />
-          </svg>
-          <span>Share / Save Certificate</span>
-        </button>
-      </div>
-    </div>
+    <GSTApplicationSubmitted
+      applicationId={displayAppId}
+      serviceType="GST Certificate"
+      businessName={businessName}
+      appliedOn="Today"
+      estCompletion="3–5 Business Days"
+      statusBadge="Under Verification"
+      onBackToDashboard={onBackToDashboard || onAllForms || (() => navigate(routePaths.dashboard))}
+      onTrackApplications={onTrackApplications || (() => navigate(routePaths.applications))}
+      onContactSupport={onContactSupport || (() => navigate(routePaths.support))}
+    />
   )
 }
 

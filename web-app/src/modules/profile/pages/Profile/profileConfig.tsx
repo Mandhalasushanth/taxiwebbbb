@@ -76,3 +76,6 @@ export const profileSectionsConfig: ProfileSectionData[] = [
     ]
   }
 ]
+
+export default profileSectionsConfig
+

@@ -15,8 +15,10 @@ import { ProfileSectionModal, type ProfileModalType } from '../../components/Pro
 import { UnavailableModal } from '../../components/UnavailableModal/UnavailableModal'
 import { calculateProfileProgress } from '../../utils/profileProgress'
 import { useApplications } from '@modules/applications'
-import { profileSectionsConfig } from './profileConfig'
+import profileSectionsConfigDefault, { profileSectionsConfig as profileSectionsConfigNamed } from './profileConfig'
 import './Profile.css'
+
+const profileSectionsConfig = profileSectionsConfigNamed || profileSectionsConfigDefault || []
 
 export const Profile = () => {
   const navigate = useNavigate()

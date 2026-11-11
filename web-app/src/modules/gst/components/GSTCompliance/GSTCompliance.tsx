@@ -6,7 +6,7 @@ import { GSTSubmitConfirmModal } from './GSTSubmitConfirmModal'
 import { GSTSuccessView } from './GSTSuccessView'
 import { GSTComplianceReview } from './GSTComplianceReview'
 import { useGSTComplianceState, type ComplianceRequestOption } from '@modules/gst/hooks/useGSTComplianceState'
-import { FINANCIAL_YEAR_OPTIONS } from '@modules/gst/utils/gstPeriodOptions'
+import { GST_COMPLIANCE_FINANCIAL_YEAR_OPTIONS } from '@modules/gst/utils/gstPeriodOptions'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { ServiceDraftModal } from '@shared/saveDraft'
 import { CaretInput, FieldInfoTooltip, StepActionBar } from '@shared/components'
@@ -15,6 +15,7 @@ import { GreenCheckCircleIcon } from '@modules/gst/shared/GSTDocIcons/GSTDocIcon
 import { GSTReconciliationDocsSection } from './GSTReconciliationDocsSection'
 import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
 import { useGSTSectionFocus } from '@modules/gst/shared/useGSTSectionFocus'
+import { UPDATE_AND_REVIEW_LABEL } from '@shared/edit'
 import './GSTCompliance.css'
 import './GSTCompliance.sidebar.css'
 
@@ -37,6 +38,8 @@ export const GSTCompliance: React.FC = () => {
     isConfirmModalOpen,
     setIsConfirmModalOpen,
     isReviewing,
+    isEditMode,
+    handleBackFromEdit,
     handleProceedToReview,
     handleEdit,
     handleSubmitReview,
@@ -69,7 +72,18 @@ export const GSTCompliance: React.FC = () => {
             applicationId={applicationId}
             requestType={requestType}
             gstin={gstin}
-            onReset={handleReset}
+            onBackToDashboard={() => {
+              handleReset()
+              navigate(routePaths.dashboard)
+            }}
+            onTrackApplications={() => {
+              handleReset()
+              navigate(routePaths.applications)
+            }}
+            onContactSupport={() => {
+              handleReset()
+              navigate(routePaths.support)
+            }}
           />
         </div>
       </div>
@@ -198,9 +212,9 @@ export const GSTCompliance: React.FC = () => {
                         id="fy-select"
                         className={`form-select ${errors.financialYear ? 'has-error' : ''}`}
                         value={
-                          FINANCIAL_YEAR_OPTIONS.some((o) => o.value === financialYear)
+                          GST_COMPLIANCE_FINANCIAL_YEAR_OPTIONS.some((o) => o.value === financialYear)
                             ? financialYear
-                            : FINANCIAL_YEAR_OPTIONS.some((o) => o.value === `FY ${financialYear}`)
+                            : GST_COMPLIANCE_FINANCIAL_YEAR_OPTIONS.some((o) => o.value === `FY ${financialYear}`)
                               ? `FY ${financialYear}`
                               : financialYear
                         }
@@ -208,7 +222,7 @@ export const GSTCompliance: React.FC = () => {
                         onBlur={() => validateField('financialYear')}
                       >
                         <option value="">Select Financial Year</option>
-                        {FINANCIAL_YEAR_OPTIONS.map((option) => (
+                        {GST_COMPLIANCE_FINANCIAL_YEAR_OPTIONS.map((option) => (
                           <option key={option.value} value={option.value}>
                             {option.label}
                           </option>
@@ -284,7 +298,7 @@ export const GSTCompliance: React.FC = () => {
 
               {/* Step Action Bar */}
               <StepActionBar
-                onBack={() => {
+                onBack={isEditMode ? handleBackFromEdit : () => {
                   if (window.history.state && window.history.state.idx > 0) {
                     navigate(-1)
                   } else {
@@ -293,7 +307,8 @@ export const GSTCompliance: React.FC = () => {
                 }}
                 onSaveDraft={openDraftModal}
                 onNext={() => handleProceedToReview()}
-                nextLabel="Proceed to Review"
+                isEditMode={isEditMode}
+                nextLabel={isEditMode ? UPDATE_AND_REVIEW_LABEL : "Proceed to Review"}
                 isSubmitting={isSubmitting}
                 nextTestId="gst-compliance-submit-btn"
               />
@@ -312,7 +327,7 @@ export const GSTCompliance: React.FC = () => {
         isSubmitting={isSubmitting}
       />
 
-      <ServiceDraftModal draft={flow} serviceTitle="GST Compliance" />
+      {!isSubmitted && <ServiceDraftModal draft={flow} serviceTitle="GST Compliance" />}
     </div>
   )
 }

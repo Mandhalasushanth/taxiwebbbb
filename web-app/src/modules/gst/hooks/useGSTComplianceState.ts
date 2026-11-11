@@ -13,6 +13,7 @@ import {
   readServiceDraft,
   DRAFT_NAMESPACES,
 } from "@shared/saveDraft";
+import { useReviewEdit } from "@shared/edit";
 import { gstUploadedFiles } from "@modules/gst/services/gstUploadedFiles";
 import { useGSTReviewEditNavigation } from "@modules/gst/shared/useGSTSectionFocus";
 
@@ -96,7 +97,7 @@ const validateCompliance = (
       ? gstFieldRules.pastDate("Notice issue date")(fields.issueDate)
       : undefined,
     dueDate: isNotice
-      ? gstFieldRules.pastDate("Reply due date")(fields.dueDate) ||
+      ? gstFieldRules.validDate("Reply due date")(fields.dueDate) ||
         (fields.issueDate &&
         fields.dueDate &&
         new Date(fields.dueDate) < new Date(fields.issueDate)
@@ -202,6 +203,8 @@ export const useGSTComplianceState = () => {
     gstUploadedFiles.remove("compliance_notice");
   };
 
+  const reviewEdit = useReviewEdit(() => setIsReviewing(true));
+
   const draft = useServiceDraft<ComplianceDraft>({
     storageNamespace: DRAFT_NAMESPACES.gst,
     serviceId: SERVICE_ID,
@@ -224,6 +227,7 @@ export const useGSTComplianceState = () => {
     },
     hasEnteredData,
     isComplete: isSubmitted,
+    isEditMode: reviewEdit.isEditMode,
     onDiscard: () => {
       clearComplianceFiles();
       setFields(initialFields);
@@ -231,6 +235,7 @@ export const useGSTComplianceState = () => {
       setSalesFile(null);
       setNoticeFile(null);
       setIsReviewing(false);
+      reviewEdit.cancelEdit();
     },
   });
 
@@ -279,11 +284,32 @@ export const useGSTComplianceState = () => {
       fields.requestType === "Notice Response"
     ) {
       err = gstFieldRules.pastDate("Notice issue date")(fields.issueDate);
+      if (
+        !err &&
+        fields.issueDate &&
+        fields.dueDate &&
+        new Date(fields.dueDate) < new Date(fields.issueDate)
+      ) {
+        setErrors((prev) => ({
+          ...prev,
+          dueDate: "Reply due date cannot be before notice issue date",
+        }));
+      } else if (
+        fields.issueDate &&
+        fields.dueDate &&
+        new Date(fields.dueDate) >= new Date(fields.issueDate)
+      ) {
+        setErrors((prev) =>
+          prev.dueDate === "Reply due date cannot be before notice issue date"
+            ? { ...prev, dueDate: undefined }
+            : prev,
+        );
+      }
     } else if (
       field === "dueDate" &&
       fields.requestType === "Notice Response"
     ) {
-      err = gstFieldRules.pastDate("Reply due date")(fields.dueDate);
+      err = gstFieldRules.validDate("Reply due date")(fields.dueDate);
       if (
         !err &&
         fields.issueDate &&
@@ -307,7 +333,11 @@ export const useGSTComplianceState = () => {
     });
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
-      setIsReviewing(true);
+      if (reviewEdit.isEditMode) {
+        reviewEdit.finishEdit();
+      } else {
+        setIsReviewing(true);
+      }
       window.scrollTo({ top: 0, behavior: "smooth" });
       return true;
     }
@@ -324,7 +354,9 @@ export const useGSTComplianceState = () => {
 
   const handleEdit = (section: string | null = null) => {
     startSectionEdit(section, () => {
-      setIsReviewing(false);
+      reviewEdit.startEdit(() => {
+        setIsReviewing(false);
+      });
     });
   };
 
@@ -362,6 +394,7 @@ export const useGSTComplianceState = () => {
     setErrors({});
     setIsReviewing(false);
     setIsSubmitted(false);
+    reviewEdit.cancelEdit();
   };
 
   return {
@@ -391,6 +424,8 @@ export const useGSTComplianceState = () => {
     isConfirmModalOpen,
     setIsConfirmModalOpen,
     isReviewing,
+    isEditMode: reviewEdit.isEditMode,
+    handleBackFromEdit: reviewEdit.finishEdit,
     editSection,
     errors,
     hasErrors,

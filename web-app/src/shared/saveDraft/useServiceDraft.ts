@@ -120,7 +120,7 @@ export const useServiceDraft = <T>({
   const storageKey = autosaveKey(serviceId, storageNamespace)
 
   const isEditing = Boolean(isEditMode || getIsReviewEditMode())
-  const isReviewStep = Boolean(isReview ?? (totalSteps > 0 && currentStep === totalSteps))
+  const isReviewStep = !isComplete && Boolean(isReview ?? (totalSteps > 0 && currentStep === totalSteps))
   const isReviewOrEdit = Boolean(isReviewStep || isEditing)
   const moduleDashboard = getModuleDashboardRoute(module || exitRoute || serviceId)
   const effectiveExitRoute = isReviewOrEdit ? moduleDashboard : exitRoute
@@ -179,6 +179,7 @@ export const useServiceDraft = <T>({
     defaultExitRoute: effectiveExitRoute,
     isNavigationAllowed,
     isReview: isReviewStep,
+    isComplete,
     module,
   })
 
@@ -205,9 +206,9 @@ export const useServiceDraft = <T>({
   const openDraftModal = useCallback(() => setIsManualModalOpen(true), [])
 
   return {
-    isDraftModalOpen: isManualModalOpen || blocker.isModalOpen,
-    isReviewPrompt: blocker.isReviewPrompt,
-    isSaving: blocker.isSaving,
+    isDraftModalOpen: !isComplete && (isManualModalOpen || blocker.isModalOpen),
+    isReviewPrompt: !isComplete && blocker.isReviewPrompt,
+    isSaving: !isComplete && blocker.isSaving,
     openDraftModal,
     saveDraft,
     clearDraft,

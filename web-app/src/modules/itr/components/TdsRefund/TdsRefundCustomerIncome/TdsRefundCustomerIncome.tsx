@@ -263,6 +263,17 @@ export const TdsRefundCustomerIncome: React.FC<
           return updatedErrs;
         });
       }
+
+      // If legalName changed, re-validate PAN 5th-character alignment if PAN is 10 characters
+      if (changedField === 'legalName' && next.pan && next.pan.length === 10) {
+        const panErr = validateBusinessField('pan', next);
+        setBusinessErrors((prev) => {
+          const nextErrs = { ...prev };
+          if (panErr) nextErrs.pan = panErr;
+          else if (prev.pan && prev.pan.includes('5th character')) delete nextErrs.pan;
+          return nextErrs;
+        });
+      }
     }
   };
 

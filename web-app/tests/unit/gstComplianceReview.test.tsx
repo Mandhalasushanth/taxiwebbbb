@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, cleanup, fireEvent } from '@testing-library/react'
+import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/react'
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
+import { pickFiles, uploadTestFile } from './helpers/uploadTestFiles'
 import { GSTComplianceReview } from '../../src/modules/gst/components/GSTCompliance/GSTComplianceReview'
 import { GSTCompliance } from '../../src/modules/gst/components/GSTCompliance/GSTCompliance'
 import { GSTSubmitConfirmModal } from '../../src/modules/gst/components/GSTCompliance/GSTSubmitConfirmModal'
@@ -259,17 +260,40 @@ describe('GST Compliance Review Page', () => {
         </MemoryRouter>
       )
 
-      expect(screen.getByText('Request Submitted Successfully')).toBeDefined()
+      expect(screen.getByText('Application Submitted!')).toBeDefined()
       expect(screen.getByText('GSTC-20261028-1234')).toBeDefined()
+      expect(screen.getByText('GST Compliance')).toBeDefined()
       expect(
         screen.getByText(
-          'Your GST Compliance request has been submitted successfully. Our CA team will review your documents and contact you shortly.'
+          'Your GST application has been successfully filed with Finsolz.'
         )
       ).toBeDefined()
     })
   })
 
   describe('Full GST Compliance Stepper Integration', () => {
+    it('renders exactly 4 financial years (FY 2022-23 to FY 2025-26) in GST Compliance', () => {
+      render(
+        <MemoryRouter>
+          <GSTCompliance />
+        </MemoryRouter>
+      )
+
+      const fySelect = screen.getByLabelText(/financial year/i) as HTMLSelectElement
+      const fyOptions = Array.from(fySelect.options)
+        .map((o) => o.value)
+        .filter(Boolean)
+
+      expect(fyOptions).toEqual([
+        'FY 2022-23',
+        'FY 2023-24',
+        'FY 2024-25',
+        'FY 2025-26',
+      ])
+      expect(fyOptions).toHaveLength(4)
+      expect(fyOptions).not.toContain('FY 2017-18')
+    })
+
     it('switches between Form (Step 1) and Review (Step 2) dynamically', () => {
       render(
         <MemoryRouter>
@@ -328,6 +352,42 @@ describe('GST Compliance Review Page', () => {
       expect(dueWrap?.querySelector('.gst-notice-date-display')).not.toBeNull()
     })
 
+    it('enforces Notice Issue Date <= today and allows Reply Due Date to be a future date >= Notice Issue Date', () => {
+      const { container } = render(
+        <MemoryRouter>
+          <GSTCompliance />
+        </MemoryRouter>
+      )
+
+      const reqTypeSelect = screen.getByLabelText(/request type/i)
+      fireEvent.change(reqTypeSelect, { target: { value: 'Notice Response' } })
+
+      const issueDateInput = container.querySelector('#gst-notice-issue-date') as HTMLInputElement
+      const dueDateInput = container.querySelector('#gst-notice-due-date') as HTMLInputElement
+
+      // 1. Notice Issue Date has max set to today (future dates disabled)
+      expect(issueDateInput.getAttribute('max')).toBeDefined()
+
+      // 2. Set Notice Issue Date to '2026-10-01'
+      fireEvent.change(issueDateInput, { target: { value: '2026-10-01' } })
+
+      // 3. Reply Due Date min is set to the selected Notice Issue Date
+      expect(dueDateInput.getAttribute('min')).toBe('2026-10-01')
+      // Reply Due Date does NOT have max limited to today
+      expect(dueDateInput.getAttribute('max')).toBeNull()
+
+      // 4. Entering a future date is valid and accepted
+      fireEvent.change(dueDateInput, { target: { value: '2026-11-30' } })
+      fireEvent.blur(dueDateInput)
+      expect(screen.queryByText(/Reply due date cannot be in the future/i)).toBeNull()
+      expect(screen.queryByText(/Reply due date cannot be before notice issue date/i)).toBeNull()
+
+      // 5. Entering a date before Notice Issue Date shows error
+      fireEvent.change(dueDateInput, { target: { value: '2026-09-15' } })
+      fireEvent.blur(dueDateInput)
+      expect(screen.getByText('Reply due date cannot be before notice issue date')).toBeDefined()
+    })
+
     it('marks a green circle tick when a valid GSTIN is entered and removes it when invalid', () => {
       render(
         <MemoryRouter>
@@ -354,6 +414,63 @@ describe('GST Compliance Review Page', () => {
       // Backspace 1 character -> tick disappears immediately
       fireEvent.change(gstinInput, { target: { value: '29AAAAA0000A1Z' } })
       expect(screen.queryByTestId('gstin-valid-tick')).toBeNull()
+    })
+
+    it('clicking Edit from Review switches to edit mode, hides Back button, shows "Update & Review", and returns to Review', async () => {
+      const { container } = render(
+        <MemoryRouter>
+          <GSTCompliance />
+        </MemoryRouter>
+      )
+
+      // 1. Fill valid form
+      const gstinInput = screen.getByLabelText(/GSTIN/i) as HTMLInputElement
+      fireEvent.change(gstinInput, { target: { value: '29AAAAA0000A1Z5' } })
+
+      const fySelect = screen.getByLabelText(/financial year/i)
+      fireEvent.change(fySelect, { target: { value: 'FY 2024-25' } })
+
+      const reqTypeSelect = screen.getByLabelText(/request type/i)
+      fireEvent.change(reqTypeSelect, { target: { value: 'Notice Response' } })
+
+      const noticeInput = screen.getByLabelText(/Notice Number/i) as HTMLInputElement
+      fireEvent.change(noticeInput, { target: { value: 'NOTICE/2026/001' } })
+
+      const issueDateInput = container.querySelector('#gst-notice-issue-date') as HTMLInputElement
+      fireEvent.change(issueDateInput, { target: { value: '2026-10-01' } })
+
+      const dueDateInput = container.querySelector('#gst-notice-due-date') as HTMLInputElement
+      fireEvent.change(dueDateInput, { target: { value: '2026-11-15' } })
+
+      const fileInput = container.querySelector('#file-input-notice-copy') as HTMLInputElement
+      await pickFiles(fileInput, [uploadTestFile('Notice.pdf')])
+
+      // 2. Click "Proceed to Review"
+      const proceedBtn = screen.getByTestId('gst-compliance-submit-btn')
+      expect(proceedBtn.textContent).toContain('Proceed to Review')
+      fireEvent.click(proceedBtn)
+
+      // 3. Confirm we are on Review page
+      await waitFor(() => {
+        expect(screen.getByText('Ready for CA Review & Filing')).toBeDefined()
+      })
+
+      // 4. Click "Edit" on Notice Details
+      const editButtons = screen.getAllByRole('button', { name: /Edit/i })
+      fireEvent.click(editButtons[1]) // Click edit on Notice Details
+
+      // 5. In Edit Mode:
+      // - Back button must NOT be present
+      expect(screen.queryByTestId('step-back-btn')).toBeNull()
+      // - Next button must display "Update & Review" instead of normal flow "Proceed to Review"
+      const updateBtn = screen.getByTestId('gst-compliance-submit-btn')
+      expect(updateBtn.textContent).toContain('Update & Review')
+
+      // 6. Click "Update & Review" and confirm it returns to Review
+      fireEvent.click(updateBtn)
+      await waitFor(() => {
+        expect(screen.getByText('Ready for CA Review & Filing')).toBeDefined()
+      })
     })
   })
 })

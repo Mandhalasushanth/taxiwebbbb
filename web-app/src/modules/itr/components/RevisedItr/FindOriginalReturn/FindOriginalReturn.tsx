@@ -1,7 +1,7 @@
 import React from 'react'
-import { CaretInput } from '@shared/components'
+import { CaretInput, FieldInfoTooltip } from '@shared/components'
 import { AY_OPTIONS } from '@modules/itr/types/revisedItr.types'
-import { ChevronDown as ChevronDownIcon, Check as CheckIcon } from 'lucide-react'
+import { ChevronDown as ChevronDownIcon, Check as CheckIcon, FileText } from 'lucide-react'
 import './FindOriginalReturn.css'
 
 interface AssessmentYearDropdownProps {
@@ -89,15 +89,21 @@ export const FindOriginalReturn: React.FC<FindOriginalReturnProps> = ({
 }) => {
   const renderAckField = () => (
     <div className="step1-form-field">
-      <label htmlFor="ack-input" className="field-label">
-        Original ITR Acknowledgement Number <span className="required-star">*</span>
-      </label>
+      <div className="field-label-row">
+        <label htmlFor="ack-input" className="field-label">
+          Original ITR Acknowledgement Number <span className="required-star">*</span>
+        </label>
+        <FieldInfoTooltip
+          title="ITR Acknowledgement Number"
+          description="Enter the 15-digit acknowledgement number printed on your ITR-V acknowledgment receipt."
+        />
+      </div>
       <CaretInput
         id="ack-input"
         type="text"
         inputMode="numeric"
         maxLength={15}
-        placeholder="Enter acknowledgement number"
+        placeholder="Enter 15-digit acknowledgement number"
         className={`step1-text-input ${ackError ? 'input-error' : ''}`}
         value={ackNumber}
         onKeyDown={onKeyDown}
@@ -126,9 +132,27 @@ export const FindOriginalReturn: React.FC<FindOriginalReturnProps> = ({
 
   return (
     <div className="step1-find-original-return" id="revised-step1-search" data-section="revised-step1-search">
-      <h2 className="step1-heading">Find Original Return</h2>
-      {renderAckField()}
-      {renderAyField()}
+      <div className="step1-page-header">
+        <h2 className="step1-heading">Find Original Return</h2>
+        <p className="step1-subheading">Verify your previous return filing details to start the revision.</p>
+      </div>
+
+      <div className="step1-section-card">
+        <div className="step1-card-header">
+          <div className="step1-card-title-row">
+            <FileText size={20} className="step1-card-icon" aria-hidden="true" />
+            <h3 className="step1-card-title">Original Return Details</h3>
+          </div>
+          <p className="step1-card-desc">
+            Enter the 15-digit acknowledgement number from your previously filed ITR-V and select the assessment year.
+          </p>
+        </div>
+
+        <div className="step1-card-body">
+          {renderAckField()}
+          {renderAyField()}
+        </div>
+      </div>
     </div>
   )
 }

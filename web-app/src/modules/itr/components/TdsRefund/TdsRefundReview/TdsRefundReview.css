@@ -195,118 +195,6 @@
   margin: 0;
 }
 
-/* Estimated Tax Computation Card */
-.tds-computation-prelim-badge {
-  background: var(--palette-blue-50);
-  border: 1px solid var(--palette-blue-200);
-  color: var(--palette-blue-700);
-  padding: 0.2rem 0.65rem;
-  border-radius: 9999px;
-  font-size: 0.76rem;
-  font-weight: 700;
-}
-
-.tds-review-value--deduction {
-  color: var(--success) !important;
-  font-weight: 700;
-}
-
-.tds-review-row--bold-line {
-  padding-top: 0.25rem;
-  padding-bottom: 0.55rem;
-}
-
-.tds-review-label--bold {
-  font-weight: 800 !important;
-  color: var(--palette-slate-900) !important;
-  font-size: 0.95rem;
-}
-
-.tds-review-value--bold {
-  font-weight: 800 !important;
-  color: var(--palette-slate-900) !important;
-  font-size: 0.98rem;
-}
-
-.tds-computation-divider {
-  height: 1px;
-  background: var(--border);
-  margin: 0.45rem 0;
-}
-
-.tds-computation-subhead {
-  font-size: 0.82rem;
-  font-weight: 800;
-  color: var(--palette-blue-900-1e3a8a);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  margin: 0.65rem 0 0.25rem 0;
-}
-
-.tds-computation-total-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.98rem;
-  font-weight: 800;
-  color: var(--palette-slate-900);
-  padding-top: 0.35rem;
-}
-.tds-computation-credits-val {
-  color: var(--success);
-  font-size: 1.05rem;
-  font-weight: 800;
-}
-
-/* Large Green Estimated Refund Box */
-.tds-refund-box {
-  background: var(--palette-green-50);
-  border: 1.5px solid var(--palette-green-200);
-  border-radius: 14px;
-  padding: 1.25rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.35rem;
-  margin-top: 0.5rem;
-}
-.tds-refund-box-label {
-  font-size: 0.82rem;
-  font-weight: 800;
-  color: var(--palette-green-700);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-.tds-refund-box-amount {
-  font-size: 2.1rem;
-  font-weight: 900;
-  color: var(--success);
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-}
-
-/* Disclaimer Box */
-.tds-disclaimer-box {
-  background: var(--palette-slate-50);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 0.85rem 1rem;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.65rem;
-  font-size: 0.8rem;
-  color: var(--secondary-text);
-  line-height: 1.45;
-}
-.tds-disclaimer-icon {
-  width: 16px;
-  height: 16px;
-  color: var(--secondary-text);
-  flex-shrink: 0;
-  margin-top: 0.1rem;
-}
-
 /* Bottom Action Buttons Row */
 .tds-step3-actions-row {
   display: flex;
@@ -416,9 +304,6 @@
   .tds-review-card {
     padding: 1rem 1.15rem;
   }
-  .tds-refund-box-amount {
-    font-size: 1.7rem;
-  }
 }
 
 @media (max-width: 480px) {
@@ -430,16 +315,4 @@
   .tds-review-value {
     text-align: left;
   }
-}
-
-/* Additional tax payable instead of a refund */
-.tds-refund-box--payable {
-  background: var(--palette-red-50);
-  border-color: var(--palette-red-200);
-}
-.tds-refund-box--payable .tds-refund-box-label {
-  color: var(--palette-red-700);
-}
-.tds-refund-box--payable .tds-refund-box-amount {
-  color: var(--palette-red-700);
 }
