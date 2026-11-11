@@ -33,7 +33,7 @@ export const validateBusinessLegalName = (name: string): string | null => {
   return null
 }
 
-export const validateBusinessPan = (pan: string): string | null => {
+export const validateBusinessPan = (pan: string, legalName?: string): string | null => {
   const raw = (pan || '').trim().toUpperCase()
   if (!raw) return 'Business PAN is required'
   if (raw.length < 10) return 'Business PAN must be 10 characters'
@@ -45,6 +45,17 @@ export const validateBusinessPan = (pan: string): string | null => {
   if (!validCategories.includes(category)) {
     return 'The 4th character of PAN must represent a valid entity type (A, B, C, F, G, H, J, L, P, or T).'
   }
+
+  // 5th character alignment with Legal Name (Income Tax Department standard PAN format rule):
+  // The 5th character of the PAN must match the first letter of the business legal name.
+  if (legalName && legalName.trim()) {
+    const trimmedLegal = legalName.trim().replace(/^[^A-Za-z]+/, '')
+    const firstLetter = trimmedLegal.charAt(0).toUpperCase()
+    if (/[A-Z]/.test(firstLetter) && raw.charAt(4) !== firstLetter) {
+      return `The 5th character of PAN ("${raw.charAt(4)}") must match the first letter of the business legal name ("${firstLetter}").`
+    }
+  }
+
   return null
 }
 
@@ -75,7 +86,7 @@ export const validateBusinessField = (
     case 'legalName':
       return validateBusinessLegalName(details.legalName)
     case 'pan':
-      return validateBusinessPan(details.pan)
+      return validateBusinessPan(details.pan, details.legalName)
     case 'aadhaar':
       return validateBusinessAadhaar(details.aadhaar)
     case 'mobile':
@@ -89,7 +100,7 @@ export const validateBusinessField = (
 export const getBusinessDetailsErrors = (details: TdsBusinessDetails): Record<string, string> => {
   const checks: Array<[keyof TdsBusinessDetails, string | null]> = [
     ['legalName', validateBusinessLegalName(details.legalName)],
-    ['pan', validateBusinessPan(details.pan)],
+    ['pan', validateBusinessPan(details.pan, details.legalName)],
     ['aadhaar', validateBusinessAadhaar(details.aadhaar)],
     ['mobile', validateBusinessMobile(details.mobile)],
   ]

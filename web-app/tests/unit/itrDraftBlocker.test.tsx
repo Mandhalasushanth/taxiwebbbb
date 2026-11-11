@@ -192,7 +192,7 @@ describe('ITR Module - Save Draft Confirmations', () => {
       )
 
       // Enter acknowledgment number
-      const ackInput = screen.getByPlaceholderText(/enter acknowledgement number/i)
+      const ackInput = screen.getByPlaceholderText(/enter.*acknowledgement number/i)
       fireEvent.change(ackInput, { target: { value: '123456789012345' } })
 
       // Click "Back"
@@ -232,7 +232,7 @@ describe('ITR Module - Save Draft Confirmations', () => {
       fireEvent.click(screen.getByRole('option', { name: '2025-2026' }))
 
       // Enter acknowledgment number
-      const ackInput = screen.getByPlaceholderText(/enter acknowledgement number/i)
+      const ackInput = screen.getByPlaceholderText(/enter.*acknowledgement number/i)
       fireEvent.change(ackInput, { target: { value: '123456789012345' } })
 
       // Click Continue
@@ -254,7 +254,7 @@ describe('ITR Module - Save Draft Confirmations', () => {
       fireEvent.click(step2ContinueBtn)
 
       // Step 3 should be displayed
-      expect(await screen.findByText('Update only what changed')).toBeInTheDocument()
+      expect(await screen.findByText(/update (revised details|only what changed)/i)).toBeInTheDocument()
       expect(screen.getByText(/salary \/ business income/i)).toBeInTheDocument()
 
       // Neither "Original" label nor original amount row should exist in any card

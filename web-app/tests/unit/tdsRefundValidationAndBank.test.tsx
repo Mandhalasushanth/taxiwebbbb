@@ -63,6 +63,12 @@ describe('TDS Refund - Business Details & Bank Validation Suite', () => {
       expect(validateBusinessPan('ABCZE1234F')).toBe(
         'The 4th character of PAN must represent a valid entity type (A, B, C, F, G, H, J, L, P, or T).'
       )
+      // 5th character mismatch with Legal Name (e.g. dfghjk with FGHJK6543T)
+      expect(validateBusinessPan('FGHJK6543T', 'dfghjk')).toBe(
+        'The 5th character of PAN ("K") must match the first letter of the business legal name ("D").'
+      )
+      // 5th character match with Legal Name (e.g. dfghjk with FGHJD6543T)
+      expect(validateBusinessPan('FGHJD6543T', 'dfghjk')).toBeNull()
     })
 
     it('validates IFSC Code: enforces 11 characters and 5th character as 0', () => {
@@ -107,6 +113,31 @@ describe('TDS Refund - Business Details & Bank Validation Suite', () => {
         fireEvent.change(panInput, { target: { value: 'GHJHG6566B' } })
       })
       expect(screen.queryByText(/Please enter a valid 10-character PAN number/i)).toBeNull()
+    })
+
+    it('validates Business PAN 5th character against Legal Name of Business live', () => {
+      render(<TdsRefundCustomerIncome {...defaultProps} />)
+      const nameInput = screen.getByPlaceholderText(/Enter legal name of business/i)
+      const panInput = screen.getByPlaceholderText(/Enter Business PAN/i)
+
+      // Enter Legal Name: dfghjk (starts with 'd')
+      act(() => {
+        fireEvent.change(nameInput, { target: { value: 'dfghjk' } })
+      })
+
+      // Enter Business PAN: FGHJK6543T (5th letter 'K' does not match 'D')
+      act(() => {
+        fireEvent.change(panInput, { target: { value: 'FGHJK6543T' } })
+      })
+
+      // Error displays showing mismatch between 5th character 'K' and legal name 'D'
+      expect(screen.getByText(/The 5th character of PAN \("K"\) must match the first letter of the business legal name \("D"\)/i)).toBeDefined()
+
+      // Correct PAN to FGHJD6543T (5th letter 'D' matches 'd') -> error clears live
+      act(() => {
+        fireEvent.change(panInput, { target: { value: 'FGHJD6543T' } })
+      })
+      expect(screen.queryByText(/The 5th character of PAN/i)).toBeNull()
     })
 
     it('shows error warning on blur for Legal Name of Business and sanitizes spaces & special characters on type', () => {
@@ -188,6 +219,35 @@ describe('TDS Refund - Business Details & Bank Validation Suite', () => {
 
       // Error disappears
       expect(screen.queryByText('Legal name cannot contain numbers')).toBeNull()
+    })
+
+    it('renders eye toggle icon on both Bank Account Number and Confirm Account Number fields', () => {
+      render(<TdsRefundCustomerIncome {...defaultProps} />)
+      const accInput = document.getElementById('tds-account-number') as HTMLInputElement
+      const confirmInput = document.getElementById('tds-confirm-account') as HTMLInputElement
+
+      expect(accInput).toBeInTheDocument()
+      expect(confirmInput).toBeInTheDocument()
+      expect(accInput.type).toBe('password')
+      expect(confirmInput.type).toBe('password')
+
+      // Eye toggle button for Bank Account Number exists and toggles
+      const accToggle = screen.getByRole('button', { name: /Show bank account number/i })
+      expect(accToggle).toBeInTheDocument()
+      act(() => {
+        fireEvent.click(accToggle)
+      })
+      expect(accInput.type).toBe('text')
+      expect(screen.getByRole('button', { name: /Hide bank account number/i })).toBeInTheDocument()
+
+      // Eye toggle button for Confirm Account Number exists and toggles
+      const confirmToggle = screen.getByRole('button', { name: /Show confirm account number/i })
+      expect(confirmToggle).toBeInTheDocument()
+      act(() => {
+        fireEvent.click(confirmToggle)
+      })
+      expect(confirmInput.type).toBe('text')
+      expect(screen.getByRole('button', { name: /Hide confirm account number/i })).toBeInTheDocument()
     })
   })
 })

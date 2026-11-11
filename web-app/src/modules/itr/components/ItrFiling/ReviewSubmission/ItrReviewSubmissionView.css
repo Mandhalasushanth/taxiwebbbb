@@ -392,17 +392,25 @@
   font-weight: 500;
 }
 
-/* 7. Action Footer Bar */
+/* 7. Action Footer Bar (matches GST reference: right-aligned actions group) */
 .itr-rv2-footer-action-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   width: 100%;
   gap: 1rem;
   margin-top: 0.5rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--border, #e2e8f0);
   box-sizing: border-box;
+}
+
+.itr-rv2-footer-action-bar .form-actions-group {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-left: auto;
 }
 
 .itr-rv2-btn-back {

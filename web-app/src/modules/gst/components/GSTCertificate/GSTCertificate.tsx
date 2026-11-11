@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom'
+import { routePaths } from '@core/config'
 import { useGSTCertificateFlow } from '@modules/gst/hooks/useGSTCertificateFlow'
 import { useGSTSectionFocus } from '@modules/gst/shared/useGSTSectionFocus'
 import { GSTCertificateForm } from './GSTCertificateForm/GSTCertificateForm'
@@ -5,6 +7,7 @@ import { GSTCertificateSubmitted } from './GSTCertificateSubmitted/GSTCertificat
 import './GSTCertificate.css'
 
 export default function GSTCertificate() {
+  const navigate = useNavigate()
   const flow = useGSTCertificateFlow()
   useGSTSectionFocus(flow.editSection)
   const {
@@ -16,7 +19,6 @@ export default function GSTCertificate() {
     submittedRecord,
     handleSubmit,
     handleBackToForm,
-    handleAllForms,
   } = flow
 
   if (submittedRecord) {
@@ -27,7 +29,9 @@ export default function GSTCertificate() {
           gstin={submittedRecord.gstin}
           requestType={submittedRecord.requestType}
           onBackToForm={handleBackToForm}
-          onAllForms={handleAllForms}
+          onBackToDashboard={() => navigate(routePaths.dashboard)}
+          onTrackApplications={() => navigate(routePaths.applications)}
+          onContactSupport={() => navigate(routePaths.support)}
         />
       </div>
     )

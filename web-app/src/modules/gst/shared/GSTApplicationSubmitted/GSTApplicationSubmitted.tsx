@@ -75,6 +75,24 @@ export const GSTApplicationSubmitted: React.FC<GSTApplicationSubmittedProps> = (
     }
   }, [displayAppId, serviceType, displayBusinessName])
 
+  // Handle browser Back button on submitted page: navigate cleanly to dashboard
+  useEffect(() => {
+    try {
+      window.history.pushState({ __submittedPage: true }, '', window.location.href)
+    } catch {
+      // ignore
+    }
+
+    const handlePopState = () => {
+      navigate(routePaths.dashboard, { replace: true })
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => {
+      window.removeEventListener('popstate', handlePopState)
+    }
+  }, [navigate])
+
   const handleDashboard = () => {
     if (onBackToDashboard) {
       onBackToDashboard()

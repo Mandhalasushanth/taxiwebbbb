@@ -139,7 +139,9 @@ export const GSTRegistration = () => {
       )}
 
       {/* Save Application Progress Confirmation Popup on Leaving */}
-      <ServiceDraftModal draft={flow} serviceTitle="GST registration" />
+      {currentStep < 4 && (
+        <ServiceDraftModal draft={flow} serviceTitle="GST registration" />
+      )}
     </div>
   )
 }

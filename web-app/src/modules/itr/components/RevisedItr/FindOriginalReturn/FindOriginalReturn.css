@@ -8,6 +8,12 @@
   gap: 1.65rem;
   width: 100%;
 
+  .step1-page-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
   .step1-heading {
     font-size: 1.35rem;
     font-weight: 800;
@@ -15,11 +21,75 @@
     margin: 0;
   }
 
+  .step1-subheading {
+    font-size: 0.95rem;
+    color: var(--secondary-text);
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  .step1-section-card {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 1.65rem;
+    box-shadow: 0 2px 8px rgba(8, 59, 117, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .step1-card-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .step1-card-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .step1-card-icon {
+    color: var(--palette-blue-600);
+    flex-shrink: 0;
+  }
+
+  .step1-card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--palette-slate-900);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .step1-card-desc {
+    font-size: 0.875rem;
+    color: var(--secondary-text);
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  .step1-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+  }
+
   .step1-form-field {
     display: flex;
     flex-direction: column;
     gap: 0.55rem;
     position: relative;
+
+    .field-label-row {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
 
     .field-label {
       font-size: 0.925rem;

@@ -108,7 +108,9 @@ export const GSTFiling = () => {
         />
       )}
 
-      <ServiceDraftModal draft={flow} serviceTitle="GST Filing" />
+      {!flow.isComplete && currentStep < 4 && (
+        <ServiceDraftModal draft={flow} serviceTitle="GST Filing" />
+      )}
     </div>
   )
 }

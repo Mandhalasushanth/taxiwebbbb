@@ -13,6 +13,7 @@ import {
   readServiceDraft,
   DRAFT_NAMESPACES,
 } from "@shared/saveDraft";
+import { useReviewEdit } from "@shared/edit";
 import { gstUploadedFiles } from "@modules/gst/services/gstUploadedFiles";
 import { useGSTReviewEditNavigation } from "@modules/gst/shared/useGSTSectionFocus";
 
@@ -202,6 +203,8 @@ export const useGSTComplianceState = () => {
     gstUploadedFiles.remove("compliance_notice");
   };
 
+  const reviewEdit = useReviewEdit(() => setIsReviewing(true));
+
   const draft = useServiceDraft<ComplianceDraft>({
     storageNamespace: DRAFT_NAMESPACES.gst,
     serviceId: SERVICE_ID,
@@ -224,6 +227,7 @@ export const useGSTComplianceState = () => {
     },
     hasEnteredData,
     isComplete: isSubmitted,
+    isEditMode: reviewEdit.isEditMode,
     onDiscard: () => {
       clearComplianceFiles();
       setFields(initialFields);
@@ -231,6 +235,7 @@ export const useGSTComplianceState = () => {
       setSalesFile(null);
       setNoticeFile(null);
       setIsReviewing(false);
+      reviewEdit.cancelEdit();
     },
   });
 
@@ -328,7 +333,11 @@ export const useGSTComplianceState = () => {
     });
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
-      setIsReviewing(true);
+      if (reviewEdit.isEditMode) {
+        reviewEdit.finishEdit();
+      } else {
+        setIsReviewing(true);
+      }
       window.scrollTo({ top: 0, behavior: "smooth" });
       return true;
     }
@@ -345,7 +354,9 @@ export const useGSTComplianceState = () => {
 
   const handleEdit = (section: string | null = null) => {
     startSectionEdit(section, () => {
-      setIsReviewing(false);
+      reviewEdit.startEdit(() => {
+        setIsReviewing(false);
+      });
     });
   };
 
@@ -383,6 +394,7 @@ export const useGSTComplianceState = () => {
     setErrors({});
     setIsReviewing(false);
     setIsSubmitted(false);
+    reviewEdit.cancelEdit();
   };
 
   return {
@@ -412,6 +424,8 @@ export const useGSTComplianceState = () => {
     isConfirmModalOpen,
     setIsConfirmModalOpen,
     isReviewing,
+    isEditMode: reviewEdit.isEditMode,
+    handleBackFromEdit: reviewEdit.finishEdit,
     editSection,
     errors,
     hasErrors,

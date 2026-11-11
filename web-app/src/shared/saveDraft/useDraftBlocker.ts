@@ -13,6 +13,7 @@ export interface UseDraftBlockerOptions {
   isNavigationAllowed?: (nextLocation: Location) => boolean
   /** Whether the user is currently on a Review page */
   isReview?: boolean
+  isComplete?: boolean
   module?: string
 }
 
@@ -25,6 +26,7 @@ export const useDraftBlocker = ({
   defaultExitRoute = routePaths.dashboard,
   isNavigationAllowed,
   isReview = false,
+  isComplete = false,
 }: UseDraftBlockerOptions) => {
   const navigate = useNavigate()
   const pushToast = useAppStore((state) => state.pushToast)
@@ -45,6 +47,7 @@ export const useDraftBlocker = ({
       nextLocation: Location
       historyAction?: string
     }) => {
+      if (isComplete) return false
       if (!shouldBlock && !isReview) return false
       if (nextLocation.pathname.includes('/loans/status')) return false
       if (isExitingRef.current) return false
@@ -70,7 +73,7 @@ export const useDraftBlocker = ({
       if (isAllowedRoute) return false
       return true
     },
-    [shouldBlock, isNavigationAllowed, isReview]
+    [shouldBlock, isNavigationAllowed, isReview, isComplete]
   )
 
   // Block route navigation if in data router and unsubmitted
@@ -82,7 +85,7 @@ export const useDraftBlocker = ({
 
   // On Review pages only: register browser Back popstate interception
   useEffect(() => {
-    if (!isReview) return
+    if (!isReview || isComplete) return
 
     // Ensure a review guard history entry exists so browser Back stays in the web app
     window.history.pushState({ __reviewGuard: true }, '', window.location.href)
@@ -98,17 +101,17 @@ export const useDraftBlocker = ({
     return () => {
       window.removeEventListener('popstate', handlePopState)
     }
-  }, [isReview])
+  }, [isReview, isComplete])
 
-  const isModalOpen = isManualOpen || isReviewPopstateOpen || blocker.state === 'blocked'
-  const isReviewPrompt = isReview && isModalOpen
+  const isModalOpen = !isComplete && (isManualOpen || isReviewPopstateOpen || blocker.state === 'blocked')
+  const isReviewPrompt = !isComplete && isReview && isModalOpen
 
-  // Reset blocker if shouldBlock transitions to false while in blocked state
+  // Reset blocker if shouldBlock transitions to false or submission completes while in blocked state
   useEffect(() => {
-    if (!shouldBlock && blocker.state === 'blocked') {
+    if ((!shouldBlock || isComplete) && blocker.state === 'blocked') {
       blocker.reset()
     }
-  }, [shouldBlock, blocker])
+  }, [shouldBlock, isComplete, blocker])
 
   // Persist draft and show browser dialog if tab is closed or reloaded
   useEffect(() => {

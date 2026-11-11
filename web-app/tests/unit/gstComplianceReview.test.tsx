@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, cleanup, fireEvent } from '@testing-library/react'
+import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/react'
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
+import { pickFiles, uploadTestFile } from './helpers/uploadTestFiles'
 import { GSTComplianceReview } from '../../src/modules/gst/components/GSTCompliance/GSTComplianceReview'
 import { GSTCompliance } from '../../src/modules/gst/components/GSTCompliance/GSTCompliance'
 import { GSTSubmitConfirmModal } from '../../src/modules/gst/components/GSTCompliance/GSTSubmitConfirmModal'
@@ -413,6 +414,63 @@ describe('GST Compliance Review Page', () => {
       // Backspace 1 character -> tick disappears immediately
       fireEvent.change(gstinInput, { target: { value: '29AAAAA0000A1Z' } })
       expect(screen.queryByTestId('gstin-valid-tick')).toBeNull()
+    })
+
+    it('clicking Edit from Review switches to edit mode, hides Back button, shows "Update & Review", and returns to Review', async () => {
+      const { container } = render(
+        <MemoryRouter>
+          <GSTCompliance />
+        </MemoryRouter>
+      )
+
+      // 1. Fill valid form
+      const gstinInput = screen.getByLabelText(/GSTIN/i) as HTMLInputElement
+      fireEvent.change(gstinInput, { target: { value: '29AAAAA0000A1Z5' } })
+
+      const fySelect = screen.getByLabelText(/financial year/i)
+      fireEvent.change(fySelect, { target: { value: 'FY 2024-25' } })
+
+      const reqTypeSelect = screen.getByLabelText(/request type/i)
+      fireEvent.change(reqTypeSelect, { target: { value: 'Notice Response' } })
+
+      const noticeInput = screen.getByLabelText(/Notice Number/i) as HTMLInputElement
+      fireEvent.change(noticeInput, { target: { value: 'NOTICE/2026/001' } })
+
+      const issueDateInput = container.querySelector('#gst-notice-issue-date') as HTMLInputElement
+      fireEvent.change(issueDateInput, { target: { value: '2026-10-01' } })
+
+      const dueDateInput = container.querySelector('#gst-notice-due-date') as HTMLInputElement
+      fireEvent.change(dueDateInput, { target: { value: '2026-11-15' } })
+
+      const fileInput = container.querySelector('#file-input-notice-copy') as HTMLInputElement
+      await pickFiles(fileInput, [uploadTestFile('Notice.pdf')])
+
+      // 2. Click "Proceed to Review"
+      const proceedBtn = screen.getByTestId('gst-compliance-submit-btn')
+      expect(proceedBtn.textContent).toContain('Proceed to Review')
+      fireEvent.click(proceedBtn)
+
+      // 3. Confirm we are on Review page
+      await waitFor(() => {
+        expect(screen.getByText('Ready for CA Review & Filing')).toBeDefined()
+      })
+
+      // 4. Click "Edit" on Notice Details
+      const editButtons = screen.getAllByRole('button', { name: /Edit/i })
+      fireEvent.click(editButtons[1]) // Click edit on Notice Details
+
+      // 5. In Edit Mode:
+      // - Back button must NOT be present
+      expect(screen.queryByTestId('step-back-btn')).toBeNull()
+      // - Next button must display "Update & Review" instead of normal flow "Proceed to Review"
+      const updateBtn = screen.getByTestId('gst-compliance-submit-btn')
+      expect(updateBtn.textContent).toContain('Update & Review')
+
+      // 6. Click "Update & Review" and confirm it returns to Review
+      fireEvent.click(updateBtn)
+      await waitFor(() => {
+        expect(screen.getByText('Ready for CA Review & Filing')).toBeDefined()
+      })
     })
   })
 })

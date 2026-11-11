@@ -137,5 +137,104 @@ describe('Unified GST Application Submitted View Across Services', () => {
     expect(screen.getByRole('button', { name: /Contact Support \/ CA/i })).toBeDefined()
     expect(screen.getByRole('button', { name: /Track in My Applications/i })).toBeDefined()
   })
+
+  it('7. Action buttons trigger navigation callbacks on submitted page', () => {
+    const onBackToDashboard = vi.fn()
+    const onTrackApplication = vi.fn()
+    const onContactSupport = vi.fn()
+
+    render(
+      <MemoryRouter>
+        <GSTFilingSuccess
+          details={{ applicationRef: 'GST-2026-98765' } as any}
+          businessName="sagarika traders"
+          onBackToDashboard={onBackToDashboard}
+          onTrackApplication={onTrackApplication}
+          onContactSupport={onContactSupport}
+        />
+      </MemoryRouter>
+    )
+
+    screen.getByRole('button', { name: /Go to Dashboard/i }).click()
+    expect(onBackToDashboard).toHaveBeenCalledTimes(1)
+
+    screen.getByRole('button', { name: /Contact Support \/ CA/i }).click()
+    expect(onContactSupport).toHaveBeenCalledTimes(1)
+
+    screen.getByRole('button', { name: /Track in My Applications/i }).click()
+    expect(onTrackApplication).toHaveBeenCalledTimes(1)
+  })
+
+  it('8. GST Compliance GSTSuccessView action buttons trigger correct dashboard, track, and support callbacks', () => {
+    const onBackToDashboard = vi.fn()
+    const onTrackApplications = vi.fn()
+    const onContactSupport = vi.fn()
+
+    render(
+      <MemoryRouter>
+        <GSTSuccessView
+          applicationId="GSTC-2026-49829"
+          requestType="Notice Response"
+          businessName="sagarika traders"
+          onBackToDashboard={onBackToDashboard}
+          onTrackApplications={onTrackApplications}
+          onContactSupport={onContactSupport}
+        />
+      </MemoryRouter>
+    )
+
+    screen.getByRole('button', { name: /Go to Dashboard/i }).click()
+    expect(onBackToDashboard).toHaveBeenCalledTimes(1)
+
+    screen.getByRole('button', { name: /Contact Support \/ CA/i }).click()
+    expect(onContactSupport).toHaveBeenCalledTimes(1)
+
+    screen.getByRole('button', { name: /Track in My Applications/i }).click()
+    expect(onTrackApplications).toHaveBeenCalledTimes(1)
+  })
+
+  it('9. All GST submitted views default buttons to dashboard, applications tracker, and support routes', () => {
+    // Test GSTCancellationSubmitted
+    const { unmount: unmount1 } = render(
+      <MemoryRouter>
+        <GSTCancellationSubmitted
+          applicationId="GST-2026-11111"
+          businessName="sagarika traders"
+        />
+      </MemoryRouter>
+    )
+    expect(screen.getByRole('button', { name: /Go to Dashboard/i })).toBeDefined()
+    expect(screen.getByRole('button', { name: /Contact Support \/ CA/i })).toBeDefined()
+    expect(screen.getByRole('button', { name: /Track in My Applications/i })).toBeDefined()
+    unmount1()
+
+    // Test GSTCertificateSubmitted
+    const { unmount: unmount2 } = render(
+      <MemoryRouter>
+        <GSTCertificateSubmitted
+          applicationId="GST-2026-22222"
+          businessName="sagarika traders"
+        />
+      </MemoryRouter>
+    )
+    expect(screen.getByRole('button', { name: /Go to Dashboard/i })).toBeDefined()
+    expect(screen.getByRole('button', { name: /Contact Support \/ CA/i })).toBeDefined()
+    expect(screen.getByRole('button', { name: /Track in My Applications/i })).toBeDefined()
+    unmount2()
+
+    // Test GSTAmendmentSubmitted
+    const { unmount: unmount3 } = render(
+      <MemoryRouter>
+        <GSTAmendmentSubmitted
+          arnNumber="GST-2026-33333"
+          businessName="sagarika traders"
+        />
+      </MemoryRouter>
+    )
+    expect(screen.getByRole('button', { name: /Go to Dashboard/i })).toBeDefined()
+    expect(screen.getByRole('button', { name: /Contact Support \/ CA/i })).toBeDefined()
+    expect(screen.getByRole('button', { name: /Track in My Applications/i })).toBeDefined()
+    unmount3()
+  })
 })
 

@@ -71,30 +71,22 @@ export const TdsBankDetailsCard: React.FC<TdsBankDetailsCardProps> = ({
           <label htmlFor="tds-account-number" className="tds-label">
             Bank Account Number <span className="tds-required">*</span>
           </label>
-          <input
+          <ConfirmAccountNumberInput
             id="tds-account-number"
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
+            name="accountNumber"
             maxLength={18}
-            className={`tds-input ${fieldErrors.accountNumber ? "has-error" : ""}`}
+            className="tds-input"
             value={bankDetails.accountNumber}
-            onChange={(e) =>
-              handleBankChange({
-                accountNumber: e.target.value
-                  .replace(/\D/g, "")
-                  .slice(0, 18),
-              })
+            onChange={(val) =>
+              handleBankChange({ accountNumber: val })
             }
             onBlur={() => onBlur?.('accountNumber')}
             placeholder="Enter your bank account number"
+            hasError={Boolean(fieldErrors.accountNumber)}
+            error={fieldErrors.accountNumber}
+            ariaLabel="bank account number"
             required
           />
-          {fieldErrors.accountNumber && (
-            <span className="tds-field-error">
-              {fieldErrors.accountNumber}
-            </span>
-          )}
         </div>
         <div className="tds-form-group">
           <label htmlFor="tds-confirm-account" className="tds-label">

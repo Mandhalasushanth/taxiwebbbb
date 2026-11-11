@@ -5,7 +5,7 @@ import type { TdsBankDetails, TdsIncomeTaxData } from '../TdsRefundCustomerIncom
 import type { TdsBusinessDetails } from '@modules/itr/types/tdsRefund.types'
 import { maskAadhaar } from '@shared/utils/formatUtils'
 import { TdsRefundProgressTracker } from '../TdsRefundOverview'
-import { TdsEstimatedComputationCard, TdsReviewDocumentsCard } from './TdsReviewEstimateCards'
+import { TdsReviewDocumentsCard } from './TdsReviewEstimateCards'
 import './TdsRefundReview.css'
 
 const REVIEW_SIDEBAR_CHECKLIST = [
@@ -57,7 +57,7 @@ const EditButton: React.FC<{ onClick: () => void; testId: string }> = ({ onClick
 )
 
 export const TdsRefundReview: React.FC<TdsRefundReviewProps> = ({
-  onBack: _onBack, onEditStep1, onNext, onSaveDraft, profile, bankDetails, businessDetails, taxData,
+  onBack: _onBack, onEditStep1, onNext, onSaveDraft, profile, bankDetails, businessDetails, taxData: _taxData,
 }) => {
   const isReviewValid = Boolean(
     bankDetails?.accountHolder?.trim() && bankDetails?.accountNumber?.trim() && bankDetails?.ifsc?.trim()
@@ -117,10 +117,9 @@ export const TdsRefundReview: React.FC<TdsRefundReviewProps> = ({
           ))}
 
           <TdsReviewDocumentsCard businessDetails={businessDetails} onEdit={() => onEditStep1('tds-card-business')} />
-          <TdsEstimatedComputationCard taxData={taxData} />
         </main>
       </div>
-      <StepActionBar showBack={false} isReview={true} onNext={onNext} onSaveDraft={onSaveDraft} nextLabel="Submit Application" nextDisabled={!isReviewValid} backTestId="tds-step3-back-btn" nextTestId="tds-submit-application-btn" />
+      <StepActionBar showBack={false} isReview={true} onNext={onNext} onSaveDraft={onSaveDraft} nextLabel="Submit for CA Review" nextDisabled={!isReviewValid} backTestId="tds-step3-back-btn" nextTestId="tds-submit-application-btn" />
     </div>
   )
 }
