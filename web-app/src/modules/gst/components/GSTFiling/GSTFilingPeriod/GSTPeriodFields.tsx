@@ -4,7 +4,7 @@ import { gstFieldRules } from '@modules/gst/validation/gstFieldRules'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstProfileService } from '@modules/gst/services/gstProfileService'
 import {
-  FINANCIAL_YEAR_OPTIONS,
+  GST_FILING_FINANCIAL_YEAR_OPTIONS,
   getReturnTypeOptions,
   type SelectOption,
 } from '@modules/gst/utils/gstPeriodOptions'
@@ -66,9 +66,9 @@ export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> =
             id="gst-fy"
             className={`gst-filing-period__select ${!financialYear ? 'gst-filing-period__select--placeholder' : ''}`}
             value={
-              FINANCIAL_YEAR_OPTIONS.some((o) => o.value === financialYear)
+              GST_FILING_FINANCIAL_YEAR_OPTIONS.some((o) => o.value === financialYear)
                 ? financialYear
-                : FINANCIAL_YEAR_OPTIONS.some((o) => o.value === `FY ${financialYear}`)
+                : GST_FILING_FINANCIAL_YEAR_OPTIONS.some((o) => o.value === `FY ${financialYear}`)
                   ? `FY ${financialYear}`
                   : financialYear
             }
@@ -79,7 +79,7 @@ export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> =
             onBlur={() => onBlurField?.('financialYear')}
           >
             <option value="">Select Financial Year</option>
-            {FINANCIAL_YEAR_OPTIONS.map((opt) => (
+            {GST_FILING_FINANCIAL_YEAR_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
               </option>

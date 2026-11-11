@@ -12,16 +12,33 @@ const fyLabel = (startYear: number): string => `FY ${startYear}-${String(startYe
 const today = new Date()
 const currentFyStart = fyStartYear(today)
 
-export const GST_START_YEAR = 2022
-export const GST_END_YEAR = 2025
+export const GST_FILING_START_YEAR = 2017
+export const GST_FILING_END_YEAR = 2026
+
+/** GST Filing financial years: FY 2017-18 to FY 2026-27 (10 options) */
+export const GST_FILING_FINANCIAL_YEAR_OPTIONS: SelectOption[] = Array.from(
+  { length: GST_FILING_END_YEAR - GST_FILING_START_YEAR + 1 },
+  (_, index) => toOption(fyLabel(GST_FILING_START_YEAR + index))
+)
+
+export const GST_COMPLIANCE_START_YEAR = 2022
+export const GST_COMPLIANCE_END_YEAR = 2025
+
+/** GST Compliance financial years: FY 2022-23 to FY 2025-26 (4 options) */
+export const GST_COMPLIANCE_FINANCIAL_YEAR_OPTIONS: SelectOption[] = Array.from(
+  { length: GST_COMPLIANCE_END_YEAR - GST_COMPLIANCE_START_YEAR + 1 },
+  (_, index) => toOption(fyLabel(GST_COMPLIANCE_START_YEAR + index))
+)
 
 export const CURRENT_FINANCIAL_YEAR = 'FY 2025-26'
 
-/** Financial years: only 4 options (FY 2022-23, FY 2023-24, FY 2024-25, FY 2025-26) */
-export const FINANCIAL_YEAR_OPTIONS: SelectOption[] = Array.from(
-  { length: GST_END_YEAR - GST_START_YEAR + 1 },
-  (_, index) => toOption(fyLabel(GST_START_YEAR + index))
-)
+/** Default / GST Filing financial years (FY 2017-18 to FY 2026-27) */
+export const FINANCIAL_YEAR_OPTIONS: SelectOption[] = GST_FILING_FINANCIAL_YEAR_OPTIONS
+
+/** Aliases for compatibility */
+export const GST_START_YEAR = GST_FILING_START_YEAR
+export const GST_END_YEAR = GST_FILING_END_YEAR
+export const COMPLIANCE_FINANCIAL_YEAR_OPTIONS: SelectOption[] = GST_COMPLIANCE_FINANCIAL_YEAR_OPTIONS
 
 export const FILING_FREQUENCY_OPTIONS = [
   { id: 'Monthly', label: 'Monthly' },

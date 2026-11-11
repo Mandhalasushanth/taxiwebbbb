@@ -211,7 +211,7 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
                   ref={dueDateInputRef}
                   id="gst-notice-due-date"
                   type="date"
-                  max={getTodayIso()}
+                  min={issueDate || undefined}
                   value={dueDate}
                   onChange={(e) => onChange('dueDate', e.target.value)}
                   onClick={openDueDatePicker}

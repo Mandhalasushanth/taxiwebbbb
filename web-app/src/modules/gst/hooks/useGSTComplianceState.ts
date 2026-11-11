@@ -96,7 +96,7 @@ const validateCompliance = (
       ? gstFieldRules.pastDate("Notice issue date")(fields.issueDate)
       : undefined,
     dueDate: isNotice
-      ? gstFieldRules.pastDate("Reply due date")(fields.dueDate) ||
+      ? gstFieldRules.validDate("Reply due date")(fields.dueDate) ||
         (fields.issueDate &&
         fields.dueDate &&
         new Date(fields.dueDate) < new Date(fields.issueDate)
@@ -279,11 +279,32 @@ export const useGSTComplianceState = () => {
       fields.requestType === "Notice Response"
     ) {
       err = gstFieldRules.pastDate("Notice issue date")(fields.issueDate);
+      if (
+        !err &&
+        fields.issueDate &&
+        fields.dueDate &&
+        new Date(fields.dueDate) < new Date(fields.issueDate)
+      ) {
+        setErrors((prev) => ({
+          ...prev,
+          dueDate: "Reply due date cannot be before notice issue date",
+        }));
+      } else if (
+        fields.issueDate &&
+        fields.dueDate &&
+        new Date(fields.dueDate) >= new Date(fields.issueDate)
+      ) {
+        setErrors((prev) =>
+          prev.dueDate === "Reply due date cannot be before notice issue date"
+            ? { ...prev, dueDate: undefined }
+            : prev,
+        );
+      }
     } else if (
       field === "dueDate" &&
       fields.requestType === "Notice Response"
     ) {
-      err = gstFieldRules.pastDate("Reply due date")(fields.dueDate);
+      err = gstFieldRules.validDate("Reply due date")(fields.dueDate);
       if (
         !err &&
         fields.issueDate &&

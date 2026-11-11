@@ -259,17 +259,40 @@ describe('GST Compliance Review Page', () => {
         </MemoryRouter>
       )
 
-      expect(screen.getByText('Request Submitted Successfully')).toBeDefined()
+      expect(screen.getByText('Application Submitted!')).toBeDefined()
       expect(screen.getByText('GSTC-20261028-1234')).toBeDefined()
+      expect(screen.getByText('GST Compliance')).toBeDefined()
       expect(
         screen.getByText(
-          'Your GST Compliance request has been submitted successfully. Our CA team will review your documents and contact you shortly.'
+          'Your GST application has been successfully filed with Finsolz.'
         )
       ).toBeDefined()
     })
   })
 
   describe('Full GST Compliance Stepper Integration', () => {
+    it('renders exactly 4 financial years (FY 2022-23 to FY 2025-26) in GST Compliance', () => {
+      render(
+        <MemoryRouter>
+          <GSTCompliance />
+        </MemoryRouter>
+      )
+
+      const fySelect = screen.getByLabelText(/financial year/i) as HTMLSelectElement
+      const fyOptions = Array.from(fySelect.options)
+        .map((o) => o.value)
+        .filter(Boolean)
+
+      expect(fyOptions).toEqual([
+        'FY 2022-23',
+        'FY 2023-24',
+        'FY 2024-25',
+        'FY 2025-26',
+      ])
+      expect(fyOptions).toHaveLength(4)
+      expect(fyOptions).not.toContain('FY 2017-18')
+    })
+
     it('switches between Form (Step 1) and Review (Step 2) dynamically', () => {
       render(
         <MemoryRouter>
@@ -326,6 +349,42 @@ describe('GST Compliance Review Page', () => {
       // Both fields display formatted date text on the left
       expect(issueWrap?.querySelector('.gst-notice-date-display')).not.toBeNull()
       expect(dueWrap?.querySelector('.gst-notice-date-display')).not.toBeNull()
+    })
+
+    it('enforces Notice Issue Date <= today and allows Reply Due Date to be a future date >= Notice Issue Date', () => {
+      const { container } = render(
+        <MemoryRouter>
+          <GSTCompliance />
+        </MemoryRouter>
+      )
+
+      const reqTypeSelect = screen.getByLabelText(/request type/i)
+      fireEvent.change(reqTypeSelect, { target: { value: 'Notice Response' } })
+
+      const issueDateInput = container.querySelector('#gst-notice-issue-date') as HTMLInputElement
+      const dueDateInput = container.querySelector('#gst-notice-due-date') as HTMLInputElement
+
+      // 1. Notice Issue Date has max set to today (future dates disabled)
+      expect(issueDateInput.getAttribute('max')).toBeDefined()
+
+      // 2. Set Notice Issue Date to '2026-10-01'
+      fireEvent.change(issueDateInput, { target: { value: '2026-10-01' } })
+
+      // 3. Reply Due Date min is set to the selected Notice Issue Date
+      expect(dueDateInput.getAttribute('min')).toBe('2026-10-01')
+      // Reply Due Date does NOT have max limited to today
+      expect(dueDateInput.getAttribute('max')).toBeNull()
+
+      // 4. Entering a future date is valid and accepted
+      fireEvent.change(dueDateInput, { target: { value: '2026-11-30' } })
+      fireEvent.blur(dueDateInput)
+      expect(screen.queryByText(/Reply due date cannot be in the future/i)).toBeNull()
+      expect(screen.queryByText(/Reply due date cannot be before notice issue date/i)).toBeNull()
+
+      // 5. Entering a date before Notice Issue Date shows error
+      fireEvent.change(dueDateInput, { target: { value: '2026-09-15' } })
+      fireEvent.blur(dueDateInput)
+      expect(screen.getByText('Reply due date cannot be before notice issue date')).toBeDefined()
     })
 
     it('marks a green circle tick when a valid GSTIN is entered and removes it when invalid', () => {

@@ -6,7 +6,7 @@ import { GSTSubmitConfirmModal } from './GSTSubmitConfirmModal'
 import { GSTSuccessView } from './GSTSuccessView'
 import { GSTComplianceReview } from './GSTComplianceReview'
 import { useGSTComplianceState, type ComplianceRequestOption } from '@modules/gst/hooks/useGSTComplianceState'
-import { FINANCIAL_YEAR_OPTIONS } from '@modules/gst/utils/gstPeriodOptions'
+import { GST_COMPLIANCE_FINANCIAL_YEAR_OPTIONS } from '@modules/gst/utils/gstPeriodOptions'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { ServiceDraftModal } from '@shared/saveDraft'
 import { CaretInput, FieldInfoTooltip, StepActionBar } from '@shared/components'
@@ -198,9 +198,9 @@ export const GSTCompliance: React.FC = () => {
                         id="fy-select"
                         className={`form-select ${errors.financialYear ? 'has-error' : ''}`}
                         value={
-                          FINANCIAL_YEAR_OPTIONS.some((o) => o.value === financialYear)
+                          GST_COMPLIANCE_FINANCIAL_YEAR_OPTIONS.some((o) => o.value === financialYear)
                             ? financialYear
-                            : FINANCIAL_YEAR_OPTIONS.some((o) => o.value === `FY ${financialYear}`)
+                            : GST_COMPLIANCE_FINANCIAL_YEAR_OPTIONS.some((o) => o.value === `FY ${financialYear}`)
                               ? `FY ${financialYear}`
                               : financialYear
                         }
@@ -208,7 +208,7 @@ export const GSTCompliance: React.FC = () => {
                         onBlur={() => validateField('financialYear')}
                       >
                         <option value="">Select Financial Year</option>
-                        {FINANCIAL_YEAR_OPTIONS.map((option) => (
+                        {GST_COMPLIANCE_FINANCIAL_YEAR_OPTIONS.map((option) => (
                           <option key={option.value} value={option.value}>
                             {option.label}
                           </option>
