@@ -327,7 +327,7 @@ export const GSTFilingDocuments: React.FC<GSTFilingDocumentsProps> = ({
           </svg>
         </div>
         <p className="gst-docs-security-note__text">
-          TaxEdge uses end-to-end 256-bit encryption for filing proofs. Only certified Chartered Accountants review your books.
+          Finsolz uses end-to-end 256-bit encryption for filing proofs. Only certified Chartered Accountants review your books.
         </p>
       </div>
 

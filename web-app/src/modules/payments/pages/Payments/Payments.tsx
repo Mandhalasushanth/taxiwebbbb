@@ -57,7 +57,7 @@ export const Payments: React.FC = () => {
         return {
           id: app.id,
           code: app.code || app.id,
-          title: app.title || 'TaxEdge Service',
+          title: app.title || 'Finsolz Service',
           date: app.paidAt || 'Recently submitted',
           amount,
           paymentStatus: isPaid ? 'Paid' : 'Pending',
@@ -81,7 +81,7 @@ export const Payments: React.FC = () => {
           return {
             id: apiApp.id,
             code: apiApp.reference || apiApp.id,
-            title: apiApp.title || 'TaxEdge Service',
+            title: apiApp.title || 'Finsolz Service',
             date: apiApp.date || 'Recently submitted',
             amount,
             paymentStatus: isPaid ? 'Paid' : 'Pending',

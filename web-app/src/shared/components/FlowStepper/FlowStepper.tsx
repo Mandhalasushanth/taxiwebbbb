@@ -1,5 +1,5 @@
 import React from 'react'
-import type { FlowStepItem, FlowStepperProps, FlowStepStatus } from './FlowStepper.types'
+import type { FlowStepperProps, FlowStepStatus } from './FlowStepper.types'
 import './FlowStepper.css'
 
 const CheckSvgIcon: React.FC = () => (
@@ -33,18 +33,11 @@ const resolveStepStatus = (
 export const FlowStepper: React.FC<FlowStepperProps> = ({
   steps,
   currentStep,
-  onStepClick,
+  onStepClick: _onStepClick,
   completedUntilStep,
   className = '',
   ariaLabel = 'Progress steps',
 }) => {
-  const handleStepClick = (step: FlowStepItem) => {
-    if (step.disabled) return
-    if (onStepClick) {
-      onStepClick(step.stepNumber)
-    }
-  }
-
   return (
     <nav
       className={`flow-stepper-container ${className}`.trim()}
@@ -54,7 +47,6 @@ export const FlowStepper: React.FC<FlowStepperProps> = ({
         {steps.map((step, index) => {
           const status = resolveStepStatus(step.stepNumber, currentStep, completedUntilStep)
           const displayLabel = step.shortLabel || step.title || `Step ${step.stepNumber}`
-          const isInteractive = Boolean(onStepClick && !step.disabled)
           const isLast = index === steps.length - 1
           const isLineCompleted = status === 'completed'
 
@@ -69,11 +61,8 @@ export const FlowStepper: React.FC<FlowStepperProps> = ({
                 />
               )}
 
-              <button
-                type="button"
+              <div
                 className={`flow-step-button flow-step-button--${status}`}
-                onClick={() => handleStepClick(step)}
-                disabled={!isInteractive}
                 aria-current={status === 'active' ? 'step' : undefined}
                 aria-label={`${displayLabel} (${status})`}
               >
@@ -85,7 +74,7 @@ export const FlowStepper: React.FC<FlowStepperProps> = ({
                   )}
                 </span>
                 <span className="flow-step-label">{displayLabel}</span>
-              </button>
+              </div>
             </div>
           )
         })}

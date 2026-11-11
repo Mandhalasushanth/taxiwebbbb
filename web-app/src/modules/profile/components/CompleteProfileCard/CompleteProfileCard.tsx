@@ -52,7 +52,7 @@ export const CompleteProfileCard: React.FC<CompleteProfileCardProps> = ({
         <div className="complete-profile-card__info">
           <h2 className="complete-profile-card__title">Complete Your Profile</h2>
           <p className="complete-profile-card__description">
-            Complete your personal information and KYC details to access all TaxEdge services
+            Complete your personal information and KYC details to access all Finsolz services
             such as GST, ITR, Loans, Incorporation and more.
           </p>
 

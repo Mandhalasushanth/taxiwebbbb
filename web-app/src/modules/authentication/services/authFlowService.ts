@@ -49,7 +49,7 @@ const mockUser = (mobile: string): AuthUser => {
     return {
       id: demo.id,
       fullName: demo.fullName,
-      email: `${demo.fullName.split(' ')[0].toLowerCase()}@taxedge.in`,
+      email: `${demo.fullName.split(' ')[0].toLowerCase()}@finsolz.in`,
       mobile: clean,
       role: demo.role,
       department: demo.department,

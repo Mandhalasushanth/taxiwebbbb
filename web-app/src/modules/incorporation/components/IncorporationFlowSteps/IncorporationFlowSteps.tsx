@@ -48,14 +48,9 @@ const STEP_HEADERS: Record<string, { title: string; subtitle?: string }> = {
   },
 }
 
-/** Renders the step page header above the global shared FlowStepper */
-const IncorporationFlowStepperHeader: React.FC = () => {
+const IncorporationFlowStepperContent: React.FC = () => {
   const location = useLocation()
   const { goToStep } = useIncorporationFlow()
-  const isFormStep = isIncorporationFormRoute(location.pathname)
-
-  if (!isFormStep) return null
-
   const isSuccess = location.pathname === routePaths.incorporation.submissionSuccess
   const currentStep = incorporationStepFor(location.pathname)
   const headerInfo = STEP_HEADERS[location.pathname]
@@ -91,16 +86,30 @@ const IncorporationFlowStepperHeader: React.FC = () => {
   )
 }
 
-/** Save / discard / keep-editing dialog for the wizard (opened by "Save Draft & Exit" or by leaving) */
-const IncorporationDraftModal: React.FC = () => {
-  const { draft } = useIncorporationFlow()
+/** Renders the step page header above the global shared FlowStepper */
+const IncorporationFlowStepperHeader: React.FC = () => {
   const location = useLocation()
-  if (location.pathname === routePaths.incorporation.submissionSuccess) {
-    return null
-  }
+  const isFormStep = isIncorporationFormRoute(location.pathname)
+
+  if (!isFormStep) return null
+  return <IncorporationFlowStepperContent />
+}
+
+const IncorporationDraftModalContent: React.FC = () => {
+  const { draft } = useIncorporationFlow()
   return (
     <ServiceDraftModal draft={draft} serviceTitle={INCORPORATION_SERVICE_TITLE} />
   )
+}
+
+/** Save / discard / keep-editing dialog for the wizard (opened by "Save Draft & Exit" or by leaving) */
+const IncorporationDraftModal: React.FC = () => {
+  const location = useLocation()
+  const isFormStep = isIncorporationFormRoute(location.pathname)
+  if (!isFormStep || location.pathname === routePaths.incorporation.submissionSuccess) {
+    return null
+  }
+  return <IncorporationDraftModalContent />
 }
 
 export const IncorporationFlowSteps: React.FC = () => (

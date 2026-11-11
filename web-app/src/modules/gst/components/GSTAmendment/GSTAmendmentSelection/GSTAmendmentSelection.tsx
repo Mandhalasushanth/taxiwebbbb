@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { CaretInput, FieldInfoTooltip } from '@shared/components'
 import { gstFieldRules } from '@modules/gst/validation/gstFieldRules'
+import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { SaveDraftButton } from '@shared/saveDraft'
 import './GSTAmendmentSelection.css'
 
@@ -28,10 +29,22 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
   const [errorText, setErrorText] = useState<string>('')
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '')
+    const val = gstInput.gstin(e.target.value)
     if (val.length <= 15) {
       onGstinChange(val)
-      if (errorText) setErrorText('')
+      if (val.length === 15) {
+        const err = gstFieldRules.gstin(val)
+        setErrorText(err || '')
+      } else if (errorText) {
+        setErrorText('')
+      }
+    }
+  }
+
+  const handleBlur = () => {
+    if (gstin) {
+      const err = gstFieldRules.gstin(gstin)
+      setErrorText(err || '')
     }
   }
 
@@ -124,6 +137,7 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
               type="text"
               value={gstin}
               onChange={handleInputChange}
+              onBlur={handleBlur}
               maxLength={15}
               placeholder="Enter 15-character GSTIN"
               className={`gst-amend-input ${errorText ? 'has-error' : ''}`}

@@ -17,7 +17,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
 
 vi.mock('@core/config/environment', () => ({
   env: {
-    appName: 'TaxEdge',
+    appName: 'Finsolz',
     apiBaseUrl: 'http://localhost:3000',
     enableMocks: true,
     isDev: true,
@@ -48,7 +48,7 @@ vi.mock('@core/auth', async (importOriginal) => {
 vi.mock('../../src/modules/dashboard/hooks/useDashboardSummary', () => ({
   useDashboardSummary: () => ({
     data: {
-      brief: { message: 'Welcome to TaxEdge' },
+      brief: { message: 'Welcome to Finsolz' },
       stats: [],
       recentApplications: [],
       upcomingDeadlinesList: [],

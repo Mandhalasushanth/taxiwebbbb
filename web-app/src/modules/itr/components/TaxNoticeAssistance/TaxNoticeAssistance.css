@@ -71,27 +71,32 @@
   margin-bottom: 2.25rem;
   padding: 0.75rem 0 0.5rem 0;
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
 }
 
 .notice-stepper-track {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
-  max-width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
   padding: 0 0.5rem;
   box-sizing: border-box;
   position: relative;
 }
 
 .notice-stepper-step {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 2;
+  flex: 1 1 0px;
+  min-width: 0;
+  text-align: center;
+  box-sizing: border-box;
+  user-select: none;
   cursor: default;
   transition: transform 0.2s ease;
 }
@@ -140,13 +145,18 @@
 }
 
 .notice-stepper-line {
-  flex: 1;
+  position: absolute;
+  top: 20px;
+  left: calc(50% + 28px);
+  right: calc(-50% + 28px);
   height: 2.5px;
+  transform: translateY(-50%);
   background: var(--border);
-  margin: 0 0.75rem;
-  margin-bottom: 1.45rem;
+  border-radius: 2px;
   transition: background 0.3s ease;
   z-index: 1;
+  pointer-events: none;
+  margin: 0;
 }
 
 .notice-stepper-line--completed {

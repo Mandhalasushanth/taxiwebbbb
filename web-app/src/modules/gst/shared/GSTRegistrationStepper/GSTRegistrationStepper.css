@@ -13,21 +13,24 @@
 
 .gst-reg-stepper__track {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
-  max-width: 600px;
+  max-width: 480px;
   margin: 0 auto;
+  position: relative;
+  box-sizing: border-box;
 }
 
 .gst-reg-stepper__item-wrapper {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  flex: 1;
-}
-
-.gst-reg-stepper__item-wrapper:last-child {
-  flex: 0 0 auto;
+  flex: 1 1 0px;
+  min-width: 0;
+  text-align: center;
+  box-sizing: border-box;
 }
 
 .gst-reg-stepper__step {
@@ -47,7 +50,8 @@
 
 .gst-reg-stepper__step--completed,
 .gst-reg-stepper__step--current {
-  cursor: pointer;
+  cursor: default;
+  pointer-events: none;
 }
 
 .gst-reg-stepper__circle {
@@ -117,13 +121,17 @@
 }
 
 .gst-reg-stepper__line {
-  flex: 1;
+  position: absolute;
+  top: 20px;
+  left: calc(50% + 28px);
+  right: calc(-50% + 28px);
   height: 2.5px;
+  transform: translateY(-50%);
   background-color: var(--border);
-  margin: 0 0.75rem;
-  margin-bottom: 1.45rem; /* Align horizontally with the center of 40px circles */
+  border-radius: 2px;
   transition: background-color 0.3s ease;
   z-index: 1;
+  pointer-events: none;
 }
 
 .gst-reg-stepper__line--completed {

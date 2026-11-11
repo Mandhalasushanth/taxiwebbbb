@@ -97,7 +97,7 @@ export const customerSupportService = {
     const userApps = userStorage.getUserApplications()
     const fallbackApp = userApps[0]
     const resolvedAppRef = appId || fallbackApp?.code || 'General Helpdesk'
-    const resolvedServiceTitle = fallbackApp?.title || 'TaxEdge Client Advisory'
+    const resolvedServiceTitle = fallbackApp?.title || 'Finsolz Client Advisory'
 
     const targetKey =
       (appId && conversationsStore[appId] ? appId : null) ||

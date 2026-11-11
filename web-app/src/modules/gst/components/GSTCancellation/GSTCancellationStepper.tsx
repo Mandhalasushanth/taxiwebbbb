@@ -18,7 +18,7 @@ export interface GSTCancellationStepperProps {
 
 export const GSTCancellationStepper: React.FC<GSTCancellationStepperProps> = ({
   currentStep,
-  onStepClick,
+  onStepClick: _onStepClick,
 }) => {
   return (
     <nav className="gst-canc-stepper" aria-label="Cancellation Progress">
@@ -30,8 +30,7 @@ export const GSTCancellationStepper: React.FC<GSTCancellationStepperProps> = ({
 
           return (
             <div key={step.id} className="gst-canc-stepper__item-wrapper">
-              <button
-                type="button"
+              <div
                 className={`gst-canc-stepper__step ${
                   isCurrent
                     ? 'gst-canc-stepper__step--current'
@@ -39,8 +38,6 @@ export const GSTCancellationStepper: React.FC<GSTCancellationStepperProps> = ({
                       ? 'gst-canc-stepper__step--completed'
                       : 'gst-canc-stepper__step--pending'
                 }`}
-                onClick={() => onStepClick && isCompleted && onStepClick(step.id)}
-                disabled={!isCompleted && !isCurrent}
                 aria-current={isCurrent ? 'step' : undefined}
               >
                 <span className="gst-canc-stepper__circle">
@@ -61,7 +58,7 @@ export const GSTCancellationStepper: React.FC<GSTCancellationStepperProps> = ({
                   )}
                 </span>
                 <span className="gst-canc-stepper__label">{step.label}</span>
-              </button>
+              </div>
 
               {!isLast && (
                 <div

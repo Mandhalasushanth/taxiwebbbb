@@ -205,7 +205,7 @@ export const LoanApplicationStatus: React.FC = () => {
         tenureMonths: tenure,
         equipment,
         disbursementBank,
-        loanAgent: 'TaxEdge Loan Agent',
+        loanAgent: 'Finsolz Loan Agent',
         status: 'submitted',
         statusLabel: 'Documents Received',
         createdAt: now.toISOString(),
@@ -240,7 +240,7 @@ export const LoanApplicationStatus: React.FC = () => {
   const loanTypeRaw = application.loanType || stateData?.loanTitle || 'loan'
   const formattedLoanType = formatLoanTitle(loanTypeRaw)
   const loanAmount = application.loanAmount || 0
-  const loanAgent = application.loanAgent || 'TaxEdge Loan Agent'
+  const loanAgent = application.loanAgent || 'Finsolz Loan Agent'
 
   const loanKey = loanTypeRaw.toLowerCase()
   const primaryDetail = resolvePrimaryDetail(loanKey, rawForm, application.equipment)

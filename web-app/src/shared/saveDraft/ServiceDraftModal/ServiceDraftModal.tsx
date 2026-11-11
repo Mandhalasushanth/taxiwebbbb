@@ -3,8 +3,10 @@ import { DraftConfirmModal } from '../DraftConfirmModal'
 
 interface DraftDialogHandlers {
   handleSaveAndExit: () => void
-  handleDiscardAndExit: () => void
+  handleDiscardAndExit?: () => void
   handleKeepEditing: () => void
+  isReviewPrompt?: boolean
+  isSaving?: boolean
 }
 
 /**
@@ -18,19 +20,28 @@ export interface ServiceDraftModalProps {
   draft: DraftDialogControls
   /** Service name shown in the dialog, e.g. "GST Registration" */
   serviceTitle: string
+  isReviewPrompt?: boolean
+  isSaving?: boolean
 }
 
 const isOpen = (draft: DraftDialogControls): boolean =>
   'isDraftModalOpen' in draft ? draft.isDraftModalOpen : draft.isModalOpen
 
 /** Save as Draft & Exit / Discard & Exit / Keep Editing dialog wired to a service draft in one line */
-export const ServiceDraftModal: FC<ServiceDraftModalProps> = ({ draft, serviceTitle }) => (
+export const ServiceDraftModal: FC<ServiceDraftModalProps> = ({
+  draft,
+  serviceTitle,
+  isReviewPrompt = false,
+  isSaving = false,
+}) => (
   <DraftConfirmModal
     isOpen={isOpen(draft)}
     serviceTitle={serviceTitle}
     onSaveAndExit={draft.handleSaveAndExit}
     onDiscardAndExit={draft.handleDiscardAndExit}
     onKeepEditing={draft.handleKeepEditing}
+    isReviewPrompt={isReviewPrompt || Boolean((draft as any).isReviewPrompt)}
+    isSaving={isSaving || Boolean((draft as any).isSaving)}
   />
 )
 

@@ -1,5 +1,6 @@
 import React, { type MouseEvent } from 'react'
 import { CalendarDays } from 'lucide-react'
+import { getTodayIso } from '@shared/utils/dateUtils'
 import { GSTFieldShell } from './GSTFieldParts'
 import { fieldErrorId } from './gstFieldClasses'
 import './GSTFormFields.css'
@@ -62,7 +63,7 @@ export const GSTDateField = ({
           className="gst-date__native"
           value={value}
           min={min}
-          max={max}
+          max={max || getTodayIso()}
           onClick={openPicker}
           onChange={(e) => onValueChange(e.target.value)}
           onBlur={onBlur}

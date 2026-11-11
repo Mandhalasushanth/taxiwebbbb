@@ -7,7 +7,7 @@ interface SecurityNoticeProps {
 
 export const SecurityNotice = ({
   title = 'We will never ask for an OTP',
-  body = 'No one from TaxEdge will ask for your OTP, password or card PIN — on chat, on a call or on WhatsApp.',
+  body = 'No one from Finsolz will ask for your OTP, password or card PIN — on chat, on a call or on WhatsApp.',
 }: SecurityNoticeProps) => {
   return (
     <div className="security-notice-card">

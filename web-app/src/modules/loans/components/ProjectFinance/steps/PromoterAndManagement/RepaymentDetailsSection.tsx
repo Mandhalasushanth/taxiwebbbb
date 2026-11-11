@@ -1,4 +1,5 @@
 import React from 'react'
+import { getTodayIso } from '@shared/utils/dateUtils'
 import { formatCurrencyString } from '@modules/loans/utils/loanInputFormatters'
 import type { ProjectFinanceData } from '@modules/loans/types/projectFinance.types'
 import {
@@ -184,6 +185,7 @@ export const RepaymentDetailsSection: React.FC<RepaymentDetailsSectionProps> = (
               <input
                 id="repaymentStartDate"
                 type="date"
+                max={getTodayIso()}
                 className={`pf-custom-input ${errors.repaymentStartDate ? 'pf-custom-input--error' : ''}`}
                 placeholder="DD MMM YYYY"
                 value={data.repaymentStartDate || ''}

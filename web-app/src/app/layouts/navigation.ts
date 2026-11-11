@@ -42,7 +42,7 @@ export const navSections: NavSection[] = [
         iconImg: "/assets/images/sidebar/nav-gst.png",
       },
       {
-        label: "ITR & TDS",
+        label: "ITR",
         to: routePaths.itr.root,
         icon: "₹",
         iconImg: "/assets/images/sidebar/nav-itr.png",

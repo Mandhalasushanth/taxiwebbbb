@@ -17,7 +17,7 @@ export const DashboardHero = ({ userName }: DashboardHeroProps) => {
   const firstName = userName ? userName.split(' ')[0] : 'User'
 
   return (
-    <section className="dashboard-hero" aria-label="TaxEdge Overview Banner">
+    <section className="dashboard-hero" aria-label="Finsolz Overview Banner">
       {/* Foreground Content Container with Three Responsive Visual Zones */}
       <div className="dashboard-hero__content">
         {/* Zone 1 (Left): Welcome Heading, Subtitle & Orange Accent Line */}

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { StepActionBar, CaretInput } from '@shared/components'
+import { getTodayIso } from '@shared/utils/dateUtils'
 import {
   type NoticeFormData,
   ASSESSMENT_YEAR_OPTIONS,
@@ -295,6 +296,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
             <CaretInput
               id="notice-date"
               type="date"
+              max={getTodayIso()}
               className={`notice-field__input notice-field__input--date ${
                 !formData.noticeDate ? 'notice-field__input--date-empty' : ''
               } ${
@@ -344,6 +346,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
             <CaretInput
               id="notice-due-date"
               type="date"
+              max={getTodayIso()}
               className={`notice-field__input notice-field__input--date ${
                 !formData.responseDueDate ? 'notice-field__input--date-empty' : ''
               } ${
@@ -409,3 +412,4 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
 // Backward compatibility export
 export const NoticeStep1Details = NoticeInformation
 export default NoticeInformation
+

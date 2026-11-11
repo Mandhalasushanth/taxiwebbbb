@@ -23,7 +23,7 @@ afterEach(() => {
 })
 
 describe('GST Filing - Step 1: Filing Period & Nil Return vs Regular Return', () => {
-  it('hides Calculation Method and Filing Return Type dropdown when Nil Return is selected', () => {
+  it('hides Calculation Method but keeps Filing Return Type dropdown visible when Nil Return is selected', () => {
     render(
       <GSTFilingPeriod
         initialData={{
@@ -46,12 +46,12 @@ describe('GST Filing - Step 1: Filing Period & Nil Return vs Regular Return', ()
     const nilReturnRadio = screen.getByRole('radio', { name: /Nil Return/i })
     fireEvent.click(nilReturnRadio)
 
-    // Calculation Method card and Return Type dropdown should not be present
+    // Calculation Method card should be hidden, but Return Type dropdown remains visible and selectable
     expect(screen.queryByText('Tax Calculation Method')).toBeNull()
-    expect(screen.queryByLabelText(/Filing Return Type/i)).toBeNull()
+    expect(screen.getByLabelText(/Filing Return Type/i)).toBeDefined()
   })
 
-  it('allows Nil Return to submit with only Filing Frequency, FY, Return Period, and GSTIN without requiring calculation method', () => {
+  it('allows Nil Return to submit with Filing Return Type selected without requiring calculation method', () => {
     const handleContinue = vi.fn()
     render(
       <GSTFilingPeriod
@@ -61,6 +61,7 @@ describe('GST Filing - Step 1: Filing Period & Nil Return vs Regular Return', ()
           selectedMonth: 'April 2025',
           gstin: '29AAAAA0000A1Z5',
           filingType: 'nil',
+          returnType: 'gstr1',
         }}
         onContinue={handleContinue}
         onCancel={vi.fn()}
@@ -73,7 +74,7 @@ describe('GST Filing - Step 1: Filing Period & Nil Return vs Regular Return', ()
     expect(handleContinue).toHaveBeenCalledTimes(1)
     const passedData = handleContinue.mock.calls[0][0]
     expect(passedData.filingType).toBe('nil')
-    expect(passedData.returnType).toBe('nil')
+    expect(passedData.returnType).toBe('gstr1')
     expect(passedData.calculationMethod).toBe('')
   })
 
@@ -231,7 +232,7 @@ describe('GST Filing - Step 3: Review & Summary', () => {
     )
 
     expect(screen.getByText('Tax Computation')).toBeDefined()
-    expect(screen.getByText(/TaxEdge CA will calculate your liabilities, ITC, and net payable tax directly from your uploaded invoices/i)).toBeDefined()
+    expect(screen.getByText(/Finsolz CA will calculate your liabilities, ITC, and net payable tax directly from your uploaded invoices/i)).toBeDefined()
   })
 
   it('renders estimated figures for Regular Return with user estimated figures', () => {

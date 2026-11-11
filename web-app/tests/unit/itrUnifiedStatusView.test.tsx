@@ -44,7 +44,7 @@ describe('ITR Unified Application Status & 2-Step Stepper Tests', () => {
     expect(screen.getByTestId('status-success-banner')).toBeInTheDocument()
     expect(screen.getByText('Application Submitted!')).toBeInTheDocument()
     expect(
-      screen.getByText(/Your TDS Refund application has been successfully filed with TaxEdge/i)
+      screen.getByText(/Your TDS Refund application has been successfully filed with Finsolz/i)
     ).toBeInTheDocument()
 
     // Navy card details

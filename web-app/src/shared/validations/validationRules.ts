@@ -1,5 +1,5 @@
 /**
- * Centralized Validation Rules for TaxEdge Application
+ * Centralized Validation Rules for Finsolz Application
  * SINGLE SOURCE OF TRUTH for all common field regex patterns and length restrictions.
  */
 

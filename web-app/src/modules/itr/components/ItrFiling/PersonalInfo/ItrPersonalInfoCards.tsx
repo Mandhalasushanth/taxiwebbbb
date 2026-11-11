@@ -85,7 +85,7 @@ export const ItrTaxpayerProfileCard: React.FC<{ taxpayerProfile: TaxpayerProfile
     </div>
 
     <p className="itr-info-card__desc">
-      Auto-filled from your TaxEdge profile. Verified with Income Tax Department PAN Master.
+      Auto-filled from your Finsolz profile. Verified with Income Tax Department PAN Master.
     </p>
 
     <div className="itr-taxpayer-details-box">

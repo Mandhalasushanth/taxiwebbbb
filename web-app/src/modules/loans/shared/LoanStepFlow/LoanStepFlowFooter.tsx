@@ -37,7 +37,8 @@ export function LoanStepFlowFooter<T extends object>({
   return (
     <div className="loan-flow-footer-container">
       <StepActionBar
-        showBack={true}
+        showBack={!flow.isLastStep}
+        isReview={flow.isLastStep}
         onBack={flow.handleBack}
         onNext={flow.handleNext}
         onSaveDraft={() => flow.setIsDraftModalOpen(true)}

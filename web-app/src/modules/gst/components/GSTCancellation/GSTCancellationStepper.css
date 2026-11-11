@@ -14,20 +14,24 @@
 
 .gst-canc-stepper__track {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
-  max-width: 480px;
+  max-width: 420px;
+  position: relative;
+  box-sizing: border-box;
+  margin: 0 auto;
 }
 
 .gst-canc-stepper__item-wrapper {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  flex: 1;
-}
-
-.gst-canc-stepper__item-wrapper:last-child {
-  flex: 0 0 auto;
+  flex: 1 1 0px;
+  min-width: 0;
+  text-align: center;
+  box-sizing: border-box;
 }
 
 .gst-canc-stepper__step {
@@ -40,6 +44,7 @@
   border: none;
   padding: 0;
   cursor: default;
+  pointer-events: none;
   position: relative;
   z-index: 2;
   user-select: none;
@@ -117,13 +122,18 @@
 }
 
 .gst-canc-stepper__line {
-  flex: 1;
+  position: absolute;
+  top: 20px;
+  left: calc(50% + 28px);
+  right: calc(-50% + 28px);
   height: 2.5px;
+  transform: translateY(-50%);
   background-color: var(--border);
-  margin: 0 1rem;
-  margin-bottom: 1.45rem; /* Aligns horizontally with the center of the 40px circle */
+  border-radius: 2px;
   transition: background-color 0.3s ease;
   z-index: 1;
+  pointer-events: none;
+  margin: 0;
 }
 
 .gst-canc-stepper__line--completed {

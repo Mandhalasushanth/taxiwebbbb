@@ -1,6 +1,7 @@
 import React from 'react'
 import { Users, ChevronDown } from 'lucide-react'
 import { CaretInput } from '@shared/components'
+import { getTodayIso } from '@shared/utils/dateUtils'
 import type {
   ProjectFinanceData,
   ApplicantEntityType,
@@ -140,6 +141,7 @@ export const ApplicantDetailsSection: React.FC<ApplicantDetailsSectionProps> = (
             <CaretInput
               id="dateOfIncorporation"
               type="date"
+              max={getTodayIso()}
               className={`pf-custom-input ${errors.dateOfIncorporation ? 'pf-custom-input--error' : ''}`}
               value={data.dateOfIncorporation || ''}
               onChange={(e) => onChange({ dateOfIncorporation: e.target.value })}
@@ -229,3 +231,4 @@ export const ApplicantDetailsSection: React.FC<ApplicantDetailsSectionProps> = (
     </div>
   )
 }
+

@@ -33,27 +33,30 @@
   color: var(--primary-orange); /* Orange accent */
 }
 
-/* 5-Step Desktop Stepper Track - Compact Connected Layout */
+/* 4-Step Desktop Stepper Track - Connected Circle-to-Circle Layout */
 .itr-stepper-track {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   width: 100%;
-  max-width: 580px;
-  margin: 0.75rem 0 0 0;
+  max-width: 760px;
+  margin: 1.25rem auto 1.5rem auto;
+  align-self: center !important;
   padding: 0 0.5rem;
   box-sizing: border-box;
   position: relative;
 }
 
 .itr-stepper-step-item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 2;
+  flex: 1 1 0px;
+  min-width: 0;
+  text-align: center;
+  box-sizing: border-box;
+  user-select: none;
 }
 
 .itr-stepper-dot {
@@ -68,6 +71,8 @@
   flex-shrink: 0;
   transition: all 0.3s ease;
   user-select: none;
+  position: relative;
+  z-index: 2;
 }
 
 .itr-stepper-dot--active {
@@ -91,23 +96,21 @@
   border: 2px solid var(--grey-300);
 }
 
+/* Connecting line: connects from one circle to another with a neat little gap */
 .itr-stepper-track .itr-stepper-line,
 .itr-stepper-line {
-  position: relative !important;
-  top: auto !important;
-  left: auto !important;
-  flex: 1 1 0%;
-  min-width: 1.5rem;
-  height: 3px;
-  background: var(--grey-300);
-  align-self: flex-start;
-  margin-top: 19px;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-  margin-bottom: 0;
+  position: absolute;
+  top: 20px;
+  left: calc(50% + 28px);
+  right: calc(-50% + 28px);
+  height: 2.5px;
+  transform: translateY(-50%);
+  background: var(--border);
   border-radius: 2px;
   transition: background 0.3s ease;
   z-index: 1;
+  pointer-events: none;
+  margin: 0;
 }
 
 .itr-stepper-track .itr-stepper-line--completed,
@@ -116,11 +119,19 @@
 }
 
 .itr-stepper-label {
+  margin-top: 0.5rem;
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--secondary-text);
   white-space: nowrap;
   text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.itr-stepper-label--completed {
+  color: var(--primary-navy);
+  font-weight: 600;
 }
 
 .itr-stepper-label--active {

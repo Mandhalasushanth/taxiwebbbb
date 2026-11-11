@@ -7,6 +7,7 @@ import {
   CalendarIcon,
 } from '../RegistrationIcons/RegistrationIcons'
 import { RegistrationSelect } from '../RegistrationSelect/RegistrationSelect'
+import { getMaxAdultDobIso } from '@shared/utils/dateUtils'
 import './RegistrationPersonalFields.css'
 
 export interface RegistrationPersonalValues {
@@ -190,7 +191,7 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
               tabIndex={-1}
               aria-hidden="true"
               className="reg-field__hidden-date"
-              max={new Date().toISOString().slice(0, 10)}
+              max={getMaxAdultDobIso(18)}
               value={toIsoDate(values.dob)}
               onChange={handleNativeDateChange}
             />

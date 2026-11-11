@@ -31,7 +31,7 @@ export const LoanSubmitSuccessModal: React.FC<LoanSubmitSuccessModalProps> = ({
       <div className="loan-submit-modal-card">
         <h3 id="loan-submit-modal-title" className="loan-submit-modal-title">{title}</h3>
         <p className="loan-submit-modal-body">
-          {message || `Your application (Ref: ${referenceNumber}) has been submitted. Our TaxEdge Loan Agent will process the application shortly.`}
+          {message || `Your application (Ref: ${referenceNumber}) has been submitted. Our Finsolz Loan Agent will process the application shortly.`}
         </p>
         <div className="loan-submit-modal-actions">
           {onDone && (

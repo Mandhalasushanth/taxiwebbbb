@@ -20,8 +20,8 @@ const STEPS: Step[] = [
 
 export const GSTFilingStepper: React.FC<GSTFilingStepperProps> = ({
   currentStep = 1,
-  onStepClick,
-  isNilReturn = false,
+  onStepClick: _onStepClick,
+  isNilReturn: _isNilReturn = false,
 }) => {
   const steps = STEPS
 
@@ -44,38 +44,12 @@ export const GSTFilingStepper: React.FC<GSTFilingStepperProps> = ({
           labelClass = 'gst-filing-stepper__label--active'
         }
 
-        const isClickable = isCompleted && onStepClick && !(isNilReturn && step.id === 2)
-
         return (
-          <React.Fragment key={step.id}>
-            <div
-              className={`gst-filing-stepper__item ${isClickable ? 'clickable' : ''}`}
-              aria-current={isActive ? 'step' : undefined}
-              onClick={() => {
-                if (isClickable && onStepClick) {
-                  onStepClick(step.id)
-                }
-              }}
-            >
-              <div className={`gst-filing-stepper__badge ${badgeClass}`}>
-                {isCompleted ? (
-                  <svg
-                    className="gst-filing-stepper__check-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                ) : (
-                  displayNumber
-                )}
-              </div>
-              <span className={`gst-filing-stepper__label ${labelClass}`}>{step.label}</span>
-            </div>
+          <div
+            key={step.id}
+            className="gst-filing-stepper__item"
+            aria-current={isActive ? 'step' : undefined}
+          >
             {!isLast && (
               <div
                 className={`gst-filing-stepper__line ${
@@ -84,7 +58,25 @@ export const GSTFilingStepper: React.FC<GSTFilingStepperProps> = ({
                 aria-hidden="true"
               />
             )}
-          </React.Fragment>
+            <div className={`gst-filing-stepper__badge ${badgeClass}`}>
+              {isCompleted ? (
+                <svg
+                  className="gst-filing-stepper__check-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              ) : (
+                displayNumber
+              )}
+            </div>
+            <span className={`gst-filing-stepper__label ${labelClass}`}>{step.label}</span>
+          </div>
         )
       })}
     </nav>

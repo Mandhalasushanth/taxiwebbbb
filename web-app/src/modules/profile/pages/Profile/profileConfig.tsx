@@ -70,7 +70,7 @@ export const profileSectionsConfig: ProfileSectionData[] = [
     title: 'Support',
     items: [
       { id: 'support', label: 'Customer Support', to: routePaths.support, icon: <IconChat />, iconBgClass: 'profile-menu-item__icon-wrapper--blue' },
-      { id: 'rate', label: 'Rate TaxEdge', to: routePaths.profile, icon: <IconStar />, iconBgClass: 'profile-menu-item__icon-wrapper--amber' },
+      { id: 'rate', label: 'Rate Finsolz', to: routePaths.profile, icon: <IconStar />, iconBgClass: 'profile-menu-item__icon-wrapper--amber' },
       { id: 'terms', label: 'Terms & Conditions', to: routePaths.profile, icon: <IconDoc color="#64748b" />, iconBgClass: 'profile-menu-item__icon-wrapper--grey' },
       { id: 'policy', label: 'Privacy Policy', to: routePaths.profile, icon: <IconShield color="#14b8a6" />, iconBgClass: 'profile-menu-item__icon-wrapper--teal' },
     ]

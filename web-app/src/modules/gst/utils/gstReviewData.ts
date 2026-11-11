@@ -38,7 +38,7 @@ const DEFAULT_REVIEW_DETAILS = {
 const TAX_COMPUTATION_LABELS = ['Gross Taxable Turnover', 'Output GST', 'Eligible ITC (GSTR-2B)']
 
 /**
- * Tax figures are computed by the TaxEdge CA from the uploaded documents, so they are
+ * Tax figures are computed by the Finsolz CA from the uploaded documents, so they are
  * shown as pending (null) until then. A nil return has no liability.
  */
 export const getTaxComputationRows = (isNilReturn: boolean): { items: TaxComputationItem[]; netLiability: number | null } => ({
@@ -135,7 +135,7 @@ export const getResolvedReviewDetails = (
 
   // Tax Calculation Method
   const calculationMethod = filingData?.calculationMethod === 'ca_calculate'
-    ? 'Let TaxEdge CA calculate from documents'
+    ? 'Let Finsolz CA calculate from documents'
     : 'Self-estimated figures'
 
   return {

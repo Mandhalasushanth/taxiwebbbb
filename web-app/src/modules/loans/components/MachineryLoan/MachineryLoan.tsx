@@ -133,7 +133,7 @@ export const MachineryLoan: React.FC = () => {
         flow={flow}
         serviceTitle="Machinery Loan Application"
         successTitle="Machinery Loan Submitted"
-        successMessage="Your Machinery Loan application has been successfully received. A TaxEdge Loan Advisor will review your equipment quotation and financial records and contact you shortly."
+        successMessage="Your Machinery Loan application has been successfully received. A Finsolz Loan Advisor will review your equipment quotation and financial records and contact you shortly."
         testIdPrefix="machinery"
         nextDisabled={flow.isLastStep && !formData.termsAccepted}
         nextLabel={flow.isLastStep ? 'Submit Application →' : 'Continue →'}

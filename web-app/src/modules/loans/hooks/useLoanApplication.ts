@@ -231,6 +231,8 @@ export function useLoanApplication<T extends object>(
     nextStep,
     prevStep,
     isDraftModalOpen: draft.isDraftModalOpen,
+    isReviewPrompt: draft.isReviewPrompt,
+    isSaving: draft.isSaving,
     setIsDraftModalOpen,
     isSubmitting,
     setIsSubmitting,

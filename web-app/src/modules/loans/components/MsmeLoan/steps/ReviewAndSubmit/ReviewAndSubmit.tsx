@@ -323,7 +323,7 @@ export const ReviewAndSubmit: React.FC<ReviewAndSubmitProps> = ({
             <span className="msme-consent-title">Declaration & Authorization</span>
             <p className="msme-consent-text">
               I confirm that all information, business records, and uploaded documents provided in
-              this application are true, accurate, and complete. I authorize TaxEdge and its lending
+              this application are true, accurate, and complete. I authorize Finsolz and its lending
               partners to process this loan application in accordance with applicable financial
               regulations.
             </p>

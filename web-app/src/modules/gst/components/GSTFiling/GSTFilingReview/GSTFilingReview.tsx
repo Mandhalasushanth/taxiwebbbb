@@ -17,6 +17,7 @@ import {
   type UploadedFileInfo,
 } from "@modules/gst/utils/gstDocumentsData";
 import { StepActionBar } from "@shared/components";
+import { setReviewEditNavigationActive } from "@shared/edit";
 import "./GSTFilingReview.css";
 
 export interface GSTFilingReviewProps {
@@ -59,6 +60,7 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
       if (isNilReturn && step > 1) {
         return;
       }
+      setReviewEditNavigationActive(true);
       const action =
         customHandler ?? (onStepClick ? () => onStepClick(step) : null);
       if (!action) {
@@ -67,6 +69,10 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
       action();
     } catch {
       onBack();
+    } finally {
+      setTimeout(() => {
+        setReviewEditNavigationActive(false);
+      }, 150);
     }
   };
 
@@ -165,8 +171,8 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
           <h2 className="gst-review-banner__title">Ready for Review</h2>
           <p className="gst-review-banner__subtitle">
             {isNilReturn
-              ? "TaxEdge has prepared your Nil Return filing for submission"
-              : "TaxEdge CA has prepared return computation based on your verified business records"}
+              ? "Finsolz has prepared your Nil Return filing for submission"
+              : "Finsolz CA has prepared return computation based on your verified business records"}
           </p>
         </div>
       </div>
@@ -211,7 +217,8 @@ export const GSTFilingReview: React.FC<GSTFilingReviewProps> = ({
 
       {/* Step Navigation Bar */}
       <StepActionBar
-        onBack={onBack}
+        showBack={false}
+        isReview={true}
         onNext={handleSubmit}
         onSaveDraft={onSaveDraft}
         nextLabel="Proceed to Submit →"

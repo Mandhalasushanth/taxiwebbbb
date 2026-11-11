@@ -9,11 +9,11 @@ export const companyRegistrationData: CompanyRegistrationDetails = {
   title: 'Company Registration',
   category: 'Business & Incorporation Category',
   description:
-    'Incorporate your Private Limited, One Person Company (OPC), Section 8 (NGO), or Public Limited Company end-to-end with TaxEdge CA assistance.',
+    'Incorporate your Private Limited, One Person Company (OPC), Section 8 (NGO), or Public Limited Company end-to-end with Finsolz CA assistance.',
   overview: {
     heading: 'Service Overview',
     content:
-      'TaxEdge Fin Solutions provides end-to-end corporate incorporation assistance for MCA, ROC, and statutory authorities. Our compliance team verifies director credentials, checks name availability, drafts e-MoA / e-AoA, and files SPICe+ Part A & Part B directly on the Ministry of Corporate Affairs portal.',
+      'Finsolz Fin Solutions provides end-to-end corporate incorporation assistance for MCA, ROC, and statutory authorities. Our compliance team verifies director credentials, checks name availability, drafts e-MoA / e-AoA, and files SPICe+ Part A & Part B directly on the Ministry of Corporate Affairs portal.',
   },
   documents: {
     heading: 'Required Documents',
@@ -28,7 +28,7 @@ export const companyRegistrationData: CompanyRegistrationDetails = {
   },
   benefits: {
     heading: 'Benefits & Advantages',
-    subheading: 'Why choose TaxEdge Fin Solutions:',
+    subheading: 'Why choose Finsolz Fin Solutions:',
     items: [
       '100% Digital MCA Incorporation & Government Portal Filing',
       'Includes RUN / SPICe+ Part A & Part B Submission',

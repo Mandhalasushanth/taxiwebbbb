@@ -93,7 +93,7 @@ export const GSTPaymentSuccess: React.FC<GSTPaymentSuccessProps> = ({
         <div className="gst-status-alert__content">
           <h2 className="gst-status-alert__title">Application Submitted!</h2>
           <p className="gst-status-alert__desc">
-            Your GST application has been successfully filed with TaxEdge.
+            Your GST application has been successfully filed with Finsolz.
           </p>
         </div>
         <div className="gst-status-alert__tag">

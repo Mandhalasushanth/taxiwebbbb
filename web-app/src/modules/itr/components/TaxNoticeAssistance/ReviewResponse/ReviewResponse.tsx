@@ -164,7 +164,7 @@ export const ReviewResponse: React.FC<ReviewResponseProps> = ({
 
           <div className="review-response-letter-card__closing">
             <p className="review-response-closing-text">Yours faithfully,</p>
-            <p className="review-response-closing-org">For TaxEdge Fin Solutions</p>
+            <p className="review-response-closing-org">For Finsolz Fin Solutions</p>
             <p className="review-response-closing-author">Meera Iyer, Tax Executive</p>
           </div>
         </div>

@@ -15,14 +15,14 @@ export interface CommonChatSupportProps {
 }
 
 /**
- * CommonChatSupport - Universal shared chat support component for TaxEdge.
+ * CommonChatSupport - Universal shared chat support component for Finsolz.
  * Used identically across Support Chat (/support), Application Tracker tabs,
  * and anywhere customer support / CA advisory is needed.
  */
 export const CommonChatSupport: React.FC<CommonChatSupportProps> = ({
   appId,
   executiveId,
-  title = 'TaxEdge Support',
+  title = 'Finsolz Support',
   subtitle = 'Online · replies in a few minutes',
   placeholder = 'Type your message...',
   embedded = false,

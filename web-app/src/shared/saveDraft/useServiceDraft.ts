@@ -6,6 +6,7 @@ import { userStorage } from '@core/storage/userStorage'
 import { useAppStore } from '@store/index'
 import { useDraftBlocker } from './useDraftBlocker'
 import { DRAFT_NAMESPACES } from './draftNamespaces'
+import { getModuleDashboardRoute, getIsReviewEditNavigationActive, getIsReviewEditMode, setReviewEditMode } from '@shared/edit'
 
 /**
  * Draft handling shared by every multi-step service (GST, ITR, Incorporation), matching the loans flows:
@@ -13,6 +14,8 @@ import { DRAFT_NAMESPACES } from './draftNamespaces'
  * - "Save Draft & Exit" opens the save / discard / keep-editing dialog
  * - leaving the flow with unsaved work (links, browser Back) opens the same dialog
  * - an explicit save puts the draft on the dashboard so it can be resumed
+ * - on Review pages: custom Save Draft confirmation ("Do you want to save your draft?"),
+ *   browser back interception, Stay on Page behavior, and module-aware dashboard redirection
  * - the chosen exit is never blocked a second time, and a discarded draft is never written back
  */
 
@@ -79,6 +82,14 @@ export interface UseServiceDraftOptions<T> {
   onDiscard?: () => void
   /** Auto-save storage namespace; keep a service's existing value so earlier drafts still resume */
   storageNamespace?: string
+  /** Explicit review step flag. If omitted, automatically true when currentStep === totalSteps */
+  isReview?: boolean
+  /** Whether the user is currently editing a section from Review */
+  isEditMode?: boolean
+  /** Module identifier ('gst' | 'itr' | 'loans' | 'incorporation') */
+  module?: string
+  /** Route to resume directly to Review if different from resumeRoute */
+  reviewRoute?: string
 }
 
 export const useServiceDraft = <T>({
@@ -95,6 +106,10 @@ export const useServiceDraft = <T>({
   isFlowRoute,
   onDiscard,
   storageNamespace = DEFAULT_NAMESPACE,
+  isReview,
+  isEditMode,
+  module,
+  reviewRoute,
 }: UseServiceDraftOptions<T>) => {
   const pushToast = useAppStore((state) => state.pushToast)
   const [isManualModalOpen, setIsManualModalOpen] = useState(false)
@@ -103,6 +118,12 @@ export const useServiceDraft = <T>({
   // Set by "Discard & Exit": nothing may write the draft back while the page unmounts
   const isDiscardedRef = useRef(false)
   const storageKey = autosaveKey(serviceId, storageNamespace)
+
+  const isEditing = Boolean(isEditMode || getIsReviewEditMode())
+  const isReviewStep = Boolean(isReview ?? (totalSteps > 0 && currentStep === totalSteps))
+  const isReviewOrEdit = Boolean(isReviewStep || isEditing)
+  const moduleDashboard = getModuleDashboardRoute(module || exitRoute || serviceId)
+  const effectiveExitRoute = isReviewOrEdit ? moduleDashboard : exitRoute
 
   // Silent auto-save of every change (storage write only, no state update)
   useEffect(() => {
@@ -116,16 +137,15 @@ export const useServiceDraft = <T>({
     userStorage.saveDraft({
       serviceId,
       serviceTitle,
-      currentStep,
+      currentStep: isReviewOrEdit ? totalSteps : currentStep,
       totalSteps,
-      stepLabel,
+      stepLabel: isReviewOrEdit ? 'Review' : stepLabel,
       formData: formData as Record<string, unknown>,
       savedAt: savedAtText(),
       savedTimestamp: Date.now(),
-      resumeRoute,
+      resumeRoute: (isReviewOrEdit && reviewRoute) ? reviewRoute : resumeRoute,
     })
-    pushToast(`${serviceTitle} draft saved successfully`, 'success')
-  }, [storageKey, isComplete, serviceId, serviceTitle, currentStep, totalSteps, stepLabel, formData, resumeRoute, pushToast])
+  }, [storageKey, isComplete, serviceId, serviceTitle, currentStep, totalSteps, stepLabel, formData, resumeRoute, reviewRoute, isReviewOrEdit])
 
   /** Removes both the saved and the auto-saved draft (after submit or discard) */
   const clearDraft = useCallback(() => {
@@ -142,28 +162,38 @@ export const useServiceDraft = <T>({
   }, [clearDraft, onDiscard, pushToast])
 
   const isNavigationAllowed = useCallback(
-    (nextLocation: Location) => isExitingRef.current || Boolean(isFlowRoute?.(nextLocation.pathname)),
-    [isFlowRoute],
+    (nextLocation: Location) => {
+      if (isExitingRef.current || getIsReviewEditNavigationActive()) return true
+      if (isFlowRoute?.(nextLocation.pathname)) return true
+      const resumePrefix = resumeRoute ? resumeRoute.split('?')[0].replace(/\/$/, '') : ''
+      if (resumePrefix && nextLocation.pathname.startsWith(resumePrefix)) return true
+      return false
+    },
+    [isFlowRoute, resumeRoute],
   )
 
   const blocker = useDraftBlocker({
     shouldBlock: !isComplete && hasEnteredData,
     onSaveDraft: saveDraft,
     onDiscardDraft: discardDraft,
-    defaultExitRoute: exitRoute,
+    defaultExitRoute: effectiveExitRoute,
     isNavigationAllowed,
+    isReview: isReviewStep,
+    module,
   })
 
   // The blocker saves / discards and navigates itself, so nothing is called twice here
   const handleSaveAndExit = useCallback(() => {
     isExitingRef.current = true
     setIsManualModalOpen(false)
+    setReviewEditMode(false)
     blocker.handleSaveAndExit()
   }, [blocker])
 
   const handleDiscardAndExit = useCallback(() => {
     isExitingRef.current = true
     setIsManualModalOpen(false)
+    setReviewEditMode(false)
     blocker.handleDiscardAndExit()
   }, [blocker])
 
@@ -176,6 +206,8 @@ export const useServiceDraft = <T>({
 
   return {
     isDraftModalOpen: isManualModalOpen || blocker.isModalOpen,
+    isReviewPrompt: blocker.isReviewPrompt,
+    isSaving: blocker.isSaving,
     openDraftModal,
     saveDraft,
     clearDraft,

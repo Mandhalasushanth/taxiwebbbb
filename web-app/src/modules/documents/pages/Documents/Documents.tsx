@@ -66,7 +66,7 @@ export const Documents = () => {
       {error && <EmptyState title="Could not load Documents" description={error} />}
 
       {!isLoading && !error && (
-        <Card title="Stored documents" subtitle="Official identity, financial and statutory files linked to your TaxEdge account">
+        <Card title="Stored documents" subtitle="Official identity, financial and statutory files linked to your Finsolz account">
           {allDocuments.length === 0 ? (
             <EmptyState
               title="No Documents Stored"

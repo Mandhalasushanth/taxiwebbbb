@@ -55,7 +55,7 @@ export const CompleteProfileModal: React.FC<CompleteProfileModalProps> = ({
         {/* Title & Subtitle */}
         <h2 className="complete-profile-modal__title">Complete Your Profile</h2>
         <p className="complete-profile-modal__desc">
-          Please complete your profile to access TaxEdge services.
+          Please complete your profile to access Finsolz services.
         </p>
 
         {/* Action Buttons */}

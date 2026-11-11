@@ -70,7 +70,7 @@ export const ItrPreviousItrSection: React.FC<ItrPreviousItrSectionProps> = ({
       </div>
 
       <p className="itr-info-card__desc">
-        Optional — If you filed a return through TaxEdge previously, you can
+        Optional — If you filed a return through Finsolz previously, you can
         import carry-forward loss and deduction records.
       </p>
 

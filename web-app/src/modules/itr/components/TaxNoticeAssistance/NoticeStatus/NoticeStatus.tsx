@@ -38,7 +38,7 @@ Submission Date    : ${submittedOn}
 Assigned Executive : Meera Iyer, Senior Tax Executive
 Status             : Response Submitted Successfully to Income Tax Department
 ----------------------------------------
-TaxEdge Fin Solutions - Confidential Client Receipt`
+Finsolz Fin Solutions - Confidential Client Receipt`
 
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
     const url = URL.createObjectURL(blob)

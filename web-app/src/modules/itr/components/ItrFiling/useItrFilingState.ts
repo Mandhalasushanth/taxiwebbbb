@@ -233,14 +233,51 @@ export function useItrFilingState() {
   };
   const [initialFields] = useState(() => draftFields);
 
-  const hasCategorySelected = Boolean(selectedCategoryId);
   const isDirty = Boolean(
     !isSubmitted &&
-      (hasCategorySelected ||
-        isStarted ||
-        currentStep > 1 ||
-        Boolean(existingDraft) ||
-        hasFormChanged(draftFields, initialFields)),
+      (currentStep > 1 ||
+        Boolean(assessmentYear && String(assessmentYear).trim()) ||
+        Boolean(residentialStatus && String(residentialStatus).trim()) ||
+        Boolean(filingType && String(filingType).trim()) ||
+        Boolean(bankAccounts && bankAccounts.length > 0) ||
+        Boolean(selectedBankId && String(selectedBankId).trim()) ||
+        Boolean(previousItr && (previousItr.ackNumber?.trim() || previousItr.filingDate?.trim())) ||
+        Boolean(uploadedDocs && Object.keys(uploadedDocs).length > 0) ||
+        Boolean(selectedRegime && String(selectedRegime).trim()) ||
+        hasFormChanged(
+          {
+            assessmentYear,
+            residentialStatus,
+            filingType,
+            bankAccounts,
+            selectedBankId,
+            previousItr,
+            salaryDetails,
+            housePropertyDetails,
+            businessDetails,
+            capitalGainsDetails,
+            otherSourcesDetails,
+            selectedRegime,
+            deductions,
+            uploadedDocs,
+          },
+          {
+            assessmentYear: initialFields.assessmentYear,
+            residentialStatus: initialFields.residentialStatus,
+            filingType: initialFields.filingType,
+            bankAccounts: initialFields.bankAccounts,
+            selectedBankId: initialFields.selectedBankId,
+            previousItr: initialFields.previousItr,
+            salaryDetails: initialFields.salaryDetails,
+            housePropertyDetails: initialFields.housePropertyDetails,
+            businessDetails: initialFields.businessDetails,
+            capitalGainsDetails: initialFields.capitalGainsDetails,
+            otherSourcesDetails: initialFields.otherSourcesDetails,
+            selectedRegime: initialFields.selectedRegime,
+            deductions: initialFields.deductions,
+            uploadedDocs: initialFields.uploadedDocs,
+          },
+        )),
   );
 
   // Same draft behaviour as loans and GST: auto-save, save / discard dialog, browser Back prompt
@@ -391,6 +428,8 @@ export function useItrFilingState() {
     isSubmitting,
     handleFinalSubmit,
     isModalOpen,
+    isReviewPrompt: serviceDraft.isReviewPrompt,
+    isSaving: serviceDraft.isSaving,
     openModal,
     handleSaveAndExit,
     handleDiscardAndExit,

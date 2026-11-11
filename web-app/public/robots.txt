@@ -4,4 +4,4 @@ Allow: /
 Disallow: /staff/
 Disallow: /api/
 
-Sitemap: https://taxedge.in/sitemap.xml
+Sitemap: https://finsolz.in/sitemap.xml

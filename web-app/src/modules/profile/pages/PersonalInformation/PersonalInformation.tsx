@@ -3,6 +3,7 @@ import { useAuthStore } from '@store/index'
 import { authStorage } from '@core/auth'
 import type { AuthUser } from '@core/auth'
 import { formatMobile } from '@shared/utils'
+import { validateDob } from '@shared/utils/validationUtils'
 import { DetailCard, type DetailCardItem } from '../../components/DetailCard/DetailCard'
 import { formatCustomerType, isPlaceholderCustomerName, isMockEmail } from '../../utils/profileProgress'
 import './ProfileDetails.css'
@@ -32,6 +33,7 @@ export const PersonalInformation = () => {
   const user = storeUser || authStorage.getUser()
 
   const [isEditing, setIsEditing] = useState(false)
+  const [dobError, setDobError] = useState('')
   const [formData, setFormData] = useState({
     fullName: '',
     mobile: '',
@@ -64,6 +66,7 @@ export const PersonalInformation = () => {
       : (user.customerType ? formatCustomerType(user.customerType) : null)
 
   const handleStartEdit = () => {
+    setDobError('')
     setFormData({
       fullName: hasValidName || '',
       mobile: cleanMobile,
@@ -76,11 +79,20 @@ export const PersonalInformation = () => {
   }
 
   const handleCancelEdit = () => {
+    setDobError('')
     setIsEditing(false)
   }
 
   const handleSaveEdit = (e?: React.FormEvent) => {
     if (e) e.preventDefault()
+
+    if (formData.dob.trim()) {
+      const err = validateDob(formData.dob.trim(), { label: 'Date of birth', minAge: 18 })
+      if (err) {
+        setDobError(err)
+        return
+      }
+    }
 
     const rawMobile = formData.mobile.replace(/\D/g, '').slice(0, 10)
     const updatedUser: AuthUser = {
@@ -180,8 +192,18 @@ export const PersonalInformation = () => {
                     className="profile-edit-field__input"
                     placeholder="DD-MM-YYYY"
                     value={formData.dob}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, dob: e.target.value }))}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      setFormData((prev) => ({ ...prev, dob: val }))
+                      if (val.trim().length >= 10) {
+                        const err = validateDob(val.trim(), { label: 'Date of birth', minAge: 18 })
+                        setDobError(err || '')
+                      } else if (dobError) {
+                        setDobError('')
+                      }
+                    }}
                   />
+                  {dobError && <span className="form-error" style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{dobError}</span>}
                 </div>
 
                 <div className="profile-edit-field">

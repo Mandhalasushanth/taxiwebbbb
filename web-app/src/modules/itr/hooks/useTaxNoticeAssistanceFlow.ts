@@ -91,6 +91,8 @@ export const useTaxNoticeAssistanceFlow = () => {
   // Same draft behaviour as loans and GST: auto-save, save / discard dialog, browser Back prompt
   const {
     isDraftModalOpen: isModalOpen,
+    isReviewPrompt,
+    isSaving,
     openDraftModal: openModal,
     clearDraft,
     handleSaveAndExit,
@@ -195,6 +197,8 @@ export const useTaxNoticeAssistanceFlow = () => {
     formData,
     isSubmitting,
     isModalOpen,
+    isReviewPrompt,
+    isSaving,
     handleUpdateFormData,
     handleSaveDraftAndExit,
     handleBack,

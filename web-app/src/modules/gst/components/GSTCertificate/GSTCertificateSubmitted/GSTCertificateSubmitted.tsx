@@ -15,7 +15,7 @@ interface GSTCertificateSubmittedProps {
 /**
  * Screen 2: GST Certificate Ready (REG-06)
  * Replicates the mobile screen 2 reference with the 3 navigation actions
- * (Go to Dashboard, My Applications, Chat with CA) using TaxEdge color codes.
+ * (Go to Dashboard, My Applications, Chat with CA) using Finsolz color codes.
  */
 export const GSTCertificateSubmitted: React.FC<GSTCertificateSubmittedProps> = ({
   gstin = '',

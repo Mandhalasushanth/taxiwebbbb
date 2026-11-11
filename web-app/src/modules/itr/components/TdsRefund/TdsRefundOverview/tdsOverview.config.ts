@@ -7,7 +7,7 @@ export const TDS_OVERVIEW_CONTENT = {
   title: 'TDS Refund',
   description:
     'Claim excess TDS deducted from your salary, investments, or payments with certified CA verification and live status tracking.',
-  featuresTitle: 'Why choose TaxEdge?',
+  featuresTitle: 'Why choose Finsolz?',
   documentsTitle: 'Documents Required',
   moreLabel: 'More',
   moreModalTitle: 'Additional Documents',

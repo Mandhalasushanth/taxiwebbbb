@@ -24,6 +24,7 @@ interface MockCoupon {
 }
 
 const MOCK_ACTIVE_COUPONS: Record<string, MockCoupon> = {
+  FINSOLZ10: { kind: 'percent', value: 10, expiresOn: '2027-03-31', minAmount: 0 },
   TAXEDGE10: { kind: 'percent', value: 10, expiresOn: '2027-03-31', minAmount: 0 },
   SAVE10: { kind: 'percent', value: 10, expiresOn: '2027-03-31', minAmount: 0 },
   FLAT100: { kind: 'flat', value: 100, expiresOn: '2027-03-31', minAmount: 500 },

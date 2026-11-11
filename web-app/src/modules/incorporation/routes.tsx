@@ -12,7 +12,7 @@ const DocumentsKyc = lazy(() => import('./components/DocumentsKyc/DocumentsKyc')
 const ReviewApplication = lazy(() => import('./components/ReviewApplication/ReviewApplication'))
 const SubmissionSuccess = lazy(() => import('./components/SubmissionSuccess/SubmissionSuccess'))
 
-import { IncorporationFlowSteps } from './components'
+import { IncorporationFlowSteps } from './components/IncorporationFlowSteps/IncorporationFlowSteps'
 
 export const incorporationRoutes: RouteObject[] = [
   {

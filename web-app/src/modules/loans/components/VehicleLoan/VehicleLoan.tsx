@@ -132,7 +132,7 @@ export const VehicleLoan: React.FC = () => {
         flow={flow}
         serviceTitle="Vehicle Loan Application"
         successTitle="Vehicle Loan Submitted"
-        successMessage="Your Vehicle Loan application has been successfully received. A TaxEdge Loan Advisor will review your vehicle quotation and contact you shortly."
+        successMessage="Your Vehicle Loan application has been successfully received. A Finsolz Loan Advisor will review your vehicle quotation and contact you shortly."
         testIdPrefix="vehicle"
         nextDisabled={flow.isLastStep && !formData.termsAccepted}
         nextLabel={flow.isLastStep ? 'Submit Application →' : 'Continue →'}

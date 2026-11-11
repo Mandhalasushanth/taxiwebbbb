@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { CaretInput } from '@shared/components'
 import type { DirectorDetails } from '../../types/incorporation.types'
 import { filterDigits, filterMobile, filterPan } from '../../utils/validation'
+import { getMaxAdultDobIso } from '@shared/utils/dateUtils'
 import './DirectorCard.css'
 
 interface FormFieldProps {
@@ -202,7 +203,7 @@ export const DirectorCard: React.FC<DirectorCardProps> = ({
               placeholder="DD-MM-YYYY"
               required
               error={errors.dob}
-              inputProps={{ max: new Date().toISOString().slice(0, 10) }}
+              inputProps={{ max: getMaxAdultDobIso(18) }}
             />
             <DirectorFormField
               label="Designation"

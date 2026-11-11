@@ -128,7 +128,7 @@ export const GSTComplianceReview: React.FC<GSTComplianceReviewProps> = ({
         <div className="gst-compliance-review-banner-text">
           <h3 className="gst-compliance-review-banner-title">Ready for CA Review &amp; Filing</h3>
           <p className="gst-compliance-review-banner-desc">
-            TaxEdge CA compliance desk will verify your records and prepare the official response.
+            Finsolz CA compliance desk will verify your records and prepare the official response.
           </p>
         </div>
       </div>
@@ -272,8 +272,8 @@ export const GSTComplianceReview: React.FC<GSTComplianceReviewProps> = ({
 
       {/* Web Standard Step Action Bar */}
       <StepActionBar
-        onBack={onEdit}
-        backLabel="Back to Edit"
+        showBack={false}
+        isReview={true}
         onSaveDraft={onSaveDraft}
         onNext={onSubmit}
         nextLabel="Submit Compliance Request"

@@ -18,7 +18,7 @@ interface GSTRegistrationStepperProps {
 
 export const GSTRegistrationStepper = ({
   currentStep,
-  onStepClick,
+  onStepClick: _onStepClick,
 }: GSTRegistrationStepperProps) => {
   return (
     <nav className="gst-reg-stepper" aria-label="Registration Progress">
@@ -30,8 +30,7 @@ export const GSTRegistrationStepper = ({
 
           return (
             <div key={step.id} className="gst-reg-stepper__item-wrapper">
-              <button
-                type="button"
+              <div
                 className={`gst-reg-stepper__step ${
                   isCurrent
                     ? 'gst-reg-stepper__step--current'
@@ -39,8 +38,6 @@ export const GSTRegistrationStepper = ({
                       ? 'gst-reg-stepper__step--completed'
                       : 'gst-reg-stepper__step--pending'
                 }`}
-                onClick={() => onStepClick && isCompleted && onStepClick(step.id)}
-                disabled={!isCompleted && !isCurrent}
                 aria-current={isCurrent ? 'step' : undefined}
               >
                 <span className="gst-reg-stepper__circle">
@@ -61,7 +58,7 @@ export const GSTRegistrationStepper = ({
                   )}
                 </span>
                 <span className="gst-reg-stepper__label">{step.label}</span>
-              </button>
+              </div>
 
               {!isLast && (
                 <div

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { getTodayIso } from '@shared/utils/dateUtils'
 import { formatCurrencyString } from '@modules/loans/utils/loanInputFormatters'
 import type { ProjectFinanceData } from '@modules/loans/types/projectFinance.types'
 import { RepaymentDetailsSection } from './RepaymentDetailsSection'
@@ -173,6 +174,7 @@ export const PromoterAndManagement: React.FC<PromoterAndManagementProps> = ({
             <input
               id="proposedDisbursementDate"
               type="date"
+              max={getTodayIso()}
               className={`pf-custom-input ${errors.proposedDisbursementDate ? 'pf-custom-input--error' : ''}`}
               placeholder="DD MMM YYYY"
               value={data.proposedDisbursementDate || ''}

@@ -38,3 +38,22 @@ export const financialYearOf = (value: string | Date = new Date()): string => {
   const year = date.getMonth() >= 3 ? date.getFullYear() : date.getFullYear() - 1
   return `${year}-${String((year + 1) % 100).padStart(2, '0')}`
 }
+
+/** Returns today's date formatted as YYYY-MM-DD in local time */
+export const getTodayIso = (): string => {
+  const d = new Date()
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+/** Returns the maximum valid Date of Birth for 18+ years formatted as YYYY-MM-DD */
+export const getMaxAdultDobIso = (minAge: number = 18): string => {
+  const d = new Date()
+  const year = d.getFullYear() - minAge
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+

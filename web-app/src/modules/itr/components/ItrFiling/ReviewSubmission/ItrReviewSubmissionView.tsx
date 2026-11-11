@@ -20,6 +20,7 @@ import {
 } from '../itrFiling.constants'
 import { determineApplicableItrForm } from '../IncomeSources/ItrApplicableReturnFormCard'
 import { ItrDeclarationCard } from './ItrDeclarationCard'
+import { SaveDraftButton } from '@shared/saveDraft'
 import './ItrReviewSubmissionView.css'
 
 export interface ItrReviewSubmissionViewProps {
@@ -49,7 +50,7 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
   onBack,
   onEditStep,
   onSubmit,
-  onSaveDraft: _onSaveDraft,
+  onSaveDraft,
   assessmentYear,
   residentialStatus,
   filingType,
@@ -293,7 +294,7 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
             </h3>
           </div>
           <p className="itr-attention-banner__subtitle">
-            TaxEdge identified the following pending items for your return. Please review or confirm them prior to submission.
+            Finsolz identified the following pending items for your return. Please review or confirm them prior to submission.
           </p>
           <div className="itr-attention-banner__item">
             <div className="itr-attention-banner__item-left">
@@ -588,13 +589,7 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
 
       {/* 7. Action Footer Bar: Left Back Button & Right Submit Button */}
       <div className="itr-rv2-footer-action-bar">
-        <button
-          type="button"
-          className="itr-rv2-btn-back"
-          onClick={onBack}
-        >
-          Back
-        </button>
+        {onSaveDraft && <SaveDraftButton onClick={onSaveDraft} />}
 
         <button
           type="button"

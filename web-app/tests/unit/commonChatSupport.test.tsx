@@ -14,10 +14,10 @@ describe('CommonChatSupport unified component', () => {
     vi.restoreAllMocks()
   })
 
-  it('renders common TaxEdge Support header, online status indicator, and security notice', async () => {
+  it('renders common Finsolz Support header, online status indicator, and security notice', async () => {
     render(<CommonChatSupport />)
 
-    expect(await screen.findByText('TaxEdge Support')).toBeDefined()
+    expect(await screen.findByText('Finsolz Support')).toBeDefined()
     expect(screen.getByText('Online · replies in a few minutes')).toBeDefined()
     expect(screen.getByText('This chat is encrypted and monitored for service quality.')).toBeDefined()
   })

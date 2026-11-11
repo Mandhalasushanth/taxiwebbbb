@@ -64,10 +64,14 @@ export const getCustomerDisplayName = (user: AuthUser | null | undefined): strin
   return 'Guest User'
 }
 
-/** True for empty emails and auto-generated backend mock emails (e.g. 9876543210@taxedge.in) */
+/** True for empty emails and auto-generated backend mock emails (e.g. 9876543210@finsolz.in) */
 export const isMockEmail = (email?: string | null): boolean => {
   if (!email || email.trim() === '') return true
-  return /^\d{10}@taxedge\.in$/i.test(email.trim()) || email.toLowerCase().endsWith('@taxedge.in')
+  return (
+    /^\d{10}@(taxedge|finsolz)\.in$/i.test(email.trim()) ||
+    email.toLowerCase().endsWith('@taxedge.in') ||
+    email.toLowerCase().endsWith('@finsolz.in')
+  )
 }
 
 /** Compact currency formatting matching the mobile app */

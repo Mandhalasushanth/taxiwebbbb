@@ -1,5 +1,5 @@
 /**
- * Centralized Validation Error Messages for TaxEdge Application
+ * Centralized Validation Error Messages for Finsolz Application
  * SINGLE SOURCE OF TRUTH for all validation error copy.
  */
 

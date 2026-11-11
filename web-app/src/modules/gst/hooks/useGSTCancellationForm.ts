@@ -279,6 +279,8 @@ export const useGSTCancellationForm = ({
     setIsSubmitted,
     referenceNumber,
     isModalOpen: draft.isDraftModalOpen,
+    isReviewPrompt: draft.isReviewPrompt,
+    isSaving: draft.isSaving,
     openDraftModal: draft.openDraftModal,
     handleSaveAndExit: draft.handleSaveAndExit,
     handleDiscardAndExit: draft.handleDiscardAndExit,

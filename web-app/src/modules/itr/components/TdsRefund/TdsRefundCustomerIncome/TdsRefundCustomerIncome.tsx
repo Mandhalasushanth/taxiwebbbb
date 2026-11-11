@@ -7,6 +7,7 @@ import {
   validateMobileNumber,
   validateName,
   validateEmail,
+  validateDob,
 } from "@shared/utils/validationUtils";
 import {
   EMPTY_BANK,
@@ -163,6 +164,9 @@ export const TdsRefundCustomerIncome: React.FC<
       case 'email':
         if (!currentProfile.email?.trim()) return null;
         return validateEmail(currentProfile.email);
+      case 'dob':
+        if (!currentProfile.dob?.trim()) return null;
+        return validateDob(currentProfile.dob, { label: 'Date of birth', minAge: 18 });
       default:
         return null;
     }
@@ -189,7 +193,7 @@ export const TdsRefundCustomerIncome: React.FC<
     if (changedKey) {
       const isTouched = personalTouched[changedKey];
       const hasExistingError = Boolean(fieldErrors[changedKey]);
-      if (isTouched || hasExistingError) {
+      if (changedKey === 'dob' || isTouched || hasExistingError) {
         const err = validatePersonalField(changedKey, next);
         setFieldErrors((prev) => {
           const nextErrs = { ...prev };
@@ -406,6 +410,11 @@ export const TdsRefundCustomerIncome: React.FC<
       if (profile.email?.trim()) {
         const err = validateEmail(profile.email);
         if (err) errs.email = err;
+      }
+
+      if (profile.dob?.trim()) {
+        const err = validateDob(profile.dob, { label: 'Date of birth', minAge: 18 });
+        if (err) errs.dob = err;
       }
 
       const holderErr = validateAccountHolder(bankDetails.accountHolder);

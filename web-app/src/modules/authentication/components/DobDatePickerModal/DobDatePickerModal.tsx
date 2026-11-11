@@ -32,7 +32,7 @@ export const DobDatePickerModal: React.FC<DobDatePickerModalProps> = ({
   value,
   onApply,
   onClose,
-  maxDate = new Date(),
+  maxDate = new Date(new Date().getFullYear() - 18, new Date().getMonth(), new Date().getDate()),
   minDate = new Date(1900, 0, 1),
 }) => {
   const containerRef = useRef<HTMLDivElement>(null)

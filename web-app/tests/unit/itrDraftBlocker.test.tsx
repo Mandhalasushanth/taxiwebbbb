@@ -6,7 +6,7 @@ import { MemoryRouter } from 'react-router-dom'
 
 vi.mock('@core/config/environment', () => ({
   env: {
-    appName: 'TaxEdge',
+    appName: 'Finsolz',
     apiBaseUrl: 'http://localhost:3000',
     enableMocks: true,
     isDev: true,
@@ -15,6 +15,7 @@ vi.mock('@core/config/environment', () => ({
 }))
 
 import { authStorage } from '../../src/core/auth'
+import { localStore } from '../../src/core/storage/localStorage'
 import { TdsRefund } from '../../src/modules/itr/components/TdsRefund/TdsRefund'
 import { ItrFiling } from '../../src/modules/itr/components/ItrFiling/ItrFiling'
 import { RevisedItr } from '../../src/modules/itr/components/RevisedItr/RevisedItr'
@@ -28,6 +29,7 @@ afterEach(() => {
 describe('ITR Module - Save Draft Confirmations', () => {
   beforeEach(() => {
     localStorage.clear()
+    localStore.clear()
     window.scrollTo = () => {}
     authStorage.setUser({
       id: 'usr_test_itr',
@@ -132,6 +134,34 @@ describe('ITR Module - Save Draft Confirmations', () => {
       // Expect to be back on Select Primary Income (Category Selection view)
       expect(screen.getByText(/select primary income/i)).toBeDefined()
       expect(screen.getAllByText('Salaried').length).toBeGreaterThan(0)
+    })
+
+    it('does NOT ask to save draft when entering Step 1 without selecting any option or entering data', () => {
+      render(
+        <MemoryRouter>
+          <ItrFiling />
+        </MemoryRouter>
+      )
+
+      // Click Salaried category card to start
+      const salariedCard = screen.getByText('Salaried')
+      fireEvent.click(salariedCard)
+
+      const continueBtn = screen.getByRole('button', { name: /start application/i })
+      fireEvent.click(continueBtn)
+
+      // Now on Step 1 Personal & Filing
+      expect(screen.getByText('Taxpayer Identity')).toBeInTheDocument()
+
+      // User has NOT selected any option or added anything to any field
+      // Click application Back button
+      const backBtn = screen.getByRole('button', { name: /back/i })
+      fireEvent.click(backBtn)
+
+      // Should return straight to Category Selection WITHOUT opening the Save Draft modal
+      expect(screen.queryByText(/save application progress\?/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/save as draft & exit/i)).not.toBeInTheDocument()
+      expect(screen.getByText(/select primary income/i)).toBeInTheDocument()
     })
 
     it('category selection footer renders Start Application without a back button', () => {

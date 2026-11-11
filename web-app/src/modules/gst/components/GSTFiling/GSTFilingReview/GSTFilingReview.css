@@ -46,14 +46,14 @@
 
 /* Ready for Review Banner matching Image 1 & Image 2 */
 .gst-review-banner {
-  background-color: #0b2238;
+  background-color: #1a467e;
   border-radius: 16px;
   padding: 18px 22px;
   display: flex;
   align-items: center;
   gap: 16px;
   margin-bottom: 24px;
-  box-shadow: 0 4px 14px rgba(11, 34, 56, 0.12);
+  box-shadow: 0 4px 14px rgba(26, 70, 126, 0.16);
 }
 
 .gst-review-banner__icon-box {

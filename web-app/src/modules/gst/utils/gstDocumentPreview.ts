@@ -119,7 +119,7 @@ export function getGstDocumentPreviewUrl(doc: GstPreviewDocument): string {
   <body>
     <header>
       <div class="header-left">
-        <span class="brand-badge">TaxEdge</span>
+        <span class="brand-badge">Finsolz</span>
         <div class="header-title">Registration Certificate (Form GST REG-06) · ${certGstin}</div>
       </div>
       <div class="header-actions">
@@ -151,12 +151,12 @@ export function getGstDocumentPreviewUrl(doc: GstPreviewDocument): string {
           <tr>
             <td class="col-idx">2.</td>
             <td class="col-label">Legal Name of Business</td>
-            <td class="col-val">TaxEdge Registered Enterprise</td>
+            <td class="col-val">Finsolz Registered Enterprise</td>
           </tr>
           <tr>
             <td class="col-idx">3.</td>
             <td class="col-label">Trade Name</td>
-            <td class="col-val">TaxEdge Solutions</td>
+            <td class="col-val">Finsolz Solutions</td>
           </tr>
           <tr>
             <td class="col-idx">4.</td>
@@ -206,7 +206,7 @@ export function getGstDocumentPreviewUrl(doc: GstPreviewDocument): string {
       </div>
     </main>
     <footer>
-      TaxEdge Compliance System · Official Registration Certificate Form GST REG-06
+      Finsolz Compliance System · Official Registration Certificate Form GST REG-06
     </footer>
   </body>
 </html>`
@@ -238,7 +238,7 @@ export function getGstDocumentPreviewUrl(doc: GstPreviewDocument): string {
           </div>
           <div style="flex: 1; font-size: 0.85rem; line-height: 1.6;">
             <div style="font-size: 0.7rem; color: #64748b; font-weight: 600;">NAME / नाम</div>
-            <div style="font-weight: 800; color: #0f172a; font-size: 1rem; margin-bottom: 6px;">TAXEDGE COMPLIANT APPLICANT</div>
+            <div style="font-weight: 800; color: #0f172a; font-size: 1rem; margin-bottom: 6px;">FINSOLZ COMPLIANT APPLICANT</div>
             <div style="font-size: 0.7rem; color: #64748b; font-weight: 600;">PERMANENT ACCOUNT NUMBER CARD / स्थायी लेखा संख्या कार्ड</div>
             <div style="font-weight: 900; color: #1e3a8a; font-size: 1.25rem; letter-spacing: 2px; margin: 4px 0;">AAPCA1234F</div>
             <div style="font-size: 0.7rem; color: #64748b; font-weight: 600;">DATE OF INCORPORATION / BIRTH</div>
@@ -270,7 +270,7 @@ export function getGstDocumentPreviewUrl(doc: GstPreviewDocument): string {
             PHOTO
           </div>
           <div style="flex: 1; font-size: 0.85rem; line-height: 1.6;">
-            <div style="font-weight: 800; color: #0f172a; font-size: 1.05rem;">TAXEDGE AUTHORIZED APPLICANT</div>
+            <div style="font-weight: 800; color: #0f172a; font-size: 1.05rem;">FINSOLZ AUTHORIZED APPLICANT</div>
             <div style="font-size: 0.75rem; color: #475569;">जन्म तिथि / DOB: 12/08/1990</div>
             <div style="font-size: 0.75rem; color: #475569;">लिंग / Gender: Male</div>
             <div style="margin-top: 16px; font-weight: 900; color: #b45309; font-size: 1.35rem; letter-spacing: 3px;">XXXX XXXX 8942</div>
@@ -291,7 +291,7 @@ export function getGstDocumentPreviewUrl(doc: GstPreviewDocument): string {
           <div style="background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 0.8rem;">VERIFIED STATEMENT</div>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.82rem; margin-bottom: 16px; font-family: sans-serif;">
-          <div><strong>Account Name:</strong> TaxEdge Enterprise</div>
+          <div><strong>Account Name:</strong> Finsolz Enterprise</div>
           <div><strong>Account No:</strong> XXXXXXXX4589</div>
           <div><strong>Account Type:</strong> Current Account</div>
           <div><strong>MICR Code:</strong> 400002018</div>
@@ -322,7 +322,7 @@ export function getGstDocumentPreviewUrl(doc: GstPreviewDocument): string {
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.85rem; margin-bottom: 16px;">
           <div><strong>Consumer No:</strong> 015894103859</div>
           <div><strong>Bill Month:</strong> October 2026</div>
-          <div><strong>Consumer Name:</strong> TaxEdge Enterprise</div>
+          <div><strong>Consumer Name:</strong> Finsolz Enterprise</div>
           <div><strong>Meter Number:</strong> MTR-984210</div>
           <div style="grid-column: 1 / -1;"><strong>Premises Address:</strong> Floor 4, Commerce Tower, Bandra Kurla Complex, Mumbai, Maharashtra - 400051</div>
         </div>
@@ -345,7 +345,7 @@ export function getGstDocumentPreviewUrl(doc: GstPreviewDocument): string {
           </div>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.85rem; margin-bottom: 16px;">
-          <div><strong>Supplier GSTIN:</strong> 27AAACG0123M1Z8<br/><strong>Legal Name:</strong> TaxEdge Solutions Pvt Ltd</div>
+          <div><strong>Supplier GSTIN:</strong> 27AAACG0123M1Z8<br/><strong>Legal Name:</strong> Finsolz Solutions Pvt Ltd</div>
           <div><strong>Buyer GSTIN:</strong> 27AAPCA1234F1Z2<br/><strong>State / Code:</strong> Maharashtra (27)</div>
         </div>
         <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-bottom: 16px; border: 1px solid #cbd5e1;">
@@ -369,7 +369,7 @@ export function getGstDocumentPreviewUrl(doc: GstPreviewDocument): string {
     documentBodyHtml = `
       <div style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 32px; background: #ffffff; max-width: 680px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-family: serif;">
         <div style="text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 16px; margin-bottom: 24px;">
-          <div style="font-size: 1.35rem; font-weight: 800; color: #1e3a8a; text-transform: uppercase;">TAXEDGE ENTERPRISE SOLUTIONS</div>
+          <div style="font-size: 1.35rem; font-weight: 800; color: #1e3a8a; text-transform: uppercase;">FINSOLZ ENTERPRISE SOLUTIONS</div>
           <div style="font-size: 0.85rem; color: #475569; font-style: italic;">Registered Office: Commerce Tower, BKC, Mumbai - 400051</div>
         </div>
         <div style="text-align: center; margin-bottom: 20px;">
@@ -414,7 +414,7 @@ export function getGstDocumentPreviewUrl(doc: GstPreviewDocument): string {
   <body>
     <header>
       <div class="header-left">
-        <span class="brand-badge">TaxEdge</span>
+        <span class="brand-badge">Finsolz</span>
         <div>
           <div class="header-title">${docTitle}</div>
           <div class="header-sub">${docName}</div>
@@ -429,7 +429,7 @@ export function getGstDocumentPreviewUrl(doc: GstPreviewDocument): string {
       ${documentBodyHtml}
     </main>
     <footer>
-      TaxEdge Compliance System · 256-bit Secure TLS Encryption
+      Finsolz Compliance System · 256-bit Secure TLS Encryption
     </footer>
   </body>
 </html>`
