@@ -5,6 +5,7 @@ import { DocumentCard, CaretInput, FieldInfoTooltip } from '@shared/components'
 import { UPLOAD_HINT, DOCUMENT_UPLOAD_RULE } from '@shared/upload'
 import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
 import { assertGstUploadCriteria, GstUploadException } from '@modules/gst/utils/gstUploadValidator'
+import { getTodayIso } from '@shared/utils/dateUtils'
 import './GSTComplianceUploadFields.css'
 
 export interface NoticeResponseValues {
@@ -162,6 +163,7 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
                   ref={issueDateInputRef}
                   id="gst-notice-issue-date"
                   type="date"
+                  max={getTodayIso()}
                   value={issueDate}
                   onChange={(e) => onChange('issueDate', e.target.value)}
                   onClick={openIssueDatePicker}
@@ -209,6 +211,7 @@ export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = (
                   ref={dueDateInputRef}
                   id="gst-notice-due-date"
                   type="date"
+                  max={getTodayIso()}
                   value={dueDate}
                   onChange={(e) => onChange('dueDate', e.target.value)}
                   onClick={openDueDatePicker}

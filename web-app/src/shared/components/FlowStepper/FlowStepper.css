@@ -21,7 +21,7 @@
   align-items: flex-start;
   justify-content: space-between;
   width: 100%;
-  max-width: 600px;
+  max-width: 720px;
   margin: 0 auto;
   position: relative;
   box-sizing: border-box;
@@ -43,11 +43,12 @@
 .flow-step-line {
   position: absolute;
   top: 20px;
-  left: calc(50% + 24px);
-  right: calc(-50% + 24px);
+  left: calc(50% + 28px);
+  right: calc(-50% + 28px);
   height: 2.5px;
   transform: translateY(-50%);
   background-color: var(--border);
+  border-radius: 2px;
   transition: background-color 0.3s ease;
   z-index: 1;
   pointer-events: none;
@@ -69,35 +70,36 @@
   padding: 0 4px;
   box-sizing: border-box;
   cursor: default;
+  pointer-events: none;
   position: relative;
   z-index: 2;
   user-select: none;
   outline: none;
   font-family: inherit;
-  max-width: 110px;
+  max-width: 120px;
   margin: 0 auto;
 }
 
 .flow-step-button--completed,
 .flow-step-button--active {
-  cursor: pointer;
+  cursor: default;
 }
 
 .flow-step-button:focus-visible .flow-step-circle {
-  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.35);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.35);
 }
 
 .flow-step-circle {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 800;
   flex-shrink: 0;
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
   user-select: none;
   position: relative;
   z-index: 2;
@@ -108,39 +110,39 @@
 /* 1. Upcoming / Pending State */
 .flow-step-button--upcoming .flow-step-circle {
   background-color: var(--surface);
-  color: var(--palette-sky-400-8da4be);
-  border: 1.5px solid var(--palette-sky-100-d0dbe7);
+  color: var(--muted-text);
+  border: 2px solid var(--grey-300);
 }
 
 .flow-step-button--upcoming .flow-step-label {
-  color: var(--palette-sky-600-5a6f87);
-  font-weight: 500;
+  color: var(--secondary-text);
+  font-weight: 600;
 }
 
 /* 2. Active State (Orange) */
 .flow-step-button--active .flow-step-circle {
-  background-color: var(--feature-orange);
+  background-color: var(--primary-orange);
   color: var(--surface);
-  border: 2px solid var(--feature-orange);
-  box-shadow: 0 4px 12px rgba(255, 122, 0, 0.4);
-  transform: scale(1.04);
+  border: 2.5px solid var(--primary-orange);
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.42);
+  transform: scale(1.06);
 }
 
 .flow-step-button--active .flow-step-label {
-  color: var(--feature-orange);
+  color: var(--primary-orange);
   font-weight: 700;
 }
 
 /* 3. Completed State (Navy Blue) */
 .flow-step-button--completed .flow-step-circle {
-  background-color: var(--palette-blue-700-1a237e);
+  background-color: var(--primary-navy);
   color: var(--surface);
-  border: 2px solid var(--palette-blue-700-1a237e);
-  box-shadow: 0 3px 10px rgba(26, 35, 126, 0.28);
+  border: 2.5px solid var(--primary-navy);
+  box-shadow: 0 4px 14px rgba(8, 59, 117, 0.35);
 }
 
 .flow-step-button--completed .flow-step-label {
-  color: var(--palette-blue-700-1a237e);
+  color: var(--primary-navy);
   font-weight: 600;
 }
 

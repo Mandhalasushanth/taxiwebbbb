@@ -38,7 +38,7 @@ const downloadRevisedReceipt = (params: { applicationId: string; ackNumber: stri
     const { applicationId, ackNumber, selectedAy, docCount } = params
     const content = [
       '==================================================',
-      '           TAXEDGE REVISED ITR RECEIPT             ',
+      '           FINSOLZ REVISED ITR RECEIPT             ',
       '==================================================', '',
       `Application ID   : ${applicationId}`,
       `Original Ack No  : ${ackNumber || '987656789876789'}`,
@@ -55,15 +55,15 @@ const downloadRevisedReceipt = (params: { applicationId: string; ackNumber: stri
       'Certified CA verifying original filing and revised declaration.',
       'SLA: 4-Hour CA Review with Notice Protection',
       '--------------------------------------------------', '',
-      'Thank you for filing with TaxEdge.',
-      'Support: support@taxedge.in | 1800-TAX-EDGE',
+      'Thank you for filing with Finsolz.',
+      'Support: support@finsolz.in | 1800-FINSOLZ',
       '==================================================',
     ].join('\n')
 
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
-    link.href = url; link.download = `TaxEdge_Revised_ITR_${applicationId}.txt`
+    link.href = url; link.download = `Finsolz_Revised_ITR_${applicationId}.txt`
     document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url)
   } catch {
     // Safe fallback
@@ -110,7 +110,6 @@ export const useRevisedItr = () => {
   const isDirty = useMemo(() => {
     return Boolean(
       step > 1 ||
-      Boolean(existingDraft) ||
       ackNumber.trim() !== '' ||
       selectedAy.trim() !== '' ||
       isReturnFound ||
@@ -129,7 +128,6 @@ export const useRevisedItr = () => {
     )
   }, [
     step,
-    existingDraft,
     ackNumber,
     selectedAy,
     isReturnFound,
@@ -318,7 +316,7 @@ export const useRevisedItr = () => {
     setIsLoading, errors, setErrors, dropdownRef, handleKeyDown, handleAckChange, handleSelectAy,
     handleToggleDropdown, handleCloseDropdown, handleSelectReason, handleOtherReasonChange, handleIncomeChange,
     handleDeductionChange, handleBankChange, handleFileUpload, handleFileRemove, handleBack, handleContinue,
-    handlePaymentSuccess, handleDownloadReceipt, goToStep, editStep, isEditMode, isModalOpen, openModal, handleSaveAndExit,
+    handlePaymentSuccess, handleDownloadReceipt, goToStep, editStep, isEditMode, isModalOpen, isReviewPrompt: serviceDraft.isReviewPrompt, isSaving: serviceDraft.isSaving, openModal, handleSaveAndExit,
     handleDiscardAndExit, handleKeepEditing, isDirty,
   }
 }

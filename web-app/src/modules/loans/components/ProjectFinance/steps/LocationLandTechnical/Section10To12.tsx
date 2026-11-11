@@ -1,4 +1,5 @@
 import React from 'react'
+import { getTodayIso } from '@shared/utils/dateUtils'
 import { Home, Users, FileText, ChevronDown } from 'lucide-react'
 import type { ProjectFinanceData, ImplementationMilestoneItem } from '@modules/loans/types/projectFinance.types'
 import {
@@ -128,6 +129,7 @@ export const Section10To12: React.FC<Section10To12Props> = ({
               <input
                 id="epcAwardDate"
                 type="date"
+                max={getTodayIso()}
                 className="pf-custom-input"
                 value={data.epcAwardDate || ''}
                 onChange={(e) => onChange({ epcAwardDate: e.target.value })}
@@ -140,6 +142,7 @@ export const Section10To12: React.FC<Section10To12Props> = ({
                 <input
                   id="constructionStartDate"
                   type="date"
+                  max={getTodayIso()}
                   className={`pf-custom-input ${errors.constructionStartDate ? 'pf-custom-input--error' : ''}`}
                   value={data.constructionStartDate || ''}
                   onChange={(e) => onChange({ constructionStartDate: e.target.value })}
@@ -152,6 +155,7 @@ export const Section10To12: React.FC<Section10To12Props> = ({
                 <input
                   id="expectedCompletionDate"
                   type="date"
+                  max={getTodayIso()}
                   className={`pf-custom-input ${errors.expectedCompletionDate ? 'pf-custom-input--error' : ''}`}
                   value={data.expectedCompletionDate || ''}
                   onChange={(e) => onChange({ expectedCompletionDate: e.target.value })}
@@ -220,6 +224,7 @@ export const Section10To12: React.FC<Section10To12Props> = ({
                       <input
                         id={`plannedDate_${idx}`}
                         type="date"
+                        max={getTodayIso()}
                         className="pf-custom-input"
                         value={item.plannedDate || ''}
                         onChange={(e) => handleUpdateMilestone(idx, { plannedDate: e.target.value })}
@@ -231,6 +236,7 @@ export const Section10To12: React.FC<Section10To12Props> = ({
                       <input
                         id={`actualDate_${idx}`}
                         type="date"
+                        max={getTodayIso()}
                         className="pf-custom-input"
                         value={item.actualDate || ''}
                         onChange={(e) => handleUpdateMilestone(idx, { actualDate: e.target.value })}
@@ -357,3 +363,4 @@ export const Section10To12: React.FC<Section10To12Props> = ({
     </>
   )
 }
+

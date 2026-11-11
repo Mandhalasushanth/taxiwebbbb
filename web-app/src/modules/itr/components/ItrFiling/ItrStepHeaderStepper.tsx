@@ -17,6 +17,7 @@ export const ItrStepHeaderStepper: React.FC<ItrStepHeaderStepperProps> = ({ curr
         {ITR_STEPS.map((s, idx) => {
           const isDotCompleted = s.id < currentStepId
           const isDotActive = s.id === currentStepId
+          const isLast = idx === ITR_STEPS.length - 1
           const dotClass = isDotCompleted
             ? 'itr-stepper-dot itr-stepper-dot--completed'
             : isDotActive
@@ -26,36 +27,38 @@ export const ItrStepHeaderStepper: React.FC<ItrStepHeaderStepperProps> = ({ curr
             ? 'itr-stepper-line itr-stepper-line--completed'
             : 'itr-stepper-line'
           return (
-            <React.Fragment key={s.id}>
-              <div className="itr-stepper-step-item">
-                <div className={dotClass} title={`Step ${s.id}: ${s.label}`}>
-                  {isDotCompleted ? (
-                    <svg
-                      viewBox="0 0 24 24"
-                      width="16"
-                      height="16"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  ) : (
-                    s.id
-                  )}
-                </div>
-                <span
-                  className={`itr-stepper-label ${
-                    isDotActive ? 'itr-stepper-label--active' : ''
-                  }`}
-                >
-                  {s.label}
-                </span>
+            <div key={s.id} className="itr-stepper-step-item">
+              {!isLast && <div className={lineClass} aria-hidden="true" />}
+              <div className={dotClass} title={`Step ${s.id}: ${s.label}`}>
+                {isDotCompleted ? (
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                ) : (
+                  s.id
+                )}
               </div>
-              {idx < ITR_STEPS.length - 1 && <div className={lineClass} />}
-            </React.Fragment>
+              <span
+                className={`itr-stepper-label ${
+                  isDotActive
+                    ? 'itr-stepper-label--active'
+                    : isDotCompleted
+                    ? 'itr-stepper-label--completed'
+                    : ''
+                }`}
+              >
+                {s.label}
+              </span>
+            </div>
           )
         })}
       </div>

@@ -113,8 +113,15 @@ export const useGSTAmendmentFlow = () => {
     },
     hasEnteredData: Boolean(
       gstin.trim() ||
-      selectedOption ||
-      (formData && (formData.newValue || formData.fileName || formData.addressDetails || formData.bankDetails || formData.signatoryDetails || formData.contactDetails))
+      (formData && (
+        Boolean(formData.newValue && formData.newValue.trim()) ||
+        Boolean(formData.fileName) ||
+        Boolean(formData.file) ||
+        Boolean(formData.addressDetails && Object.values(formData.addressDetails).some((v) => v && String(v).trim())) ||
+        Boolean(formData.bankDetails && Object.values(formData.bankDetails).some((v) => v && String(v).trim())) ||
+        Boolean(formData.signatoryDetails && Object.values(formData.signatoryDetails).some((v) => v && String(v).trim())) ||
+        Boolean(formData.contactDetails && Object.values(formData.contactDetails).some((v) => v && String(v).trim()))
+      ))
     ),
     isComplete: Boolean(submittedRecord),
     onDiscard: () => {
@@ -354,6 +361,8 @@ export const useGSTAmendmentFlow = () => {
     isSubmitting,
     submittedRecord,
     isModalOpen: draft.isDraftModalOpen,
+    isReviewPrompt: draft.isReviewPrompt,
+    isSaving: draft.isSaving,
     openDraftModal: draft.openDraftModal,
     handleSaveAndExit: draft.handleSaveAndExit,
     handleDiscardAndExit: draft.handleDiscardAndExit,

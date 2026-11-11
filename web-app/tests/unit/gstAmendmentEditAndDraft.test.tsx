@@ -251,9 +251,9 @@ describe('GST Amendment Edit Flow & Draft Persistence', () => {
       expect(screen.getByText('Review Amendment')).toBeInTheDocument()
     })
 
-    // Click Back on Review screen
-    const reviewBackBtn = screen.getByRole('button', { name: /^Back$/i })
-    fireEvent.click(reviewBackBtn)
+    // Back button is hidden on Review; click section Edit to return to Form
+    const editBtn = screen.getByRole('button', { name: /Edit/i })
+    fireEvent.click(editBtn)
 
     // Should return to the Form page with data preserved
     await waitFor(() => {

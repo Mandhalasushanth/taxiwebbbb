@@ -1,4 +1,5 @@
 import React from 'react'
+import { getTodayIso } from '@shared/utils/dateUtils'
 import { formatCurrencyString } from '@modules/loans/utils/loanInputFormatters'
 import type { ProjectFinanceData } from '@modules/loans/types/projectFinance.types'
 
@@ -255,6 +256,7 @@ export const FundingAndDisbursementSection: React.FC<FundingAndDisbursementSecti
                 <input
                   id="expectedCommercialOperationsDate"
                   type="date"
+                  max={getTodayIso()}
                   className={`pf-custom-input ${errors.expectedCommercialOperationsDate ? 'pf-custom-input--error' : ''}`}
                   value={data.expectedCommercialOperationsDate || ''}
                   onChange={(e) => handleTextInput('expectedCommercialOperationsDate', e.target.value)}

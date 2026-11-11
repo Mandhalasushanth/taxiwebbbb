@@ -32,8 +32,8 @@ export const receiptService = {
 
     return {
       id: `receipt_${ref}`,
-      receiptNumber: `TE/26-27/R-${ref.replace(/\D/g, '').slice(-4) || '1001'}`,
-      companyName: 'TaxEdge Fin Solutions',
+      receiptNumber: `FS/26-27/R-${ref.replace(/\D/g, '').slice(-4) || '1001'}`,
+      companyName: 'Finsolz Fin Solutions',
       companyGstin: 'GSTIN 27AAKCT9182F1ZR - Pune, Maharashtra',
       billedTo: {
         name: userName,

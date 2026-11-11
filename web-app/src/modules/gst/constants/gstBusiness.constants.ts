@@ -1,10 +1,10 @@
 /** Filing company details printed on receipts and declarations */
 export const GST_COMPANY = {
-  legalName: 'TaxEdge Fin Solutions',
-  shortName: 'TE',
+  legalName: 'Finsolz Fin Solutions',
+  shortName: 'FS',
   gstin: '27AAKCT9182F12R',
   location: 'Pune, Maharashtra',
-  teamName: 'TaxEdge Team',
+  teamName: 'Finsolz Team',
 } as const
 
 /** Professional fees (₹, before GST) */
@@ -19,7 +19,7 @@ export const GST_FEES = {
   certificate: 750,
 } as const
 
-/** GST charged on TaxEdge professional fees */
+/** GST charged on Finsolz professional fees */
 export const PLATFORM_GST_RATE = 0.18
 
 /** Base filing fee for the selected return */

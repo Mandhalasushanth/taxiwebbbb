@@ -52,7 +52,7 @@ describe('ApplicationTrackerView component', () => {
       fireEvent.click(chatLink)
     })
 
-    expect(screen.getAllByText('TaxEdge Support').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('Finsolz Support').length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText(/Online · replies in a few minutes/i)).toBeDefined()
   })
 
@@ -158,7 +158,7 @@ describe('ApplicationTrackerView component', () => {
 
     // Common Chat Support Header and Status
     expect(await screen.findByText('Online · replies in a few minutes')).toBeDefined()
-    expect(screen.getAllByText('TaxEdge Support').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('Finsolz Support').length).toBeGreaterThanOrEqual(1)
 
     // Common Quick Action Prompts
     expect(await screen.findByText('Track my application')).toBeDefined()

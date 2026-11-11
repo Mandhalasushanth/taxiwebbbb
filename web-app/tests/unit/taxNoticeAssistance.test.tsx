@@ -5,7 +5,7 @@ import { cleanup } from '@testing-library/react'
 
 vi.mock('@core/config/environment', () => ({
   env: {
-    appName: 'TaxEdge',
+    appName: 'Finsolz',
     apiBaseUrl: 'http://localhost:3000',
     enableMocks: true,
     isDev: true,

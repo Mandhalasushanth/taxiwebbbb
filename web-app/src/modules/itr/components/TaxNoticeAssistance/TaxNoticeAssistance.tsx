@@ -44,35 +44,39 @@ export const NoticeStepper: React.FC<NoticeStepperProps> = ({
     const isCompleted = tone === 'completed'
     const isClickable = Boolean(onStepClick && isCompleted)
 
+    const isLast = index === NOTICE_ASSISTANCE_STEPS.length - 1
+
     return (
-      <React.Fragment key={stepItem.id}>
-        <div
-          className={`notice-stepper-step ${isClickable ? 'notice-stepper-step--clickable' : ''}`}
-          onClick={() => {
-            try {
-              if (isClickable && onStepClick) {
-                onStepClick(stepItem.id)
-              }
-            } catch {
-              // No-op
+      <div
+        key={stepItem.id}
+        className={`notice-stepper-step ${isClickable ? 'notice-stepper-step--clickable' : ''}`}
+        onClick={() => {
+          try {
+            if (isClickable && onStepClick) {
+              onStepClick(stepItem.id)
             }
-          }}
-          role={isClickable ? 'button' : undefined}
-          tabIndex={isClickable ? 0 : undefined}
-          aria-label={`Step ${stepItem.id}: ${stepItem.label}`}
-          title={isClickable ? `Go back to ${stepItem.label}` : `Step ${stepItem.id}: ${stepItem.label}`}
-        >
-          <div className={`notice-stepper-circle notice-stepper-circle--${tone}`}>
-            {isCompleted ? <CheckIcon size={16} /> : stepItem.id}
-          </div>
-          <span className={`notice-stepper-label notice-stepper-label--${tone}`}>
-            {stepItem.label}
-          </span>
-        </div>
-        {index < NOTICE_ASSISTANCE_STEPS.length - 1 && (
-          <div className={`notice-stepper-line ${isCompleted ? 'notice-stepper-line--completed' : ''}`} />
+          } catch {
+            // No-op
+          }
+        }}
+        role={isClickable ? 'button' : undefined}
+        tabIndex={isClickable ? 0 : undefined}
+        aria-label={`Step ${stepItem.id}: ${stepItem.label}`}
+        title={isClickable ? `Go back to ${stepItem.label}` : `Step ${stepItem.id}: ${stepItem.label}`}
+      >
+        {!isLast && (
+          <div
+            className={`notice-stepper-line ${isCompleted ? 'notice-stepper-line--completed' : ''}`}
+            aria-hidden="true"
+          />
         )}
-      </React.Fragment>
+        <div className={`notice-stepper-circle notice-stepper-circle--${tone}`}>
+          {isCompleted ? <CheckIcon size={16} /> : stepItem.id}
+        </div>
+        <span className={`notice-stepper-label notice-stepper-label--${tone}`}>
+          {stepItem.label}
+        </span>
+      </div>
     )
   }
 

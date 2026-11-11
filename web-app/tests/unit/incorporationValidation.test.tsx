@@ -4,7 +4,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 
 vi.mock('@core/config/environment', () => ({
   env: {
-    appName: 'TaxEdge',
+    appName: 'Finsolz',
     apiBaseUrl: 'http://localhost:3000',
     enableMocks: true,
     isDev: true,

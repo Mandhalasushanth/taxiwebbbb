@@ -104,7 +104,7 @@ export const ItrUnifiedApplicationStatusView: React.FC<ItrUnifiedApplicationStat
           <div className="itr-status-banner-text">
             <h3 className="itr-status-banner-title">Application Submitted!</h3>
             <p className="itr-status-banner-desc">
-              Your {serviceName} application has been successfully filed with TaxEdge.
+              Your {serviceName} application has been successfully filed with Finsolz.
             </p>
           </div>
         </div>

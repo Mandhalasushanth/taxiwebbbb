@@ -164,7 +164,7 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
     },
     chat: {
       pageHeader: 'Support Chat',
-      title: 'TaxEdge Support',
+      title: 'Finsolz Support',
       subtitle: 'Online · replies in a few minutes',
     },
   }
@@ -531,7 +531,7 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
               <div className="app-tracker-clean-card app-tracker-common-chat-card">
                 <CommonChatSupport
                   appId={data.appId}
-                  title="TaxEdge Support"
+                  title="Finsolz Support"
                   subtitle="Online · replies in a few minutes"
                   placeholder="Type your message..."
                   embedded

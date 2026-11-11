@@ -249,7 +249,7 @@ export function validateStep4Review(data: PropertyLoanData): LoanStepValidationR
 
   const errors: Record<string, string> = {}
   if (!data.termsAccepted && !data.declarationAgreed) {
-    errors.termsAccepted = 'Please authorize TaxEdge and accept the declaration to submit your application.'
+    errors.termsAccepted = 'Please authorize Finsolz and accept the declaration to submit your application.'
   }
   return toStepResult(errors, 'Please confirm the declaration before submitting.')
 }

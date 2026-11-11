@@ -233,12 +233,7 @@ export const GSTCancellationReview: React.FC<GSTCancellationReviewProps> = ({
 
         {/* Bottom Actions Row */}
         <div className="gst-canc-review-actions-row">
-          <button type="button" onClick={onBack} className="gst-canc-back-pill-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-            Back
-          </button>
+          {/* Back button hidden on Review page */}
 
           <div className="form-actions-group">
             {onSaveDraft && <SaveDraftButton onClick={onSaveDraft} />}

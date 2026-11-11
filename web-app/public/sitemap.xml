@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://taxedge.in/</loc>
+    <loc>https://finsolz.in/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://taxedge.in/pricing</loc>
+    <loc>https://finsolz.in/pricing</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://taxedge.in/about</loc>
+    <loc>https://finsolz.in/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://taxedge.in/contact</loc>
+    <loc>https://finsolz.in/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://taxedge.in/auth/login</loc>
+    <loc>https://finsolz.in/auth/login</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://taxedge.in/auth/register</loc>
+    <loc>https://finsolz.in/auth/register</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://taxedge.in/legal/terms</loc>
+    <loc>https://finsolz.in/legal/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://taxedge.in/legal/privacy</loc>
+    <loc>https://finsolz.in/legal/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { getTodayIso } from '@shared/utils/dateUtils'
 import { formatCurrencyString } from '@modules/loans/utils/loanInputFormatters'
 import type { ProjectFinanceData } from '@modules/loans/types/projectFinance.types'
 import { TYPE_OF_INSURANCE_OPTIONS } from './securityComplianceConstants'
@@ -100,6 +101,7 @@ export const InsuranceDetailsSection: React.FC<InsuranceDetailsSectionProps> = (
             <input
               id="insurancePolicyValidity"
               type="date"
+              max={getTodayIso()}
               className="pf-custom-input"
               placeholder="DD MMM YYYY"
               value={data.insurancePolicyValidity || ''}

@@ -73,7 +73,7 @@ export const GSTReviewTaxComputationCard: React.FC<GSTReviewTaxComputationProps>
         </div>
 
         <p className="gst-comp-ca-message">
-          TaxEdge CA will calculate your liabilities, ITC, and net payable tax directly from your uploaded invoices.
+          Finsolz CA will calculate your liabilities, ITC, and net payable tax directly from your uploaded invoices.
         </p>
       </div>
     )

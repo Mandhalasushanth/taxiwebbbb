@@ -1,5 +1,5 @@
 /**
- * Centralized Validation System for TaxEdge
+ * Centralized Validation System for Finsolz
  * SINGLE SOURCE OF TRUTH for all validation rules, messages, and validators.
  */
 

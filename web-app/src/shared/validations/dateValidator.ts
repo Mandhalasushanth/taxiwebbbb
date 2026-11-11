@@ -103,9 +103,10 @@ export const validateDob = (
   }
 
   const age = calculateAge(date, today)
+  const minAge = opts.minAge !== undefined ? opts.minAge : 18
 
-  if (opts.minAge !== undefined && age < opts.minAge) {
-    return `Must be at least ${opts.minAge} years old`
+  if (minAge > 0 && age < minAge) {
+    return `Must be at least ${minAge} years old`
   }
 
   if (opts.maxAge !== undefined && age > opts.maxAge) {

@@ -221,7 +221,7 @@ export const BUSINESS_METHODS = [
   { id: '44AD' as const, title: 'Presumptive Business (Section 44AD)', desc: 'Small traders & retailers (ITR-4 Sugam)' },
   { id: '44ADA' as const, title: 'Presumptive Profession (Section 44ADA)', desc: 'Doctors, IT consultants, lawyers (ITR-4 Sugam)' },
   { id: 'regular' as const, title: 'Regular Books of Accounts (ITR-3)', desc: 'Maintaining P&L, Balance Sheet, or Audit' },
-  { id: 'not_sure' as const, title: "I'm Not Sure", desc: 'TaxEdge CA will review and select the best option' },
+  { id: 'not_sure' as const, title: "I'm Not Sure", desc: 'Finsolz CA will review and select the best option' },
 ]
 
 export interface DeductionsData {
@@ -484,18 +484,21 @@ export const ItrFilingHeaderStepper: React.FC<ItrFilingHeaderStepperProps> = ({ 
     <div className="itr-stepper-track" aria-label="Step progress">
       {ITR_STEPS.map((stepItem, idx) => {
         const tone = resolveDotTone(stepItem.id, currentStepId)
+        const isCompleted = stepItem.id < currentStepId
+        const isLast = idx === ITR_STEPS.length - 1
         return (
-          <React.Fragment key={stepItem.id}>
-            <div className="itr-stepper-step-item">
-              <div className={`itr-stepper-dot itr-stepper-dot--${tone}`} title={`Step ${stepItem.id}: ${stepItem.label}`}>
-                {tone === 'completed' ? <CheckIcon size={16} /> : stepItem.id}
-              </div>
-              <span className={`itr-stepper-label ${tone === 'active' ? 'itr-stepper-label--active' : ''}`}>{stepItem.label}</span>
-            </div>
-            {idx < ITR_STEPS.length - 1 && (
-              <div className={`itr-stepper-line ${tone === 'completed' ? 'itr-stepper-line--completed' : ''}`} />
+          <div key={stepItem.id} className="itr-stepper-step-item">
+            {!isLast && (
+              <div
+                className={`itr-stepper-line ${isCompleted ? 'itr-stepper-line--completed' : ''}`}
+                aria-hidden="true"
+              />
             )}
-          </React.Fragment>
+            <div className={`itr-stepper-dot itr-stepper-dot--${tone}`} title={`Step ${stepItem.id}: ${stepItem.label}`}>
+              {tone === 'completed' ? <CheckIcon size={16} /> : stepItem.id}
+            </div>
+            <span className={`itr-stepper-label ${tone === 'active' ? 'itr-stepper-label--active' : tone === 'completed' ? 'itr-stepper-label--completed' : ''}`}>{stepItem.label}</span>
+          </div>
         )
       })}
     </div>

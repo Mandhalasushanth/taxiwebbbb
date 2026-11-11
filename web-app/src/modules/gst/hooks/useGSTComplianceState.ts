@@ -96,7 +96,7 @@ const validateCompliance = (
       ? gstFieldRules.pastDate("Notice issue date")(fields.issueDate)
       : undefined,
     dueDate: isNotice
-      ? gstFieldRules.futureDate("Reply due date")(fields.dueDate) ||
+      ? gstFieldRules.pastDate("Reply due date")(fields.dueDate) ||
         (fields.issueDate &&
         fields.dueDate &&
         new Date(fields.dueDate) < new Date(fields.issueDate)
@@ -283,7 +283,7 @@ export const useGSTComplianceState = () => {
       field === "dueDate" &&
       fields.requestType === "Notice Response"
     ) {
-      err = gstFieldRules.futureDate("Reply due date")(fields.dueDate);
+      err = gstFieldRules.pastDate("Reply due date")(fields.dueDate);
       if (
         !err &&
         fields.issueDate &&
@@ -406,6 +406,8 @@ export const useGSTComplianceState = () => {
     handleReset,
     setErrors,
     isDraftModalOpen: draft.isDraftModalOpen,
+    isReviewPrompt: draft.isReviewPrompt,
+    isSaving: draft.isSaving,
     openDraftModal: draft.openDraftModal,
     handleSaveAndExit: draft.handleSaveAndExit,
     handleDiscardAndExit: draft.handleDiscardAndExit,

@@ -16,7 +16,7 @@ export const quickServices: QuickService[] = [
   },
   {
     id: 'itr',
-    label: 'ITR & TDS',
+    label: 'ITR',
     description: 'Income tax returns for every profile, TDS refunds, revised returns and notice replies.',
     to: routePaths.itr.root,
     icon: '📊',
@@ -158,7 +158,7 @@ export const buildUserDashboardSummary = (): DashboardSummary => {
   const firstName = user?.fullName ? user.fullName.split(' ')[0] : 'there'
   const message =
     activeCount === 0
-      ? `Welcome to TaxEdge, ${firstName}! Your account is active. Choose a service below to begin your GST, ITR, or loan application.`
+      ? `Welcome to Finsolz, ${firstName}! Your account is active. Choose a service below to begin your GST, ITR, or loan application.`
       : `You have ${activeCount} active application(s) in progress. Your documents and filings are up to date.`
   return {
     brief: {

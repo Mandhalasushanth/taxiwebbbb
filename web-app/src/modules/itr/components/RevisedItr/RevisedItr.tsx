@@ -142,6 +142,8 @@ export const RevisedItr: React.FC = () => {
         <>
           {renderStepFn()}
           <StepActionBar
+            showBack={step !== 5}
+            isReview={step === 5}
             onBack={handleBack}
             onNext={handleContinue}
             onSaveDraft={openModal}

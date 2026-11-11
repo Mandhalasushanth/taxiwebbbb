@@ -12,12 +12,12 @@ const fyLabel = (startYear: number): string => `FY ${startYear}-${String(startYe
 const today = new Date()
 const currentFyStart = fyStartYear(today)
 
-export const GST_START_YEAR = 2017
-export const GST_END_YEAR = 2026
+export const GST_START_YEAR = 2022
+export const GST_END_YEAR = 2025
 
 export const CURRENT_FINANCIAL_YEAR = 'FY 2025-26'
 
-/** Financial years from GST inception (FY 2017-18) up to FY 2026-27 (all 10 options) */
+/** Financial years: only 4 options (FY 2022-23, FY 2023-24, FY 2024-25, FY 2025-26) */
 export const FINANCIAL_YEAR_OPTIONS: SelectOption[] = Array.from(
   { length: GST_END_YEAR - GST_START_YEAR + 1 },
   (_, index) => toOption(fyLabel(GST_START_YEAR + index))
@@ -185,10 +185,35 @@ export const RETURN_PERIOD_OPTIONS: SelectOption[] = [
   ...QUARTERLY_PERIOD_OPTIONS,
 ]
 
-export const RETURN_TYPE_OPTIONS: SelectOption[] = [
+export const MONTHLY_RETURN_TYPE_OPTIONS: SelectOption[] = [
   { value: 'gstr1', label: 'GSTR-1 (Outward Supplies)' },
-  { value: 'gstr3b', label: 'GSTR-3B (Monthly Summary)' },
+  { value: 'gstr3b', label: 'GSTR-3B (Monthly Summary Return)' },
 ]
+
+export const QUARTERLY_RETURN_TYPE_OPTIONS: SelectOption[] = [
+  { value: 'gstr1', label: 'GSTR-1 (QRMP — Quarterly)' },
+  { value: 'gstr3b', label: 'GSTR-3B (QRMP — Quarterly)' },
+]
+
+export const ANNUAL_RETURN_TYPE_OPTIONS: SelectOption[] = [
+  { value: 'gstr1', label: 'GSTR-1 (Outward Supplies)' },
+  { value: 'gstr3b', label: 'GSTR-3B (Summary Return)' },
+]
+
+export const getReturnTypeOptions = (frequency?: string): SelectOption[] => {
+  switch (frequency) {
+    case 'Quarterly':
+      return QUARTERLY_RETURN_TYPE_OPTIONS
+    case 'Annual':
+    case 'Yearly':
+      return ANNUAL_RETURN_TYPE_OPTIONS
+    case 'Monthly':
+    default:
+      return MONTHLY_RETURN_TYPE_OPTIONS
+  }
+}
+
+export const RETURN_TYPE_OPTIONS: SelectOption[] = MONTHLY_RETURN_TYPE_OPTIONS
 
 export const FILING_TYPE_OPTIONS = [
   {
@@ -206,7 +231,7 @@ export const FILING_TYPE_OPTIONS = [
 export const TAX_CALCULATION_METHOD_OPTIONS = [
   {
     id: 'ca_calculate' as const,
-    title: 'Let TaxEdge CA calculate from documents',
+    title: 'Let Finsolz CA calculate from documents',
     description: 'Upload your invoices & GSTR-2B; our CA computes sales, purchases & ITC',
   },
   {

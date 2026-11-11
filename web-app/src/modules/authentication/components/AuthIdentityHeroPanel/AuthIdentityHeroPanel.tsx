@@ -47,7 +47,7 @@ export const AuthIdentityHeroPanel: React.FC = () => {
         <div className="identity-hero__pedestal-wrapper">
           <img
             src="/assets/images/pan-aadhaar-pedestal.jpg"
-            alt="TaxEdge PAN and Aadhaar Secure Verification Pedestal"
+            alt="Finsolz PAN and Aadhaar Secure Verification Pedestal"
             className="identity-hero__pedestal-img"
           />
 

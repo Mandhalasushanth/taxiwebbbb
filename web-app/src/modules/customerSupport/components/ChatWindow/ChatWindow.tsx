@@ -20,7 +20,7 @@ export const ChatWindow = ({
   isLoading = false,
   isSending = false,
   onSendMessage,
-  title = 'TaxEdge Support',
+  title = 'Finsolz Support',
   subtitle = 'Online · replies in a few minutes',
   placeholder = 'Type your message...',
 }: ChatWindowProps) => {

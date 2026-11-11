@@ -41,7 +41,7 @@ export const PaymentCheckoutPage: React.FC = () => {
   }, [application, stateApp])
 
   const appReference = application?.code || id || 'APP-2026-0001'
-  const appTitle = application?.title || 'TaxEdge Filing Service'
+  const appTitle = application?.title || 'Finsolz Filing Service'
   const applicantName = user?.fullName || 'Client'
 
   const handleSuccess = (result: PaymentResult) => {

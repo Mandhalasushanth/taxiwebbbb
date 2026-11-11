@@ -5,7 +5,7 @@ import { gstInput } from '@modules/gst/utils/gstInputFormatters'
 import { gstProfileService } from '@modules/gst/services/gstProfileService'
 import {
   FINANCIAL_YEAR_OPTIONS,
-  RETURN_TYPE_OPTIONS,
+  getReturnTypeOptions,
   type SelectOption,
 } from '@modules/gst/utils/gstPeriodOptions'
 import { GSTVerifiedBusinessCard } from './GSTVerifiedBusinessCard'
@@ -48,19 +48,11 @@ export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> =
   handleClearError,
   onBlurField,
 }) => {
-  const periodLabel =
-    frequency === 'Monthly'
-      ? 'Filing Month'
-      : frequency === 'Quarterly'
-        ? 'Filing Quarter'
-        : 'Filing Period'
+  const periodLabel = 'Filing Period / Return Period'
 
-  const periodPlaceholder =
-    frequency === 'Monthly'
-      ? 'Select filing month'
-      : frequency === 'Quarterly'
-        ? 'Select filing quarter'
-        : 'Select return period'
+  const periodPlaceholder = !frequency
+    ? 'Select filing frequency first'
+    : 'Select return period'
 
   return (
     <>
@@ -137,6 +129,7 @@ export const GSTPeriodSelectionFields: React.FC<GSTPeriodSelectionFieldsProps> =
 }
 
 export interface GSTTaxpayerReturnFieldsProps {
+  frequency?: string
   gstin: string
   setGstin: (g: string) => void
   returnType: string
@@ -148,6 +141,7 @@ export interface GSTTaxpayerReturnFieldsProps {
 }
 
 export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = ({
+  frequency,
   gstin,
   setGstin,
   returnType,
@@ -158,6 +152,7 @@ export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = (
   onBlurField,
 }) => {
   const profile = useMemo(() => gstProfileService.get(), [])
+  const returnTypeOptions = useMemo(() => getReturnTypeOptions(frequency), [frequency])
 
   return (
     <>
@@ -200,37 +195,35 @@ export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = (
         )}
       </div>
 
-      {/* Filing Return Type (shown for Regular Return or initial unselected state) */}
-      {filingType !== 'nil' && (
-        <div className="gst-filing-period__field">
-          <label htmlFor="gst-return-type" className="gst-filing-period__label">
-            Filing Return Type <span className="gst-filing-period__required">*</span>
-          </label>
-          <div className="gst-filing-period__select-wrap">
-            <select
-              id="gst-return-type"
-              className={`gst-filing-period__select ${!returnType ? 'gst-filing-period__select--placeholder' : ''}`}
-              value={returnType}
-              onChange={(e) => {
-                setReturnType(e.target.value)
-                handleClearError('returnType')
-              }}
-              onBlur={() => onBlurField?.('returnType')}
-            >
-              <option value="">Select return type</option>
-              {RETURN_TYPE_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown />
-          </div>
-          {errors.returnType && (
-            <span className="gst-filing-period__error-text">{errors.returnType}</span>
-          )}
+      {/* Filing Return Type */}
+      <div className="gst-filing-period__field">
+        <label htmlFor="gst-return-type" className="gst-filing-period__label">
+          Filing Return Type <span className="gst-filing-period__required">*</span>
+        </label>
+        <div className="gst-filing-period__select-wrap">
+          <select
+            id="gst-return-type"
+            className={`gst-filing-period__select ${!returnType ? 'gst-filing-period__select--placeholder' : ''}`}
+            value={returnType}
+            onChange={(e) => {
+              setReturnType(e.target.value)
+              handleClearError('returnType')
+            }}
+            onBlur={() => onBlurField?.('returnType')}
+          >
+            <option value="">Select return type</option>
+            {returnTypeOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+          <ChevronDown />
         </div>
-      )}
+        {errors.returnType && (
+          <span className="gst-filing-period__error-text">{errors.returnType}</span>
+        )}
+      </div>
     </>
   )
 }
@@ -251,6 +244,7 @@ export const GSTPeriodFields: React.FC<GSTPeriodFieldsProps> = (props) => {
         handleClearError={props.handleClearError}
       />
       <GSTTaxpayerReturnFields
+        frequency={props.frequency}
         gstin={props.gstin}
         setGstin={props.setGstin}
         returnType={props.returnType}
@@ -258,6 +252,7 @@ export const GSTPeriodFields: React.FC<GSTPeriodFieldsProps> = (props) => {
         filingType={props.filingType}
         errors={props.errors}
         handleClearError={props.handleClearError}
+        onBlurField={props.onBlurField}
       />
     </>
   )

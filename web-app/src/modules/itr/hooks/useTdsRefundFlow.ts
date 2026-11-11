@@ -86,10 +86,7 @@ export const useTdsRefundFlow = () => {
     currentStep >= 1 &&
       currentStep <= TOTAL_STEPS &&
       (currentStep > 1 ||
-        Boolean(draft) ||
         taxData.taxRegime !== null ||
-        profile.pan.trim() !== '' ||
-        profile.dob.trim() !== '' ||
         bankDetails.accountNumber.trim() !== '' ||
         bankDetails.ifsc.trim() !== '' ||
         businessDetails.legalName.trim() !== '' ||
@@ -167,6 +164,8 @@ export const useTdsRefundFlow = () => {
     taxData,
     setTaxData,
     isModalOpen: serviceDraft.isDraftModalOpen,
+    isReviewPrompt: serviceDraft.isReviewPrompt,
+    isSaving: serviceDraft.isSaving,
     openModal: serviceDraft.openDraftModal,
     handleSaveAndExit: serviceDraft.handleSaveAndExit,
     handleDiscardAndExit: serviceDraft.handleDiscardAndExit,

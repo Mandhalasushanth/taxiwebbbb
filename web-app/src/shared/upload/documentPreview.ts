@@ -161,7 +161,7 @@ export function getDocumentPreviewUrl(doc: ViewDocumentParams): string {
   <body>
     <header>
       <div class="header-left">
-        <span class="brand-badge">TaxEdge</span>
+        <span class="brand-badge">Finsolz</span>
         <div class="header-title">Registration Certificate (Form GST REG-06) · ${certGstin}</div>
       </div>
       <div class="header-actions">
@@ -193,12 +193,12 @@ export function getDocumentPreviewUrl(doc: ViewDocumentParams): string {
           <tr>
             <td class="col-idx">2.</td>
             <td class="col-label">Legal Name of Business</td>
-            <td class="col-val">TaxEdge Registered Enterprise</td>
+            <td class="col-val">Finsolz Registered Enterprise</td>
           </tr>
           <tr>
             <td class="col-idx">3.</td>
             <td class="col-label">Trade Name</td>
-            <td class="col-val">TaxEdge Solutions</td>
+            <td class="col-val">Finsolz Solutions</td>
           </tr>
           <tr>
             <td class="col-idx">4.</td>
@@ -248,7 +248,7 @@ export function getDocumentPreviewUrl(doc: ViewDocumentParams): string {
       </div>
     </main>
     <footer>
-      TaxEdge Compliance System · Official Registration Certificate Form GST REG-06
+      Finsolz Compliance System · Official Registration Certificate Form GST REG-06
     </footer>
   </body>
 </html>`
@@ -299,7 +299,7 @@ export function getDocumentPreviewUrl(doc: ViewDocumentParams): string {
   <body>
     <header>
       <div class="header-left">
-        <span class="brand-badge">TaxEdge</span>
+        <span class="brand-badge">Finsolz</span>
         <div>
           <div class="header-title">${docTitle}</div>
           <div class="header-sub">${docName}</div>
@@ -312,7 +312,7 @@ export function getDocumentPreviewUrl(doc: ViewDocumentParams): string {
     </header>
     <main>
       <div class="sheet">
-        <div class="watermark">TAXEDGE VERIFIED</div>
+        <div class="watermark">FINSOLZ VERIFIED</div>
         <div class="sheet-header">
           <div class="sheet-title">${docTitle}</div>
           <div class="sheet-sub">Official Tax &amp; Compliance Supporting Document</div>
@@ -349,7 +349,7 @@ export function getDocumentPreviewUrl(doc: ViewDocumentParams): string {
       </div>
     </main>
     <footer>
-      TaxEdge Compliance System · 256-bit Secure TLS Encryption
+      Finsolz Compliance System · 256-bit Secure TLS Encryption
     </footer>
   </body>
 </html>`

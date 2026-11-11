@@ -1,6 +1,6 @@
 import {
   isValidBankAccNumber,
-  isValidGstin,
+  validateGstin,
   validateAccountHolderName,
   validateAddress,
   validateBankName,
@@ -51,18 +51,15 @@ export const GST_PATTERNS = {
   DIN: /^(CBIC-|DIN-)?\d{4}[0-9A-Z]{16}$/,
 } as const
 
-/** GSTIN state codes run 01–38 (plus 97 Other Territory, 99 Centre Jurisdiction) */
-const isValidStateCode = (code: number): boolean => (code >= 1 && code <= 38) || code === 97 || code === 99
-
 export const gstFieldRules = {
   required: (label: string): Rule => (v) => (trimmed(v) ? undefined : `${label} is required`),
 
-  gstin: (v?: string): string | undefined => {
+  gstin: (v?: string, expectedPan?: string): string | undefined => {
     const value = trimmed(v).toUpperCase()
     if (!value) return 'GSTIN is required'
     if (value.length !== 15) return 'GSTIN must be exactly 15 characters'
-    if (!isValidGstin(value)) return 'Enter a valid GSTIN'
-    if (!isValidStateCode(Number(value.slice(0, 2)))) return 'GSTIN has an invalid state code'
+    const error = validateGstin(value, expectedPan ? { expectedPan } : undefined)
+    if (error) return error
     return undefined
   },
 

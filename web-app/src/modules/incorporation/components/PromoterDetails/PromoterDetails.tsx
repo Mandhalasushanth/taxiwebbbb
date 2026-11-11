@@ -60,18 +60,20 @@ export const PromoterDetails: React.FC = () => {
     const updated = directors.map((d: DirectorDetails) => (d.id === id ? { ...d, [field]: value } : d))
     updateFormData({ promoters: updated })
 
-    // Auto-clear or update error if field currently has an error
+    // Auto-validate dob live or update existing error
     setDirectorErrors((prev) => {
-      const cur = prev[id]
-      if (!cur || !cur[field]) return prev
-      const err = validateSingleDirectorField(field, value)
-      const copy = { ...cur }
-      if (err) {
-        copy[field] = err
-      } else {
-        delete copy[field]
+      const cur = prev[id] || {}
+      if (field === 'dob' || cur[field]) {
+        const err = validateSingleDirectorField(field, value)
+        const copy = { ...cur }
+        if (err) {
+          copy[field] = err
+        } else {
+          delete copy[field]
+        }
+        return { ...prev, [id]: copy }
       }
-      return { ...prev, [id]: copy }
+      return prev
     })
   }
 

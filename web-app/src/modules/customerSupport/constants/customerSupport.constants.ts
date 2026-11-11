@@ -111,7 +111,7 @@ export const SUPPORT_CONTACT_METHODS: SupportContactMethod[] = [
 ]
 
 export const SECURITY_NOTICE_CONTENT = {
-  title: 'TaxEdge Security & Privacy Guarantee',
+  title: 'Finsolz Security & Privacy Guarantee',
   body: 'Your data is encrypted end-to-end. Our staff will never request confidential banking OTPs, login passwords, or UPI PINs.',
 }
 

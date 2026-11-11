@@ -77,7 +77,9 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
   const [frequency, setFrequency] = useState(initialData?.frequency || '')
   const [returnPeriod, setReturnPeriod] = useState(initialData?.selectedMonth || '')
   const [gstin, setGstin] = useState(initialData?.gstin || '')
-  const [returnType, setReturnType] = useState<string>(initialData?.returnType || '')
+  const [returnType, setReturnType] = useState<string>(
+    initialData?.returnType === 'nil' ? '' : initialData?.returnType || ''
+  )
   const [filingType, setFilingType] = useState<'regular' | 'nil' | ''>(initialData?.filingType || '')
   const [calculationMethod, setCalculationMethod] = useState<'ca_calculate' | 'estimated_figures' | ''>(
     initialData?.calculationMethod || ''
@@ -98,9 +100,9 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
       case 'gstin':
         return gstFieldRules.gstin(gstin)
       case 'filingType':
-        return filingType ? undefined : 'Please select a return type'
+        return filingType ? undefined : 'Please select a filing type'
       case 'returnType':
-        return filingType === 'regular' && !returnType ? 'Please select a return type' : undefined
+        return !returnType ? 'Please select a return type' : undefined
       case 'calculationMethod':
         return filingType === 'regular' && !calculationMethod ? 'Please select a tax calculation method' : undefined
       case 'estimatedSales':
@@ -169,9 +171,8 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
   const periodData = useMemo<FilingPeriodData>(
     () => {
       const resolvedReturnType =
-        filingType === 'nil'
-          ? 'nil'
-          : (returnType && returnType !== 'nil' ? (returnType as FilingPeriodData['returnType']) : '')
+        (returnType && returnType !== 'nil' ? (returnType as FilingPeriodData['returnType']) : '') ||
+        (filingType === 'nil' && !returnType ? 'nil' : '')
       const resolvedCalcMethod =
         filingType === 'nil'
           ? ''
@@ -183,8 +184,8 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
         financialYear,
         frequency,
         selectedMonth: returnPeriod,
-        returnType: resolvedReturnType,
-        baseFee: getFilingBaseFee(filingType, resolvedReturnType),
+        returnType: (resolvedReturnType || returnType) as FilingPeriodData['returnType'],
+        baseFee: getFilingBaseFee(filingType, resolvedReturnType || returnType),
         filingType,
         calculationMethod: resolvedCalcMethod,
         estimatedSales: filingType === 'nil' ? '' : estimatedSales,
@@ -209,9 +210,12 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
     const gstinError = gstFieldRules.gstin(gstin)
     if (gstinError) newErrors.gstin = gstinError
     if (!filingType) {
-      newErrors.filingType = 'Please select a return type'
-    } else if (filingType === 'regular') {
-      if (!returnType) newErrors.returnType = 'Please select a return type'
+      newErrors.filingType = 'Please select a filing type'
+    }
+    if (!returnType) {
+      newErrors.returnType = 'Please select a return type'
+    }
+    if (filingType === 'regular') {
       if (!calculationMethod) newErrors.calculationMethod = 'Please select a tax calculation method'
       if (calculationMethod === 'estimated_figures') {
         const salesError = validateEstimatedAmount(
@@ -315,6 +319,7 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
         >
           <div className="gst-filing-period__row">
             <GSTTaxpayerReturnFields
+              frequency={frequency}
               gstin={gstin}
               setGstin={setGstin}
               returnType={returnType}
@@ -332,10 +337,7 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
               setFilingType(type)
               handleClearError('filingType')
               if (type === 'nil') {
-                setReturnType('nil')
                 setCalculationMethod('')
-              } else if (type === 'regular' && returnType === 'nil') {
-                setReturnType('')
               }
             }}
             error={errors.filingType}

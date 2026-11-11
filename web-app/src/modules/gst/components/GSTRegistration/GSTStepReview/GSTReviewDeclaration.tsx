@@ -27,7 +27,7 @@ export const GSTReviewDeclaration: FC<GSTReviewDeclarationProps> = ({
         />
         <span className="gst-review-declaration-text">
           I hereby declare that the information provided is true and accurate to the best of my
-          knowledge. I authorise <strong>TaxEdge Fin Solutions</strong> to file this application on
+          knowledge. I authorise <strong>Finsolz Fin Solutions</strong> to file this application on
           my behalf.
         </span>
       </label>

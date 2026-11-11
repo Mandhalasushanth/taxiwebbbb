@@ -18,6 +18,8 @@ import {
   validateGstin,
   isValidGstin,
   isValidGstinChecksum,
+  isValidGstStateCode,
+  validateGstinMatchesPan,
   validateDob,
   isValidDate,
   parseDate,
@@ -263,19 +265,54 @@ describe('Centralized Common Validation System', () => {
       expect(isValidGstin(validGstin.toLowerCase())).toBe(true) // auto uppercase
     })
 
-    it('rejects invalid state code', () => {
-      expect(validateGstin('95ABCPE1234F1Z7')).toContain('invalid state code')
+    it('rejects empty GSTIN', () => {
+      expect(validateGstin('')).toBe('Please enter GSTIN.')
+      expect(validateGstin(null)).toBe('Please enter GSTIN.')
     })
 
     it('rejects invalid length or format', () => {
-      expect(isValidGstin('29ABCPE1234F1Z')).toBe(false) // 14 chars
-      expect(isValidGstin('29ABCPE1234F1Z77')).toBe(false) // 16 chars
-      expect(isValidGstin('29ABCPE1234F1A7')).toBe(false) // 14th char not Z
+      expect(validateGstin('29ABCPE1234F1Z')).toBe('GSTIN must contain exactly 15 characters.') // 14 chars
+      expect(validateGstin('29ABCPE1234F1Z77')).toBe('GSTIN must contain exactly 15 characters.') // 16 chars
+      expect(isValidGstin('29ABCPE1234F1Z')).toBe(false)
+      expect(isValidGstin('29ABCPE1234F1Z77')).toBe(false)
+    })
+
+    it('rejects special characters and spaces', () => {
+      expect(isValidGstin('29ABCPE1234F1 Z')).toBe(false)
+      expect(isValidGstin('29ABCPE1234F1#7')).toBe(false)
+    })
+
+    it('rejects invalid state code including 88 and 95', () => {
+      expect(isValidGstStateCode('88')).toBe(false)
+      expect(isValidGstStateCode('95')).toBe(false)
+      expect(isValidGstStateCode('29')).toBe(true)
+      expect(validateGstin('88AAAAA0000A1Z5')).toContain('invalid state code')
+      expect(validateGstin('95ABCPE1234F1Z7')).toContain('invalid state code')
+    })
+
+    it('rejects invalid PAN structure within GSTIN', () => {
+      expect(validateGstin('29123451234F1Z7')).toBe('Invalid PAN format within GSTIN.')
+    })
+
+    it('rejects invalid entity code (13th char)', () => {
+      expect(validateGstin('29ABCPE1234F0Z7')).toBe('Invalid GSTIN entity code.')
+    })
+
+    it('rejects 14th character that is not Z', () => {
+      expect(validateGstin('29ABCPE1234F1A7')).toBe('The 14th character of GSTIN must be Z.')
+      expect(isValidGstin('29ABCPE1234F1A7')).toBe(false)
     })
 
     it('validates state code match when requested', () => {
       expect(validateGstin('29ABCPE1234F1Z7', { expectedStateCode: '29' })).toBeNull()
       expect(validateGstin('29ABCPE1234F1Z7', { expectedStateCode: '27' })).toContain('does not match')
+    })
+
+    it('validates PAN match against entered PAN', () => {
+      expect(validateGstin('29ABCPE1234F1Z7', { expectedPan: 'ABCPE1234F' })).toBeNull()
+      expect(validateGstin('29ABCPE1234F1Z7', { expectedPan: 'XYZPE1234F' })).toBe('GSTIN does not match the entered PAN number.')
+      expect(validateGstinMatchesPan('29ABCPE1234F1Z7', 'ABCPE1234F')).toBeNull()
+      expect(validateGstinMatchesPan('29ABCPE1234F1Z7', 'XYZPE1234F')).toBe('GSTIN does not match the entered PAN number.')
     })
 
     it('validates GSTIN checksum algorithm when strictChecksum enabled', () => {

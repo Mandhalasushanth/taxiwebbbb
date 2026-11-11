@@ -1,6 +1,5 @@
 import { VALIDATION_RULES } from './validationRules'
 import { VALIDATION_MESSAGES } from './validationMessages'
-import { isValidPan } from './panValidator'
 
 export const GST_STATE_CODES: Record<string, string> = {
   '01': 'Jammu and Kashmir',
@@ -92,7 +91,19 @@ export interface ValidateGstinOptions {
   label?: string
   required?: boolean
   expectedStateCode?: string
+  expectedPan?: string
   strictChecksum?: boolean
+}
+
+export const validateGstinMatchesPan = (gstin: string, pan: string): string | null => {
+  const extractedPan = extractPanFromGstin(gstin)
+  if (!extractedPan) return 'GSTIN must contain exactly 15 characters.'
+  const normalizedPan = (pan || '').trim().toUpperCase()
+  if (!normalizedPan) return null
+  if (extractedPan !== normalizedPan) {
+    return 'GSTIN does not match the entered PAN number.'
+  }
+  return null
 }
 
 export const isValidGstin = (gstin: string, options?: { strictChecksum?: boolean }): boolean => {
@@ -108,38 +119,52 @@ export const validateGstin = (
   const raw = String(gstin ?? '')
 
   if (!raw.trim()) {
-    return required ? (opts.label ? `${opts.label} is required` : VALIDATION_MESSAGES.required) : null
+    return required ? (opts.label ? `${opts.label} is required` : 'Please enter GSTIN.') : null
   }
 
-  // Reject internal spaces
-  if (/\s/.test(raw)) {
+  // Reject internal spaces or special characters
+  const trimmedVal = raw.trim()
+  if (/\s/.test(trimmedVal) || /[^A-Za-z0-9]/.test(trimmedVal)) {
     return VALIDATION_MESSAGES.gstin
   }
 
-  const upper = raw.trim().toUpperCase()
+  const upper = trimmedVal.toUpperCase()
 
   if (upper.length !== VALIDATION_RULES.gstin.minLength) {
-    return VALIDATION_MESSAGES.gstin
+    return 'GSTIN must contain exactly 15 characters.'
   }
 
-  // Match 15-char structure: 2 digits, 5 letters, 4 digits, 1 letter, 1 char, Z, 1 char
-  if (!VALIDATION_RULES.gstin.pattern.test(upper)) {
-    return VALIDATION_MESSAGES.gstin
-  }
-
-  // Validate state code
+  // 1. First 2 characters must be a valid GST state/UT code
   const stateCode = upper.slice(0, 2)
-  if (!isValidGstStateCode(stateCode)) {
-    return 'GSTIN has an invalid state code'
+  if (!/^\d{2}$/.test(stateCode) || !isValidGstStateCode(stateCode)) {
+    return 'GSTIN has an invalid state code. Please enter a valid GST state code.'
   }
 
-  // Validate embedded PAN
+  // 2. Characters 3–12 must follow the PAN format: 5 letters, 4 digits, 1 letter
   const embeddedPan = upper.slice(2, 12)
-  if (!isValidPan(embeddedPan)) {
-    return 'GSTIN contains an invalid PAN'
+  if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(embeddedPan)) {
+    return 'Invalid PAN format within GSTIN.'
   }
 
-  // Optional: check expected state code
+  // 3. PAN matching if expectedPan is supplied
+  if (opts.expectedPan) {
+    const normExpectedPan = opts.expectedPan.trim().toUpperCase()
+    if (normExpectedPan && embeddedPan !== normExpectedPan) {
+      return 'GSTIN does not match the entered PAN number.'
+    }
+  }
+
+  // 4. 13th character must be an alphanumeric entity code (1–9 or A–Z)
+  if (!/^[1-9A-Z]$/.test(upper.charAt(12))) {
+    return 'Invalid GSTIN entity code.'
+  }
+
+  // 5. 14th character must always be 'Z'
+  if (upper.charAt(13) !== 'Z') {
+    return 'The 14th character of GSTIN must be Z.'
+  }
+
+  // 6. Optional: check expected state code
   if (opts.expectedStateCode) {
     const expected = opts.expectedStateCode.padStart(2, '0')
     if (stateCode !== expected) {
@@ -147,7 +172,7 @@ export const validateGstin = (
     }
   }
 
-  // Optional strict checksum validation
+  // 7. Optional strict checksum validation
   if (opts.strictChecksum && !isValidGstinChecksum(upper)) {
     return 'Invalid GSTIN checksum'
   }

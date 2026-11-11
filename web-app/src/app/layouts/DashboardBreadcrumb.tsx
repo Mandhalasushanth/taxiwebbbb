@@ -26,6 +26,8 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
   ) {
     return (
       <nav className="shell__breadcrumb" aria-label="Breadcrumb">
+        <Link to={routePaths.dashboard}>Services</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <Link to={routePaths.gst.root}>GST</Link>
         <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <span className="shell__breadcrumb-current">Filing</span>
@@ -36,6 +38,8 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
   if (path === routePaths.gst.registration || path.startsWith('/gst/registration')) {
     return (
       <nav className="shell__breadcrumb" aria-label="Breadcrumb">
+        <Link to={routePaths.dashboard}>Services</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <Link to={routePaths.gst.root}>GST</Link>
         <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <span className="shell__breadcrumb-current">Registration</span>
@@ -46,6 +50,8 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
   if (path === routePaths.gst.returns) {
     return (
       <nav className="shell__breadcrumb" aria-label="Breadcrumb">
+        <Link to={routePaths.dashboard}>Services</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <Link to={routePaths.gst.root}>GST</Link>
         <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <span className="shell__breadcrumb-current">Returns</span>
@@ -56,6 +62,8 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
   if (path.startsWith('/gst/') && path.endsWith('/track')) {
     return (
       <nav className="shell__breadcrumb" aria-label="Breadcrumb">
+        <Link to={routePaths.dashboard}>Services</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <Link to={routePaths.gst.root}>GST</Link>
         <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <span className="shell__breadcrumb-current">Track Application</span>
@@ -66,6 +74,8 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
   if (path === routePaths.gst.amendment) {
     return (
       <nav className="shell__breadcrumb" aria-label="Breadcrumb">
+        <Link to={routePaths.dashboard}>Services</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <Link to={routePaths.gst.root}>GST</Link>
         <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <span className="shell__breadcrumb-current">Amendment</span>
@@ -76,6 +86,8 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
   if (path === routePaths.gst.certificate) {
     return (
       <nav className="shell__breadcrumb" aria-label="Breadcrumb">
+        <Link to={routePaths.dashboard}>Services</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <Link to={routePaths.gst.root}>GST</Link>
         <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <span className="shell__breadcrumb-current">Certificate</span>
@@ -91,6 +103,8 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
     const isSubmitted = path === routePaths.gst.complianceSubmitted || location.search.includes('submitted')
     return (
       <nav className="shell__breadcrumb" aria-label="Breadcrumb">
+        <Link to={routePaths.dashboard}>Services</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <Link to={routePaths.gst.root}>GST</Link>
         <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         {isSubmitted ? (
@@ -114,6 +128,8 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
     const isSubmitted = path === routePaths.gst.cancellationSubmitted || location.search.includes('submitted')
     return (
       <nav className="shell__breadcrumb" aria-label="Breadcrumb">
+        <Link to={routePaths.dashboard}>Services</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <Link to={routePaths.gst.root}>GST</Link>
         <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         {isSubmitted ? (
@@ -132,6 +148,8 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
   if (path === routePaths.gst.root) {
     return (
       <nav className="shell__breadcrumb" aria-label="Breadcrumb">
+        <Link to={routePaths.dashboard}>Services</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <span className="shell__breadcrumb-current">GST</span>
       </nav>
     )
@@ -160,7 +178,9 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
 
     return (
       <nav className="shell__breadcrumb" aria-label="Breadcrumb">
-        <Link to={routePaths.itr.root}>ITR &amp; TDS</Link>
+        <Link to={routePaths.dashboard}>Services</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
+        <Link to={routePaths.itr.root}>ITR</Link>
         <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
         <span className="shell__breadcrumb-current">{itrLabel}</span>
       </nav>
@@ -170,7 +190,9 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
   if (path === routePaths.itr.root) {
     return (
       <nav className="shell__breadcrumb" aria-label="Breadcrumb">
-        <span className="shell__breadcrumb-current">ITR &amp; TDS</span>
+        <Link to={routePaths.dashboard}>Services</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
+        <span className="shell__breadcrumb-current">ITR</span>
       </nav>
     )
   }

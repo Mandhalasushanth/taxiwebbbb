@@ -41,28 +41,27 @@ export const TdsRefundProgressTracker: React.FC<TdsRefundProgressTrackerProps> =
         : 'tds-stepper-line'
 
       return (
-        <React.Fragment key={stage.num}>
-          <div className="tds-stepper-step-item">
-            <div
-              className={dotClass}
-              data-testid={`tds-step-${stage.num}`}
-              title={`Step ${stage.num}: ${stage.label}`}
-            >
-              {isCompleted ? <TdsIcons.Checkmark /> : stage.num}
-            </div>
-            <span
-              className={`tds-stepper-label ${isActive ? 'tds-stepper-label--active' : ''}`}
-            >
-              {stage.label}
-            </span>
-          </div>
+        <div key={stage.num} className="tds-stepper-step-item">
           {!isLast && (
             <div
               className={lineClass}
               data-testid={`tds-line-${stage.num}`}
+              aria-hidden="true"
             />
           )}
-        </React.Fragment>
+          <div
+            className={dotClass}
+            data-testid={`tds-step-${stage.num}`}
+            title={`Step ${stage.num}: ${stage.label}`}
+          >
+            {isCompleted ? <TdsIcons.Checkmark /> : stage.num}
+          </div>
+          <span
+            className={`tds-stepper-label ${isActive ? 'tds-stepper-label--active' : ''}`}
+          >
+            {stage.label}
+          </span>
+        </div>
       )
     } catch {
       return null
@@ -129,7 +128,7 @@ export const TdsRefundOverview: React.FC<TdsRefundOverviewProps> = ({
         </div>
       </section>
 
-      {/* 2. Why choose TaxEdge */}
+      {/* 2. Why choose Finsolz */}
       <section className="tds-plain-section" aria-labelledby="tds-features-title">
         <h2 id="tds-features-title" className="tds-plain-section-title">{COPY.featuresTitle}</h2>
         <div className="tds-features-grid">{TDS_OVERVIEW_FEATURES.map(renderFeatureCard)}</div>

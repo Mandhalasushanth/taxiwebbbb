@@ -56,7 +56,7 @@ export const GSTSuccessView: React.FC<GSTSuccessViewProps> = ({
           id: `app-gstc-${Date.now()}`,
           code: refId,
           title: `GST Compliance — ${requestType || 'Notice Response'}`,
-          meta: `${gstin || 'TaxEdge Customer'} · Active`,
+          meta: `${gstin || 'Finsolz Customer'} · Active`,
           statusLabel: 'Submitted',
           statusTone: 'info',
           progress: 25,
@@ -227,7 +227,7 @@ export const GSTSuccessView: React.FC<GSTSuccessViewProps> = ({
           </li>
           <li>
             <span className="gst-bullet-dot" />
-            <span>You will receive an update in your TaxEdge Notifications and WhatsApp within 24 hours.</span>
+            <span>You will receive an update in your Finsolz Notifications and WhatsApp within 24 hours.</span>
           </li>
         </ul>
       </div>

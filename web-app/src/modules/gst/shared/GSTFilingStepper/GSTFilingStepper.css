@@ -5,34 +5,31 @@
 
 .gst-filing-stepper {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
-  max-width: 600px;
+  max-width: 480px;
   margin: 0 auto 28px auto;
   padding: 0 0.5rem;
   box-sizing: border-box;
+  position: relative;
 }
 
 .gst-filing-stepper__item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 2;
+  flex: 1 1 0px;
+  min-width: 0;
+  text-align: center;
+  box-sizing: border-box;
   user-select: none;
 }
 
-.gst-filing-stepper__item--clickable,
-.gst-filing-stepper__item.clickable {
-  cursor: pointer;
-}
-
-.gst-filing-stepper__item--clickable:hover .gst-filing-stepper__label--completed,
-.gst-filing-stepper__item.clickable:hover .gst-filing-stepper__label--completed {
-  color: var(--primary-navy);
+.gst-filing-stepper__item {
+  cursor: default;
+  pointer-events: none;
 }
 
 .gst-filing-stepper__badge {
@@ -76,11 +73,14 @@
 }
 
 .gst-filing-stepper__label {
+  margin-top: 0.5rem;
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--secondary-text);
   white-space: nowrap;
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
 .gst-filing-stepper__label--completed {
@@ -98,14 +98,17 @@
 }
 
 .gst-filing-stepper__line {
-  flex: 1;
-  min-width: 24px;
+  position: absolute;
+  top: 20px;
+  left: calc(50% + 28px);
+  right: calc(-50% + 28px);
   height: 2.5px;
+  transform: translateY(-50%);
   background-color: var(--border);
-  margin: 0 0.75rem;
-  margin-bottom: 1.45rem; /* Aligns with circle centers */
+  border-radius: 2px;
   transition: background-color 0.3s ease;
   z-index: 1;
+  pointer-events: none;
 }
 
 .gst-filing-stepper__line--completed {

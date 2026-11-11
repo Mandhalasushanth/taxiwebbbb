@@ -162,6 +162,9 @@ export const IncorporationProvider: React.FC<{ children: React.ReactNode }> = ({
     stepLabel: INCORPORATION_STEP_LABELS[currentStep - 1] || INCORPORATION_SERVICE_TITLE,
     resumeRoute: isFormStep ? location.pathname : routePaths.incorporation.companyDetails,
     exitRoute: routePaths.dashboard,
+    isReview: location.pathname === routePaths.incorporation.reviewApplication,
+    reviewRoute: routePaths.incorporation.reviewApplication,
+    module: 'incorporation',
     formData: { applicationData: formData, stepRoute: location.pathname },
     hasEnteredData,
     // Off the wizard form steps (catalog landing, success, tracking) or submitted: nothing to save or block
@@ -192,10 +195,30 @@ export const IncorporationProvider: React.FC<{ children: React.ReactNode }> = ({
   )
 }
 
+const FALLBACK_INCORPORATION_CONTEXT: IncorporationContextValue = {
+  formData: DEFAULT_INCORPORATION_DATA,
+  updateFormData: () => {},
+  resetFlow: () => {},
+  draft: {
+    isOpen: false,
+    openDraftModal: () => {},
+    closeDraftModal: () => {},
+    saveDraftAndExit: async () => {},
+    discardAndExit: () => {},
+    clearDraft: () => {},
+    hasSavedDraft: false,
+    lastSavedText: '',
+  } as unknown as ServiceDraft,
+  reviewEdit: {
+    isEditMode: false,
+    startEdit: () => {},
+    finishEdit: () => {},
+    editStep: () => {},
+  } as unknown as ReviewEdit,
+  goToStep: () => {},
+}
+
 export const useIncorporationFlow = () => {
   const context = useContext(IncorporationContext)
-  if (!context) {
-    throw new Error('useIncorporationFlow must be used within an IncorporationProvider')
-  }
-  return context
+  return context || FALLBACK_INCORPORATION_CONTEXT
 }

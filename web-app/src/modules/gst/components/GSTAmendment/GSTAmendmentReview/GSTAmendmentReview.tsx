@@ -78,7 +78,7 @@ export const GSTAmendmentReview: React.FC<GSTAmendmentReviewProps> = ({
   fileSizeText = '0.1 MB',
   file = null,
   isSubmitting = false,
-  onBack,
+  onBack: _onBack,
   onSubmit,
   onSaveDraft,
   onEdit,
@@ -241,7 +241,7 @@ export const GSTAmendmentReview: React.FC<GSTAmendmentReviewProps> = ({
             className="gst-amend-declaration-text"
             onClick={(e) => e.stopPropagation()}
           >
-            I hereby declare that the information provided above is true and correct to the best of my knowledge, and I authorise TaxEdge to submit this amendment request on my behalf.
+            I hereby declare that the information provided above is true and correct to the best of my knowledge, and I authorise Finsolz to submit this amendment request on my behalf.
           </label>
         </div>
 
@@ -253,12 +253,7 @@ export const GSTAmendmentReview: React.FC<GSTAmendmentReviewProps> = ({
 
         {/* Unified Bottom Action Bar matching application desktop layout */}
         <div className="gst-amend-review-actions-bar">
-          <button type="button" onClick={onBack} className="gst-amend-review-back-pill">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-            Back
-          </button>
+          {/* Back button hidden on Review page */}
 
           <div className="gst-amend-review-actions-right">
             {onSaveDraft && <SaveDraftButton onClick={onSaveDraft} />}

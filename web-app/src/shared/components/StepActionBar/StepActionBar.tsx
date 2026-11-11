@@ -1,5 +1,5 @@
 import React from 'react'
-import { UPDATE_AND_REVIEW_LABEL } from '@shared/edit'
+import { UPDATE_AND_REVIEW_LABEL, getIsReviewEditMode } from '@shared/edit'
 import { SAVE_DRAFT_LABEL } from '@shared/saveDraft'
 import { resetScrollToTop } from '../ScrollToTop'
 import './StepActionBar.css'
@@ -26,6 +26,7 @@ export interface StepActionBarProps {
   nextAriaLabel?: string
   saveDraftTestId?: string
   extraActions?: React.ReactNode
+  isReview?: boolean
   className?: string
 }
 
@@ -50,6 +51,7 @@ export const StepActionBar: React.FC<StepActionBarProps> = ({
   nextAriaLabel,
   saveDraftTestId = 'step-save-draft-btn',
   extraActions,
+  isReview = false,
   className = '',
 }) => {
   const isContinueVisible = showNext
@@ -117,10 +119,12 @@ export const StepActionBar: React.FC<StepActionBarProps> = ({
     }
   }
 
+  const activeEditMode = Boolean(isEditMode || getIsReviewEditMode())
+
   // 'Continue' by default; screens opened with "Edit" from a review page pass 'Update & Review'
   const displayContinueLabel = isSubmitting
     ? 'Processing...'
-    : isEditMode
+    : activeEditMode
       ? UPDATE_AND_REVIEW_LABEL
       : nextLabel || 'Continue'
   const displayBackLabel = backLabel || 'Back'
@@ -129,7 +133,7 @@ export const StepActionBar: React.FC<StepActionBarProps> = ({
   return (
     <div className={`step-action-bar ${className}`} data-testid="step-action-bar">
       <div className="step-action-bar__left">
-        {showBack && (
+        {showBack && !isReview && !activeEditMode && (
           <button
             type="button"
             className="step-action-bar__btn step-action-bar__btn--back"

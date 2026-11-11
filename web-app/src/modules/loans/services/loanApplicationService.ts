@@ -155,7 +155,7 @@ export const loanApplicationService = {
       tenureMonths: formattedTenure,
       equipment: equipmentVal,
       disbursementBank: disbursementBankVal,
-      loanAgent: 'TaxEdge Loan Agent',
+      loanAgent: 'Finsolz Loan Agent',
       status: 'submitted',
       statusLabel: 'Documents Received',
       createdAt: now.toISOString(),

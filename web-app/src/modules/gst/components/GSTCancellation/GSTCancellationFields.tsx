@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 import { FileText, Calculator } from 'lucide-react'
 import { GSTFormSection } from '@modules/gst/shared/GSTFormSection'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
+import { getTodayIso } from '@shared/utils/dateUtils'
 import { CaretInput } from '@shared/components'
 
 interface GSTCancellationFieldsProps {
@@ -102,7 +103,7 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
             </label>
             <div className="gst-canc-date-wrapper" onClick={handleCalendarClick}>
               <CaretInput
-                id="gst-canc-date-input" ref={dateInputRef} type="date" value={cancellationDate}
+                id="gst-canc-date-input" ref={dateInputRef} type="date" value={cancellationDate} max={getTodayIso()}
                 onChange={(e) => { setCancellationDate(e.target.value); clearError('cancellationDate') }}
                 onBlur={() => onBlur?.('cancellationDate')}
                 className={`gst-canc-date-input ${errors.cancellationDate ? 'has-error' : ''}`}
@@ -177,3 +178,4 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
 }
 
 export default GSTCancellationFields
+

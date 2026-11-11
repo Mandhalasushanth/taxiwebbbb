@@ -2,6 +2,7 @@ import { CircleUserRound } from 'lucide-react'
 import { gstInput, GST_MAX_LENGTH } from '@modules/gst/utils/gstInputFormatters'
 import { GSTFormSection } from '@modules/gst/shared/GSTFormSection'
 import { GSTDateField, GSTTextField } from '@modules/gst/shared/GSTFormFields'
+import { getMaxAdultDobIso } from '@shared/utils/dateUtils'
 import type { GstBusinessFormData } from '../GSTStepBusiness/GSTStepBusiness'
 
 type SignatoryField = 'signatoryName' | 'signatoryPan' | 'dob' | 'designation' | 'signatoryMobile' | 'signatoryEmail'
@@ -23,9 +24,6 @@ const SIGNATORY_FIELDS: readonly SignatoryField[] = [
   'signatoryEmail',
 ]
 
-/** Latest selectable date of birth is today; the validator enforces the minimum age */
-const todayIso = () => new Date().toISOString().slice(0, 10)
-
 export const GSTAuthorisedSignatory = ({
   data,
   onChange,
@@ -36,6 +34,9 @@ export const GSTAuthorisedSignatory = ({
   const update = <K extends SignatoryField>(field: K, value: GstBusinessFormData[K]) => {
     onChange(field, value)
     if (field === 'designation' && typeof value === 'string' && /\d/.test(value)) {
+      return
+    }
+    if (field === 'dob') {
       return
     }
     onClearError?.(field)
@@ -82,7 +83,7 @@ export const GSTAuthorisedSignatory = ({
         <GSTDateField
           id="dob"
           label="Date of Birth"
-          max={todayIso()}
+          max={getMaxAdultDobIso(18)}
           value={data.dob}
           error={errors.dob}
           onValueChange={(v) => update('dob', v)}

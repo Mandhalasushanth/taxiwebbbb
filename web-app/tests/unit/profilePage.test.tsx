@@ -92,17 +92,17 @@ describe('Profile page security & support popups', () => {
     expect(screen.queryByRole('heading', { name: 'Terms & Conditions' })).toBeNull()
   })
 
-  it('clicking "Rate TaxEdge" in SUPPORT shows the popup with title "Rate TaxEdge"', () => {
+  it('clicking "Rate Finsolz" in SUPPORT shows the popup with title "Rate Finsolz"', () => {
     render(
       <MemoryRouter>
         <Profile />
       </MemoryRouter>
     )
 
-    const item = screen.getByText('Rate TaxEdge')
+    const item = screen.getByText('Rate Finsolz')
     fireEvent.click(item)
 
-    expect(screen.getByRole('heading', { name: 'Rate TaxEdge' })).toBeDefined()
+    expect(screen.getByRole('heading', { name: 'Rate Finsolz' })).toBeDefined()
     expect(screen.getByText("This section isn't available yet.")).toBeDefined()
   })
 

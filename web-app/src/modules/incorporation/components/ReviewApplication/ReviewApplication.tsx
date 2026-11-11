@@ -243,7 +243,8 @@ export const ReviewApplication: React.FC = () => {
 
       {/* Footer Navigation */}
       <StepActionBar
-        onBack={() => navigate(routePaths.incorporation.documentsKyc)}
+        showBack={false}
+        isReview={true}
         onNext={handleSubmitApplication}
         onSaveDraft={draft.openDraftModal}
         nextLabel="Submit Application"

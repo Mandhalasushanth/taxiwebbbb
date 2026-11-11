@@ -107,7 +107,7 @@ export const KYC_COPY = {
   sameAddressQuestion: 'Permanent Address same as Current Address?',
   consentTitle: 'Consent & Authorization',
   consentText:
-    'I hereby authorize TaxEdge and its RBI-regulated lending partners to verify my KYC details (PAN & Aadhaar) and fetch my credit records for loan evaluation in compliance with RBI norms and the Digital Personal Data Protection (DPDP) Act.',
+    'I hereby authorize Finsolz and its RBI-regulated lending partners to verify my KYC details (PAN & Aadhaar) and fetch my credit records for loan evaluation in compliance with RBI norms and the Digital Personal Data Protection (DPDP) Act.',
   securityNote: '256-bit encryption • Strictly confidential • Never shared without consent',
 } as const
 
@@ -180,5 +180,5 @@ export const HOME_LOAN_SUCCESS = {
   serviceTitle: 'Home Loan Application',
   successTitle: 'Home Loan Submitted',
   successMessage:
-    'Your Home Loan application has been successfully received. A TaxEdge Loan Advisor will review your documents and contact you shortly.',
+    'Your Home Loan application has been successfully received. A Finsolz Loan Advisor will review your documents and contact you shortly.',
 } as const

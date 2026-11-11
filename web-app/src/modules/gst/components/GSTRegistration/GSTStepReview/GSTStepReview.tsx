@@ -19,7 +19,7 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
   businessData,
   documents = INITIAL_DOCUMENTS,
   onEdit,
-  onBack,
+  onBack: _onBack,
   onProceed,
   onSaveDraft,
 }) => {
@@ -152,7 +152,8 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
 
       {/* 6. Navigation Footer Actions */}
       <StepActionBar
-        onBack={onBack}
+        showBack={false}
+        isReview={true}
         onSaveDraft={onSaveDraft}
         onNext={handleProceedClick}
         nextLabel="Submit Application"

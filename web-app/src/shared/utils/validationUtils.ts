@@ -1,5 +1,5 @@
 /**
- * TaxEdge Shared Validation Utilities
+ * Finsolz Shared Validation Utilities
  * Thin adapter layer delegating to the centralized validation system in @shared/validations.
  * Maintains complete backwards compatibility for existing imports across the application.
  */
@@ -37,6 +37,10 @@ import {
   isValidAadhaar as centralIsValidAadhaar,
   validateGstin as centralValidateGstin,
   isValidGstin as centralIsValidGstin,
+  validateGstinMatchesPan as centralValidateGstinMatchesPan,
+  isValidGstStateCode,
+  isValidGstinChecksum,
+  computeGstinChecksum,
   validateDob as centralValidateDob,
   validateRequired as centralValidateRequired,
   validateBusinessLegalName,
@@ -172,8 +176,23 @@ export const validateAccountMatch = (
 export const isValidGstin = (value: string): boolean =>
   centralIsValidGstin(value)
 
-export const validateGstin = (gstin: string, label = 'GSTIN', expectedStateCode?: string): string | null =>
-  centralValidateGstin(gstin, { label, expectedStateCode })
+export const validateGstin = (
+  gstin: string,
+  optionsOrLabel: string | import('../validations/gstinValidator').ValidateGstinOptions = 'GSTIN',
+  expectedStateCode?: string,
+  expectedPan?: string
+): string | null => {
+  const opts =
+    typeof optionsOrLabel === 'string'
+      ? { label: optionsOrLabel, expectedStateCode, expectedPan }
+      : optionsOrLabel
+  return centralValidateGstin(gstin, opts)
+}
+
+export const validateGstinMatchesPan = (gstin: string, pan: string): string | null =>
+  centralValidateGstinMatchesPan(gstin, pan)
+
+export { isValidGstStateCode, isValidGstinChecksum, computeGstinChecksum }
 
 /* -------------------------------- NAME ----------------------------------- */
 export const isValidName = (name: string): boolean =>
@@ -216,6 +235,11 @@ export const validateCity = (
   centralValidateCity(city, typeof optionsOrLabel === 'string' ? { label: optionsOrLabel } : optionsOrLabel)
 
 /* --------------------------- DATE / SIGNATORY ---------------------------- */
+export const validateDob = (
+  value: string | Date | undefined | null,
+  options?: import('../validations/dateValidator').ValidateDobOptions | string
+): string | null => centralValidateDob(value, options)
+
 export const validateDobSignatory = (dob: string): string | null => {
   return centralValidateDob(dob, {
     label: 'Date of birth',

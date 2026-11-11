@@ -7,6 +7,7 @@ import { gstFieldRules as rules } from '@modules/gst/validation/gstFieldRules'
 import { GSTProofUpload } from '@modules/gst/shared/GSTProofUpload'
 import { useAmendmentFileState } from '../hooks/useAmendmentFileState'
 import { GSTAmendmentActionBar } from './GSTAmendmentActionBar'
+import { getMaxAdultDobIso } from '@shared/utils/dateUtils'
 import './GSTSignatoriesForm.css'
 import './GSTAmendmentDetailForm.css'
 
@@ -273,14 +274,13 @@ export const GSTSignatoriesForm: React.FC<GSTSignatoriesFormProps> = ({
                 ref={dateRef}
                 id="sig-dob-input"
                 type="date"
+                max={getMaxAdultDobIso(18)}
                 value={dob}
                 onChange={(e) => {
                   const val = e.target.value
                   setDob(val)
-                  if (errors.dob) {
-                    const err = rules.signatoryDob(val)
-                    setErrors((prev) => ({ ...prev, dob: err || '' }))
-                  }
+                  const err = rules.signatoryDob(val)
+                  setErrors((prev) => ({ ...prev, dob: err || '' }))
                 }}
                 onBlur={() => {
                   const err = rules.signatoryDob(dob)

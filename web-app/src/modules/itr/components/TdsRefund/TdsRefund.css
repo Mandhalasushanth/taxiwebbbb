@@ -52,28 +52,29 @@
 
 .tds-stepper-track {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: space-between;
   background: transparent;
   border: none;
   box-shadow: none;
   padding: 0 0.5rem;
-  width: auto;
-  max-width: 100%;
+  width: 100%;
+  max-width: 420px;
   margin: 0 auto;
   box-sizing: border-box;
+  position: relative;
 }
 
 .tds-stepper-step-item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 2;
+  flex: 1 1 0px;
+  min-width: 0;
+  text-align: center;
+  box-sizing: border-box;
   user-select: none;
-  min-width: 80px;
 }
 
 .tds-stepper-dot {
@@ -88,6 +89,8 @@
   flex-shrink: 0;
   transition: all 0.3s ease;
   user-select: none;
+  position: relative;
+  z-index: 2;
 }
 
 .tds-stepper-dot--active {
@@ -113,15 +116,18 @@
 }
 
 .tds-stepper-line {
-  flex: 0 0 72px;
-  width: 72px;
-  min-width: 48px;
-  max-width: 80px;
+  position: absolute;
+  top: 20px;
+  left: calc(50% + 28px);
+  right: calc(-50% + 28px);
   height: 2.5px;
-  background-color: var(--grey-300);
-  margin: 0 0.75rem 1.45rem 0.75rem;
+  transform: translateY(-50%);
+  background-color: var(--border);
+  border-radius: 2px;
   transition: background-color 0.3s ease;
   z-index: 1;
+  pointer-events: none;
+  margin: 0;
 }
 
 .tds-stepper-line--completed {

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import { setReviewEditNavigationActive } from '@shared/edit'
 
 export interface ScrollToSectionOptions {
   offset?: number
@@ -138,7 +139,14 @@ export const useGSTReviewEditNavigation = (
       }
 
       if (onNavigate) {
-        onNavigate()
+        setReviewEditNavigationActive(true)
+        try {
+          onNavigate()
+        } finally {
+          setTimeout(() => {
+            setReviewEditNavigationActive(false)
+          }, 150)
+        }
       }
 
       if (!targetAnchor || targetAnchor === 'business' || targetAnchor === 'documents' || targetAnchor === 'top') {

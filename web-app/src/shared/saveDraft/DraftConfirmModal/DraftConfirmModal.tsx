@@ -5,8 +5,12 @@ export interface DraftConfirmModalProps {
   isOpen: boolean
   serviceTitle: string
   onSaveAndExit: () => void
-  onDiscardAndExit: () => void
+  onDiscardAndExit?: () => void
   onKeepEditing: () => void
+  /** When true, renders the Review page confirmation dialog ("Do you want to save your draft?") */
+  isReviewPrompt?: boolean
+  /** Disables save button during in-flight save to prevent duplicate submissions */
+  isSaving?: boolean
 }
 
 const BookmarkIcon = () => (
@@ -29,11 +33,12 @@ export const DraftConfirmModal = ({
   onSaveAndExit,
   onDiscardAndExit,
   onKeepEditing,
+  isSaving = false,
 }: DraftConfirmModalProps) => {
   if (!isOpen) return null
 
   const handleBackdropClick = (e: MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
+    if (e.target === e.currentTarget && !isSaving) {
       onKeepEditing()
     }
   }
@@ -51,9 +56,9 @@ export const DraftConfirmModal = ({
           Save Application Progress?
         </h2>
 
-        {/* Subtitle */}
+        {/* Subtitle / Message */}
         <p className="draft-modal__subtitle">
-          You have unsaved changes in your {serviceTitle.toLowerCase()} application. Save your progress so you can resume anytime without re-entering details.
+          {`You have unsaved changes in your ${serviceTitle.toLowerCase()} application. Save your progress so you can resume anytime without re-entering details.`}
         </p>
 
         {/* Action Buttons */}
@@ -62,23 +67,28 @@ export const DraftConfirmModal = ({
             type="button"
             className="draft-modal__btn draft-modal__btn--save"
             onClick={onSaveAndExit}
+            disabled={isSaving}
           >
             <SaveDiskIcon />
-            <span>Save as Draft &amp; Exit</span>
+            <span>{isSaving ? 'Saving...' : 'Save as Draft & Exit'}</span>
           </button>
 
-          <button
-            type="button"
-            className="draft-modal__btn draft-modal__btn--discard"
-            onClick={onDiscardAndExit}
-          >
-            Discard &amp; Exit
-          </button>
+          {onDiscardAndExit && (
+            <button
+              type="button"
+              className="draft-modal__btn draft-modal__btn--discard"
+              onClick={onDiscardAndExit}
+              disabled={isSaving}
+            >
+              Discard &amp; Exit
+            </button>
+          )}
 
           <button
             type="button"
             className="draft-modal__btn draft-modal__btn--keep"
             onClick={onKeepEditing}
+            disabled={isSaving}
           >
             Keep Editing
           </button>

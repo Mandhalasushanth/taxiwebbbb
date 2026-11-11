@@ -8,6 +8,8 @@ import {
   getAnnualPeriodOptions,
   getPeriodOptionsByFrequencyAndYear,
   remapPeriodToFinancialYear,
+  getReturnTypeOptions,
+  FINANCIAL_YEAR_OPTIONS,
 } from '../../src/modules/gst/utils/gstPeriodOptions'
 import { GSTFilingPeriod } from '../../src/modules/gst/components/GSTFiling/GSTFilingPeriod/GSTFilingPeriod'
 import { DEFAULT_DOCUMENT_ITEMS } from '../../src/modules/gst/utils/gstDocumentsData'
@@ -36,6 +38,15 @@ describe('GST Dynamic Filing Period Utils', () => {
       endYear: 2029,
       fyShort: 'FY 2028-29',
     })
+  })
+
+  it('provides exactly 4 financial year options: FY 2022-23 to FY 2025-26', () => {
+    expect(FINANCIAL_YEAR_OPTIONS.map((opt) => opt.value)).toEqual([
+      'FY 2022-23',
+      'FY 2023-24',
+      'FY 2024-25',
+      'FY 2025-26',
+    ])
   })
 
   it('generates 12 monthly options starting from April (startYear) to March (endYear)', () => {
@@ -113,7 +124,7 @@ describe('GSTFilingPeriod Component Dynamic Behavior', () => {
       />
     )
 
-    const periodSelect = screen.getByLabelText(/Filing Month/i) as HTMLSelectElement
+    const periodSelect = screen.getByLabelText(/Filing Period \/ Return Period/i) as HTMLSelectElement
     const optionValues = Array.from(periodSelect.options).map((o) => o.value)
 
     expect(optionValues).toContain('April 2025')
@@ -121,7 +132,7 @@ describe('GSTFilingPeriod Component Dynamic Behavior', () => {
     expect(optionValues).toContain('March 2026')
   })
 
-  it('renders 4 quarterly options when frequency is changed to Quarterly', () => {
+  it('renders 4 quarterly options when frequency is changed to Quarterly while keeping Filing Period / Return Period label', () => {
     render(
       <GSTFilingPeriod
         initialData={{ financialYear: 'FY 2025-26', frequency: 'Monthly' }}
@@ -134,7 +145,7 @@ describe('GSTFilingPeriod Component Dynamic Behavior', () => {
     const quarterlyRadio = screen.getByRole('radio', { name: /Quarterly/i })
     fireEvent.click(quarterlyRadio)
 
-    const periodSelect = screen.getByLabelText(/Filing Quarter/i) as HTMLSelectElement
+    const periodSelect = screen.getByLabelText(/Filing Period \/ Return Period/i) as HTMLSelectElement
     const optionValues = Array.from(periodSelect.options).map((o) => o.value)
 
     expect(optionValues).toEqual([
@@ -146,7 +157,7 @@ describe('GSTFilingPeriod Component Dynamic Behavior', () => {
     ])
   })
 
-  it('renders only 1 annual return option when frequency is Annual', () => {
+  it('renders only 1 annual return option when frequency is Annual while keeping Filing Period / Return Period label', () => {
     render(
       <GSTFilingPeriod
         initialData={{ financialYear: 'FY 2025-26', frequency: 'Monthly' }}
@@ -159,7 +170,7 @@ describe('GSTFilingPeriod Component Dynamic Behavior', () => {
     const annualRadio = screen.getByRole('radio', { name: /Annual/i })
     fireEvent.click(annualRadio)
 
-    const periodSelect = screen.getByLabelText(/Filing Period/i) as HTMLSelectElement
+    const periodSelect = screen.getByLabelText(/Filing Period \/ Return Period/i) as HTMLSelectElement
     const optionValues = Array.from(periodSelect.options).map((o) => o.value)
 
     expect(optionValues).toEqual(['', 'FY 2025-26(Full Year Return)'])
@@ -178,7 +189,7 @@ describe('GSTFilingPeriod Component Dynamic Behavior', () => {
     const fySelect = screen.getByLabelText(/Financial Year/i)
     fireEvent.change(fySelect, { target: { value: 'FY 2024-25' } })
 
-    const periodSelect = screen.getByLabelText(/Filing Month/i) as HTMLSelectElement
+    const periodSelect = screen.getByLabelText(/Filing Period \/ Return Period/i) as HTMLSelectElement
     const optionValues = Array.from(periodSelect.options).map((o) => o.value)
 
     expect(optionValues).toContain('April 2024')
@@ -237,6 +248,81 @@ describe('GSTFilingPeriod Component Dynamic Behavior', () => {
 
     fireEvent.click(submitBtn)
     expect(handleContinue).toHaveBeenCalledTimes(1)
+  })
+
+  it('keeps constant label "Filing Period / Return Period" and sets placeholder based on frequency selection', () => {
+    render(
+      <GSTFilingPeriod
+        initialData={{ financialYear: 'FY 2025-26', frequency: '' }}
+        onContinue={vi.fn()}
+        onCancel={vi.fn()}
+      />
+    )
+
+    const periodSelect = screen.getByLabelText(/Filing Period \/ Return Period/i) as HTMLSelectElement
+    expect(periodSelect.options[0].text).toBe('Select filing frequency first')
+
+    // Click Monthly
+    fireEvent.click(screen.getByRole('radio', { name: /Monthly/i }))
+    expect(screen.getByLabelText(/Filing Period \/ Return Period/i)).toBeDefined()
+    expect(periodSelect.options[0].text).toBe('Select return period')
+
+    // Click Quarterly
+    fireEvent.click(screen.getByRole('radio', { name: /Quarterly/i }))
+    expect(screen.getByLabelText(/Filing Period \/ Return Period/i)).toBeDefined()
+    expect(periodSelect.options[0].text).toBe('Select return period')
+
+    // Click Annual
+    fireEvent.click(screen.getByRole('radio', { name: /Annual/i }))
+    expect(screen.getByLabelText(/Filing Period \/ Return Period/i)).toBeDefined()
+    expect(periodSelect.options[0].text).toBe('Select return period')
+  })
+
+  it('dynamically adapts Filing Return Type options based on selected filing frequency', () => {
+    // 1. Verify utility function options
+    const monthlyOptions = getReturnTypeOptions('Monthly')
+    expect(monthlyOptions.map((o) => o.label)).toEqual([
+      'GSTR-1 (Outward Supplies)',
+      'GSTR-3B (Monthly Summary Return)',
+    ])
+
+    const quarterlyOptions = getReturnTypeOptions('Quarterly')
+    expect(quarterlyOptions.map((o) => o.label)).toEqual([
+      'GSTR-1 (QRMP — Quarterly)',
+      'GSTR-3B (QRMP — Quarterly)',
+    ])
+
+    const annualOptions = getReturnTypeOptions('Annual')
+    expect(annualOptions.map((o) => o.label)).toEqual([
+      'GSTR-1 (Outward Supplies)',
+      'GSTR-3B (Summary Return)',
+    ])
+
+    // 2. Verify in UI component
+    render(
+      <GSTFilingPeriod
+        initialData={{ financialYear: 'FY 2025-26', frequency: 'Monthly' }}
+        onContinue={vi.fn()}
+        onCancel={vi.fn()}
+      />
+    )
+
+    const returnTypeSelect = screen.getByLabelText(/Filing Return Type/i) as HTMLSelectElement
+    let labels = Array.from(returnTypeSelect.options).map((o) => o.text)
+    expect(labels).toContain('GSTR-1 (Outward Supplies)')
+    expect(labels).toContain('GSTR-3B (Monthly Summary Return)')
+
+    // Switch to Quarterly
+    fireEvent.click(screen.getByRole('radio', { name: /Quarterly/i }))
+    labels = Array.from(returnTypeSelect.options).map((o) => o.text)
+    expect(labels).toContain('GSTR-1 (QRMP — Quarterly)')
+    expect(labels).toContain('GSTR-3B (QRMP — Quarterly)')
+
+    // Switch to Annual
+    fireEvent.click(screen.getByRole('radio', { name: /Annual/i }))
+    labels = Array.from(returnTypeSelect.options).map((o) => o.text)
+    expect(labels).toContain('GSTR-1 (Outward Supplies)')
+    expect(labels).toContain('GSTR-3B (Summary Return)')
   })
 })
 

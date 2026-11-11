@@ -57,7 +57,7 @@ const EditButton: React.FC<{ onClick: () => void; testId: string }> = ({ onClick
 )
 
 export const TdsRefundReview: React.FC<TdsRefundReviewProps> = ({
-  onBack, onEditStep1, onNext, onSaveDraft, profile, bankDetails, businessDetails, taxData,
+  onBack: _onBack, onEditStep1, onNext, onSaveDraft, profile, bankDetails, businessDetails, taxData,
 }) => {
   const isReviewValid = Boolean(
     bankDetails?.accountHolder?.trim() && bankDetails?.accountNumber?.trim() && bankDetails?.ifsc?.trim()
@@ -120,7 +120,7 @@ export const TdsRefundReview: React.FC<TdsRefundReviewProps> = ({
           <TdsEstimatedComputationCard taxData={taxData} />
         </main>
       </div>
-      <StepActionBar onBack={onBack} onNext={onNext} onSaveDraft={onSaveDraft} nextLabel="Submit Application" nextDisabled={!isReviewValid} backTestId="tds-step3-back-btn" nextTestId="tds-submit-application-btn" />
+      <StepActionBar showBack={false} isReview={true} onNext={onNext} onSaveDraft={onSaveDraft} nextLabel="Submit Application" nextDisabled={!isReviewValid} backTestId="tds-step3-back-btn" nextTestId="tds-submit-application-btn" />
     </div>
   )
 }

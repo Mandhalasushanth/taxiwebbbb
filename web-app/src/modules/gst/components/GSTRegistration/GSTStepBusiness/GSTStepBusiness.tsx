@@ -159,6 +159,17 @@ export const GSTStepBusiness = ({
       });
     }
 
+    // Live validation for dob: immediate feedback if under 18 or invalid date
+    if (field === "dob") {
+      const dobErr = validateGstBusinessField("dob", nextData);
+      setErrors((prev) => {
+        const next = { ...prev };
+        if (dobErr) next.dob = dobErr;
+        else delete next.dob;
+        return next;
+      });
+    }
+
     // If this field currently has an error, re-evaluate live to clear as soon as valid
     if (errors[field]) {
       const err = validateGstBusinessField(field, nextData);

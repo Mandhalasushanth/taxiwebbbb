@@ -2,7 +2,7 @@ import { env } from './environment'
 
 export const appConfig = {
   name: env.appName,
-  supportEmail: 'support@taxedge.in',
+  supportEmail: 'support@finsolz.in',
   defaultLocale: 'en-IN',
   currency: 'INR',
   dateFormat: 'dd MMM yyyy',

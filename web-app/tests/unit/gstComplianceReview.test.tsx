@@ -59,7 +59,7 @@ describe('GST Compliance Review Page', () => {
 
       expect(screen.getByText('Ready for CA Review & Filing')).toBeDefined()
       expect(
-        screen.getByText('TaxEdge CA compliance desk will verify your records and prepare the official response.')
+        screen.getByText('Finsolz CA compliance desk will verify your records and prepare the official response.')
       ).toBeDefined()
 
       expect(screen.getByText('Request & Filing Details')).toBeDefined()
