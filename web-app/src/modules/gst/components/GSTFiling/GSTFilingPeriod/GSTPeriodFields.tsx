@@ -176,7 +176,6 @@ export const GSTTaxpayerReturnFields: React.FC<GSTTaxpayerReturnFieldsProps> = (
           value={gstin}
           onChange={(e) => {
             setGstin(gstInput.gstin(e.target.value))
-            handleClearError('gstin')
           }}
           onBlur={() => onBlurField?.('gstin')}
         />

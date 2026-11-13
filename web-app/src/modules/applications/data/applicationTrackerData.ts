@@ -289,7 +289,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
         ? 'GST Amendment'
         : cleanId.includes('compliance')
         ? 'GST Compliance'
-        : cleanId.includes('certificate')
+        : cleanId.includes('certificate') || cleanId.includes('cert') || cleanId.startsWith('gst-crt')
         ? 'GST Certificate (REG-06)'
         : cleanId.includes('cancellation')
         ? 'GST Cancellation (REG-16)'
@@ -487,22 +487,55 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
   }
 
   // 5. GST Certificate Request
-  if (key.includes('certificate')) {
+  if (key.includes('certificate') || key.includes('cert') || key.includes('gst-crt')) {
+    const isApproved =
+      matchedApp.statusLabel === 'Approved' ||
+      matchedApp.statusLabel === 'Completed' ||
+      (matchedApp as any)?.managerApproved === true
+
+    const certGstin =
+      (currentUser as { gstin?: string })?.gstin ||
+      (matchedApp as any)?.gstin ||
+      (matchedApp.meta?.match(/[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}/)?.[0]) ||
+      '29AAAAA0000A1Z5'
+
     return buildTracker(appId, entity, date, {
       title: 'GST Certificate (REG-06)',
       category: 'GST',
-      stageTitle: matchedApp.statusLabel || 'Certificate Generated & Saved',
+      stageTitle: isApproved ? 'Certificate Approved & Ready' : (matchedApp.statusLabel || 'Under Verification'),
       filingHeader: 'GST Certificate Details',
       rawApplication: matchedApp,
       filingFields: [
         { label: 'Business Entity', value: entity },
-        { label: 'GSTIN', value: (currentUser as { gstin?: string })?.gstin || '29AAAAA0000A1Z5', isHighlight: true },
+        { label: 'GSTIN', value: certGstin, isHighlight: true },
         { label: 'Form Number', value: 'Form GST REG-06' },
-        { label: 'Status', value: 'Generated & Saved', isHighlight: true },
+        { label: 'Status', value: isApproved ? 'Approved & Ready' : 'Under Verification', isHighlight: true },
       ],
-      steps: getDefaultApplicationSteps(date, matchedApp.statusLabel),
+      steps: [
+        [
+          'Application Submitted',
+          `Application successfully submitted on ${date}.`,
+          'completed',
+          date,
+        ],
+        [
+          'Document Verification',
+          'Review of identity, premises and taxpayer record.',
+          isApproved ? 'completed' : 'current',
+        ],
+        [
+          'Manager Review & Approval',
+          'Tax officer / CA Manager scrutiny and document generation.',
+          isApproved ? 'completed' : 'pending',
+        ],
+        [
+          'Certificate Ready for Download',
+          'Form GST REG-06 registration certificate released for download.',
+          isApproved ? 'completed' : 'pending',
+        ],
+      ],
       docs: [
-        ['d1', 'Registration Certificate (REG-06)', 'uploaded'],
+        ['REG-06', 'Registration Certificate (REG-06)', isApproved ? 'uploaded' : 'pending'],
         ['d2', 'Taxpayer Verification Record', 'uploaded'],
       ],
       payment: ['Service Fee', '₹0', 'Included', 'Paid'],

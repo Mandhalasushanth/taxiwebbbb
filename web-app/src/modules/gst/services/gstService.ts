@@ -213,7 +213,7 @@ export const gstService = {
       gstin: payload.gstin,
       registeredContact: payload.registeredContact,
       requestType: payload.requestType,
-      status: 'COMPLETED',
+      status: 'MANAGER_REVIEW',
       downloadUrl: '/gst-certificate.pdf',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -226,11 +226,29 @@ export const gstService = {
       code: ref,
       title: 'GST Certificate (REG-06)',
       meta: `${payload.gstin} · Download Certificate`,
-      statusLabel: 'Completed',
-      statusTone: 'success',
-      progress: 100,
+      statusLabel: 'Under Verification',
+      statusTone: 'warning',
+      progress: 35,
       icon: '📜',
       to: routePaths.applicationTrack(ref),
+      documents: [
+        {
+          id: 'REG-06',
+          name: 'Registration Certificate (REG-06)',
+          fileName: `GST-REG-06-${payload.gstin}.pdf`,
+          status: 'pending',
+          meta: 'Under Verification · In Progress',
+          date: 'Today',
+        },
+        {
+          id: 'd2',
+          name: 'Taxpayer Verification Record',
+          fileName: `Verification-Record-${payload.gstin}.pdf`,
+          status: 'uploaded',
+          meta: '1.2 MB · Verified',
+          date: 'Today',
+        },
+      ] as any,
     })
 
     if (env.enableMocks) {

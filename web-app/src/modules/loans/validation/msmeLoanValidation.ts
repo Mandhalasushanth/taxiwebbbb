@@ -137,7 +137,7 @@ export function validateStep2MsmeDetails(data: Partial<MsmeLoanData>): LoanStepV
     if (!gstinVal) {
       errors.gstin = 'GSTIN is required'
     } else if (!LOAN_PATTERNS.GSTIN.test(gstinVal)) {
-      errors.gstin = 'Enter a valid 15-character GSTIN (e.g. 27ABCDE1234F1Z5)'
+      errors.gstin = 'Enter a valid 15-character GSTIN (e.g. 27ABCPH5478H1Z5)'
     }
   }
 

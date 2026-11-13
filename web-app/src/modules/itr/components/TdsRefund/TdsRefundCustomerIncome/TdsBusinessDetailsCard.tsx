@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Briefcase, Upload, Eye, ArrowRightLeft, Trash2 } from "lucide-react";
 import { FileInput, formatUploadSize } from "@shared/upload";
-import { CaretInput } from "@shared/components";
+import { CaretInput, DeleteDocumentConfirmModal } from "@shared/components";
 import { formatAadhaar, formatMobile, formatPan } from "@shared/utils/formatUtils";
 import type { TdsBusinessDetails, UploadedFileMeta } from "@modules/itr/types/tdsRefund.types";
 import { sanitizeBusinessLegalName } from "./tdsBusinessValidation";
@@ -55,6 +55,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
   onDocChange,
 }) => {
   const fileRef = useRef<HTMLInputElement>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleViewDoc = () => {
     if (!doc) return;
@@ -66,6 +67,11 @@ const UploadField: React.FC<UploadFieldProps> = ({
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank");
     }
+  };
+
+  const handleConfirmDelete = () => {
+    setIsDeleteModalOpen(false);
+    onDocChange(undefined);
   };
 
   return (
@@ -117,7 +123,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
               <button
                 type="button"
                 className="tds-upload-action-btn tds-upload-action-btn--delete"
-                onClick={() => onDocChange(undefined)}
+                onClick={() => setIsDeleteModalOpen(true)}
                 title="Delete document"
                 aria-label={`Delete ${label} document`}
               >
@@ -130,7 +136,8 @@ const UploadField: React.FC<UploadFieldProps> = ({
             type="button"
             className="tds-upload-field__btn"
             onClick={() => fileRef.current?.click()}
-            aria-label={`Upload ${label}`}
+            aria-label={`Upload ${label} (max 10 MB)`}
+            title="Upload document (max 10 MB)"
           >
             <Upload size={16} strokeWidth={2.4} aria-hidden="true" />
             <span>Upload</span>
@@ -144,6 +151,14 @@ const UploadField: React.FC<UploadFieldProps> = ({
         />
       </div>
       {error && <span className="tds-field-error">{error}</span>}
+
+      <DeleteDocumentConfirmModal
+        isOpen={isDeleteModalOpen}
+        fileName={doc?.name}
+        documentTitle={label}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setIsDeleteModalOpen(false)}
+      />
     </div>
   );
 };
@@ -204,7 +219,7 @@ export const TdsBusinessDetailsCard: React.FC<TdsBusinessDetailsCardProps> = ({
           <UploadField
             id="tds-business-pan"
             label="Business PAN"
-            placeholder="Enter Business PAN (e.g. ABCDE1234F)"
+            placeholder="Enter Business PAN (e.g. ABCPH5478H)"
             value={businessDetails.pan}
             error={fieldErrors.pan}
             maxLength={10}

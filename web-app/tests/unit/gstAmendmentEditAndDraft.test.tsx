@@ -8,6 +8,8 @@ import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/re
 import { BrowserRouter, MemoryRouter, Routes, Route } from 'react-router-dom'
 import { routePaths } from '../../src/core/config/routePaths'
 import { GSTAmendment } from '../../src/modules/gst/components/GSTAmendment/GSTAmendment'
+import { GSTSignatoriesForm } from '../../src/modules/gst/components/GSTAmendment/GSTAmendmentDetailForm/GSTSignatoriesForm'
+import { vi } from 'vitest'
 import { authStorage } from '../../src/core/auth'
 import { localStore } from '../../src/core/storage/localStorage'
 import { userStorage } from '../../src/core/storage/userStorage'
@@ -361,5 +363,71 @@ describe('GST Amendment Edit Flow & Draft Persistence', () => {
       expect(screen.queryByText('Save Application Progress?')).not.toBeInTheDocument()
       expect(screen.getByText('Contact Details')).toBeInTheDocument()
     })
+  })
+
+  it('GSTSignatoriesForm renders portal baseline, PAN example placeholder, allows manual DOB entry in DD-MM-YYYY, and handles onChange notifications', async () => {
+    let capturedChange: any = null
+    const mockSubmit = vi.fn()
+
+    const currentDetails = {
+      name: 'Ravi Kumar',
+      pan: 'AAACT1234A',
+      designation: 'Director',
+      mobile: '+91 9823145672',
+      email: 'ravi@example.com',
+    }
+
+    render(
+      <GSTSignatoriesForm
+        currentDetails={currentDetails}
+        onBack={() => {}}
+        onSubmit={mockSubmit}
+        onChange={(data) => {
+          capturedChange = data
+        }}
+      />
+    )
+
+    // Card 1: Currently Registered on Portal is rendered
+    expect(screen.getByText('Currently Registered on Portal')).toBeInTheDocument()
+    expect(screen.getByText('Ravi Kumar')).toBeInTheDocument()
+    expect(screen.getByText('AAACT1234A')).toBeInTheDocument()
+
+    // Card 2: Amended details
+    expect(screen.getByText('Amended details')).toBeInTheDocument()
+
+    // PAN placeholder has correct example format
+    const panInput = screen.getByPlaceholderText('ABCPH5478H')
+    expect(panInput).toBeInTheDocument()
+
+    // Name field
+    const nameInput = screen.getByPlaceholderText('Enter full name')
+    fireEvent.change(nameInput, { target: { value: 'Suresh Raina' } })
+
+    // PAN field
+    fireEvent.change(panInput, { target: { value: 'CASPJ7434E' } })
+
+    // DOB field allows typing in DD-MM-YYYY
+    const dobInput = screen.getByPlaceholderText('DD-MM-YYYY')
+    fireEvent.change(dobInput, { target: { value: '15-08-1990' } })
+
+    // Designation
+    const desigInput = screen.getByPlaceholderText('Proprietor / Director / Partner')
+    fireEvent.change(desigInput, { target: { value: 'Managing Director' } })
+
+    // Mobile
+    const mobileInput = screen.getByPlaceholderText('Enter mobile number')
+    fireEvent.change(mobileInput, { target: { value: '9876543210' } })
+
+    // Email
+    const emailInput = screen.getByPlaceholderText('Enter email address')
+    fireEvent.change(emailInput, { target: { value: 'suresh@example.com' } })
+
+    // onChange was invoked
+    expect(capturedChange).not.toBeNull()
+    expect(capturedChange.signatoryDetails.name).toBe('Suresh Raina')
+    expect(capturedChange.signatoryDetails.pan).toBe('CASPJ7434E')
+    expect(capturedChange.signatoryDetails.dob).toBe('15-08-1990')
+    expect(capturedChange.signatoryDetails.mobile).toBe('9876543210')
   })
 })

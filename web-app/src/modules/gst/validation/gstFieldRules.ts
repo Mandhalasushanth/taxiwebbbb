@@ -1,6 +1,7 @@
 import {
   isValidBankAccNumber,
   validateGstin,
+  type ValidateGstinOptions,
   validateAccountHolderName,
   validateAddress,
   validateBankName,
@@ -54,22 +55,29 @@ export const GST_PATTERNS = {
 export const gstFieldRules = {
   required: (label: string): Rule => (v) => (trimmed(v) ? undefined : `${label} is required`),
 
-  gstin: (v?: string, expectedPan?: string): string | undefined => {
-    const value = trimmed(v).toUpperCase()
-    if (!value) return 'GSTIN is required'
-    if (value.length !== 15) return 'GSTIN must be exactly 15 characters'
-    const error = validateGstin(value, expectedPan ? { expectedPan } : undefined)
-    if (error) return error
-    return undefined
+  gstin: (
+    v?: string,
+    expectedPanOrOptions?: string | ValidateGstinOptions,
+    isLiveParam?: boolean
+  ): string | undefined => {
+    let opts: ValidateGstinOptions = {}
+    if (typeof expectedPanOrOptions === 'string') {
+      opts = { expectedPan: expectedPanOrOptions, isLive: isLiveParam }
+    } else if (expectedPanOrOptions) {
+      opts = { ...expectedPanOrOptions }
+      if (isLiveParam !== undefined) opts.isLive = isLiveParam
+    } else if (isLiveParam !== undefined) {
+      opts = { isLive: isLiveParam }
+    }
+    const error = validateGstin(v, opts)
+    return error || undefined
   },
 
   pan: (v?: string): string | undefined => fromShared(validatePan(trimmed(v))),
   ifsc: (v?: string): string | undefined => fromShared(validateIfsc(trimmed(v))),
-  pinCode: (v?: string): string | undefined => {
+  pinCode: (v?: string, state?: string): string | undefined => {
     const value = trimmed(v)
-    if (!value) return 'PIN code is required'
-    if (!/^\d+$/.test(value)) return 'PIN code must contain digits only'
-    return fromShared(validatePincode(value))
+    return fromShared(validatePincode(value, { label: 'PIN code', state }))
   },
   email: (v?: string): string | undefined => {
     const value = trimmed(v)

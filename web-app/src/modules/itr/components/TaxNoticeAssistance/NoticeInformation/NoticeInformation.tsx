@@ -47,7 +47,7 @@ export const NoticeInformation: React.FC<NoticeInformationProps> = ({
     )
   })
 
-  const panValid = !formData.pan || /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.pan.trim().toUpperCase())
+  const panValid = !formData.pan || /^[A-Z]{3}[ABCFGHJLPT][A-Z][0-9]{4}[A-Z]$/.test(formData.pan.trim().toUpperCase())
   const hasPan = formData.pan.trim().length === 10 && panValid
   const hasAy = formData.assessmentYear.trim().length > 0 && formData.assessmentYear !== 'Other'
   const hasNoticeType = formData.noticeType.trim().length > 0

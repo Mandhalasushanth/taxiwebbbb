@@ -32,7 +32,7 @@ export const DobDatePickerModal: React.FC<DobDatePickerModalProps> = ({
   value,
   onApply,
   onClose,
-  maxDate = new Date(new Date().getFullYear() - 18, new Date().getMonth(), new Date().getDate()),
+  maxDate = new Date(),
   minDate = new Date(1900, 0, 1),
 }) => {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -55,11 +55,11 @@ export const DobDatePickerModal: React.FC<DobDatePickerModalProps> = ({
   const [selectedDate, setSelectedDate] = useState<Date | null>(initialDate)
   const [viewYear, setViewYear] = useState<number>(() => {
     if (initialDate) return initialDate.getFullYear()
-    return 2000
+    return new Date().getFullYear()
   })
   const [viewMonth, setViewMonth] = useState<number>(() => {
     if (initialDate) return initialDate.getMonth()
-    return 0
+    return new Date().getMonth()
   })
 
   useEffect(() => {
@@ -70,9 +70,10 @@ export const DobDatePickerModal: React.FC<DobDatePickerModalProps> = ({
         setViewYear(parsed.getFullYear())
         setViewMonth(parsed.getMonth())
       } else {
+        const now = new Date()
         setSelectedDate(null)
-        setViewYear(2000)
-        setViewMonth(0)
+        setViewYear(now.getFullYear())
+        setViewMonth(now.getMonth())
       }
     }
   }, [isOpen, value, parseDate])
@@ -116,12 +117,12 @@ export const DobDatePickerModal: React.FC<DobDatePickerModalProps> = ({
   }
 
   const handleNextMonth = () => {
-    if (viewMonth === 11) {
-      setViewMonth(0)
-      setViewYear((prev) => prev + 1)
-    } else {
-      setViewMonth((prev) => prev + 1)
-    }
+    const nextMonth = viewMonth === 11 ? 0 : viewMonth + 1
+    const nextYear = viewMonth === 11 ? viewYear + 1 : viewYear
+    const candidateMonthStart = new Date(nextYear, nextMonth, 1)
+    if (candidateMonthStart > maxDate) return
+    setViewMonth(nextMonth)
+    setViewYear(nextYear)
   }
 
   const handleJumpYear = (delta: number) => {
@@ -130,6 +131,12 @@ export const DobDatePickerModal: React.FC<DobDatePickerModalProps> = ({
       return Math.max(minDate.getFullYear(), Math.min(maxDate.getFullYear(), next))
     })
   }
+
+  const isNextMonthDisabled = useMemo(() => {
+    const nextMonth = viewMonth === 11 ? 0 : viewMonth + 1
+    const nextYear = viewMonth === 11 ? viewYear + 1 : viewYear
+    return new Date(nextYear, nextMonth, 1) > maxDate
+  }, [viewYear, viewMonth, maxDate])
 
   const daysInMonth = useMemo(() => {
     return new Date(viewYear, viewMonth + 1, 0).getDate()
@@ -204,6 +211,7 @@ export const DobDatePickerModal: React.FC<DobDatePickerModalProps> = ({
           type="button"
           className="dob-popover__nav-arrow"
           onClick={handleNextMonth}
+          disabled={isNextMonthDisabled}
           aria-label="Next month"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -215,8 +223,22 @@ export const DobDatePickerModal: React.FC<DobDatePickerModalProps> = ({
       <div className="dob-popover__jump-row">
         <button type="button" className="dob-popover__jump-btn" onClick={() => handleJumpYear(-10)}>-10 Yrs</button>
         <button type="button" className="dob-popover__jump-btn" onClick={() => handleJumpYear(-5)}>-5 Yrs</button>
-        <button type="button" className="dob-popover__jump-btn" onClick={() => handleJumpYear(5)}>+5 Yrs</button>
-        <button type="button" className="dob-popover__jump-btn" onClick={() => handleJumpYear(10)}>+10 Yrs</button>
+        <button
+          type="button"
+          className="dob-popover__jump-btn"
+          onClick={() => handleJumpYear(5)}
+          disabled={viewYear >= maxDate.getFullYear()}
+        >
+          +5 Yrs
+        </button>
+        <button
+          type="button"
+          className="dob-popover__jump-btn"
+          onClick={() => handleJumpYear(10)}
+          disabled={viewYear >= maxDate.getFullYear()}
+        >
+          +10 Yrs
+        </button>
       </div>
 
       <DobCalendarGrid

@@ -12,7 +12,7 @@ import { ApplicationOverviewTab } from './tabs/ApplicationOverviewTab'
 import { ApplicationStatusTab } from './tabs/ApplicationStatusTab'
 import { ApplicationDocumentsTab } from './tabs/ApplicationDocumentsTab'
 import { ApplicationPaymentsTab } from './tabs/ApplicationPaymentsTab'
-import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
+import { openGstDocumentPreview, downloadGstDocument } from '@modules/gst/utils/gstDocumentPreview'
 import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
 import { resolveDraftResumeRoute } from '../../utils/draftRouting'
 import './ApplicationTrackerView.css'
@@ -386,6 +386,115 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
     navigate(`/payments/checkout/${data.appId}`)
   }
 
+  const isCertificateApplication = Boolean(
+    data.title.toLowerCase().includes('certificate') ||
+    data.appId.toLowerCase().includes('cert') ||
+    data.appId.startsWith('GST-CRT')
+  )
+
+  const isApproved = Boolean(
+    data.rawApplication?.statusLabel === 'Approved' ||
+    data.rawApplication?.statusLabel === 'Completed' ||
+    (data.rawApplication as any)?.managerApproved === true
+  )
+
+  const handleManagerApproveCertificate = () => {
+    const rawApps = userStorage.getUserApplications()
+    const appIndex = rawApps.findIndex((a) => a.id === data.appId || a.code === data.appId)
+    const gstinVal = (data.filingFields?.find((f) => f.label === 'GSTIN')?.value) || '29AAAAA0000A1Z5'
+
+    const updatedDocs = [
+      {
+        id: 'REG-06',
+        name: 'Registration Certificate (REG-06)',
+        fileName: `GST-REG-06-${gstinVal}.pdf`,
+        status: 'uploaded',
+        meta: 'Official Government Copy · Form GST REG-06 · Ready for Download',
+        date: new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
+      },
+      {
+        id: 'd2',
+        name: 'Taxpayer Verification Record',
+        fileName: `Verification-Record-${gstinVal}.pdf`,
+        status: 'uploaded',
+        meta: '1.2 MB · Verified',
+        date: new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
+      },
+    ]
+
+    if (appIndex >= 0) {
+      const app = rawApps[appIndex]
+      const updatedApp = {
+        ...app,
+        statusLabel: 'Approved',
+        statusTone: 'success' as const,
+        progress: 100,
+        documents: updatedDocs,
+        managerApproved: true,
+        managerApprovedAt: new Date().toISOString(),
+      }
+      userStorage.saveUserApplication(updatedApp)
+    } else {
+      userStorage.saveUserApplication({
+        id: `app-${data.appId}`,
+        code: data.appId,
+        title: 'GST Certificate (REG-06)',
+        meta: `${gstinVal} · Download Certificate`,
+        statusLabel: 'Approved',
+        statusTone: 'success',
+        progress: 100,
+        icon: '📜',
+        to: routePaths.applicationTrack(data.appId),
+        documents: updatedDocs,
+        managerApproved: true,
+      })
+    }
+
+    setData(getApplicationTrackerData(appId))
+    pushToast('GST Certificate approved! The document is now ready for download.', 'success')
+  }
+
+  const handleManagerRevertVerification = () => {
+    const rawApps = userStorage.getUserApplications()
+    const appIndex = rawApps.findIndex((a) => a.id === data.appId || a.code === data.appId)
+    const gstinVal = (data.filingFields?.find((f) => f.label === 'GSTIN')?.value) || '29AAAAA0000A1Z5'
+
+    const updatedDocs = [
+      {
+        id: 'REG-06',
+        name: 'Registration Certificate (REG-06)',
+        fileName: `GST-REG-06-${gstinVal}.pdf`,
+        status: 'pending',
+        meta: 'Under Verification · In Progress',
+        date: 'Today',
+      },
+      {
+        id: 'd2',
+        name: 'Taxpayer Verification Record',
+        fileName: `Verification-Record-${gstinVal}.pdf`,
+        status: 'uploaded',
+        meta: '1.2 MB · Verified',
+        date: 'Today',
+      },
+    ]
+
+    if (appIndex >= 0) {
+      const app = rawApps[appIndex]
+      const updatedApp = {
+        ...app,
+        statusLabel: 'Under Verification',
+        statusTone: 'warning' as const,
+        progress: 35,
+        documents: updatedDocs,
+        managerApproved: false,
+      }
+      userStorage.saveUserApplication(updatedApp)
+    }
+
+    setData(getApplicationTrackerData(appId))
+    pushToast('Application reverted to Under Verification.', 'info')
+  }
+
   return (
     <div className="app-tracker-web-page">
       {/* 1. HERO HEADER */}
@@ -482,6 +591,112 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
 
         {/* 3. TAB CONTENT PANES */}
         <main className="app-tracker-web-content">
+          {/* Manager Action Banner for GST Certificate Verification */}
+          {isCertificateApplication && (
+            <div
+              className="app-tracker-clean-card"
+              style={{
+                borderLeft: '4px solid #f97316',
+                marginBottom: '16px',
+                background: '#fffaf0',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '12px',
+                }}
+              >
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <span
+                      style={{
+                        fontSize: '11px',
+                        background: '#ea580c',
+                        color: '#ffffff',
+                        padding: '2px 8px',
+                        borderRadius: '4px',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      Manager Review & Action
+                    </span>
+                    <span
+                      style={{
+                        fontSize: '13px',
+                        color: isApproved ? '#16a34a' : '#ea580c',
+                        fontWeight: 700,
+                      }}
+                    >
+                      Document Status: {isApproved ? 'Approved & Ready for Download' : 'Under Verification'}
+                    </span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '13px', color: '#475569' }}>
+                    {isApproved
+                      ? 'The manager has approved this request. The applicant can download Form GST REG-06 now.'
+                      : 'This application is under verification. Once approved by the manager, Form GST REG-06 will be available for download.'}
+                  </p>
+                </div>
+
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  {!isApproved ? (
+                    <button
+                      type="button"
+                      onClick={handleManagerApproveCertificate}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '8px 16px',
+                        background: '#16a34a',
+                        color: '#ffffff',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '13px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 8px rgba(22, 163, 74, 0.25)',
+                      }}
+                    >
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      <span>Approve Certificate & Mark Ready</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleManagerRevertVerification}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '8px 16px',
+                        background: '#64748b',
+                        color: '#ffffff',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '13px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="1 4 1 10 7 10" />
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                      </svg>
+                      <span>Revert to Under Verification</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           {activeTab === 'overview' && (
             <ApplicationOverviewTab data={data} onNavigateToChat={() => setActiveTab('chat')} />
           )}
@@ -496,6 +711,15 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
               appliedDate={data.appliedDate}
               onPreviewDoc={(doc) => {
                 openGstDocumentPreview({
+                  id: doc.id,
+                  title: doc.name,
+                  fileName: doc.fileName || doc.name,
+                  file: doc.file,
+                  fileUrl: doc.url,
+                })
+              }}
+              onDownloadDoc={(doc) => {
+                downloadGstDocument({
                   id: doc.id,
                   title: doc.name,
                   fileName: doc.fileName || doc.name,

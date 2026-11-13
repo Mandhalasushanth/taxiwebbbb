@@ -24,6 +24,7 @@ import {
   isValidCity as centralIsValidCity,
   validatePincode as centralValidatePincode,
   isValidPincode as centralIsValidPincode,
+  type ValidatePincodeOptions,
   validateAccountNumber as centralValidateAccountNumber,
   isValidAccountNumber as centralIsValidAccountNumber,
   validateIfsc as centralValidateIfsc,
@@ -113,14 +114,20 @@ export const validateIndividualPan = (pan: string, label = 'PAN'): string | null
   centralValidateIndividualPan(pan, label)
 
 /* ------------------------------ PINCODE ---------------------------------- */
-export const isValidPincode = (value: string): boolean =>
-  centralIsValidPincode(value)
+export type { ValidatePincodeOptions }
+
+export const isValidPincode = (value: string, state?: string): boolean =>
+  centralIsValidPincode(value, state)
 
 export const validatePincode = (
-  pincode: string,
-  optionsOrLabel: string | { label?: string; required?: boolean; isLive?: boolean } = 'PIN code'
+  pincode: string | undefined | null,
+  optionsOrLabel: string | ValidatePincodeOptions = 'PIN code',
+  state?: string
 ): string | null =>
-  centralValidatePincode(pincode, typeof optionsOrLabel === 'string' ? { label: optionsOrLabel } : optionsOrLabel)
+  centralValidatePincode(
+    pincode,
+    typeof optionsOrLabel === 'string' ? { label: optionsOrLabel, state } : { ...optionsOrLabel, state: state || optionsOrLabel.state }
+  )
 
 /* ------------------------------- EMAIL ----------------------------------- */
 export const isValidEmail = (email: string): boolean =>
@@ -177,7 +184,7 @@ export const isValidGstin = (value: string): boolean =>
   centralIsValidGstin(value)
 
 export const validateGstin = (
-  gstin: string,
+  gstin: string | undefined | null,
   optionsOrLabel: string | import('../validations/gstinValidator').ValidateGstinOptions = 'GSTIN',
   expectedStateCode?: string,
   expectedPan?: string
@@ -193,6 +200,7 @@ export const validateGstinMatchesPan = (gstin: string, pan: string): string | nu
   centralValidateGstinMatchesPan(gstin, pan)
 
 export { isValidGstStateCode, isValidGstinChecksum, computeGstinChecksum }
+export type { ValidateGstinOptions } from '../validations/gstinValidator'
 
 /* -------------------------------- NAME ----------------------------------- */
 export const isValidName = (name: string): boolean =>

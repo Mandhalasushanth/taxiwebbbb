@@ -15,25 +15,6 @@ export interface TdsRefundStatusProps {
   onContactSupport?: () => void
 }
 
-export interface TimelineStage {
-  num: number
-  title: string
-  desc: string
-  status: 'completed' | 'active' | 'pending'
-}
-
-export const TIMELINE_STAGES: TimelineStage[] = [
-  { num: 1, title: 'New Request Received', desc: 'Application submitted', status: 'completed' },
-  { num: 2, title: 'Documents Received', desc: 'All documents uploaded', status: 'completed' },
-  { num: 3, title: 'Under Verification', desc: 'Documents being verified by CA', status: 'active' },
-  { num: 4, title: 'ITR Preparation', desc: 'Return computation by CA', status: 'pending' },
-  { num: 5, title: 'Customer Approval', desc: 'Review and approve the return', status: 'pending' },
-  { num: 6, title: 'ITR Filed', desc: 'Submitted on IT Department portal', status: 'pending' },
-  { num: 7, title: 'E-Verification Pending', desc: 'Verify using Aadhaar OTP / DSC', status: 'pending' },
-  { num: 8, title: 'Processing by IT Dept.', desc: 'Department processing', status: 'pending' },
-  { num: 9, title: 'Refund Credited', desc: 'Direct credit to bank account', status: 'pending' },
-]
-
 export const formatAppliedDate = (dateInput?: string | Date): string => {
   return formatDisplayDate(dateInput)
 }

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { CaretInput } from '@shared/components'
 import {
   UserIcon,
@@ -7,7 +7,8 @@ import {
   CalendarIcon,
 } from '../RegistrationIcons/RegistrationIcons'
 import { RegistrationSelect } from '../RegistrationSelect/RegistrationSelect'
-import { getMaxAdultDobIso } from '@shared/utils/dateUtils'
+import { DobDatePickerModal } from '../DobDatePickerModal/DobDatePickerModal'
+import { getTodayIso } from '@shared/utils/dateUtils'
 import './RegistrationPersonalFields.css'
 
 export interface RegistrationPersonalValues {
@@ -61,28 +62,49 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
   errors,
   onChange,
   onBlur,
+  onOpenCalendar,
+  isCalendarOpen: propIsCalendarOpen,
+  onToggleCalendar,
+  onCloseCalendar,
   onApplyDate,
 }) => {
+  const [internalCalendarOpen, setInternalCalendarOpen] = useState(false)
+  const isCalendarOpen = propIsCalendarOpen !== undefined ? propIsCalendarOpen : internalCalendarOpen
   const nativeDateRef = useRef<HTMLInputElement>(null)
 
-  const handleOpenPicker = () => {
-    try {
-      nativeDateRef.current?.showPicker?.()
-    } catch {
-      nativeDateRef.current?.focus()
+  const handleToggleCalendar = () => {
+    if (onToggleCalendar) {
+      onToggleCalendar()
+    } else if (onOpenCalendar && !isCalendarOpen) {
+      onOpenCalendar()
+    } else {
+      setInternalCalendarOpen((prev) => !prev)
     }
+  }
+
+  const handleCloseCalendar = () => {
+    if (onCloseCalendar) {
+      onCloseCalendar()
+    } else {
+      setInternalCalendarOpen(false)
+    }
+  }
+
+  const handleApplyDateInternal = (formattedDate: string) => {
+    if (onApplyDate) {
+      onApplyDate(formattedDate)
+    } else {
+      onChange({
+        target: { name: 'dob', value: formattedDate },
+      } as React.ChangeEvent<HTMLInputElement>)
+    }
+    handleCloseCalendar()
   }
 
   const handleNativeDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const dmy = toDmyDate(e.target.value)
     if (!dmy) return
-    if (onApplyDate) {
-      onApplyDate(dmy)
-    } else {
-      onChange({
-        target: { name: 'dob', value: dmy },
-      } as React.ChangeEvent<HTMLInputElement>)
-    }
+    handleApplyDateInternal(dmy)
   }
 
   const handleEmailKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -191,19 +213,28 @@ export const RegistrationPersonalFields: React.FC<RegistrationPersonalFieldsProp
               tabIndex={-1}
               aria-hidden="true"
               className="reg-field__hidden-date"
-              max={getMaxAdultDobIso(18)}
+              max={getTodayIso()}
               value={toIsoDate(values.dob)}
               onChange={handleNativeDateChange}
             />
             <button
               type="button"
               className="reg-field__picker-btn"
-              onClick={handleOpenPicker}
+              onClick={handleToggleCalendar}
               title="Open calendar"
               aria-label="Open calendar"
+              data-testid="dob-calendar-btn"
             >
-              <CalendarIcon />
+              <CalendarIcon size={18} color="#F97316" />
             </button>
+            <DobDatePickerModal
+              isOpen={Boolean(isCalendarOpen)}
+              value={values.dob}
+              onApply={handleApplyDateInternal}
+              onClose={handleCloseCalendar}
+              maxDate={new Date()}
+              minDate={new Date(1900, 0, 1)}
+            />
           </div>
           {errors.dob && <p className="reg-field__error">{errors.dob}</p>}
         </div>

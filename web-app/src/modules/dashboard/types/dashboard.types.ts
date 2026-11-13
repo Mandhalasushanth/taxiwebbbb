@@ -48,7 +48,14 @@ export interface RecentApplication {
   finalizedCharges?: FinalizedCharges
   paymentStatus?: 'Charges Pending' | 'Pending' | 'Paid' | 'Failed'
   paidAt?: string
-  transactionId?: string
+  transactionId?: string
+  documents?: any[]
+  managerApproved?: boolean
+  managerApprovedAt?: string
+  requestedDocuments?: any[]
+  caRequestedDocuments?: any[]
+  pendingDocumentsCount?: number
+  gstin?: string
 }
 
 export interface PendingTask {

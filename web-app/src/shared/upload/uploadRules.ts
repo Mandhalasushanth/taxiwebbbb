@@ -1,10 +1,10 @@
 /**
- * The one upload rule for the whole application: PDF, Excel, JPG and PNG, at most 15 MB.
+ * The one upload rule for the whole application: PDF, Excel, JPG and PNG, at most 10 MB.
  * Every file is checked on its extension, MIME type, size and file signature ("magic bytes"),
  * so a renamed executable (e.g. virus.exe → virus.pdf) is still rejected.
  */
 
-export const MAX_UPLOAD_SIZE_MB = 15
+export const MAX_UPLOAD_SIZE_MB = 10
 export const MAX_UPLOAD_SIZE_BYTES = MAX_UPLOAD_SIZE_MB * 1024 * 1024
 
 export type UploadFileKind = 'pdf' | 'xlsx' | 'xls' | 'jpeg' | 'png'

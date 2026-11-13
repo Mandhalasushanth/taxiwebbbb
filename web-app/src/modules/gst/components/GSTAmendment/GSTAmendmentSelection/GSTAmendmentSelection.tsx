@@ -32,12 +32,8 @@ export const GSTAmendmentSelection: React.FC<GSTAmendmentSelectionProps> = ({
     const val = gstInput.gstin(e.target.value)
     if (val.length <= 15) {
       onGstinChange(val)
-      if (val.length === 15) {
-        const err = gstFieldRules.gstin(val)
-        setErrorText(err || '')
-      } else if (errorText) {
-        setErrorText('')
-      }
+      const err = gstFieldRules.gstin(val, undefined, true)
+      setErrorText(err || '')
     }
   }
 

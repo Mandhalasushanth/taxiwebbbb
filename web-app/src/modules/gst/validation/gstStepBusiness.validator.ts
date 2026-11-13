@@ -1,7 +1,6 @@
 import {
   validateCommencementDate,
   validateIndividualPan,
-  validatePincodeMatchesState,
 } from '@shared/utils'
 import type { GstBusinessFormData } from '@modules/gst/types/gstBusiness.types'
 import { gstFieldRules as r } from '@modules/gst/validation/gstFieldRules'
@@ -55,14 +54,8 @@ export const validateGstBusinessField = (
       return r.cityDistrict('District')(data.district)
     case 'state':
       return select('Please select state')(data.state)
-    case 'pinCode': {
-      const pinErr = r.pinCode(data.pinCode)
-      if (pinErr) return pinErr
-      if (data.state) {
-        return validatePincodeMatchesState(data.pinCode, data.state) || undefined
-      }
-      return undefined
-    }
+    case 'pinCode':
+      return r.pinCode(data.pinCode, data.state)
     case 'hsnSacCode':
       return r.hsnSac(data.hsnSacCode)
 

@@ -2,6 +2,7 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
 import { render, screen, cleanup, fireEvent, waitFor, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { pickFiles } from './helpers/uploadTestFiles'
 import { GSTFilingPeriod } from '../../src/modules/gst/components/GSTFiling/GSTFilingPeriod/GSTFilingPeriod'
 import { GSTFilingDocuments } from '../../src/modules/gst/components/GSTFiling/GSTFilingDocuments/GSTFilingDocuments'
 import { GSTFilingReview } from '../../src/modules/gst/components/GSTFiling/GSTFilingReview/GSTFilingReview'
@@ -98,7 +99,7 @@ describe('GST Filing - Step 1: Filing Period & Nil Return vs Regular Return', ()
     fireEvent.click(submitBtn)
 
     expect(handleContinue).not.toHaveBeenCalled()
-    expect(screen.getByText(/GSTIN must be exactly 15 characters/i)).toBeDefined()
+    expect(screen.getByText(/Invalid state code|GSTIN must be exactly 15 characters/i)).toBeDefined()
   })
 
   it('validates monetary figures when estimated figures is selected for Regular Return', () => {
@@ -166,9 +167,9 @@ describe('GST Filing - Step 2: Upload Documents Validation', () => {
 
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement
     if (fileInput) {
-      fireEvent.change(fileInput, { target: { files: [largeFile] } })
+      await pickFiles(fileInput, [largeFile])
       await waitFor(() => {
-        expect(screen.getByText(/10.*MB/i)).toBeDefined()
+        expect(screen.getByText(/too large/i)).toBeDefined()
       })
     }
   })

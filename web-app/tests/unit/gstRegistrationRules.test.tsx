@@ -17,6 +17,8 @@ import { gstInput } from '../../src/modules/gst/utils/gstInputFormatters'
 import { useServiceDraft, readServiceDraft, DRAFT_NAMESPACES } from '../../src/shared/saveDraft'
 import { useGstRegistrationState } from '../../src/modules/gst/hooks/useGstRegistrationState'
 import { GSTStepBusiness } from '../../src/modules/gst/components/GSTRegistration/GSTStepBusiness/GSTStepBusiness'
+import { GSTStepReview } from '../../src/modules/gst/components/GSTRegistration/GSTStepReview/GSTStepReview'
+import { formatDisplayDate, toIsoDate } from '../../src/shared/utils'
 import type { GstBusinessFormData } from '../../src/modules/gst/types/gstBusiness.types'
 import { INITIAL_DOCUMENTS } from '../../src/modules/gst/utils/gstDocuments.constants'
 import { ALL_BANKS } from '../../src/modules/gst/types/gstPayment.types'
@@ -112,12 +114,11 @@ describe('BUG-GST-004: PIN code must match the State', () => {
   })
 })
 
-describe('BUG-GST-005: constitution vs PAN type', () => {
-  it('rejects an individual PAN for a company', () => {
-    expect(validateBusinessPan('ABCPK1234F', 'Private Limited Company')).toMatch(/"C" \(Company\)/)
-    expect(errorsFor({ businessPan: 'ABCPK1234F' }).businessPan).toBeTruthy()
-  })
-  it('accepts matching PAN types', () => {
+describe('Common PAN validation across all constitutions', () => {
+  it('accepts any valid PAN with category in [A, B, C, F, G, H, J, L, P, T] for any constitution', () => {
+    // Government Department with PAN (e.g. HGDAJ2345R with 4th char 'A')
+    expect(validateBusinessPan('HGDAJ2345R', 'Government Department')).toBeUndefined()
+    expect(validateBusinessPan('ABCPK1234F', 'Private Limited Company')).toBeUndefined()
     expect(validateBusinessPan('AAACT1234A', 'Public Limited Company')).toBeUndefined()
     expect(validateBusinessPan('AAAFT1234A', 'Limited Liability Partnership (LLP)')).toBeUndefined()
     expect(validateBusinessPan('AAAFT1234A', 'Partnership Firm')).toBeUndefined()
@@ -129,6 +130,10 @@ describe('BUG-GST-005: constitution vs PAN type', () => {
     expect(validateBusinessPan('AAACK1234A', 'Foreign Company')).toBeUndefined()
     expect(validateBusinessPan('AAACK1234A', 'One Person Company (OPC)')).toBeUndefined()
     expect(validateBusinessPan('ABCPK1234F', 'Proprietorship')).toBeUndefined()
+  })
+
+  it('rejects an invalid PAN where 4th character is not a valid category', () => {
+    expect(validateBusinessPan('ABCZE1234F', 'Private Limited Company')).toMatch(/4th character of PAN must represent a valid entity type/)
   })
   it('requires the signatory PAN to be an individual PAN', () => {
     expect(errorsFor({ signatoryPan: 'AAACT1234A' }).signatoryPan).toMatch(/individual PAN/)
@@ -183,11 +188,11 @@ const XLSX_BYTES = [0x50, 0x4b, 0x03, 0x04, 0x14, 0x00]
 const XLS_BYTES = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1]
 
 describe('BUG-GST-009: upload type and size limits', () => {
-  it('rejects executables, renamed executables and files over 15 MB', async () => {
+  it('rejects executables, renamed executables and files over 10 MB', async () => {
     expect(await validateUploadFile(fileFrom('setup.exe', 'application/x-msdownload', EXE_BYTES), DOCUMENT_UPLOAD_RULE)).toMatch(/Only PDF, Excel, JPG or PNG/)
     expect(await validateUploadFile(fileFrom('invoice.pdf', 'application/pdf', EXE_BYTES), DOCUMENT_UPLOAD_RULE)).toMatch(/not a valid/)
-    expect(await validateUploadFile(fileFrom('big.pdf', 'application/pdf', PDF_BYTES, 16 * 1024 * 1024), DOCUMENT_UPLOAD_RULE)).toMatch(/too large/)
-    expect(await validateUploadFile(fileFrom('scan.pdf', 'application/pdf', PDF_BYTES, 12 * 1024 * 1024), DOCUMENT_UPLOAD_RULE)).toBeNull()
+    expect(await validateUploadFile(fileFrom('big.pdf', 'application/pdf', PDF_BYTES, 12 * 1024 * 1024), DOCUMENT_UPLOAD_RULE)).toMatch(/too large/)
+    expect(await validateUploadFile(fileFrom('scan.pdf', 'application/pdf', PDF_BYTES, 8 * 1024 * 1024), DOCUMENT_UPLOAD_RULE)).toBeNull()
   })
   it('accepts genuine Excel workbooks (.xlsx and .xls) and rejects other spreadsheets', async () => {
     expect(await validateUploadFile(fileFrom('gstr2b.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', XLSX_BYTES), DOCUMENT_UPLOAD_RULE)).toBeNull()
@@ -520,5 +525,112 @@ describe('Field-type strict validations & character restrictions', () => {
     // User removes numbers
     fireEvent.change(input, { target: { value: 'Director' } })
     expect(screen.queryByText('Designation must contain only letters')).not.toBeInTheDocument()
+  })
+
+  describe('BUG_GST_WB_007 - Date format on GST Registration Review Page', () => {
+    it('formats ISO dates (YYYY-MM-DD) to DD-MM-YYYY on Review page', () => {
+      const data: GstBusinessFormData = {
+        ...VALID_FORM,
+        commencementDate: '2024-08-15',
+        dob: '1988-05-10',
+      }
+
+      render(
+        <GSTStepReview
+          businessData={data}
+          onEdit={() => {}}
+          onBack={() => {}}
+          onProceed={() => {}}
+          onSaveDraft={() => {}}
+        />
+      )
+
+      expect(screen.getByText('15-08-2024')).toBeInTheDocument()
+      expect(screen.getByText('10-05-1988')).toBeInTheDocument()
+      expect(screen.queryByText('2024-08-15')).not.toBeInTheDocument()
+      expect(screen.queryByText('1988-05-10')).not.toBeInTheDocument()
+    })
+
+    it('preserves user input entered in DD-MM-YYYY format (e.g. 15-08-2024, 01-01-2025) on Review page', () => {
+      const data: GstBusinessFormData = {
+        ...VALID_FORM,
+        commencementDate: '15-08-2024',
+        dob: '01-01-2025',
+      }
+
+      render(
+        <GSTStepReview
+          businessData={data}
+          onEdit={() => {}}
+          onBack={() => {}}
+          onProceed={() => {}}
+          onSaveDraft={() => {}}
+        />
+      )
+
+      expect(screen.getByText('15-08-2024')).toBeInTheDocument()
+      expect(screen.getByText('01-01-2025')).toBeInTheDocument()
+    })
+
+    it('formatDisplayDate and toIsoDate common utilities format correctly without timezone shifts', () => {
+      expect(formatDisplayDate('2024-08-15')).toBe('15-08-2024')
+      expect(formatDisplayDate('15-08-2024')).toBe('15-08-2024')
+      expect(formatDisplayDate('01-01-2025')).toBe('01-01-2025')
+      expect(formatDisplayDate('2025-01-01')).toBe('01-01-2025')
+      expect(formatDisplayDate('')).toBe('—')
+      expect(formatDisplayDate(null)).toBe('—')
+      expect(formatDisplayDate(undefined)).toBe('—')
+
+      expect(toIsoDate('15-08-2024')).toBe('2024-08-15')
+      expect(toIsoDate('2024-08-15')).toBe('2024-08-15')
+      expect(toIsoDate('01-01-2025')).toBe('2025-01-01')
+      expect(toIsoDate('')).toBe('')
+    })
+  })
+
+  describe('BUG_GST_WB_010 - Separate Contact and Email in GST Registration Review Page', () => {
+    it('displays mobile under Contact and email under separate Email row', () => {
+      const data: GstBusinessFormData = {
+        ...VALID_FORM,
+        signatoryMobile: '9823145672',
+        signatoryEmail: 'ravi@example.com',
+      }
+
+      render(
+        <GSTStepReview
+          businessData={data}
+          onEdit={() => {}}
+          onBack={() => {}}
+          onProceed={() => {}}
+          onSaveDraft={() => {}}
+        />
+      )
+
+      expect(screen.getByText('Contact')).toBeInTheDocument()
+      expect(screen.getByText('+91 9823145672')).toBeInTheDocument()
+      expect(screen.getByText('Email')).toBeInTheDocument()
+      expect(screen.getByText('ravi@example.com')).toBeInTheDocument()
+    })
+
+    it('handles empty mobile and email with fallback dash "—"', () => {
+      const data: GstBusinessFormData = {
+        ...VALID_FORM,
+        signatoryMobile: '',
+        signatoryEmail: '',
+      }
+
+      render(
+        <GSTStepReview
+          businessData={data}
+          onEdit={() => {}}
+          onBack={() => {}}
+          onProceed={() => {}}
+          onSaveDraft={() => {}}
+        />
+      )
+
+      expect(screen.getByText('Contact')).toBeInTheDocument()
+      expect(screen.getByText('Email')).toBeInTheDocument()
+    })
   })
 })

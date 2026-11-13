@@ -1,5 +1,6 @@
 import { VALIDATION_RULES } from './validationRules'
 import { VALIDATION_MESSAGES } from './validationMessages'
+import { validatePincodeMatchesState } from '../utils/pincodeState'
 
 export interface BaseValidationOptions {
   label?: string
@@ -361,33 +362,53 @@ export const validateCity = (
 /* -------------------------------------------------------------------------- */
 /* J. PIN Code                                                                */
 /* -------------------------------------------------------------------------- */
-export const isValidPincode = (pincode: string): boolean => {
-  return validatePincode(pincode, { required: true }) === null
+export interface ValidatePincodeOptions extends BaseValidationOptions {
+  state?: string
+  stateOrUt?: string
+}
+
+export const isValidPincode = (pincode: string, state?: string): boolean => {
+  return validatePincode(pincode, { required: true, state }) === null
 }
 
 export const validatePincode = (
   pincode: string | undefined | null,
-  options?: BaseValidationOptions | string
+  options?: ValidatePincodeOptions | string,
+  stateParam?: string
 ): string | null => {
-  const opts: BaseValidationOptions = typeof options === 'string' ? { label: options } : options || {}
+  const opts: ValidatePincodeOptions = typeof options === 'string' ? { label: options } : options || {}
   const required = opts.required !== false
+  const state = (stateParam || opts.state || opts.stateOrUt || '').trim()
   const raw = String(pincode ?? '').trim()
 
   if (!raw) {
-    return required ? (opts.label ? `${opts.label} is required` : VALIDATION_MESSAGES.required) : null
+    return required ? (opts.label ? `${opts.label} is required` : 'PIN code is required') : null
   }
 
-  // Reject spaces or non-digits
+  // Reject spaces or non-digits (alphabets, symbols)
   if (/\s/.test(raw) || !/^\d+$/.test(raw)) {
-    return VALIDATION_MESSAGES.pincode
+    return 'PIN code must contain digits only'
   }
 
+  // Exactly 6 digits
   if (raw.length !== 6) {
-    return opts.label ? `${opts.label} must be exactly 6 digits` : 'PIN Code must be exactly 6 digits'
+    return opts.label ? `${opts.label} must be exactly 6 digits` : 'PIN code must be exactly 6 digits'
   }
 
-  if (!VALIDATION_RULES.pincode.pattern.test(raw)) {
+  // First digit between 1 and 9
+  if (!/^[1-9]\d{5}$/.test(raw)) {
     return 'Enter a valid 6-digit Indian PIN code'
+  }
+
+  // Reject dummy repeating digits e.g. 111111, 222222
+  if (/^(\d)\1{5}$/.test(raw)) {
+    return 'Enter a valid 6-digit Indian PIN code'
+  }
+
+  // Validate against State/UT if state is selected/provided
+  if (state) {
+    const mismatch = validatePincodeMatchesState(raw, state)
+    if (mismatch) return mismatch
   }
 
   return null

@@ -2,7 +2,7 @@ import { CircleUserRound } from 'lucide-react'
 import { gstInput, GST_MAX_LENGTH } from '@modules/gst/utils/gstInputFormatters'
 import { GSTFormSection } from '@modules/gst/shared/GSTFormSection'
 import { GSTDateField, GSTTextField } from '@modules/gst/shared/GSTFormFields'
-import { getMaxAdultDobIso } from '@shared/utils/dateUtils'
+import { getTodayIso } from '@shared/utils/dateUtils'
 import type { GstBusinessFormData } from '../GSTStepBusiness/GSTStepBusiness'
 
 type SignatoryField = 'signatoryName' | 'signatoryPan' | 'dob' | 'designation' | 'signatoryMobile' | 'signatoryEmail'
@@ -69,7 +69,7 @@ export const GSTAuthorisedSignatory = ({
         <GSTTextField
           id="signatoryPan"
           label="Signatory PAN"
-          placeholder="ABCDE1234F"
+          placeholder="ABCPH5478H"
           maxLength={GST_MAX_LENGTH.pan}
           autoCapitalize="characters"
           value={data.signatoryPan}
@@ -83,7 +83,7 @@ export const GSTAuthorisedSignatory = ({
         <GSTDateField
           id="dob"
           label="Date of Birth"
-          max={getMaxAdultDobIso(18)}
+          max={getTodayIso()}
           value={data.dob}
           error={errors.dob}
           onValueChange={(v) => update('dob', v)}

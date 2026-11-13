@@ -5,7 +5,7 @@ import { DocumentCard, CaretInput, FieldInfoTooltip } from '@shared/components'
 import { UPLOAD_HINT, DOCUMENT_UPLOAD_RULE } from '@shared/upload'
 import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
 import { assertGstUploadCriteria, GstUploadException } from '@modules/gst/utils/gstUploadValidator'
-import { getTodayIso } from '@shared/utils/dateUtils'
+import { getTodayIso, formatDisplayDate } from '@shared/utils'
 import './GSTComplianceUploadFields.css'
 
 export interface NoticeResponseValues {
@@ -26,14 +26,7 @@ interface GSTNoticeResponseFieldsProps {
   onBlurField?: (field: keyof NoticeResponseValues) => void
 }
 
-const toDisplayDate = (iso: string): string => {
-  if (!iso) return ''
-  const parts = iso.split('-')
-  if (parts.length === 3 && parts[0].length === 4) {
-    return `${parts[2]}-${parts[1]}-${parts[0]}`
-  }
-  return iso
-}
+const toDisplayDate = (iso: string): string => formatDisplayDate(iso, '')
 
 /** Notice details for a compliance request; the values live in the parent so they can be validated and drafted */
 export const GSTNoticeResponseFields: React.FC<GSTNoticeResponseFieldsProps> = ({

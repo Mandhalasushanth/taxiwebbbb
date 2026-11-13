@@ -139,7 +139,7 @@ export const RegulatoryComplianceSection: React.FC<RegulatoryComplianceSectionPr
                 id="complianceGstNumber"
                 type="text"
                 className={`pf-custom-input ${errors.complianceGstNumber ? 'pf-custom-input--error' : ''}`}
-                placeholder="Enter GSTIN (e.g., 29ABCDE1234F1Z5)"
+                placeholder="Enter GSTIN (e.g., 29ABCPH5478H1Z5)"
                 value={data.complianceGstNumber || ''}
                 onChange={(e) => onChange({ complianceGstNumber: e.target.value.toUpperCase() })}
               />
@@ -158,7 +158,7 @@ export const RegulatoryComplianceSection: React.FC<RegulatoryComplianceSectionPr
               id="complianceIncomeTaxPan"
               type="text"
               className={`pf-custom-input ${errors.complianceIncomeTaxPan ? 'pf-custom-input--error' : ''}`}
-              placeholder="Enter PAN (e.g., ABCDE1234F)"
+              placeholder="Enter PAN (e.g., ABCPH5478H)"
               value={data.complianceIncomeTaxPan || ''}
               onChange={(e) => onChange({ complianceIncomeTaxPan: e.target.value.toUpperCase() })}
             />

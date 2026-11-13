@@ -79,8 +79,13 @@
   padding: 0;
 }
 
-.dob-popover__nav-arrow:hover {
+.dob-popover__nav-arrow:hover:not(:disabled) {
   background-color: var(--grey-300);
+}
+
+.dob-popover__nav-arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 .dob-popover__nav-label {
@@ -113,10 +118,16 @@
   line-height: 1.2;
 }
 
-.dob-popover__jump-btn:hover {
+.dob-popover__jump-btn:hover:not(:disabled) {
   border-color: var(--primary-orange);
   color: var(--primary-orange);
   background-color: var(--palette-orange-50-fffaf5);
+}
+
+.dob-popover__jump-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: var(--grey-300);
 }
 
 /* Weekday Row */

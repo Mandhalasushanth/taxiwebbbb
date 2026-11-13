@@ -66,7 +66,7 @@ export const GSTCancellationFields: React.FC<GSTCancellationFieldsProps> = ({
           </label>
           <CaretInput
             id="gst-canc-gstin-input" type="text" maxLength={15} placeholder="Enter your GSTIN"
-            value={gstin} onChange={(e) => { setGstin(gstInput.gstin(e.target.value)); clearError('gstin') }}
+            value={gstin} onChange={(e) => { setGstin(gstInput.gstin(e.target.value)) }}
             onBlur={() => onBlur?.('gstin')}
             className={`gst-canc-input ${errors.gstin ? 'has-error' : ''}`}
           />

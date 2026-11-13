@@ -239,8 +239,12 @@ describe('TaxNoticeAssistance Component', () => {
     const deleteBtn = screen.getByRole('button', { name: /^Delete /i })
     expect(deleteBtn).toBeDefined()
 
-    // Click delete trash button to remove file
+    // Click delete trash button to prompt confirmation modal
     fireEvent.click(deleteBtn)
+
+    // Confirm deletion in popup modal
+    const confirmDeleteBtn = screen.getByTestId('confirm-delete-doc-modal')
+    fireEvent.click(confirmDeleteBtn)
 
     // File should be removed and "Upload File" button restored
     expect(screen.queryByText(/GST_Compliance_10_Fields_Professional.xlsx/i)).toBeNull()

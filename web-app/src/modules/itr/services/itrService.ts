@@ -40,7 +40,10 @@ export const listItrApplications = async (filters?: ItrFilters): Promise<ItrItem
       await new Promise((resolve) => setTimeout(resolve, 200))
       const userApps = userStorage
         .getUserApplications()
-        .filter((a) => a.title.toLowerCase().includes('itr'))
+        .filter((a) => {
+          const lower = a.title.toLowerCase()
+          return lower.includes('itr') || lower.includes('tds refund') || lower.includes('tax notice')
+        })
       return userApps.map((a) => ({
         id: a.id,
         reference: a.code || a.id,

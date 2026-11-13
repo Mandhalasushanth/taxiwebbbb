@@ -124,7 +124,7 @@ export const BusinessProfileCard: React.FC<Required<BusinessWorkingCapitalStepPr
         <FormTextField
           id="bwc-gstin"
           label="GSTIN"
-          placeholder="15-character GSTIN (e.g. 29ABCDE1234F1Z5)"
+          placeholder="15-character GSTIN (e.g. 29ABCPH5478H1Z5)"
           maxLength={L.gstin}
           value={data.gstin}
           onChange={setText('gstin')}

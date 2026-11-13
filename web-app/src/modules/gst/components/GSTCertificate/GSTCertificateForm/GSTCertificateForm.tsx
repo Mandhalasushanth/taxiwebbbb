@@ -1,7 +1,6 @@
 import type { ChangeEvent, FormEvent } from 'react'
 import { CaretInput, FieldInfoTooltip } from '@shared/components'
 import { gstInput } from '@modules/gst/utils/gstInputFormatters'
-import { GST_CERTIFICATE_REQUEST_TYPES } from '@modules/gst/data/gstCertificateData'
 import type { CertificateFields } from '@modules/gst/hooks/useGSTCertificateFlow'
 import './GSTCertificateForm.css'
 
@@ -17,7 +16,7 @@ interface GSTCertificateFormProps {
 
 /**
  * Screen 1: Download GST Registration Certificate (REG-06)
- * Desktop web layout with responsive 2-column grid and exact updated fields/text.
+ * Matches official design from specification.
  */
 export const GSTCertificateForm = ({
   values,
@@ -30,23 +29,18 @@ export const GSTCertificateForm = ({
 }: GSTCertificateFormProps) => {
   const { gstin, requestType: selectedRequestType } = values
 
-  const displayPhone = user?.mobile ? `+91 ${user.mobile}` : ''
-  const displayEmail = user?.email || 'sagu@gmail.com'
+  const displayPhone = user?.mobile ? `+91 ${user.mobile}` : '+91 9030045048'
+  const displayEmail = user?.email || 'jenasagarika211@gmail.com'
 
   return (
     <div className="gst-cert-container">
-      {/* ── Top Bar Header (Standard Web Desktop) ── */}
-      <div className="gst-cert-top-bar">
-        <h2 className="gst-cert-top-title">GST Certificate (REG-06)</h2>
-      </div>
-
       {/* ── Heading Banner with Right Certificate Graphic ── */}
       <div className="gst-cert-header-card">
         <div className="gst-cert-header-left">
           <span className="gst-cert-kicker">OFFICIAL GOVERNMENT COPY</span>
           <h1 className="gst-cert-heading">Download GST Registration Certificate</h1>
           <p className="gst-cert-subheading">
-            Form GST REG-06 issued under Goods and Services Tax Act, 2017.
+            Form GST REG-06 Issued under Goods and Services Tax Act, 2017.
           </p>
         </div>
 
@@ -67,9 +61,9 @@ export const GSTCertificateForm = ({
         </div>
       </div>
 
-      {/* ── Form Cards Stack (Web Desktop 2-column grid) ── */}
+      {/* ── Form Cards Stack ── */}
       <form className="gst-cert-form" onSubmit={onSubmit} noValidate>
-        {/* Card 1 & Card 2 in responsive 2-column grid */}
+        {/* Card 1 & Card 2 in grid */}
         <div className="gst-cert-grid-row">
           {/* Card 1: GSTIN Number */}
           <div className="gst-cert-card" id="gst-cert-gstin">
@@ -124,31 +118,32 @@ export const GSTCertificateForm = ({
                   <line x1="1" y1="14" x2="7" y2="14" /><line x1="9" y1="8" x2="15" y2="8" /><line x1="17" y1="16" x2="23" y2="16" />
                 </svg>
               </div>
-              <label htmlFor="gst-cert-purpose-select" className="gst-cert-card__label">
+              <label className="gst-cert-card__label">
                 Request Purpose <span className="gst-cert-required">*</span>
               </label>
             </div>
 
             <div className="gst-cert-field-wrap">
-              <div className="gst-cert-select-box">
-                <select
-                  id="gst-cert-purpose-select"
-                  className={`gst-cert-select ${errors.requestType ? 'has-error' : ''}`}
-                  value={selectedRequestType}
-                  onChange={(e: ChangeEvent<HTMLSelectElement>) => onChange('requestType', e.target.value)}
-                  onBlur={() => onBlur?.('requestType')}
-                >
-                  {GST_CERTIFICATE_REQUEST_TYPES.map((t) => (
-                    <option key={t.key} value={t.label}>
-                      {t.label}
-                    </option>
-                  ))}
-                </select>
-                <span className="gst-cert-select-arrow" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" className="gst-cert-arrow-svg" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
+              <div
+                className="gst-cert-option-card gst-cert-option-card--selected"
+                role="button"
+                tabIndex={0}
+                onClick={() => onChange('requestType', 'Download Existing Certificate (Form REG-06)')}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    onChange('requestType', 'Download Existing Certificate (Form REG-06)')
+                  }
+                }}
+              >
+                <span className="gst-cert-option-text">
+                  {selectedRequestType || 'Download Existing Certificate (Form REG-06)'}
                 </span>
+                <div className="gst-cert-option-check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" className="gst-cert-check-svg" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </div>
               </div>
               {errors.requestType && <p className="gst-cert-field-error">{errors.requestType}</p>}
             </div>
@@ -168,23 +163,21 @@ export const GSTCertificateForm = ({
           </div>
 
           <div className="gst-cert-channel-body">
-            <p className="gst-cert-channel-phone">{displayPhone}</p>
-            <p className="gst-cert-channel-email">{displayEmail}</p>
+            <div className="gst-cert-channel-info-row">
+              <span className="gst-cert-channel-phone">{displayPhone}</span>
+              <span className="gst-cert-channel-divider" aria-hidden="true">•</span>
+              <span className="gst-cert-channel-email">{displayEmail}</span>
+            </div>
             <p className="gst-cert-channel-note">
               A notification will also be sent to your registered contact upon download.
             </p>
           </div>
         </div>
 
-        {/* Submit Action (Web desktop button right aligned) */}
+        {/* Submit Action: CONTINUE -> */}
         <div className="gst-cert-actions">
           <button type="submit" disabled={isSubmitting} className="gst-cert-btn-orange">
-            <svg viewBox="0 0 24 24" className="gst-cert-btn-icon" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            <span>{isSubmitting ? 'PROCESSING...' : 'DOWNLOAD CERTIFICATE'}</span>
+            <span>{isSubmitting ? 'PROCESSING...' : 'CONTINUE →'}</span>
           </button>
         </div>
       </form>

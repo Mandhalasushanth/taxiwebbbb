@@ -1,9 +1,9 @@
-import { getStatesForPincode, validatePincodeMatchesState } from '@shared/utils'
+import { getStatesForPincode, validatePincodeMatchesState, validateGstin as centralValidateGstin } from '@shared/utils'
 import { stateFromGstin } from '@modules/gst/utils/gstBusinessDetails.constants'
 import { BUSINESS_PROFILE_LIMITS } from '@modules/loans/components/BusinessWorkingCapital/steps/BusinessProfile/businessProfile.constants'
 import type { BusinessWorkingCapitalFormData, KycStepData, LoanAddress } from '@modules/loans/types/businessWorkingCapital.types'
 import { getBwcDocumentList } from '@modules/loans/components/BusinessWorkingCapital/steps/Documents/documents.constants'
-import { LOAN_PATTERNS, loanFieldRules, toStepResult } from './commonLoanValidation'
+import { loanFieldRules, toStepResult } from './commonLoanValidation'
 import type { LoanStepValidationResult } from './commonLoanValidation'
 
 const REQUIRED_FIELDS_MESSAGE = 'Please complete all required fields marked with *.'
@@ -86,7 +86,8 @@ const validateBusinessName = (value: string): string | undefined => {
 const validateGstin = (value: string, businessPincode: string): string | undefined => {
   const v = value.trim().toUpperCase()
   if (!v) return 'GSTIN is required for GST registered entities'
-  if (!LOAN_PATTERNS.GSTIN.test(v)) return 'Enter a valid 15-character GSTIN'
+  const centralErr = centralValidateGstin(v)
+  if (centralErr) return centralErr
   const pinError = loanFieldRules.pincode(businessPincode)
   const stateOk = pinError || getStatesForPincode(businessPincode).includes(stateFromGstin(v))
   return stateOk ? undefined : 'GSTIN state code does not match the business PIN code'

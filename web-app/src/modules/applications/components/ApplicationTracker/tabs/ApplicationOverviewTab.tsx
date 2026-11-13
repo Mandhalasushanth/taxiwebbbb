@@ -104,7 +104,11 @@ export const ApplicationOverviewTab: React.FC<ApplicationOverviewTabProps> = ({
           <div className="app-tracker-next-body">
             <h4 className="app-tracker-next-title">What happens next?</h4>
             <p className="app-tracker-next-desc">
-              Your application has been submitted successfully. We'll notify you when its status changes.
+              {data.title.toLowerCase().includes('certificate')
+                ? (data.rawApplication?.statusLabel === 'Approved' || data.rawApplication?.statusLabel === 'Completed'
+                  ? 'Your Form GST REG-06 Registration Certificate has been approved! Head to the Documents tab to download your official certificate.'
+                  : 'Your GST certificate application is currently under verification. Once approved by the manager, Form GST REG-06 will be ready for download in the Documents tab.')
+                : "Your application has been submitted successfully. We'll notify you when its status changes."}
             </p>
           </div>
         </div>

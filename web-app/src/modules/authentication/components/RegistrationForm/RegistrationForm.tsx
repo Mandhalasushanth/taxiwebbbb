@@ -42,6 +42,7 @@ type TouchedMap = Partial<Record<FieldKey, boolean>>;
 const DEPENDENT_FIELDS: Partial<Record<FieldKey, FieldKey>> = {
   mobile: "password",
   password: "confirmPassword",
+  state: "pincode",
 };
 
 const UNIQUE_FIELDS: FieldKey[] = ["pan", "email"];

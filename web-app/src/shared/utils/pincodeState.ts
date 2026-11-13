@@ -118,8 +118,10 @@ export const getStatesForPincode = (pincode: string): readonly string[] => {
  */
 export const validatePincodeMatchesState = (pincode: string, state: string): string | null => {
   const digits = (pincode || '').replace(/\D/g, '')
-  if (digits.length !== 6 || !state) return null
+  if (digits.length !== 6 || !state || !state.trim()) return null
   const states = getStatesForPincode(digits)
   if (states.length === 0) return `PIN code ${digits} is not a valid business address PIN`
-  return states.includes(state) ? null : `PIN code ${digits} belongs to ${states.join(' / ')}, not ${state}`
+  const trimmed = state.trim()
+  const matched = states.some((s) => s.toLowerCase() === trimmed.toLowerCase())
+  return matched ? null : `PIN code ${digits} belongs to ${states.join(' / ')}, not ${trimmed}`
 }

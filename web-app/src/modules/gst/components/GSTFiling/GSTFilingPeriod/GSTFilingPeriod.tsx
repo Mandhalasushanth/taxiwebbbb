@@ -76,7 +76,17 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
   const [financialYear, setFinancialYear] = useState(initialData?.financialYear || '')
   const [frequency, setFrequency] = useState(initialData?.frequency || '')
   const [returnPeriod, setReturnPeriod] = useState(initialData?.selectedMonth || '')
-  const [gstin, setGstin] = useState(initialData?.gstin || '')
+  const [gstin, setGstinRaw] = useState(initialData?.gstin || '')
+  const handleSetGstin = (val: string) => {
+    setGstinRaw(val)
+    const liveErr = gstFieldRules.gstin(val, undefined, true)
+    setErrors((prev) => {
+      const next = { ...prev }
+      if (liveErr) next.gstin = liveErr
+      else delete next.gstin
+      return next
+    })
+  }
   const [returnType, setReturnType] = useState<string>(
     initialData?.returnType === 'nil' ? '' : initialData?.returnType || ''
   )
@@ -321,7 +331,7 @@ export const GSTFilingPeriod: React.FC<GSTFilingPeriodProps> = ({
             <GSTTaxpayerReturnFields
               frequency={frequency}
               gstin={gstin}
-              setGstin={setGstin}
+              setGstin={handleSetGstin}
               returnType={returnType}
               setReturnType={setReturnType}
               filingType={filingType}

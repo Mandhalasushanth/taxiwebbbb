@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { routePaths } from '@core/config'
 import { StepActionBar, CaretInput } from '@shared/components'
-import { getStatesForPincode } from '@shared/utils/pincodeState'
 import { filterDigits, filterMobile } from '../../utils/validation'
 import {
   validateAddress,
@@ -31,14 +30,6 @@ const OWNERSHIP_OPTIONS = ['Rented', 'Owned', 'Leased'] as const
 const PIN_LENGTH = 6
 const ADDRESS_MIN_LENGTH = 5
 
-/** PIN must belong to the typed state (compared without case, e.g. "telangana" = "Telangana"). */
-const pinStateError = (pin: string, state: string): string => {
-  const states = getStatesForPincode(pin)
-  if (states.length === 0) return `PIN code ${pin} is not a valid business address PIN`
-  const typed = state.trim().toLowerCase()
-  return states.some((s) => s.toLowerCase() === typed) ? '' : `PIN code ${pin} belongs to ${states.join(' / ')}, not ${state.trim()}`
-}
-
 const requiredError = (value: string | undefined, message: string): string => ((value || '').trim() ? '' : message)
 
 const validateSingleAddressField = (
@@ -62,13 +53,7 @@ const validateSingleAddressField = (
       if (!val) return 'State is required'
       return validateCity(val, 'State') || ''
     case 'pincode': {
-      if (!val) return 'PIN code is required'
-      const pinErr = validatePincode(val, 'PIN code')
-      if (pinErr) return pinErr
-      if ((currentAddress.state || '').trim()) {
-        return pinStateError(val, currentAddress.state)
-      }
-      return ''
+      return validatePincode(val, { label: 'PIN code', state: currentAddress.state }) || ''
     }
     case 'ownershipStatus':
       return requiredError(val, 'Premises ownership status is required')
@@ -126,6 +111,16 @@ export const RegisteredOffice: React.FC = () => {
           return next
         }
         return { ...prev, [field]: err }
+      })
+    }
+
+    if (field === 'state' && updated.pincode) {
+      const pinErr = validateSingleAddressField('pincode', updated.pincode, updated)
+      setErrors((prev) => {
+        const next = { ...prev }
+        if (pinErr) next.pincode = pinErr
+        else delete next.pincode
+        return next
       })
     }
   }

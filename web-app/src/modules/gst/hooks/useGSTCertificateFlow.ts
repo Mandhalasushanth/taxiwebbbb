@@ -32,8 +32,18 @@ export const useGSTCertificateFlow = () => {
   const setField = <K extends keyof CertificateFields>(field: K, value: CertificateFields[K]) => {
     setFields((prev) => ({ ...prev, [field]: value }))
     setErrors((prev) => {
-      const { [field]: _removed, ...rest } = prev
-      return rest
+      const next = { ...prev }
+      if (field === 'gstin') {
+        const liveErr = gstFieldRules.gstin(value as string, undefined, true)
+        if (liveErr) {
+          next.gstin = liveErr
+        } else {
+          delete next.gstin
+        }
+      } else {
+        delete next[field]
+      }
+      return next
     })
   }
 

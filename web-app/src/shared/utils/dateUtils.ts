@@ -57,3 +57,92 @@ export const getMaxAdultDobIso = (minAge: number = 18): string => {
   return `${year}-${month}-${day}`
 }
 
+/**
+ * Formats a date string (YYYY-MM-DD, DD-MM-YYYY, ISO) or Date object
+ * into standard DD-MM-YYYY display format without timezone shifting.
+ */
+export const formatDisplayDate = (
+  value?: string | Date | null,
+  fallback = '—'
+): string => {
+  if (value === undefined || value === null) return fallback
+
+  if (value instanceof Date) {
+    if (Number.isNaN(value.getTime())) return fallback
+    const day = String(value.getDate()).padStart(2, '0')
+    const month = String(value.getMonth() + 1).padStart(2, '0')
+    const year = value.getFullYear()
+    return `${day}-${month}-${year}`
+  }
+
+  const str = String(value).trim()
+  if (!str) return fallback
+
+  // Already DD-MM-YYYY
+  if (/^\d{2}-\d{2}-\d{4}$/.test(str)) {
+    return str
+  }
+
+  // DD-M-YYYY or D-MM-YYYY
+  const dmyHyphenMatch = str.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/)
+  if (dmyHyphenMatch) {
+    return `${dmyHyphenMatch[1].padStart(2, '0')}-${dmyHyphenMatch[2].padStart(2, '0')}-${dmyHyphenMatch[3]}`
+  }
+
+  // DD/MM/YYYY or D/M/YYYY
+  const slashMatch = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
+  if (slashMatch) {
+    return `${slashMatch[1].padStart(2, '0')}-${slashMatch[2].padStart(2, '0')}-${slashMatch[3]}`
+  }
+
+  // YYYY-MM-DD or YYYY-MM-DDTHH:mm:ss
+  const isoMatch = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/)
+  if (isoMatch) {
+    return `${isoMatch[3].padStart(2, '0')}-${isoMatch[2].padStart(2, '0')}-${isoMatch[1]}`
+  }
+
+  const d = new Date(str)
+  if (!Number.isNaN(d.getTime())) {
+    const day = String(d.getDate()).padStart(2, '0')
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const year = d.getFullYear()
+    return `${day}-${month}-${year}`
+  }
+
+  return str
+}
+
+/** Alias for formatDisplayDate */
+export const toDisplayDate = (value?: string | Date | null, fallback = ''): string => {
+  return formatDisplayDate(value, fallback)
+}
+
+/**
+ * Converts any date format (DD-MM-YYYY, DD/MM/YYYY, Date) to standard ISO YYYY-MM-DD
+ * for native HTML5 <input type="date" /> values.
+ */
+export const toIsoDate = (value?: string | Date | null): string => {
+  if (!value) return ''
+  if (value instanceof Date) {
+    if (Number.isNaN(value.getTime())) return ''
+    const year = value.getFullYear()
+    const month = String(value.getMonth() + 1).padStart(2, '0')
+    const day = String(value.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+  const str = String(value).trim()
+  if (!str) return ''
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+    return str
+  }
+  const dmyMatch = str.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/)
+  if (dmyMatch) {
+    return `${dmyMatch[3]}-${dmyMatch[2].padStart(2, '0')}-${dmyMatch[1].padStart(2, '0')}`
+  }
+  const isoPrefixMatch = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/)
+  if (isoPrefixMatch) {
+    return `${isoPrefixMatch[1]}-${isoPrefixMatch[2].padStart(2, '0')}-${isoPrefixMatch[3].padStart(2, '0')}`
+  }
+  return str
+}
+

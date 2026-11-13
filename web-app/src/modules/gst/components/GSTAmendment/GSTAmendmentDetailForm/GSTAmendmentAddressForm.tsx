@@ -101,7 +101,7 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
     if (val.length <= 6) {
       setPinCode(val)
       if (errors.pinCode) {
-        const err = rules.pinCode(val)
+        const err = rules.pinCode(val, isAdditionalPlace ? undefined : stateUt)
         setErrors((prev) => ({ ...prev, pinCode: err || '' }))
       }
     }
@@ -127,7 +127,7 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
       city: rules.placeName('City')(city),
       district: isAdditionalPlace ? undefined : rules.placeName('District')(district),
       stateUt: isAdditionalPlace || stateUt ? undefined : 'Please select state / UT.',
-      pinCode: rules.pinCode(pinCode),
+      pinCode: rules.pinCode(pinCode, isAdditionalPlace ? undefined : stateUt),
     })
     if (!natureOfPremises) newErrors.natureOfPremises = 'Please select nature of premises.'
     if (!selectedFile && !effectiveFileName) newErrors.file = GST_FILE_MESSAGES.proofRequired
@@ -307,6 +307,10 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
                   const err = val ? undefined : 'Please select state / UT.'
                   setErrors((prev) => ({ ...prev, stateUt: err || '' }))
                 }
+                if (pinCode && !isAdditionalPlace) {
+                  const pinErr = rules.pinCode(pinCode, val)
+                  setErrors((prev) => ({ ...prev, pinCode: pinErr || '' }))
+                }
                 onChange?.({
                   newValue: `${address.trim()}, ${city.trim()}, ${district.trim()}, ${val} - ${pinCode} (${natureOfPremises})`,
                   file: selectedFile,
@@ -334,7 +338,7 @@ export const GSTAmendmentAddressForm: React.FC<GSTAmendmentAddressFormProps> = (
                 setErrors((prev) => ({ ...prev, stateUt: err || '' }))
               }}
               onPinCodeBlur={() => {
-                const err = rules.pinCode(pinCode)
+                const err = rules.pinCode(pinCode, isAdditionalPlace ? undefined : stateUt)
                 setErrors((prev) => ({ ...prev, pinCode: err || '' }))
               }}
               onPinCodeChange={(e) => {
