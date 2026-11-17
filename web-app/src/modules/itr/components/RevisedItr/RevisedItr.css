@@ -1,3 +1,28 @@
+/* Revised ITR Unified Typography */
+.revised-itr-page,
+.step1-find-original-return,
+.step2-reason-for-revision,
+.step3-update-income-details,
+.step4-upload-documents,
+.step5-review-revised-itr {
+  font-family: var(--font-sans, 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+.revised-itr-page *,
+.step1-find-original-return *,
+.step2-reason-for-revision *,
+.step3-update-income-details *,
+.step4-upload-documents *,
+.step5-review-revised-itr * {
+  font-family: inherit;
+}
+.revised-itr-page input,
+.revised-itr-page button,
+.revised-itr-page select,
+.revised-itr-page textarea,
+.revised-itr-page label {
+  font-family: var(--font-sans, 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
 /* ==========================================================================
    Revised ITR - Main Page Layout
    ========================================================================== */

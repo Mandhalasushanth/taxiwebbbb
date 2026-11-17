@@ -68,4 +68,6 @@ export interface UploadedFileMeta {
   previewUrl?: string
   progress?: number
   uploadedAt?: string
+  status?: 'uploading' | 'completed' | 'success' | 'uploaded' | 'error' | 'failed'
+  error?: string
 }

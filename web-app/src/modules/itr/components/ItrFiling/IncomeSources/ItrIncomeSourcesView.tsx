@@ -7,6 +7,7 @@ import {
   getDefaultSourcesForCategory,
   sortIncomeSources,
   validateEmployerName,
+  validateHomeLoanInterest,
   type ItrCategoryId,
   type ResidentialStatusOption,
   type SalaryDetails,
@@ -113,8 +114,12 @@ export const ItrIncomeSourcesView: React.FC<ItrIncomeSourcesViewProps> = ({
             validateEmployerName(salaryDetails.employerName) === null,
         )) &&
       (!selectedSources.includes("house_property") ||
-        housePropertyDetails.propertyType === "self_occupied" ||
-        Boolean(housePropertyDetails.annualRentReceived?.trim())) &&
+        (validateHomeLoanInterest(
+          housePropertyDetails.homeLoanInterest,
+          housePropertyDetails.propertyType,
+        ) === null &&
+          (housePropertyDetails.propertyType === "self_occupied" ||
+            Boolean(housePropertyDetails.annualRentReceived?.trim())))) &&
       (!selectedSources.includes("business") ||
         Boolean(
           businessDetails.grossTurnover?.trim() ||

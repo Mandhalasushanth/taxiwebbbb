@@ -10,13 +10,20 @@ import type {
   RevisedItrValidationErrors,
 } from '../types/revisedItr.types'
 
-export const validateAckNumber = (val: string): string | null => {
-  const trimmed = val.trim()
+export const validateAckNumber = (
+  val: string | undefined | null,
+  options?: { isRequired?: boolean }
+): string | null => {
+  const isRequired = options?.isRequired !== false
+  const trimmed = (val ?? '').trim()
   if (!trimmed) {
-    return 'Original ITR Acknowledgement Number is required.'
+    return isRequired ? 'Original ITR Acknowledgement Number is required.' : null
   }
-  if (!/^\d{15}$/.test(trimmed)) {
-    return `Acknowledgement number must be exactly 15 digits (${trimmed.length}/15 entered).`
+  if (!/^\d+$/.test(trimmed)) {
+    return 'Acknowledgement number must contain numeric digits only.'
+  }
+  if (trimmed.length !== 15) {
+    return 'Acknowledgement number must be exactly 15 digits.'
   }
   return null
 }
@@ -102,7 +109,7 @@ export const calculateIncomeChange = (
   if (!revisedStr || !revisedStr.trim()) {
     return { changeText: '—', tone: 'neutral' }
   }
-  const revisedNum = Number(revisedStr)
+  const revisedNum = Number(String(revisedStr).replace(/[^0-9.]/g, ''))
   if (Number.isNaN(revisedNum)) {
     return { changeText: '—', tone: 'neutral' }
   }
@@ -116,7 +123,7 @@ export const calculateIncomeChange = (
     : { changeText: `-₹ ${formattedAbs}`, tone: 'negative' }
 }
 
-const REQUIRED_DOCS_MAP: Record<RevisionReasonKey, Array<{ id: DocumentTypeId; label: string }>> = {
+export const REQUIRED_DOCS_MAP: Record<RevisionReasonKey, Array<{ id: DocumentTypeId; label: string }>> = {
   wrong_deduction: [
     { id: 'pan', label: 'PAN Card' },
     { id: 'aadhaar', label: 'Aadhaar Card' },
@@ -198,27 +205,53 @@ export const validateRevisedItrStage = (params: {
         : { isValid: true, errors: {} }
     }
     if (selectedReason === 'other') {
-      const incomeValidation = validateIncomeCorrections(incomeCorrections)
-      const bankErrors =
-        bankCorrections.accountNumber.trim() || bankCorrections.ifsc.trim()
-          ? validateBankCorrections(bankCorrections)
-          : {}
-      const hasError =
-        incomeValidation.salaryIncomeError ||
-        incomeValidation.taxableIncomeError ||
-        bankErrors.bankAccountError ||
-        bankErrors.ifscError
-      return hasError
-        ? {
-            isValid: false,
-            errors: {
-              salaryIncomeError: incomeValidation.salaryIncomeError,
-              taxableIncomeError: incomeValidation.taxableIncomeError,
-              bankAccountError: bankErrors.bankAccountError,
-              ifscError: bankErrors.ifscError,
-            },
-          }
-        : { isValid: true, errors: {} }
+      const hasIncome = Boolean(
+        incomeCorrections.salaryIncome?.trim() ||
+        incomeCorrections.otherIncome?.trim() ||
+        incomeCorrections.taxableIncome?.trim()
+      )
+      const hasDeduction = Boolean(
+        deductionCorrections.section80c?.trim() ||
+        deductionCorrections.section80d?.trim() ||
+        deductionCorrections.homeLoanInterest?.trim() ||
+        deductionCorrections.taxableIncome?.trim()
+      )
+      const hasBank = Boolean(
+        bankCorrections.accountNumber?.trim() ||
+        bankCorrections.ifsc?.trim()
+      )
+
+      const stageErrors: RevisedItrValidationErrors = {}
+
+      if (hasIncome) {
+        const incomeValidation = validateIncomeCorrections(incomeCorrections)
+        if (incomeValidation.salaryIncomeError) {
+          stageErrors.salaryIncomeError = incomeValidation.salaryIncomeError
+        }
+        if (incomeValidation.taxableIncomeError) {
+          stageErrors.taxableIncomeError = incomeValidation.taxableIncomeError
+        }
+      }
+
+      if (hasDeduction) {
+        const deductionValidation = validateDeductionCorrections(deductionCorrections)
+        if (deductionValidation.taxableIncomeError) {
+          stageErrors.taxableIncomeError = stageErrors.taxableIncomeError || deductionValidation.taxableIncomeError
+        }
+      }
+
+      if (hasBank) {
+        const bankValidation = validateBankCorrections(bankCorrections)
+        if (bankValidation.bankAccountError) {
+          stageErrors.bankAccountError = bankValidation.bankAccountError
+        }
+        if (bankValidation.ifscError) {
+          stageErrors.ifscError = bankValidation.ifscError
+        }
+      }
+
+      const hasError = Object.keys(stageErrors).length > 0
+      return hasError ? { isValid: false, errors: stageErrors } : { isValid: true, errors: {} }
     }
     const { salaryIncomeError, taxableIncomeError } = validateIncomeCorrections(incomeCorrections)
     return salaryIncomeError || taxableIncomeError

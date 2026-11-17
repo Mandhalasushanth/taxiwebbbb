@@ -16,9 +16,13 @@ import {
   type ResidentialStatusOption,
   type FilingTypeOption,
   type FilingBankAccount,
+  type PreviousItrInfo,
   type ItrCategoryId,
+  formatIndianCurrency,
 } from '../itrFiling.constants'
 import { determineApplicableItrForm } from '../IncomeSources/ItrApplicableReturnFormCard'
+import { calculateItrTax } from '../itrTaxCalculator'
+import { ItrReviewEstimatedTaxCard } from './ItrReviewEstimatedTaxCard'
 import { ItrDeclarationCard } from './ItrDeclarationCard'
 import { SaveDraftButton } from '@shared/saveDraft'
 import './ItrReviewSubmissionView.css'
@@ -42,6 +46,7 @@ export interface ItrReviewSubmissionViewProps {
   selectedCategoryId?: ItrCategoryId | null
   selectedRegime?: 'new' | 'old' | ''
   deductions?: DeductionsData
+  previousItr?: PreviousItrInfo
   uploadedDocs: Record<string, UploadedDocInfo>
   isSubmitting?: boolean
 }
@@ -62,6 +67,9 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
   otherSourcesDetails,
   selectedSources = [],
   selectedCategoryId,
+  selectedRegime,
+  deductions,
+  previousItr,
   uploadedDocs,
   isSubmitting = false,
 }) => {
@@ -70,6 +78,30 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
 
   const authUser = useAuthStore((state) => state.user)
   const profile = getStoredTaxpayerProfile(authUser)
+
+  const taxResult = useMemo(
+    () =>
+      calculateItrTax({
+        selectedSources,
+        salaryDetails,
+        housePropertyDetails,
+        businessDetails,
+        capitalGainsDetails,
+        otherSourcesDetails,
+        selectedRegime,
+        deductions,
+      }),
+    [
+      selectedSources,
+      salaryDetails,
+      housePropertyDetails,
+      businessDetails,
+      capitalGainsDetails,
+      otherSourcesDetails,
+      selectedRegime,
+      deductions,
+    ]
+  )
 
   const { requiredDocs } = useMemo(
     () => getItrChecklistSections({ selectedSources, selectedCategoryId }),
@@ -165,6 +197,7 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
     subtitle: string
     amount: string
     elementId: string
+    details?: Array<{ label: string; value: string }>
   }
 
   const parseNumericAmount = (val: string | undefined | null): number => {
@@ -178,13 +211,20 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
 
   if (selectedSources.includes('salary')) {
     const grossAmt = parseNumericAmount(salaryDetails?.grossSalary)
+    const exemptAmt = parseNumericAmount(salaryDetails?.exemptAllowances)
     const tdsAmt = parseNumericAmount(salaryDetails?.tdsDeducted)
     incomeItems.push({
       id: 'salary',
       title: 'Salary Income',
-      subtitle: `${salaryDetails?.employerName || 'Employer'} · TDS: ₹${tdsAmt.toLocaleString('en-IN')}`,
-      amount: `₹ ${grossAmt.toLocaleString('en-IN')}`,
+      subtitle: `${salaryDetails?.employerName || 'Employer'} · TDS: ${formatIndianCurrency(tdsAmt)}`,
+      amount: formatIndianCurrency(grossAmt),
       elementId: 'itr-salary-income',
+      details: [
+        { label: 'Employer Name', value: salaryDetails?.employerName || '—' },
+        { label: 'Gross Salary', value: formatIndianCurrency(grossAmt) },
+        { label: 'Exempt Allowances (u/s 10)', value: formatIndianCurrency(exemptAmt) },
+        { label: 'TDS Deducted', value: formatIndianCurrency(tdsAmt) },
+      ],
     })
   }
 
@@ -192,14 +232,27 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
     const isLetOut = housePropertyDetails?.propertyType === 'let_out'
     const rentAmt = parseNumericAmount(housePropertyDetails?.annualRentReceived)
     const interestAmt = parseNumericAmount(housePropertyDetails?.homeLoanInterest)
+    const municipalTaxes = parseNumericAmount(
+      housePropertyDetails?.municipalTaxPaid || (housePropertyDetails as any)?.municipalTaxesPaid
+    )
     incomeItems.push({
       id: 'house_property',
       title: 'House Property',
       subtitle: isLetOut
-        ? `Let-Out · Rent: ₹${rentAmt.toLocaleString('en-IN')}`
-        : `Self-Occupied · Interest Paid: ₹${interestAmt.toLocaleString('en-IN')}`,
-      amount: `₹ ${(isLetOut ? rentAmt : interestAmt).toLocaleString('en-IN')}`,
+        ? `Let-Out · Rent: ${formatIndianCurrency(rentAmt)}`
+        : `Self-Occupied · Interest Paid: ${formatIndianCurrency(interestAmt)}`,
+      amount: formatIndianCurrency(isLetOut ? rentAmt : interestAmt),
       elementId: 'itr-house-property',
+      details: [
+        { label: 'Property Type', value: isLetOut ? 'Let-Out Property' : 'Self-Occupied Property' },
+        ...(isLetOut
+          ? [
+              { label: 'Annual Rent Received', value: formatIndianCurrency(rentAmt) },
+              { label: 'Municipal Taxes Paid', value: formatIndianCurrency(municipalTaxes) },
+            ]
+          : []),
+        { label: 'Home Loan Interest (Sec 24b)', value: formatIndianCurrency(interestAmt) },
+      ],
     })
   }
 
@@ -207,24 +260,39 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
     const turnover = parseNumericAmount(businessDetails?.grossTurnover)
     const profit = parseNumericAmount(businessDetails?.declaredNetProfit)
     const method = businessDetails?.reportingMethod ? `Method: ${businessDetails.reportingMethod}` : 'Business'
+    const marginPct = turnover > 0 ? `${((profit / turnover) * 100).toFixed(1)}%` : '—'
     incomeItems.push({
       id: 'business',
       title: 'Business / Profession',
-      subtitle: `${method} · Net Profit: ₹${profit.toLocaleString('en-IN')}`,
-      amount: `₹ ${turnover.toLocaleString('en-IN')}`,
+      subtitle: `${method} · Net Profit: ${formatIndianCurrency(profit)}`,
+      amount: formatIndianCurrency(profit > 0 ? profit : turnover),
       elementId: 'itr-business-income',
+      details: [
+        { label: 'Reporting Method', value: businessDetails?.reportingMethod || '44AD / Presumptive' },
+        { label: 'Gross Turnover / Receipts', value: formatIndianCurrency(turnover) },
+        { label: 'Declared Net Profit', value: formatIndianCurrency(profit) },
+        { label: 'Net Profit Margin', value: marginPct },
+      ],
     })
   }
 
   if (selectedSources.includes('capital_gains')) {
     const stcg = parseNumericAmount(capitalGainsDetails?.stcg)
     const ltcg = parseNumericAmount(capitalGainsDetails?.ltcg)
+    const assetTypes = capitalGainsDetails?.assetTypes && capitalGainsDetails.assetTypes.length > 0
+      ? capitalGainsDetails.assetTypes.map(t => t.replace('_', ' ').toUpperCase()).join(', ')
+      : 'Equity & Mutual Funds'
     incomeItems.push({
       id: 'capital_gains',
       title: 'Capital Gains',
-      subtitle: `STCG: ₹${stcg.toLocaleString('en-IN')} · LTCG: ₹${ltcg.toLocaleString('en-IN')}`,
-      amount: `₹ ${(stcg + ltcg).toLocaleString('en-IN')}`,
+      subtitle: `STCG: ${formatIndianCurrency(stcg)} · LTCG: ${formatIndianCurrency(ltcg)}`,
+      amount: formatIndianCurrency(stcg + ltcg),
       elementId: 'itr-capital-gains',
+      details: [
+        { label: 'Asset Types Traded', value: assetTypes },
+        { label: 'Short-Term Capital Gains (STCG)', value: formatIndianCurrency(stcg) },
+        { label: 'Long-Term Capital Gains (LTCG)', value: formatIndianCurrency(ltcg) },
+      ],
     })
   }
 
@@ -239,8 +307,15 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
       id: 'other_sources',
       title: 'Other Sources',
       subtitle: 'Interest & Dividend Income',
-      amount: `₹ ${total.toLocaleString('en-IN')}`,
+      amount: formatIndianCurrency(total),
       elementId: 'itr-other-sources',
+      details: [
+        { label: 'Savings Account Interest', value: formatIndianCurrency(savings) },
+        { label: 'Fixed Deposit (FD) Interest', value: formatIndianCurrency(fd) },
+        { label: 'Dividend Income', value: formatIndianCurrency(dividend) },
+        { label: 'Family Pension', value: formatIndianCurrency(pension) },
+        { label: 'Other Miscellaneous Income', value: formatIndianCurrency(other) },
+      ],
     })
   }
 
@@ -369,6 +444,12 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
               <span className="itr-rv2-detail-row__val">{formInfo.form}</span>
             </div>
             <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">Tax Regime</span>
+              <span className="itr-rv2-detail-row__val">
+                {selectedRegime === 'old' ? 'Old Tax Regime' : 'New Tax Regime (Default)'}
+              </span>
+            </div>
+            <div className="itr-rv2-detail-row">
               <span className="itr-rv2-detail-row__label">Full Name</span>
               <span className="itr-rv2-detail-row__val">{profile.fullName || '—'}</span>
             </div>
@@ -377,9 +458,73 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
               <span className="itr-rv2-detail-row__val">{profile.panNumber || '—'}</span>
             </div>
             <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">Aadhaar Number</span>
+              <span className="itr-rv2-detail-row__val">
+                {profile.aadhaarNumber
+                  ? profile.aadhaarNumber.length >= 12
+                    ? `•••• •••• ${profile.aadhaarNumber.slice(-4)}`
+                    : profile.aadhaarNumber
+                  : '—'}
+              </span>
+            </div>
+            <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">Date of Birth</span>
+              <span className="itr-rv2-detail-row__val">{profile.dob || '—'}</span>
+            </div>
+            <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">Mobile Number</span>
+              <span className="itr-rv2-detail-row__val">{profile.mobileNumber || '—'}</span>
+            </div>
+            <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">Email Address</span>
+              <span className="itr-rv2-detail-row__val">{profile.emailAddress || '—'}</span>
+            </div>
+            <div className="itr-rv2-detail-row">
               <span className="itr-rv2-detail-row__label">Residential Status</span>
               <span className="itr-rv2-detail-row__val">{formatResidentialStatus(residentialStatus)}</span>
             </div>
+            <div className="itr-rv2-detail-row itr-rv2-detail-row--full-width">
+              <span className="itr-rv2-detail-row__label">Registered Address</span>
+              <span className="itr-rv2-detail-row__val">{profile.registeredAddress || '—'}</span>
+            </div>
+            {previousItr && (
+              <>
+                <div className="itr-rv2-detail-row">
+                  <span className="itr-rv2-detail-row__label">Previous Year Return</span>
+                  <span className="itr-rv2-detail-row__val">
+                    {(previousItr.hasPreviousReturn ?? (previousItr as any).filedPreviousYear)
+                      ? 'Filed'
+                      : 'Not Filed'}
+                  </span>
+                </div>
+                {(previousItr.hasPreviousReturn ?? (previousItr as any).filedPreviousYear) && (
+                  <>
+                    <div className="itr-rv2-detail-row">
+                      <span className="itr-rv2-detail-row__label">Previous Ack No.</span>
+                      <span className="itr-rv2-detail-row__val">
+                        {previousItr.ackNumber || (previousItr as any).acknowledgementNumber || '—'}
+                      </span>
+                    </div>
+                    <div className="itr-rv2-detail-row">
+                      <span className="itr-rv2-detail-row__label">Filing Date</span>
+                      <span className="itr-rv2-detail-row__val">{previousItr.filingDate || '—'}</span>
+                    </div>
+                    <div className="itr-rv2-detail-row">
+                      <span className="itr-rv2-detail-row__label">Carry Forward Loss</span>
+                      <span className="itr-rv2-detail-row__val">
+                        {previousItr.lossAmount || (previousItr as any).carryForwardLoss
+                          ? formatIndianCurrency(
+                              parseNumericAmount(
+                                previousItr.lossAmount || (previousItr as any).carryForwardLoss
+                              )
+                            )
+                          : '₹0'}
+                      </span>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
           </div>
         </div>
 
@@ -421,37 +566,56 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
             <div className="itr-rv2-income-items-list">
               {incomeItems.map((item) => (
                 <div key={item.id} className="itr-rv2-income-source-card">
-                  <div className="itr-rv2-income-source-left">
-                    <div className="itr-rv2-income-source-title">{item.title}</div>
-                    <div className="itr-rv2-income-source-sub">{item.subtitle}</div>
-                  </div>
-                  <div className="itr-rv2-income-source-right">
-                    <div className="itr-rv2-income-source-amount">{item.amount}</div>
-                    <div className="itr-rv2-income-badge-row">
-                      <span className="itr-rv2-badge itr-rv2-badge--green">
-                        <svg
-                          viewBox="0 0 24 24"
-                          width="12"
-                          height="12"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                        <span>Declared</span>
-                      </span>
+                  <div className="itr-rv2-income-source-top">
+                    <div className="itr-rv2-income-source-left">
+                      <div className="itr-rv2-income-source-title">{item.title}</div>
+                      <div className="itr-rv2-income-source-sub">{item.subtitle}</div>
+                    </div>
+                    <div className="itr-rv2-income-source-right">
+                      <div className="itr-rv2-income-source-amount">{item.amount}</div>
+                      <div className="itr-rv2-income-badge-row">
+                        <span className="itr-rv2-badge itr-rv2-badge--green">
+                          <svg
+                            viewBox="0 0 24 24"
+                            width="12"
+                            height="12"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                          <span>Declared</span>
+                        </span>
+                      </div>
                     </div>
                   </div>
+                  {item.details && item.details.length > 0 && (
+                    <div className="itr-rv2-income-sub-details">
+                      {item.details.map((sub, sIdx) => (
+                        <div key={sIdx} className="itr-rv2-income-sub-row">
+                          <span className="itr-rv2-income-sub-label">{sub.label}</span>
+                          <span className="itr-rv2-income-sub-val">{sub.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Card 3: Refund Bank Account */}
+        {/* Card 3: Estimated Tax & Calculation Breakdown */}
+        <ItrReviewEstimatedTaxCard
+          selectedRegime={selectedRegime || 'new'}
+          taxResult={taxResult}
+          onEdit={() => handleEdit(ITR_REVIEW_EDIT_STEPS.income, 'itr-income-sources')}
+        />
+
+        {/* Card 4: Refund Bank Account */}
         <div className="itr-step-card itr-rv2-card itr-rv2-card--bank">
           <div className="itr-rv2-section-header-row">
             <h3 className="itr-rv2-section-title">
@@ -492,6 +656,20 @@ export const ItrReviewSubmissionView: React.FC<ItrReviewSubmissionViewProps> = (
             <div className="itr-rv2-detail-row">
               <span className="itr-rv2-detail-row__label">IFSC Code</span>
               <span className="itr-rv2-detail-row__val">{bankIfsc}</span>
+            </div>
+            <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">Account Type</span>
+              <span className="itr-rv2-detail-row__val">
+                {selectedBank?.accountType
+                  ? selectedBank.accountType.charAt(0).toUpperCase() + selectedBank.accountType.slice(1)
+                  : 'Savings Account'}
+              </span>
+            </div>
+            <div className="itr-rv2-detail-row">
+              <span className="itr-rv2-detail-row__label">Account Status</span>
+              <span className="itr-rv2-detail-row__val">
+                {selectedBank?.isPreValidated ?? (selectedBank as any)?.isVerified ? 'Pre-validated' : 'Active'}
+              </span>
             </div>
           </div>
 

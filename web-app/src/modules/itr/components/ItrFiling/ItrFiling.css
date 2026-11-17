@@ -1,3 +1,51 @@
+/* ITR Filing Unified Typography */
+.itr-step-view-container,
+.itr-step-personal-info,
+.itr-cat-view-container,
+.itr-step-review,
+.itr-filing-stepper,
+.itr-dropdown,
+.itr-table,
+.draft-modal-backdrop,
+.draft-modal-card {
+  font-family: var(--font-sans, 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+.itr-step-view-container *,
+.itr-step-personal-info *,
+.itr-cat-view-container *,
+.itr-step-review *,
+.itr-filing-stepper *,
+.draft-modal-card * {
+  font-family: inherit;
+}
+.itr-step-view-container input,
+.itr-step-view-container button,
+.itr-step-view-container select,
+.itr-step-view-container textarea,
+.itr-step-view-container label,
+.itr-step-personal-info input,
+.itr-step-personal-info button,
+.itr-step-personal-info select,
+.itr-step-personal-info textarea,
+.itr-step-personal-info label,
+.itr-cat-view-container input,
+.itr-cat-view-container button,
+.itr-cat-view-container select,
+.itr-cat-view-container textarea,
+.itr-cat-view-container label,
+.itr-step-review input,
+.itr-step-review button,
+.itr-step-review select,
+.itr-step-review textarea,
+.itr-step-review label {
+  font-family: var(--font-sans, 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+.itr-mono,
+.itr-detail-val--mono,
+[data-mono="true"] {
+  font-family: var(--font-mono, 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace) !important;
+}
+
 /* ITR Filing - Common Styles, Header Stepper & Base Components */
 .itr-step-view-container {
   display: flex;

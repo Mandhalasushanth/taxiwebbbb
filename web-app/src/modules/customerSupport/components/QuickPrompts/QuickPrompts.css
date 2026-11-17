@@ -1,17 +1,17 @@
 .cs-quick-prompts {
-  padding: 0.75rem 1.25rem 0.25rem;
+  padding: 0.5rem 1.25rem 0.15rem;
   background-color: var(--surface);
   border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.25rem;
 }
 
 /* One swipeable row: keeps the chat area tall on small screens */
 .cs-quick-prompts__list {
   display: flex;
   gap: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
   overflow-x: auto;
   scrollbar-width: none;
 }

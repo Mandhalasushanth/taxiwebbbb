@@ -1,7 +1,7 @@
 import {
   validateAadhaar,
 } from '@shared/utils/validationUtils'
-import type { TdsBusinessDetails } from '@modules/itr/types/tdsRefund.types'
+import type { TdsBusinessDetails, UploadedFileMeta } from '@modules/itr/types/tdsRefund.types'
 
 /**
  * Sanitizes Legal Name of Business input:
@@ -59,12 +59,15 @@ export const validateBusinessPan = (pan: string, legalName?: string): string | n
   return null
 }
 
-export const validateBusinessAadhaar = (aadhaar: string): string | null => {
+export const validateBusinessAadhaar = (aadhaar?: string | null): string | null => {
   const raw = (aadhaar || '').trim()
-  if (!raw) return 'Aadhaar number is required'
+  if (!raw) return null
   const digits = raw.replace(/\D/g, '')
   if (digits.length !== 12) return 'Enter a valid 12-digit Aadhaar number'
-  const err = validateAadhaar(raw)
+  if (digits.startsWith('0') || digits.startsWith('1')) {
+    return 'Aadhaar number cannot start with 0 or 1'
+  }
+  const err = validateAadhaar(raw, { required: false })
   if (err) return err
   return null
 }
@@ -75,6 +78,37 @@ export const validateBusinessMobile = (mobile: string): string | null => {
   const digits = raw.replace(/\D/g, '')
   if (digits.length !== 10) return 'Please enter a valid 10-digit mobile number.'
   if (!/^[6-9]/.test(digits)) return 'Mobile number must start with 6, 7, 8, or 9.'
+  return null
+}
+
+export const validateBusinessDocument = (
+  doc: UploadedFileMeta | undefined | null,
+  options: { fieldLabel: string; isRequired?: boolean }
+): string | null => {
+  const { fieldLabel, isRequired = false } = options
+
+  // 1. Not uploaded
+  if (!doc || (!doc.file && !doc.name)) {
+    if (isRequired) {
+      return `Please upload ${fieldLabel} document to proceed`
+    }
+    return null
+  }
+
+  // 2. Uploading
+  if (
+    doc.status === 'uploading' ||
+    (typeof doc.progress === 'number' && doc.progress < 100 && doc.status !== 'success' && doc.status !== 'uploaded')
+  ) {
+    return `${fieldLabel} upload is in progress. Please wait for completion.`
+  }
+
+  // 3. Upload failed
+  if (doc.status === 'error' || doc.status === 'failed' || Boolean(doc.error)) {
+    return doc.error || `${fieldLabel} upload failed. Please re-upload.`
+  }
+
+  // 4. Upload successful
   return null
 }
 
@@ -91,6 +125,10 @@ export const validateBusinessField = (
       return validateBusinessAadhaar(details.aadhaar)
     case 'mobile':
       return validateBusinessMobile(details.mobile)
+    case 'panDoc':
+      return validateBusinessDocument(details.panDoc, { fieldLabel: 'Business PAN', isRequired: true })
+    case 'aadhaarDoc':
+      return validateBusinessDocument(details.aadhaarDoc, { fieldLabel: 'Aadhaar Card', isRequired: false })
     default:
       return null
   }
@@ -103,6 +141,8 @@ export const getBusinessDetailsErrors = (details: TdsBusinessDetails): Record<st
     ['pan', validateBusinessPan(details.pan, details.legalName)],
     ['aadhaar', validateBusinessAadhaar(details.aadhaar)],
     ['mobile', validateBusinessMobile(details.mobile)],
+    ['panDoc', validateBusinessDocument(details.panDoc, { fieldLabel: 'Business PAN', isRequired: true })],
+    ['aadhaarDoc', validateBusinessDocument(details.aadhaarDoc, { fieldLabel: 'Aadhaar Card', isRequired: false })],
   ]
   return Object.fromEntries(
     checks.filter((check): check is [keyof TdsBusinessDetails, string] => Boolean(check[1]))

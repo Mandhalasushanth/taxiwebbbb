@@ -17,3 +17,10 @@ export type {
   RevisedItrFormState,
   RevisedItrValidationErrors,
 } from './types/revisedItr.types'
+export {
+  ItrAmountInput,
+  formatIndianNumber,
+  formatIndianCurrency,
+  parseIndianNumber,
+} from './components/ItrFiling/itrFiling.constants'
+export type { ItrAmountInputProps } from './components/ItrFiling/itrFiling.constants'

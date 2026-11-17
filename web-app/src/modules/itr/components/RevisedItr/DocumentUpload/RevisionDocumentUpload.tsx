@@ -2,6 +2,7 @@ import React from 'react'
 import { DocumentCard } from '@shared/components'
 import { viewUploadedDocument } from '@shared/upload'
 import type { DocumentTypeId, RevisionReasonKey, UploadedDocument } from '@modules/itr/types/revisedItr.types'
+import { REQUIRED_DOCS_MAP } from '../../../validation/revisedItrValidation'
 import { CreditCard as PanCardIcon, Fingerprint as FingerprintIcon, FileText as IconFileText, Landmark as BankIcon, Briefcase as IconBriefcase } from 'lucide-react'
 import './RevisionDocumentUpload.css'
 
@@ -41,7 +42,7 @@ const renderSlotIcon = (id: DocumentTypeId) => {
   }
 }
 
-const buildDocumentSlots = (_selectedReason: RevisionReasonKey | null | undefined, selectedAy: string) => {
+const buildDocumentSlots = (selectedReason: RevisionReasonKey | null | undefined, selectedAy: string) => {
   const ayLabel = selectedAy ? `(${selectedAy})` : '(AY 2025-26)'
 
   const allSlots: Record<DocumentTypeId, Omit<DocumentSlotItem, 'isRequired'>> = {
@@ -59,9 +60,17 @@ const buildDocumentSlots = (_selectedReason: RevisionReasonKey | null | undefine
     investment_proof: { id: 'investment_proof', title: 'Investment Proofs', subtitle: 'Receipts, 80C / 80D documents', iconBg: '#ffedd5', iconColor: '#ea580c' },
   }
 
+  const reasonKey = selectedReason || 'missed_income'
+  const requiredList = REQUIRED_DOCS_MAP[reasonKey] || REQUIRED_DOCS_MAP.missed_income
+  const requiredIdSet = new Set(requiredList.map((item) => item.id))
+
   const orderedIds: DocumentTypeId[] = ['pan', 'aadhaar', 'form16', 'ais_tis', 'bank_statement', 'investment_proof']
-  const requiredSlots: DocumentSlotItem[] = orderedIds.map((id) => ({ ...allSlots[id], isRequired: true }))
-  const additionalSlots: DocumentSlotItem[] = []
+  const requiredSlots: DocumentSlotItem[] = orderedIds
+    .filter((id) => requiredIdSet.has(id))
+    .map((id) => ({ ...allSlots[id], isRequired: true }))
+  const additionalSlots: DocumentSlotItem[] = orderedIds
+    .filter((id) => !requiredIdSet.has(id))
+    .map((id) => ({ ...allSlots[id], isRequired: false }))
 
   return { requiredSlots, additionalSlots }
 }

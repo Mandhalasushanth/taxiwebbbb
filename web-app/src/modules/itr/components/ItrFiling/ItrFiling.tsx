@@ -76,11 +76,23 @@ export const ItrFiling: React.FC = () => {
     1: () => (
       <ItrPersonalInfoView
         onBack={backOrReview(() => {
-          setIsStarted(false);
-          try {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          } catch {
-            // ignore
+          if (
+            isDirty ||
+            Boolean(assessmentYear) ||
+            Boolean(residentialStatus) ||
+            Boolean(filingType) ||
+            Boolean(selectedBankId) ||
+            (bankAccounts && bankAccounts.length > 0) ||
+            Boolean(previousItr?.ackNumber)
+          ) {
+            openModal();
+          } else {
+            setIsStarted(false);
+            try {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            } catch {
+              // ignore
+            }
           }
         })}
         onNext={nextOrReview(() => navigateToStep(2))}
@@ -154,6 +166,7 @@ export const ItrFiling: React.FC = () => {
         selectedCategoryId={selectedCategoryId}
         selectedRegime={selectedRegime}
         deductions={deductions}
+        previousItr={previousItr}
         uploadedDocs={uploadedDocs}
         isSubmitting={isSubmitting}
       />

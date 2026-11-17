@@ -1,5 +1,6 @@
 import React from 'react'
 import type { ApplicationTrackerData } from '../../../data/applicationTrackerData'
+import { formatApplicationDateTime } from '../../../data/applicationTrackerData'
 
 export interface ApplicationPaymentsTabProps {
   data: ApplicationTrackerData
@@ -99,7 +100,7 @@ export const ApplicationPaymentsTab: React.FC<ApplicationPaymentsTabProps> = ({
               </div>
               <div className="app-tracker-detail-row">
                 <span className="app-tracker-detail-label">Payment Date</span>
-                <span className="app-tracker-detail-value">{data.paymentSummary.paymentDate || data.appliedDate}</span>
+                <span className="app-tracker-detail-value">{formatApplicationDateTime(data.paymentSummary.paymentDate || data.appliedDate)}</span>
               </div>
               <div className="app-tracker-detail-row">
                 <span className="app-tracker-detail-label">Transaction ID</span>

@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 0.5rem;
   background-color: var(--surface);
-  padding: 0.6rem 1.25rem 1rem;
+  padding: 0.5rem 1.25rem 0.65rem;
 }
 
 .cs-input-bar__tray {
@@ -123,7 +123,11 @@
 }
 
 .cs-input-bar__btn-send--active {
-  background: linear-gradient(135deg, var(--palette-sky-600) 0%, var(--palette-blue-800-0f284c) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--palette-sky-600) 0%,
+    var(--palette-blue-800-0f284c) 100%
+  );
   color: var(--surface);
   cursor: pointer;
   box-shadow: 0 8px 18px rgba(15, 40, 76, 0.3);

@@ -1,5 +1,6 @@
 import React from 'react'
 import { calculateIncomeChange } from '@modules/itr/validation/revisedItrValidation'
+import { ItrAmountInput } from '@modules/itr'
 import './RevisionAmountCard.css'
 
 interface RevisionAmountCardProps {
@@ -41,14 +42,12 @@ export const RevisionAmountCard: React.FC<RevisionAmountCardProps> = ({
         <label htmlFor={id} className="revised-label">Revised</label>
         <div className="input-field-wrap">
           <span className="input-currency-prefix">₹</span>
-          <input
+          <ItrAmountInput
             id={id}
-            type="text"
-            inputMode="numeric"
             placeholder={placeholder}
             className={`correction-input ${error ? 'input-error' : ''}`}
             value={revisedValue}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(raw) => onChange(raw)}
             onKeyDown={onKeyDown}
           />
         </div>

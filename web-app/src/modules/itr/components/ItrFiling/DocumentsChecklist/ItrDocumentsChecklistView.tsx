@@ -60,8 +60,18 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
     }
   }
 
+  const isDocUploadedSuccessfully = (docInfo?: UploadedDocInfo): boolean => {
+    if (!docInfo) return false
+    const status = (docInfo as any).status
+    const error = (docInfo as any).error
+    if (status === 'uploading' || status === 'failed' || status === 'error' || Boolean(error)) {
+      return false
+    }
+    return Boolean(docInfo.file || docInfo.fileName)
+  }
+
   const isDocumentsValid = requiredDocs.every(
-    (doc) => !doc.isMandatory || Boolean(uploadedDocs[doc.id])
+    (doc) => !doc.isMandatory || isDocUploadedSuccessfully(uploadedDocs[doc.id])
   )
 
   const scrollToFirstError = () => {
@@ -100,9 +110,19 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
   const renderDocCard = (doc: ChecklistDocConfig) => {
     const uploaded = uploadedDocs[doc.id]
     const docCleanTitle = doc.title.replace(/\s*\*+$/, '').trim()
-    const isMissingMandatory = showErrors && Boolean(doc.isMandatory) && !uploaded
+    const isSuccess = isDocUploadedSuccessfully(uploaded)
+    const isUploading = (uploaded as any)?.status === 'uploading'
+    const isFailed =
+      (uploaded as any)?.status === 'failed' ||
+      (uploaded as any)?.status === 'error' ||
+      Boolean((uploaded as any)?.error)
+    const isMissingMandatory = showErrors && Boolean(doc.isMandatory) && !isSuccess
     const errorMessage = isMissingMandatory
-      ? `Please upload ${docCleanTitle} to proceed`
+      ? isUploading
+        ? `${docCleanTitle} upload is in progress. Please wait for completion.`
+        : isFailed
+        ? ((uploaded as any)?.error || `${docCleanTitle} upload failed. Please re-upload.`)
+        : `Please upload ${docCleanTitle} to proceed`
       : undefined
 
     return (
@@ -113,7 +133,7 @@ export const ItrDocumentsChecklistView: React.FC<ItrDocumentsChecklistViewProps>
         subtitle={doc.desc}
         isRequired={Boolean(doc.isMandatory)}
         icon={<doc.Icon />}
-        isUploaded={Boolean(uploaded)}
+        isUploaded={isSuccess}
         fileName={uploaded?.fileName}
         fileSize={uploaded?.fileSize}
         file={uploaded?.file}

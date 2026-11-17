@@ -648,8 +648,8 @@ describe('ITR Category to Income Source Preselection', () => {
         expect(sections.totalCount).toBe(4)
       })
 
-      it('Image 5 (Other Sources / Multiple): requires Form 16 & Business Turnover, recommends 4 docs (total 6)', () => {
-        const sections = getItrChecklistSections({ selectedSources: ['other_sources'] })
+      it('Image 5 (Multiple Sources): requires Form 16 & Business Turnover, recommends 4 docs (total 6)', () => {
+        const sections = getItrChecklistSections({ selectedSources: ['salary', 'business'] })
         expect(sections.requiredDocs.map((d) => d.title)).toEqual([
           'Form 16 (Part A & B)',
           'Business Turnover & GST Filings',
@@ -661,6 +661,39 @@ describe('ITR Category to Income Source Preselection', () => {
           'Salary Payslips',
         ])
         expect(sections.totalCount).toBe(6)
+      })
+
+      it('Other Sources alone: requires 0 mandatory employer/business docs, recommends 3 tax statements (total 3)', () => {
+        const sections = getItrChecklistSections({ selectedSources: ['other_sources'] })
+        expect(sections.requiredDocs).toHaveLength(0)
+        expect(sections.recommendedDocs.map((d) => d.title)).toEqual([
+          'Form 26AS Tax Credit Statement',
+          'AIS / TIS Statement',
+          'Bank Account Statement',
+        ])
+        expect(sections.optionalDocs).toHaveLength(0)
+        expect(sections.totalCount).toBe(3)
+      })
+
+      it('Multiple combination (Salary, Business, Capital Gains, House Property): includes all relevant docs without dropping any', () => {
+        const sections = getItrChecklistSections({
+          selectedSources: ['salary', 'business', 'capital_gains', 'house_property'],
+        })
+        expect(sections.requiredDocs.map((d) => d.title)).toEqual([
+          'Form 16 (Part A & B)',
+          'Business Turnover & GST Filings',
+          'Capital Gains Statement / P&L',
+        ])
+        expect(sections.recommendedDocs.map((d) => d.title)).toEqual([
+          'Form 26AS Tax Credit Statement',
+          'AIS / TIS Statement',
+          'Bank Account Statement',
+          'Salary Payslips',
+        ])
+        expect(sections.optionalDocs.map((d) => d.title)).toEqual([
+          'Home Loan Interest Certificate (Sec 24b)',
+        ])
+        expect(sections.totalCount).toBe(8)
       })
     })
 

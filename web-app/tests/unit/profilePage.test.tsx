@@ -16,6 +16,7 @@ vi.mock('@store/index', async (importOriginal) => {
           mobile: '9876543210',
           isProfileComplete: true,
         },
+        signOut: vi.fn(),
       }),
   }
 })
@@ -37,11 +38,12 @@ vi.mock('@core/auth', async (importOriginal) => {
         mobile: '9876543210',
         isProfileComplete: true,
       }),
+      clear: vi.fn(),
     },
   }
 })
 
-describe('Profile page security & support popups', () => {
+describe('Profile page sections & actions', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     class MockIntersectionObserver {
@@ -56,102 +58,137 @@ describe('Profile page security & support popups', () => {
     cleanup()
   })
 
-  it('clicking "Change Password" in SECURITY shows the popup with title "Change Password"', () => {
+  it('renders ACCOUNT section with Personal Information and KYC Details links', () => {
     render(
       <MemoryRouter>
         <Profile />
       </MemoryRouter>
     )
 
-    const item = screen.getByText('Change Password')
-    fireEvent.click(item)
+    expect(screen.getByRole('heading', { name: 'ACCOUNT' })).toBeDefined()
 
-    expect(screen.getByRole('heading', { name: 'Change Password' })).toBeDefined()
-    expect(screen.getByText("This section isn't available yet.")).toBeDefined()
+    const personalLink = screen.getByText('Personal Information').closest('a')
+    expect(personalLink).not.toBeNull()
+    expect(personalLink?.getAttribute('href')).toBe('/profile/personal')
 
-    // Dismiss with OK
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }))
-    expect(screen.queryByRole('heading', { name: 'Change Password' })).toBeNull()
+    const kycLink = screen.getByText('KYC Details').closest('a')
+    expect(kycLink).not.toBeNull()
+    expect(kycLink?.getAttribute('href')).toBe('/profile/kyc')
   })
 
-  it('clicking "Terms & Conditions" in SUPPORT shows the popup with title "Terms & Conditions"', () => {
+  it('renders CUSTOMER SUPPORT section with Customer Support, Terms & Conditions, and Privacy Policy links', () => {
     render(
       <MemoryRouter>
         <Profile />
       </MemoryRouter>
     )
 
-    const item = screen.getByText('Terms & Conditions')
-    fireEvent.click(item)
-
-    expect(screen.getByRole('heading', { name: 'Terms & Conditions' })).toBeDefined()
-    expect(screen.getByText("This section isn't available yet.")).toBeDefined()
-
-    // Dismiss with OK
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }))
-    expect(screen.queryByRole('heading', { name: 'Terms & Conditions' })).toBeNull()
-  })
-
-  it('clicking "Rate Finsolz" in SUPPORT shows the popup with title "Rate Finsolz"', () => {
-    render(
-      <MemoryRouter>
-        <Profile />
-      </MemoryRouter>
-    )
-
-    const item = screen.getByText('Rate Finsolz')
-    fireEvent.click(item)
-
-    expect(screen.getByRole('heading', { name: 'Rate Finsolz' })).toBeDefined()
-    expect(screen.getByText("This section isn't available yet.")).toBeDefined()
-  })
-
-  it('clicking "Privacy Policy" in SUPPORT shows the popup with title "Privacy Policy"', () => {
-    render(
-      <MemoryRouter>
-        <Profile />
-      </MemoryRouter>
-    )
-
-    const item = screen.getByText('Privacy Policy')
-    fireEvent.click(item)
-
-    expect(screen.getByRole('heading', { name: 'Privacy Policy' })).toBeDefined()
-    expect(screen.getByText("This section isn't available yet.")).toBeDefined()
-  })
-
-  it('clicking "Two-Factor Authentication" and "Login History" in SECURITY shows the popup with respective titles', () => {
-    render(
-      <MemoryRouter>
-        <Profile />
-      </MemoryRouter>
-    )
-
-    fireEvent.click(screen.getByText('Two-Factor Authentication'))
-    expect(screen.getByRole('heading', { name: 'Two-Factor Authentication' })).toBeDefined()
-    expect(screen.getByText("This section isn't available yet.")).toBeDefined()
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }))
-
-    fireEvent.click(screen.getByText('Login History'))
-    expect(screen.getByRole('heading', { name: 'Login History' })).toBeDefined()
-    expect(screen.getByText("This section isn't available yet.")).toBeDefined()
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }))
-
-    fireEvent.click(screen.getByText('Privacy Settings'))
-    expect(screen.getByRole('heading', { name: 'Privacy Settings' })).toBeDefined()
-    expect(screen.getByText("This section isn't available yet.")).toBeDefined()
-  })
-
-  it('Customer Support retains its link and does not open unavailable popup', () => {
-    render(
-      <MemoryRouter>
-        <Profile />
-      </MemoryRouter>
-    )
+    expect(screen.getByRole('heading', { name: 'CUSTOMER SUPPORT' })).toBeDefined()
 
     const supportLink = screen.getByText('Customer Support').closest('a')
     expect(supportLink).not.toBeNull()
     expect(supportLink?.getAttribute('href')).toBe('/support')
-    expect(screen.queryByText("This section isn't available yet.")).toBeNull()
+
+    const termsLink = screen.getByText('Terms & Conditions').closest('a')
+    expect(termsLink).not.toBeNull()
+    expect(termsLink?.getAttribute('href')).toBe('/legal/terms')
+    expect(termsLink?.getAttribute('target')).toBeNull()
+
+    const privacyLink = screen.getByText('Privacy Policy').closest('a')
+    expect(privacyLink).not.toBeNull()
+    expect(privacyLink?.getAttribute('href')).toBe('/legal/privacy')
+    expect(privacyLink?.getAttribute('target')).toBeNull()
+  })
+
+  it('renders SETTINGS section with Change Passcode and Delete Account', () => {
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>
+    )
+
+    expect(screen.getByRole('heading', { name: 'SETTINGS' })).toBeDefined()
+    expect(screen.getByText('Change Passcode')).toBeDefined()
+    expect(screen.getByText('Delete Account')).toBeDefined()
+  })
+
+  it('does NOT render removed items (Rate Finsolz, 2FA, Login History, Privacy Settings, GST Details, ITR History, Loan History)', () => {
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>
+    )
+
+    expect(screen.queryByText('Rate Finsolz')).toBeNull()
+    expect(screen.queryByText('Two-Factor Authentication')).toBeNull()
+    expect(screen.queryByText('Login History')).toBeNull()
+    expect(screen.queryByText('Privacy Settings')).toBeNull()
+    expect(screen.queryByText('GST Details')).toBeNull()
+    expect(screen.queryByText('ITR History')).toBeNull()
+    expect(screen.queryByText('Loan History')).toBeNull()
+    expect(screen.queryByText('My Applications')).toBeNull()
+    expect(screen.queryByText('Payments & Invoices')).toBeNull()
+    expect(screen.queryByText('Notifications')).toBeNull()
+  })
+
+  it('clicking "Change Passcode" opens the Change Passcode modal', () => {
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>
+    )
+
+    expect(screen.queryByTestId('change-passcode-modal-card')).toBeNull()
+
+    fireEvent.click(screen.getByText('Change Passcode'))
+    expect(screen.getByTestId('change-passcode-modal-card')).toBeDefined()
+    expect(screen.getByText('Update your 6-digit security passcode')).toBeDefined()
+
+    // Dismiss with Cancel button
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(screen.queryByTestId('change-passcode-modal-card')).toBeNull()
+  })
+
+  it('clicking "Delete Account" opens the Delete Account modal matching design', () => {
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>
+    )
+
+    expect(screen.queryByTestId('delete-account-modal-card')).toBeNull()
+
+    fireEvent.click(screen.getByText('Delete Account'))
+    expect(screen.getByTestId('delete-account-modal-card')).toBeDefined()
+    expect(screen.getByText('Permanent Action')).toBeDefined()
+    expect(screen.getByText(/Deleting your Finsolz account is irreversible/i)).toBeDefined()
+    expect(screen.getByText('All profile data, PAN, and KYC details will be unlinked.')).toBeDefined()
+    expect(screen.getByText('Your active mobile authentication session will be revoked.')).toBeDefined()
+    expect(screen.getByText('Government filings already processed with authorities remain legally archived.')).toBeDefined()
+
+    // Confirm button is disabled when checkbox is unchecked
+    const confirmBtn = screen.getByTestId('delete-account-confirm-btn') as HTMLButtonElement
+    expect(confirmBtn.disabled).toBe(true)
+
+    // Check the understand checkbox
+    const checkbox = screen.getByTestId('delete-account-understand-checkbox') as HTMLInputElement
+    fireEvent.click(checkbox)
+    expect(checkbox.checked).toBe(true)
+    expect(confirmBtn.disabled).toBe(false)
+
+    // Dismiss with Cancel button
+    fireEvent.click(screen.getByTestId('delete-account-cancel-btn'))
+    expect(screen.queryByTestId('delete-account-modal-card')).toBeNull()
+  })
+
+  it('retains the Logout button at the bottom', () => {
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>
+    )
+
+    const logoutBtn = screen.getByText('Log out')
+    expect(logoutBtn).toBeDefined()
   })
 })

@@ -1,0 +1,221 @@
+.change-passcode-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.change-passcode-modal-card {
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: 0 20px 48px rgba(15, 40, 76, 0.16);
+  border: 1px solid var(--palette-gray-100);
+  width: 100%;
+  max-width: 440px;
+  padding: 24px;
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.change-passcode-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.change-passcode-modal-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background-color: var(--palette-sky-100-e0f2fe);
+  flex-shrink: 0;
+}
+
+.change-passcode-modal-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--palette-slate-800);
+}
+
+.change-passcode-modal-subtitle {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  color: var(--palette-gray-500);
+}
+
+.change-passcode-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.change-passcode-modal-error {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background-color: var(--palette-red-50-fff5f5);
+  border: 1px solid var(--palette-red-200);
+  color: var(--error);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.change-passcode-modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.change-passcode-modal-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--palette-slate-700);
+}
+
+.change-passcode-modal-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.change-passcode-modal-input {
+  width: 100%;
+  padding: 12px 42px 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 15px;
+  background: var(--surface);
+  color: var(--palette-slate-800);
+  letter-spacing: 0.1em;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.change-passcode-modal-input:focus {
+  outline: none;
+  border-color: var(--palette-sky-600);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+.change-passcode-modal-toggle-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--palette-gray-400);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+.change-passcode-modal-toggle-btn:hover {
+  color: var(--palette-slate-700);
+}
+
+.change-passcode-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.change-passcode-modal-cancel-btn {
+  flex: 1;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--palette-slate-600);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.change-passcode-modal-cancel-btn:hover {
+  background-color: var(--subtle-border);
+}
+
+.change-passcode-modal-submit-btn {
+  flex: 1.4;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, var(--palette-sky-600) 0%, var(--palette-sky-700) 100%);
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--surface);
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.change-passcode-modal-submit-btn:hover:not(:disabled) {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+.change-passcode-modal-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.change-passcode-modal-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 12px;
+  gap: 12px;
+}
+
+.change-passcode-modal-success-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: #dcfce7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.change-passcode-modal-success h4 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--palette-slate-800);
+}
+
+.change-passcode-modal-success p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--palette-gray-500);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

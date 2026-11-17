@@ -65,8 +65,8 @@ describe('ApplicationTrackerView dynamic behavior across applications', () => {
       </MemoryRouter>
     )
 
-    // Step badge must show total 5 default steps
-    expect(screen.getByText(/Step \d\/5/)).toBeDefined()
+    // Step badge is not shown to match mobile app
+    expect(screen.queryByText(/Step \d\/5/)).toBeNull()
     expect(screen.getByText('Document Collection')).toBeDefined()
     expect(screen.getByText('Verification')).toBeDefined()
     expect(screen.getByText('Payment')).toBeDefined()
@@ -94,8 +94,8 @@ describe('ApplicationTrackerView dynamic behavior across applications', () => {
       </MemoryRouter>
     )
 
-    // Step badge must show total 5 default steps
-    expect(screen.getByText(/Step \d\/5/)).toBeDefined()
+    // Step badge is not shown to match mobile app
+    expect(screen.queryByText(/Step \d\/5/)).toBeNull()
     expect(screen.getByText('Document Collection')).toBeDefined()
     expect(screen.getByText('Verification')).toBeDefined()
     expect(screen.getByText('Payment')).toBeDefined()

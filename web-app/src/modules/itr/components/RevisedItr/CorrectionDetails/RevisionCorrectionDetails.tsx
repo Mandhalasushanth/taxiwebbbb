@@ -7,6 +7,7 @@ import type {
   IncomeCorrectionOriginals,
 } from '@modules/itr/types/revisedItr.types'
 import { CaretInput, FieldInfoTooltip } from '@shared/components'
+import { ItrAmountInput } from '@modules/itr'
 import { Banknote, FileText, Building2 } from 'lucide-react'
 import './RevisionCorrectionDetails.css'
 
@@ -66,14 +67,12 @@ export const RevisionCorrectionDetails: React.FC<RevisionCorrectionDetailsProps>
           <label htmlFor="salary-income" className="field-label">
             Salary / Business Income <span className="required-star">*</span>
           </label>
-          <CaretInput
+          <ItrAmountInput
             id="salary-income"
-            type="text"
-            inputMode="numeric"
             placeholder="Enter revised income"
             className={`step3-text-input ${salaryError ? 'input-error' : ''}`}
             value={incomeCorrections.salaryIncome}
-            onChange={(e) => onIncomeChange('salaryIncome', e.target.value)}
+            onChange={(raw) => onIncomeChange('salaryIncome', raw)}
             onKeyDown={onKeyDown}
           />
           {salaryError && <span className="field-error-text">{salaryError}</span>}
@@ -84,14 +83,12 @@ export const RevisionCorrectionDetails: React.FC<RevisionCorrectionDetailsProps>
           <label htmlFor="taxable-income" className="field-label">
             Taxable Income <span className="required-star">*</span>
           </label>
-          <CaretInput
+          <ItrAmountInput
             id="taxable-income"
-            type="text"
-            inputMode="numeric"
             placeholder="Enter taxable income"
             className={`step3-text-input ${taxableError ? 'input-error' : ''}`}
             value={incomeCorrections.taxableIncome}
-            onChange={(e) => onIncomeChange('taxableIncome', e.target.value)}
+            onChange={(raw) => onIncomeChange('taxableIncome', raw)}
             onKeyDown={onKeyDown}
           />
           {taxableError && <span className="field-error-text">{taxableError}</span>}
@@ -105,14 +102,12 @@ export const RevisionCorrectionDetails: React.FC<RevisionCorrectionDetailsProps>
           <p className="field-helper-text">
             Includes interest from savings/FD, dividend income, capital gains, gifts, or freelance income.
           </p>
-          <CaretInput
+          <ItrAmountInput
             id="other-income"
-            type="text"
-            inputMode="numeric"
             placeholder="Enter revised other income"
             className="step3-text-input"
             value={incomeCorrections.otherIncome}
-            onChange={(e) => onIncomeChange('otherIncome', e.target.value)}
+            onChange={(raw) => onIncomeChange('otherIncome', raw)}
             onKeyDown={onKeyDown}
           />
         </div>
@@ -148,14 +143,12 @@ export const RevisionCorrectionDetails: React.FC<RevisionCorrectionDetailsProps>
               description="Deductions eligible under Section 80C up to ₹1,50,000 (PPF, ELSS, EPF, Life Insurance, etc.)."
             />
           </div>
-          <CaretInput
+          <ItrAmountInput
             id="section-80c"
-            type="text"
-            inputMode="numeric"
             placeholder="Enter amount"
             className="step3-text-input"
             value={deductionCorrections.section80c}
-            onChange={(e) => onDeductionChange('section80c', e.target.value)}
+            onChange={(raw) => onDeductionChange('section80c', raw)}
             onKeyDown={onKeyDown}
           />
         </div>
@@ -171,14 +164,12 @@ export const RevisionCorrectionDetails: React.FC<RevisionCorrectionDetailsProps>
               description="Deductions for medical insurance premiums paid for self, family, and senior citizen parents under Section 80D."
             />
           </div>
-          <CaretInput
+          <ItrAmountInput
             id="section-80d"
-            type="text"
-            inputMode="numeric"
             placeholder="Enter amount"
             className="step3-text-input"
             value={deductionCorrections.section80d}
-            onChange={(e) => onDeductionChange('section80d', e.target.value)}
+            onChange={(raw) => onDeductionChange('section80d', raw)}
             onKeyDown={onKeyDown}
           />
         </div>
@@ -194,14 +185,12 @@ export const RevisionCorrectionDetails: React.FC<RevisionCorrectionDetailsProps>
               description="Interest paid on housing loan for self-occupied or let-out property under Section 24(b)."
             />
           </div>
-          <CaretInput
+          <ItrAmountInput
             id="home-loan-interest"
-            type="text"
-            inputMode="numeric"
             placeholder="Enter amount"
             className="step3-text-input"
             value={deductionCorrections.homeLoanInterest}
-            onChange={(e) => onDeductionChange('homeLoanInterest', e.target.value)}
+            onChange={(raw) => onDeductionChange('homeLoanInterest', raw)}
             onKeyDown={onKeyDown}
           />
         </div>
@@ -211,14 +200,12 @@ export const RevisionCorrectionDetails: React.FC<RevisionCorrectionDetailsProps>
           <label htmlFor="taxable-income-deduction" className="field-label">
             Taxable Income <span className="required-star">*</span>
           </label>
-          <CaretInput
+          <ItrAmountInput
             id="taxable-income-deduction"
-            type="text"
-            inputMode="numeric"
             placeholder="Enter taxable income"
             className={`step3-text-input ${taxableError ? 'input-error' : ''}`}
             value={deductionCorrections.taxableIncome}
-            onChange={(e) => onDeductionChange('taxableIncome', e.target.value)}
+            onChange={(raw) => onDeductionChange('taxableIncome', raw)}
             onKeyDown={onKeyDown}
           />
           {taxableError && <span className="field-error-text">{taxableError}</span>}

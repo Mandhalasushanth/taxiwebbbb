@@ -70,6 +70,7 @@ export interface FindOriginalReturnProps {
   ayError?: string | null
   dropdownRef: React.RefObject<HTMLDivElement | null>
   onAckChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onAckBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
   onToggleDropdown: () => void
   onSelectAy: (ay: string) => void
@@ -83,6 +84,7 @@ export const FindOriginalReturn: React.FC<FindOriginalReturnProps> = ({
   ayError,
   dropdownRef,
   onAckChange,
+  onAckBlur,
   onKeyDown,
   onToggleDropdown,
   onSelectAy,
@@ -108,6 +110,7 @@ export const FindOriginalReturn: React.FC<FindOriginalReturnProps> = ({
         value={ackNumber}
         onKeyDown={onKeyDown}
         onChange={onAckChange}
+        onBlur={onAckBlur}
       />
       {ackError && <span className="field-error-text">{ackError}</span>}
     </div>
@@ -137,7 +140,7 @@ export const FindOriginalReturn: React.FC<FindOriginalReturnProps> = ({
         <p className="step1-subheading">Verify your previous return filing details to start the revision.</p>
       </div>
 
-      <div className="step1-section-card">
+      <div className="step1-section-card" id="revised-step1-details" data-section="revised-step1-details">
         <div className="step1-card-header">
           <div className="step1-card-title-row">
             <FileText size={20} className="step1-card-icon" aria-hidden="true" />

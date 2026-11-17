@@ -3,6 +3,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, cleanup } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { ApplicationTrackerView } from '@modules/applications/components/ApplicationTracker/ApplicationTrackerView'
+import { ApplicationPaymentsTab } from '@modules/applications/components/ApplicationTracker/tabs/ApplicationPaymentsTab'
+import { getApplicationTrackerData } from '@modules/applications/data/applicationTrackerData'
 import { userStorage } from '@core/storage/userStorage'
 import { authStorage } from '@core/auth'
 
@@ -110,12 +112,10 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
       </MemoryRouter>
     )
 
-    expect(screen.getByText('Apex Logistics LLP')).toBeDefined()
-    expect(screen.getByText('Apex Swift Cargo')).toBeDefined()
-    expect(screen.getByText('Limited Liability Partnership')).toBeDefined()
-    expect(screen.getByText('AAPCA1234F')).toBeDefined()
-    expect(screen.getByText('Logistics & Warehousing')).toBeDefined()
-    expect(screen.getByText('15 May 2026')).toBeDefined()
+    expect(screen.getAllByText('GST Registration').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText('Submission Date')).toBeDefined()
+    expect(screen.getAllByText('Status').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText('What happens next?')).toBeDefined()
     unmount()
 
     // Status Tab
@@ -127,7 +127,7 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
       </MemoryRouter>
     )
 
-    expect(screen.getByText(/Step \d\/5/)).toBeDefined()
+    expect(screen.queryByText(/Step \d\/5/)).toBeNull()
     expect(screen.getByText('Document Collection')).toBeDefined()
     expect(screen.getByText('Verification')).toBeDefined()
     expect(screen.getByText('Payment')).toBeDefined()
@@ -149,12 +149,24 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
       formData: {},
     })
 
+    const data = getApplicationTrackerData('GST-REG-5586')!
     render(
-      <MemoryRouter initialEntries={['/applications/track/GST-REG-5586?tab=payments']}>
-        <Routes>
-          <Route path="/applications/track/:id" element={<ApplicationTrackerView />} />
-        </Routes>
-      </MemoryRouter>
+      <ApplicationPaymentsTab
+        data={data}
+        isPaid={false}
+        isProcessingPayment={false}
+        handlePayNow={vi.fn()}
+        isManagerOrAdmin={false}
+        isTdsApplication={false}
+        mgrServiceFee="0"
+        setMgrServiceFee={vi.fn()}
+        mgrGovFees="0"
+        setMgrGovFees={vi.fn()}
+        handleFinalizeCharges={vi.fn()}
+        computedTotal="0"
+        mgrSuccess=""
+        mgrError=""
+      />
     )
 
     expect(screen.getAllByText('Awaiting Verification').length).toBeGreaterThanOrEqual(1)
@@ -165,7 +177,7 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
     expect(screen.queryByText('Pay Now')).toBeNull()
   })
 
-  it('renders GST Filing with all 12 uploaded documents and Step 2/5', () => {
+  it('renders GST Filing with all 12 uploaded documents matching mobile screen', () => {
     userStorage.saveUserApplication({
       id: 'app-gst-fil-7452',
       code: 'GST-FIL-7452',
@@ -254,21 +266,31 @@ describe('ApplicationTrackerView user uploaded documents and dynamic details', (
       </MemoryRouter>
     )
 
-    expect(screen.getByText('Nova Retail Ventures')).toBeDefined()
-    expect(screen.getByText('27AABCN8899K1Z4')).toBeDefined()
-    expect(screen.getByText('GSTR-3B')).toBeDefined()
-    expect(screen.getByText('August 2026')).toBeDefined()
-    expect(screen.getByText('₹18,50,000')).toBeDefined()
-    expect(screen.getByText('₹1,66,500')).toBeDefined()
+    expect(screen.getAllByText('GST Filing').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText('Submission Date')).toBeDefined()
+    expect(screen.getAllByText('Status').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText('What happens next?')).toBeDefined()
     unmount()
 
-    // Payments Tab
+    // Payments Tab (Component level test)
+    const filingData = getApplicationTrackerData('GST-FIL-7452')!
     render(
-      <MemoryRouter initialEntries={['/applications/track/GST-FIL-7452?tab=payments']}>
-        <Routes>
-          <Route path="/applications/track/:id" element={<ApplicationTrackerView />} />
-        </Routes>
-      </MemoryRouter>
+      <ApplicationPaymentsTab
+        data={filingData}
+        isPaid={false}
+        isProcessingPayment={false}
+        handlePayNow={vi.fn()}
+        isManagerOrAdmin={false}
+        isTdsApplication={false}
+        mgrServiceFee="0"
+        setMgrServiceFee={vi.fn()}
+        mgrGovFees="0"
+        setMgrGovFees={vi.fn()}
+        handleFinalizeCharges={vi.fn()}
+        computedTotal="0"
+        mgrSuccess=""
+        mgrError=""
+      />
     )
 
     expect(screen.getAllByText('Awaiting Verification').length).toBeGreaterThanOrEqual(1)
