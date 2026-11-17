@@ -462,3 +462,26 @@ export function openGstDocumentPreview(doc: GstPreviewDocument): void {
     // ignore focus errors
   }
 }
+
+/**
+ * Triggers direct download of any GST or application document/certificate.
+ */
+export function downloadGstDocument(doc: GstPreviewDocument): void {
+  const file =
+    doc.file ??
+    (doc.id ? gstUploadedFiles.get(doc.id) : undefined) ??
+    (doc.fileName ? gstUploadedFiles.get(doc.fileName) : undefined) ??
+    (doc.title ? gstUploadedFiles.get(doc.title) : undefined) ??
+    (doc.id ? gstUploadedFiles.get(`filing_${doc.id}`) : undefined) ??
+    gstUploadedFiles.get('amendment_file') ??
+    gstUploadedFiles.find({ id: doc.id, fileName: doc.fileName, title: doc.title }) ??
+    uploadedFileStore.get(doc.id, doc.fileName, doc.title)
+
+  const url = getGstDocumentPreviewUrl(file ? { ...doc, file } : doc)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = doc.fileName || `${(doc.title || 'GST_Certificate_REG-06').replace(/\s+/g, '_')}.pdf`
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+}

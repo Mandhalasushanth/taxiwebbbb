@@ -253,6 +253,7 @@ export const TdsRefundCustomerIncome: React.FC<
       if (changedField === 'pan' && val.length === 10) shouldValidateLive = true;
       if (changedField === 'aadhaar' && val.replace(/\D/g, '').length === 12) shouldValidateLive = true;
       if (changedField === 'mobile' && val.replace(/\D/g, '').length === 10) shouldValidateLive = true;
+      if (changedField === 'panDoc' || changedField === 'aadhaarDoc') shouldValidateLive = true;
 
       if (shouldValidateLive) {
         const err = validateBusinessField(changedField, next);
@@ -382,7 +383,14 @@ export const TdsRefundCustomerIncome: React.FC<
       setError(null);
 
       // Mark all fields touched
-      setBusinessTouched({ legalName: true, pan: true, aadhaar: true, mobile: true });
+      setBusinessTouched({
+        legalName: true,
+        pan: true,
+        aadhaar: true,
+        mobile: true,
+        panDoc: true,
+        aadhaarDoc: true,
+      });
       setBankTouched({ accountHolder: true, accountNumber: true, confirmAccountNumber: true, ifsc: true });
       setPersonalTouched({ fullName: true, pan: true });
 
@@ -448,6 +456,16 @@ export const TdsRefundCustomerIncome: React.FC<
         setError(Object.values(bizErrs)[0] || Object.values(errs)[0]);
         if (errs.fullName || errs.pan) {
           setIsEditingPersonal(true);
+        }
+        try {
+          const firstErr = document.querySelector(
+            ".has-error, .tds-field-error, .tds-form-group--error"
+          );
+          if (firstErr) {
+            firstErr.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        } catch {
+          // ignore
         }
         return;
       }

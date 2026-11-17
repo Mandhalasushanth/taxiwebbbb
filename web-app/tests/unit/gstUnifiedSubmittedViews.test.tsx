@@ -97,7 +97,7 @@ describe('Unified GST Application Submitted View Across Services', () => {
     expect(screen.getByRole('button', { name: /Track in My Applications/i })).toBeDefined()
   })
 
-  it('5. GST Certificate renders unified submission UI with correct user data', () => {
+  it('5. GST Certificate renders dedicated REG-06 verification UI with correct user data', () => {
     render(
       <MemoryRouter>
         <GSTCertificateSubmitted
@@ -107,14 +107,10 @@ describe('Unified GST Application Submitted View Across Services', () => {
       </MemoryRouter>
     )
 
-    expect(screen.getByText('Application Submitted!')).toBeDefined()
-    expect(screen.getByText('GST-2026-33445')).toBeDefined()
-    expect(screen.getByText('Under Verification')).toBeDefined()
-    expect(screen.getByText('sagarika traders')).toBeDefined()
-    expect(screen.getByText('GST Certificate')).toBeDefined()
-    expect(screen.getByRole('button', { name: /Go to Dashboard/i })).toBeDefined()
-    expect(screen.getByRole('button', { name: /Contact Support \/ CA/i })).toBeDefined()
-    expect(screen.getByRole('button', { name: /Track in My Applications/i })).toBeDefined()
+    expect(screen.getByText('Your Application Under Verification')).toBeDefined()
+    expect(screen.getByText(/After the verification process, your GST certificate will be downloaded/i)).toBeDefined()
+    expect(screen.getAllByText('sagarika traders').length).toBeGreaterThan(0)
+    expect(screen.getByRole('button', { name: /Track Application/i })).toBeDefined()
   })
 
   it('6. GST Cancellation renders unified submission UI with correct user data', () => {
@@ -217,9 +213,7 @@ describe('Unified GST Application Submitted View Across Services', () => {
         />
       </MemoryRouter>
     )
-    expect(screen.getByRole('button', { name: /Go to Dashboard/i })).toBeDefined()
-    expect(screen.getByRole('button', { name: /Contact Support \/ CA/i })).toBeDefined()
-    expect(screen.getByRole('button', { name: /Track in My Applications/i })).toBeDefined()
+    expect(screen.getByRole('button', { name: /Track Application/i })).toBeDefined()
     unmount2()
 
     // Test GSTAmendmentSubmitted

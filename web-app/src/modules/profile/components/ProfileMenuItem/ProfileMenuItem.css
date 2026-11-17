@@ -80,6 +80,9 @@
 .profile-menu-item__icon-wrapper--amber { background-color: var(--warning-light); }
 .profile-menu-item__icon-wrapper--teal { background-color: var(--palette-teal-100); }
 .profile-menu-item__icon-wrapper--red { background-color: var(--palette-red-100-fee2e2); }
+.profile-menu-item__icon-wrapper--cyan { background-color: #e0f2fe; }
+.profile-menu-item__icon-wrapper--slate { background-color: #f1f5f9; }
+.profile-menu-item__icon-wrapper--green { background-color: #d1fae5; }
 
 .profile-menu-item:hover .profile-menu-item__icon-wrapper {
   transform: scale(1.08) rotate(-4deg);

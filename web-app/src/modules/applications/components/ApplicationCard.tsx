@@ -2,7 +2,9 @@ import { routePaths } from "@core/config";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import type { ApplicationsItem } from "../types/applications.types";
+import { formatApplicationDateTime } from "../data/applicationTrackerData";
 import { isDraftApplication, resolveDraftResumeRoute } from "../utils/draftRouting";
+import { getApplicationServiceIcon } from "../utils/applicationIconUtils";
 import {
   GstDocIcon,
   ItrDocIcon,
@@ -40,7 +42,22 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({ item }) => {
     }
   };
 
+  const iconImgSrc = getApplicationServiceIcon(item);
+
   const renderServiceIcon = () => {
+    if (iconImgSrc) {
+      return (
+        <img
+          src={iconImgSrc}
+          alt={item.title}
+          className="app-item-card__icon-img"
+          width={42}
+          height={42}
+          loading="lazy"
+        />
+      );
+    }
+
     switch (item.category) {
       case "GST":
         return <GstDocIcon className="app-item-icon-svg" />;
@@ -90,7 +107,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({ item }) => {
               <span className="app-item-card__cal-emoji" aria-hidden="true">
                 🗓️
               </span>{" "}
-              {item.date}
+              {formatApplicationDateTime(item.date)}
             </span>
             {item.tag && (
               <>

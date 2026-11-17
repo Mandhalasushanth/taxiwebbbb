@@ -181,3 +181,41 @@
   color: #dc2626;
   border-color: #fda4af;
 }
+
+/* 4. Upload States: Uploading & Failed */
+.tds-upload-field__status--uploading {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #0284c7;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.45rem;
+  background: #f0f9ff;
+  border-radius: 6px;
+}
+
+.tds-upload-field__status--failed {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #dc2626;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.45rem;
+  background: #fef2f2;
+  border-radius: 6px;
+}
+
+.tds-spinner-icon {
+  animation: tdsSpin 1s linear infinite;
+}
+
+@keyframes tdsSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

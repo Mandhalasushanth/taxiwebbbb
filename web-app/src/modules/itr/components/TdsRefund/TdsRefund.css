@@ -1,3 +1,32 @@
+/* TDS Refund Unified Typography */
+.tds-web-page,
+.tds-step1-page,
+.tds-review-page {
+  font-family: var(--font-sans, 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+.tds-web-page *,
+.tds-step1-page *,
+.tds-review-page * {
+  font-family: inherit;
+}
+.tds-web-page input,
+.tds-web-page button,
+.tds-web-page select,
+.tds-web-page textarea,
+.tds-web-page label,
+.tds-step1-page input,
+.tds-step1-page button,
+.tds-step1-page select,
+.tds-step1-page textarea,
+.tds-step1-page label,
+.tds-review-page input,
+.tds-review-page button,
+.tds-review-page select,
+.tds-review-page textarea,
+.tds-review-page label {
+  font-family: var(--font-sans, 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
 /* TDS Refund Container, Progress Tracker & Payment Layout */
 .tds-web-page {
   width: 100%;

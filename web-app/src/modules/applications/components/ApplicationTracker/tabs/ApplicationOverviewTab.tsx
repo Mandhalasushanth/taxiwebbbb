@@ -1,5 +1,6 @@
 import React from 'react'
 import type { ApplicationTrackerData } from '../../../data/applicationTrackerData'
+import { formatApplicationDateTime } from '../../../data/applicationTrackerData'
 
 export interface ApplicationOverviewTabProps {
   data: ApplicationTrackerData
@@ -10,20 +11,27 @@ export const ApplicationOverviewTab: React.FC<ApplicationOverviewTabProps> = ({
   data,
   onNavigateToChat,
 }) => {
+  const statusLabel = (data.rawApplication?.statusLabel || data.currentStageTitle || 'Submitted').toUpperCase()
+  const submissionDate = formatApplicationDateTime(data.appliedDate)
+
   return (
     <div className="app-tracker-web-tab-content">
       <h2 className="app-tracker-section-heading">Overview</h2>
 
-      {/* Application Details Card */}
+      {/* 1. Application Details Card */}
       <div className="app-tracker-clean-card">
         <h3 className="app-tracker-card-subtitle">Application Details</h3>
         <div className="app-tracker-details-list">
+          {/* Service */}
           <div className="app-tracker-detail-row">
             <div className="app-tracker-detail-label-group">
               <span className="app-tracker-detail-icon app-tracker-detail-icon--doc">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                   <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <polyline points="10 9 9 9 8 9" />
                 </svg>
               </span>
               <span className="app-tracker-detail-label">Service</span>
@@ -31,19 +39,7 @@ export const ApplicationOverviewTab: React.FC<ApplicationOverviewTabProps> = ({
             <span className="app-tracker-detail-value">{data.title}</span>
           </div>
 
-          <div className="app-tracker-detail-row">
-            <div className="app-tracker-detail-label-group">
-              <span className="app-tracker-detail-icon app-tracker-detail-icon--user">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </span>
-              <span className="app-tracker-detail-label">Application ID</span>
-            </div>
-            <span className="app-tracker-detail-value app-tracker-detail-value--bold">{data.appId}</span>
-          </div>
-
+          {/* Submission Date */}
           <div className="app-tracker-detail-row">
             <div className="app-tracker-detail-label-group">
               <span className="app-tracker-detail-icon app-tracker-detail-icon--calendar">
@@ -56,43 +52,26 @@ export const ApplicationOverviewTab: React.FC<ApplicationOverviewTabProps> = ({
               </span>
               <span className="app-tracker-detail-label">Submission Date</span>
             </div>
-            <span className="app-tracker-detail-value">{data.appliedDate}</span>
+            <span className="app-tracker-detail-value">{submissionDate}</span>
           </div>
 
+          {/* Status */}
           <div className="app-tracker-detail-row">
             <div className="app-tracker-detail-label-group">
               <span className="app-tracker-detail-icon app-tracker-detail-icon--shield">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  <polyline points="9 12 11 14 15 10" />
                 </svg>
               </span>
               <span className="app-tracker-detail-label">Status</span>
             </div>
-            <span className="app-tracker-detail-status-green">{data.rawApplication?.statusLabel || data.currentStageTitle || 'Submitted'}</span>
+            <span className="app-tracker-detail-status-green">{statusLabel}</span>
           </div>
         </div>
       </div>
 
-      {/* Application Filing Fields (Dynamic per Application) */}
-      {data.filingFields && data.filingFields.filter((f) => !['service', 'application id', 'submission date', 'status'].includes(f.label.toLowerCase())).length > 0 && (
-        <div className="app-tracker-clean-card">
-          <h3 className="app-tracker-card-subtitle">{data.filingFieldsHeader || 'Filing Details'}</h3>
-          <div className="app-tracker-details-list">
-            {data.filingFields
-              .filter((f) => !['service', 'application id', 'submission date', 'status'].includes(f.label.toLowerCase()))
-              .map((field, idx) => (
-                <div key={idx} className="app-tracker-detail-row">
-                  <span className="app-tracker-detail-label">{field.label}</span>
-                  <span className={`app-tracker-detail-value ${field.isHighlight ? 'app-tracker-detail-value--bold' : ''}`}>
-                    {field.value}
-                  </span>
-                </div>
-              ))}
-          </div>
-        </div>
-      )}
-
-      {/* What happens next? Card */}
+      {/* 2. What happens next? Card */}
       <div className="app-tracker-clean-card app-tracker-clean-card--next">
         <div className="app-tracker-next-top">
           <div className="app-tracker-clock-icon-circle">
@@ -119,3 +98,5 @@ export const ApplicationOverviewTab: React.FC<ApplicationOverviewTabProps> = ({
     </div>
   )
 }
+
+export default ApplicationOverviewTab

@@ -216,8 +216,8 @@ export const validateStep6 = (data: ProjectFinanceData): LoanStepValidationResul
   const panTrimmed = (data.complianceIncomeTaxPan || '').trim().toUpperCase()
   if (!panTrimmed) {
     errors.complianceIncomeTaxPan = 'Income Tax PAN is required'
-  } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(panTrimmed)) {
-    errors.complianceIncomeTaxPan = 'Please enter a valid 10-digit PAN (e.g. ABCDE1234F)'
+  } else if (!/^[A-Z]{3}[ABCFGHJLPT][A-Z][0-9]{4}[A-Z]$/.test(panTrimmed)) {
+    errors.complianceIncomeTaxPan = 'Please enter a valid 10-character PAN (e.g. ABCPH5478H)'
   }
 
   // 5. Other Compliance

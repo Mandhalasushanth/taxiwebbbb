@@ -113,7 +113,7 @@ export const MsmeRegistrationCard: React.FC<MsmeLoanStepProps> = ({ data, onChan
           <CaretInput
             id="msme-gstin"
             className={`msme-field__input${errors.gstin ? ' msme-field__input--error' : ''}`}
-            placeholder="e.g. 27ABCDE1234F1Z5"
+            placeholder="e.g. 27ABCPH5478H1Z5"
             value={data.gstin || ''}
             maxLength={15}
             aria-invalid={Boolean(errors.gstin) || undefined}

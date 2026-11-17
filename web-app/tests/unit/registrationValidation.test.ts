@@ -82,7 +82,25 @@ describe('registrationValidation', () => {
       expect(validateField('pincode', { ...sampleValidForm, pincode: '011001' })).toBe(
         'Enter a valid 6-digit Indian PIN code'
       )
+      expect(validateField('pincode', { ...sampleValidForm, pincode: '41100A' })).toBe(
+        'PIN code must contain digits only'
+      )
       expect(validateField('pincode', sampleValidForm)).toBeUndefined()
+    })
+
+    it('validates pincode matches the selected state in registration', () => {
+      // sampleValidForm has state: 'Maharashtra', pincode: '411001' -> valid
+      expect(validateField('pincode', sampleValidForm)).toBeUndefined()
+
+      // Karnataka PIN code 560001 with state: 'Maharashtra'
+      expect(
+        validateField('pincode', { ...sampleValidForm, state: 'Maharashtra', pincode: '560001' })
+      ).toBe('PIN code 560001 belongs to Karnataka, not Maharashtra')
+
+      // Changing state to Karnataka makes 560001 valid
+      expect(
+        validateField('pincode', { ...sampleValidForm, state: 'Karnataka', pincode: '560001' })
+      ).toBeUndefined()
     })
 
     it('validates city and district formats', () => {
@@ -165,6 +183,43 @@ describe('registrationValidation', () => {
         'Please select your State / UT'
       )
       expect(validateField('state', sampleValidForm)).toBeUndefined()
+    })
+  })
+
+  describe('Date of Birth (DOB) validations', () => {
+    it('accepts valid adult dates in DD-MM-YYYY format', () => {
+      expect(validateField('dob', { ...sampleValidForm, dob: '15-08-1995' })).toBeUndefined()
+      expect(validateField('dob', { ...sampleValidForm, dob: '01-01-2000' })).toBeUndefined()
+    })
+
+    it('requires Date of Birth when empty', () => {
+      expect(validateField('dob', { ...sampleValidForm, dob: '' })).toBe('Date of Birth is required')
+    })
+
+    it('rejects invalid or impossible dates with format error', () => {
+      expect(validateField('dob', { ...sampleValidForm, dob: '32-13-2000' })).toBe(
+        'Enter a valid date in DD-MM-YYYY format'
+      )
+      expect(validateField('dob', { ...sampleValidForm, dob: '31-02-2001' })).toBe(
+        'Enter a valid date in DD-MM-YYYY format'
+      )
+      expect(validateField('dob', { ...sampleValidForm, dob: 'invalid-date' })).toBe(
+        'Enter a valid date in DD-MM-YYYY format'
+      )
+    })
+
+    it('rejects future dates with specific future date error', () => {
+      const nextYear = new Date().getFullYear() + 1
+      expect(validateField('dob', { ...sampleValidForm, dob: `01-01-${nextYear}` })).toBe(
+        'Date of birth cannot be in the future.'
+      )
+    })
+
+    it('rejects age under 18 years old', () => {
+      const fiveYearsAgo = new Date().getFullYear() - 5
+      expect(validateField('dob', { ...sampleValidForm, dob: `01-01-${fiveYearsAgo}` })).toBe(
+        'You must be at least 18 years old'
+      )
     })
   })
 

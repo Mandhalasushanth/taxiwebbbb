@@ -3,10 +3,12 @@ import {
   DOCUMENT_UPLOAD_RULE,
   FileInput,
   uploadedFileStore,
+  uploadHintFor,
   viewUploadedDocument,
   type UploadRule,
 } from "@shared/upload";
 import { assertGstUploadCriteria, GstUploadException } from "@modules/gst/utils/gstUploadValidator";
+import { DeleteDocumentConfirmModal } from "./DeleteDocumentConfirmModal";
 import "./uploadDocument.css";
 
 export interface UploadDocumentProps {
@@ -24,7 +26,7 @@ export interface UploadDocumentProps {
   fileSize?: string;
   file?: File;
   icon?: React.ReactNode;
-  /** Allowed files (default: PDF, Excel, JPG or PNG up to 15 MB — the application-wide rule) */
+  /** Allowed files (default: PDF, Excel, JPG or PNG up to 10 MB — the application-wide rule) */
   rule?: UploadRule;
   uploadLabel?: string;
   /** Inline validation error message displayed directly below subtitle */
@@ -92,6 +94,7 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [localFile, setLocalFile] = useState<File | undefined>(file);
   const [internalError, setInternalError] = useState<string | undefined>(undefined);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // The active error shows internal validation failure or caller-provided error
   const activeError = error !== undefined ? error : internalError;
@@ -169,10 +172,19 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
   const handleUploadBtnClick = openPicker;
 
   const handleDeleteClick = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    setIsDeleteModalOpen(false);
     setInternalError(undefined);
     setLocalFile(undefined);
     uploadedFileStore.forget(id, fileName);
     onRemove?.(id);
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteModalOpen(false);
   };
 
   const handleToggleNotApplicable = () => onToggleNotApplicable?.(id);
@@ -233,6 +245,11 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
             {effectiveSubtitle && (
               <span className="supporting-doc-item__subtitle">
                 {effectiveSubtitle}
+              </span>
+            )}
+            {!effectiveIsUploaded && (!effectiveSubtitle || !effectiveSubtitle.includes("MB")) && (
+              <span className="supporting-doc-item__rule-hint">
+                {uploadHintFor(rule)}
               </span>
             )}
             {activeError && (
@@ -414,6 +431,14 @@ export const UploadDocument: React.FC<UploadDocumentProps> = ({
           </div>
         </>
       )}
+
+      <DeleteDocumentConfirmModal
+        isOpen={isDeleteModalOpen}
+        fileName={fileName || localFile?.name || file?.name}
+        documentTitle={title}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </div>
   );
 };

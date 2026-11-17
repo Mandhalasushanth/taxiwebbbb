@@ -22,8 +22,6 @@ import {
   IndianRupee,
   Calculator as LucideCalculator,
   MessageCircle as LucideMessageCircle,
-  Calendar,
-  Award,
   Wallet,
 } from 'lucide-react'
 import type { TdsProfile, TdsBankDetails, TdsBusinessDetails, TdsIncomeTaxData } from '../types/tdsRefund.types'
@@ -138,73 +136,6 @@ export const EMPTY_TAX: TdsIncomeTaxData = {
   selfAssessmentTax: '',
 }
 
-export interface WhyChooseItem {
-  id: string
-  title: string
-  description: string
-  icon: 'wallet' | 'expert' | 'clock' | 'trending'
-}
-
-export interface HowItWorksStep {
-  stepNumber: number
-  title: string
-  icon: 'edit' | 'upload' | 'verification' | 'filing' | 'credit'
-}
-
-export interface DocumentItem {
-  id: string
-  title: string
-  name?: string
-  icon: 'pan' | 'aadhaar' | 'form16' | 'ais' | 'tis' | 'bank' | 'salary' | 'more'
-  isMoreBtn?: boolean
-}
-
-export const WHY_CHOOSE_ITEMS: WhyChooseItem[] = [
-  {
-    id: 'maximum-refund',
-    title: 'Maximum Refund',
-    description: 'Identifies all eligible tax credits to maximize refund.',
-    icon: 'wallet',
-  },
-  {
-    id: 'expert-review',
-    title: 'Expert CA Review',
-    description: 'Verified by certified tax professionals.',
-    icon: 'expert',
-  },
-  {
-    id: 'fast-filing',
-    title: 'Fast Filing',
-    description: 'Prompt verification and swift return submission.',
-    icon: 'clock',
-  },
-  {
-    id: 'live-tracking',
-    title: 'Live Tracking',
-    description: 'Real-time updates from filing to refund credit.',
-    icon: 'trending',
-  },
-]
-
-export const HOW_IT_WORKS_STEPS: HowItWorksStep[] = [
-  { stepNumber: 1, title: 'Submit Details', icon: 'edit' },
-  { stepNumber: 2, title: 'Upload Documents', icon: 'upload' },
-  { stepNumber: 3, title: 'Executive Verification', icon: 'verification' },
-  { stepNumber: 4, title: 'Payment', icon: 'filing' },
-  { stepNumber: 5, title: 'Refund Credited', icon: 'credit' },
-]
-
-export const DOCUMENTS_REQUIRED: DocumentItem[] = [
-  { id: 'pan', title: 'PAN Card', icon: 'pan' },
-  { id: 'aadhaar', title: 'Aadhaar Card', icon: 'aadhaar' },
-  { id: 'form16', title: 'Form 16 / Form 16A', icon: 'form16' },
-  { id: 'ais', title: 'AIS Statement', icon: 'ais' },
-  { id: 'tis', title: 'TIS Statement', icon: 'tis' },
-  { id: 'bank', title: 'Bank Statement', icon: 'bank' },
-  { id: 'salary', title: 'Salary Slip (if applicable)', icon: 'salary' },
-  { id: 'more', title: 'More', icon: 'more', isMoreBtn: true },
-]
-
 export const ADDITIONAL_DOCUMENTS = [
   { name: 'Form 26AS', desc: 'Tax Credit Statement from Income Tax Portal' },
   { name: 'Interest Certificate', desc: 'From banks / post office for savings & FD interest' },
@@ -237,39 +168,6 @@ export const TdsIcons = {
   Calculator,
   MessageCircle,
   HeroIllustration,
-}
-
-export interface TdsDocumentConfig {
-  id: string
-  title: string
-  subtitle: string
-  required: boolean
-  bgColor: string
-  iconColor: string
-}
-
-export const TDS_DOCUMENTS: TdsDocumentConfig[] = [
-  { id: 'pan', title: 'PAN', subtitle: 'Permanent Account Number Card', required: true, bgColor: '#e0f2fe', iconColor: '#0284c7' },
-  { id: 'form16', title: 'Form 16 (Part A & B)', subtitle: 'TDS Certificate issued by employer', required: true, bgColor: '#ffe4e6', iconColor: '#e11d48' },
-  { id: 'form16a', title: 'Form 16A', subtitle: 'Non-salary TDS Certificate from banks/others', required: false, bgColor: '#f3e8ff', iconColor: '#9333ea' },
-  { id: 'ais', title: 'AIS', subtitle: 'Annual Information Statement from IT Portal', required: true, bgColor: '#e0f2fe', iconColor: '#0284c7' },
-  { id: 'tis', title: 'TIS', subtitle: 'Taxpayer Information Summary', required: false, bgColor: '#dcfce7', iconColor: '#16a34a' },
-  { id: 'bankStatements', title: 'Bank Statements', subtitle: 'Last 6–12 months bank statements', required: true, bgColor: '#fef3c7', iconColor: '#d97706' },
-  { id: 'previousItr', title: 'Previous ITR', subtitle: 'Previous assessment year filed acknowledgement', required: false, bgColor: '#e0e7ff', iconColor: '#6366f1' },
-  { id: 'tdsCertificates', title: 'TDS Certificates', subtitle: 'Form 16B/16C or other deduction proofs', required: true, bgColor: '#dcfce7', iconColor: '#16a34a' },
-  { id: 'supportingDocs', title: 'Supporting Income Documents', subtitle: 'Interest certificates, capital gain sheets', required: false, bgColor: '#ffedd5', iconColor: '#ea580c' },
-]
-
-export const DocIcons: Record<string, React.FC<{ color?: string }>> = {
-  pan: ({ color }) => React.createElement(LucideCreditCard, { size: 22, color }),
-  form16: ({ color }) => React.createElement(LucideFileText, { size: 22, color }),
-  form16a: ({ color }) => React.createElement(LucideFileText, { size: 22, color }),
-  ais: ({ color }) => React.createElement(LucideFileText, { size: 22, color }),
-  tis: ({ color }) => React.createElement(LucideFileText, { size: 22, color }),
-  bankStatements: ({ color }) => React.createElement(Landmark, { size: 22, color }),
-  previousItr: ({ color }) => React.createElement(Calendar, { size: 22, color }),
-  tdsCertificates: ({ color }) => React.createElement(Award, { size: 22, color }),
-  supportingDocs: ({ color }) => React.createElement(Wallet, { size: 22, color }),
 }
 
 export interface UserLike {

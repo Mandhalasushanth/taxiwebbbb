@@ -1,6 +1,6 @@
 import React from 'react'
 import { FieldInfoTooltip } from '@shared/components'
-import { BUSINESS_METHODS, sanitizeIncomeAmount, type BusinessDetails } from '../itrFiling.constants'
+import { BUSINESS_METHODS, ItrAmountInput, type BusinessDetails } from '../itrFiling.constants'
 import './ItrIncomeSourceCards.css'
 
 export interface ItrBusinessIncomeCardProps {
@@ -91,16 +91,12 @@ export const ItrBusinessIncomeCard: React.FC<ItrBusinessIncomeCardProps> = ({
           </label>
           <div className={`itr-input-currency-wrap ${turnoverError ? 'itr-input-currency-wrap--error' : ''}`}>
             <span className="itr-currency-prefix">₹</span>
-            <input
+            <ItrAmountInput
               id="biz-turnover"
-              type="text"
-              inputMode="numeric"
-              pattern="[1-9][0-9]*"
-              maxLength={14}
               className="itr-input-currency"
               placeholder="Enter gross turnover"
               value={businessDetails.grossTurnover}
-              onChange={(e) => handleBusinessChange('grossTurnover', sanitizeIncomeAmount(e.target.value))}
+              onChange={(raw) => handleBusinessChange('grossTurnover', raw)}
             />
           </div>
           {turnoverError && <span className="itr-field-error-text">{turnoverError}</span>}
@@ -111,16 +107,12 @@ export const ItrBusinessIncomeCard: React.FC<ItrBusinessIncomeCardProps> = ({
           </label>
           <div className={`itr-input-currency-wrap ${profitError ? 'itr-input-currency-wrap--error' : ''}`}>
             <span className="itr-currency-prefix">₹</span>
-            <input
+            <ItrAmountInput
               id="biz-profit"
-              type="text"
-              inputMode="numeric"
-              pattern="[1-9][0-9]*"
-              maxLength={14}
               className="itr-input-currency"
               placeholder="Enter declared profit"
               value={businessDetails.declaredNetProfit}
-              onChange={(e) => handleBusinessChange('declaredNetProfit', sanitizeIncomeAmount(e.target.value))}
+              onChange={(raw) => handleBusinessChange('declaredNetProfit', raw)}
             />
           </div>
           {profitError && <span className="itr-field-error-text">{profitError}</span>}

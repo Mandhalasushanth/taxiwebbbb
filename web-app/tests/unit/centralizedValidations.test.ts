@@ -282,16 +282,88 @@ describe('Centralized Common Validation System', () => {
       expect(isValidGstin('29ABCPE1234F1#7')).toBe(false)
     })
 
-    it('rejects invalid state code including 88 and 95', () => {
+    it('rejects invalid state code including 88 and 95 immediately as "Invalid state code"', () => {
       expect(isValidGstStateCode('88')).toBe(false)
       expect(isValidGstStateCode('95')).toBe(false)
       expect(isValidGstStateCode('29')).toBe(true)
-      expect(validateGstin('88AAAAA0000A1Z5')).toContain('invalid state code')
-      expect(validateGstin('95ABCPE1234F1Z7')).toContain('invalid state code')
+      expect(validateGstin('88AAAAA0000A1Z5')).toBe('Invalid state code')
+      expect(validateGstin('95ABCPE1234F1Z7')).toBe('Invalid state code')
+      expect(validateGstin('88', { isLive: true })).toBe('Invalid state code')
+      expect(validateGstin('95', { isLive: true })).toBe('Invalid state code')
+      expect(validateGstin('88ABC', { isLive: true })).toBe('Invalid state code')
+    })
+
+    it('implements Two-Level GSTIN validation with immediate state code check and progressive typing', () => {
+      // 1. Immediate State Code Validation
+      expect(validateGstin('2', { isLive: true })).toBeNull() // 1st digit, still typing
+      expect(validateGstin('88', { isLive: true })).toBe('Invalid state code') // Immediate 2-digit error
+      expect(validateGstin('29', { isLive: true })).toBeNull() // Valid state code clears error
+
+      // 2. Progressive Validation while typing
+      expect(validateGstin('29A', { isLive: true })).toBeNull()
+      expect(validateGstin('29ABC', { isLive: true })).toBeNull()
+      expect(validateGstin('29ABCPE', { isLive: true })).toBeNull()
+      expect(validateGstin('29ABCPE1234', { isLive: true })).toBeNull()
+      expect(validateGstin('29ABCPE1234F', { isLive: true })).toBeNull()
+
+      // Invalid PAN sequence when enough characters are available
+      expect(validateGstin('2912345', { isLive: true })).toBe('Invalid PAN format within GSTIN.')
+      expect(validateGstin('29ABCPE12345', { isLive: true })).toBe('Invalid PAN format within GSTIN.')
+
+      // Entity code and 14th character Z
+      expect(validateGstin('29ABCPE1234F0', { isLive: true })).toBe('Invalid GSTIN entity code.')
+      expect(validateGstin('29ABCPE1234F1A', { isLive: true })).toBe('The 14th character of GSTIN must be Z.')
+
+      // Full 15 characters
+      expect(validateGstin('29ABCPE1234F1Z7', { isLive: true })).toBeNull()
+      expect(validateGstin('29ABCPE1234F1Z7')).toBeNull()
+
+      // Error priority at submission: Invalid state code takes priority over incomplete length
+      expect(validateGstin('88ABC')).toBe('Invalid state code')
+      expect(validateGstin('29ABC')).toBe('GSTIN must contain exactly 15 characters.')
     })
 
     it('rejects invalid PAN structure within GSTIN', () => {
       expect(validateGstin('29123451234F1Z7')).toBe('Invalid PAN format within GSTIN.')
+    })
+
+    it('BUG_GST_WB_012: validates 4th character of PAN sequence in GSTIN against PAN entity-type rules', () => {
+      // 1. Valid GSTIN with valid PAN entity-type character (A, B, C, F, G, H, J, L, P, T) -> Pass
+      expect(validateGstin('29ABCPE1234F1Z7')).toBeNull() // 'P' = Individual
+      expect(validateGstin('27AAACB1234F1Z5')).toBeNull() // 'C' = Company
+      expect(validateGstin('07AABFF1234F1Z1')).toBeNull() // 'F' = Firm / LLP
+
+      // 2. GSTIN with an invalid fourth PAN character (e.g. 'X', 'Z') -> Fail
+      expect(validateGstin('29ABCXE1234F1Z7')).toBe(
+        'The 4th character of PAN must represent a valid entity type (A, B, C, F, G, H, J, L, P, or T).'
+      )
+      expect(validateGstin('29ABCZE1234F1Z7')).toBe(
+        'The 4th character of PAN must represent a valid entity type (A, B, C, F, G, H, J, L, P, or T).'
+      )
+
+      // 3. GSTIN with a numeric fourth PAN character -> Fail
+      expect(validateGstin('29ABC1E1234F1Z7')).toBe(
+        'The 4th character of PAN must represent a valid entity type (A, B, C, F, G, H, J, L, P, or T).'
+      )
+
+      // 4. GSTIN with an invalid special character -> Fail
+      expect(validateGstin('29ABC#E1234F1Z7')).toBe('Please enter a valid GSTIN.')
+
+      // 5. Progressive validation while typing:
+      // Valid state code, typing before 4th PAN character -> No premature error
+      expect(validateGstin('29ABC', { isLive: true })).toBeNull()
+
+      // Invalid 4th PAN character entered progressively at length 6 -> Fail immediately
+      expect(validateGstin('29ABCX', { isLive: true })).toBe(
+        'The 4th character of PAN must represent a valid entity type (A, B, C, F, G, H, J, L, P, or T).'
+      )
+      expect(validateGstin('29ABC1', { isLive: true })).toBe(
+        'The 4th character of PAN must represent a valid entity type (A, B, C, F, G, H, J, L, P, or T).'
+      )
+
+      // Correct the invalid character -> Validation clears
+      expect(validateGstin('29ABCP', { isLive: true })).toBeNull()
+      expect(validateGstin('29ABCPE', { isLive: true })).toBeNull()
     })
 
     it('rejects invalid entity code (13th char)', () => {
@@ -387,6 +459,7 @@ describe('Centralized Common Validation System', () => {
       expect(isValidPincode('500001')).toBe(true)
       expect(isValidPincode('110001')).toBe(true)
       expect(isValidPincode('411001')).toBe(true)
+      expect(validatePincode('411001')).toBeNull()
     })
 
     it('rejects PIN codes starting with 0, containing spaces or non-digits', () => {
@@ -395,6 +468,61 @@ describe('Centralized Common Validation System', () => {
       expect(isValidPincode('5000001')).toBe(false) // 7 digits
       expect(isValidPincode('500 001')).toBe(false)
       expect(isValidPincode('50000A')).toBe(false)
+    })
+
+    it('rejects alphabets, spaces and special characters with digits-only message', () => {
+      expect(validatePincode('50000A')).toBe('PIN code must contain digits only')
+      expect(validatePincode('500 01')).toBe('PIN code must contain digits only')
+      expect(validatePincode('500-01')).toBe('PIN code must contain digits only')
+      expect(validatePincode('ABCDEF')).toBe('PIN code must contain digits only')
+    })
+
+    it('rejects length not equal to 6 digits', () => {
+      expect(validatePincode('4110')).toBe('PIN code must be exactly 6 digits')
+      expect(validatePincode('4110001')).toBe('PIN code must be exactly 6 digits')
+      expect(validatePincode('4110', { label: 'PIN Code' })).toBe('PIN Code must be exactly 6 digits')
+    })
+
+    it('rejects first digit 0 or repeating dummy digits', () => {
+      expect(validatePincode('011001')).toBe('Enter a valid 6-digit Indian PIN code')
+      expect(validatePincode('111111')).toBe('Enter a valid 6-digit Indian PIN code')
+      expect(validatePincode('222222')).toBe('Enter a valid 6-digit Indian PIN code')
+    })
+
+    it('validates PIN Code against selected State/UT', () => {
+      // Karnataka PIN with Karnataka
+      expect(validatePincode('560001', { state: 'Karnataka' })).toBeNull()
+      expect(validatePincode('560001', 'PIN code', 'Karnataka')).toBeNull()
+
+      // Karnataka PIN with Maharashtra -> mismatch error
+      expect(validatePincode('560001', { state: 'Maharashtra' })).toBe(
+        'PIN code 560001 belongs to Karnataka, not Maharashtra'
+      )
+
+      // Maharashtra PIN with Maharashtra -> valid
+      expect(validatePincode('400001', { state: 'Maharashtra' })).toBeNull()
+
+      // Border prefix (e.g. 160 serves Chandigarh and Punjab)
+      expect(validatePincode('160001', { state: 'Punjab' })).toBeNull()
+      expect(validatePincode('160001', { state: 'Chandigarh' })).toBeNull()
+      expect(validatePincode('160001', { state: 'Haryana' })).toBe(
+        'PIN code 160001 belongs to Chandigarh / Punjab, not Haryana'
+      )
+    })
+
+    it('handles required and optional field behaviour', () => {
+      expect(validatePincode('', { required: true })).toBe('PIN code is required')
+      expect(validatePincode(null, { required: true })).toBe('PIN code is required')
+      expect(validatePincode('', { label: 'PIN Code', required: true })).toBe('PIN Code is required')
+
+      // Optional field
+      expect(validatePincode('', { required: false })).toBeNull()
+      expect(validatePincode(null, { required: false })).toBeNull()
+      // If provided, optional field must still be valid
+      expect(validatePincode('123', { required: false })).toBe('PIN code must be exactly 6 digits')
+      expect(validatePincode('560001', { required: false, state: 'Maharashtra' })).toBe(
+        'PIN code 560001 belongs to Karnataka, not Maharashtra'
+      )
     })
   })
 

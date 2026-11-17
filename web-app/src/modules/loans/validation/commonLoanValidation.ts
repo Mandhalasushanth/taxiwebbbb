@@ -10,6 +10,7 @@ import {
   validateBankName,
   validateBranch,
   validateCity,
+  validatePincode,
 } from '@shared/utils/validationUtils'
 import { REGEX } from '@shared/constants'
 
@@ -168,11 +169,8 @@ export const loanFieldRules = {
     return undefined
   },
 
-  pincode: (val: string | undefined): string | undefined => {
-    const v = (val || '').trim()
-    if (!v) return 'PIN code is required'
-    if (!LOAN_PATTERNS.PINCODE.test(v)) return 'Enter a valid 6-digit PIN code (cannot start with 0)'
-    return undefined
+  pincode: (val: string | undefined, state?: string): string | undefined => {
+    return validatePincode(val, { label: 'PIN code', state }) || undefined
   },
 
   /** Optional Udyam number: only checked when filled in */

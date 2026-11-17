@@ -40,6 +40,8 @@ export { DocumentSection } from "./DocumentCard/DocumentSection";
 export type { DocumentSectionProps } from "./DocumentCard/DocumentSection";
 export { DocumentTracker } from "./DocumentCard/DocumentTracker";
 export type { DocumentTrackerProps } from "./DocumentCard/DocumentTracker";
+export { DeleteDocumentConfirmModal } from "./DocumentCard/DeleteDocumentConfirmModal";
+export type { DeleteDocumentConfirmModalProps } from "./DocumentCard/DeleteDocumentConfirmModal";
 export * from "./FlowStepper";
 
 export { LogoutConfirmModal } from "./LogoutConfirmModal/LogoutConfirmModal";

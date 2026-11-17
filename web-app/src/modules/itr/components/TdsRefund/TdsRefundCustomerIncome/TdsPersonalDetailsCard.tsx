@@ -2,7 +2,7 @@ import React from "react";
 import { User, Pencil, Check } from "lucide-react";
 import { formatMobile } from "@shared/utils/validationUtils";
 import { CaretInput } from "@shared/components";
-import { getMaxAdultDobIso } from "@shared/utils/dateUtils";
+import { getTodayIso } from "@shared/utils/dateUtils";
 import type { TdsTaxpayerProfile } from "@modules/itr/utils/tdsRefund.constants";
 import {
   formatDob,
@@ -190,7 +190,7 @@ export const TdsPersonalDetailsCard: React.FC<TdsPersonalDetailsCardProps> = ({
             id="tds-profile-dob"
             type="date"
             className={`tds-input ${fieldErrors.dob ? "has-error" : ""}`}
-            max={getMaxAdultDobIso(18)}
+            max={getTodayIso()}
             value={profile.dob}
             onChange={(e) => handleProfileChange({ dob: e.target.value })}
             onBlur={() => onBlur?.('dob')}

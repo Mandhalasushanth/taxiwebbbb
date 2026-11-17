@@ -1,5 +1,5 @@
 import React from 'react'
-import { StepActionBar } from '@shared/components'
+import { StepActionBar, FlowStepper } from '@shared/components'
 import { ServiceDraftModal } from '@shared/saveDraft'
 import { useRevisedItr } from '../../hooks/useRevisedItr'
 import { FindOriginalReturn } from './FindOriginalReturn'
@@ -9,6 +9,14 @@ import { RevisionDocumentUpload } from './DocumentUpload'
 import { RevisionReviewSummary } from './ReviewSummary'
 import { RevisionApplicationReceived } from './ApplicationReceived'
 import './RevisedItr.css'
+
+const REVISED_ITR_STEPS = [
+  { stepNumber: 1, title: 'Original Return', shortLabel: 'Original Return' },
+  { stepNumber: 2, title: 'Reason for Revision', shortLabel: 'Reason' },
+  { stepNumber: 3, title: 'Correction Details', shortLabel: 'Corrections' },
+  { stepNumber: 4, title: 'Supporting Documents', shortLabel: 'Documents' },
+  { stepNumber: 5, title: 'Review Revision', shortLabel: 'Review' },
+]
 
 export const RevisedItr: React.FC = () => {
   const flow = useRevisedItr()
@@ -31,6 +39,7 @@ export const RevisedItr: React.FC = () => {
     dropdownRef,
     handleKeyDown,
     handleAckChange,
+    handleAckBlur,
     handleSelectAy,
     handleToggleDropdown,
     handleSelectReason,
@@ -46,6 +55,9 @@ export const RevisedItr: React.FC = () => {
     editStep,
     isEditMode,
     openModal,
+    isDeclared,
+    declarationError,
+    handleToggleDeclaration,
   } = flow
 
   const originalAmounts = {
@@ -64,6 +76,7 @@ export const RevisedItr: React.FC = () => {
         ayError={errors.ayError}
         dropdownRef={dropdownRef}
         onAckChange={handleAckChange}
+        onAckBlur={handleAckBlur}
         onKeyDown={handleKeyDown}
         onToggleDropdown={handleToggleDropdown}
         onSelectAy={handleSelectAy}
@@ -119,6 +132,9 @@ export const RevisedItr: React.FC = () => {
         otherReasonText={otherReasonText}
         uploadedDocuments={uploadedDocuments}
         onEditStep={editStep}
+        isDeclared={isDeclared}
+        declarationError={declarationError}
+        onToggleDeclaration={handleToggleDeclaration}
       />
     ),
   }
@@ -140,9 +156,14 @@ export const RevisedItr: React.FC = () => {
       const renderStepFn = stageRenderers[step] || stageRenderers[1]
       return (
         <>
+          <FlowStepper
+            steps={REVISED_ITR_STEPS}
+            currentStep={step}
+            ariaLabel="Revised ITR filing steps"
+          />
           {renderStepFn()}
           <StepActionBar
-            showBack={step !== 5}
+            showBack={true}
             isReview={step === 5}
             onBack={handleBack}
             onNext={handleContinue}

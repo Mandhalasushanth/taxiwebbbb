@@ -5,6 +5,8 @@ import './ProfileMenuItem.css'
 export interface ProfileMenuItemProps {
   label: string
   to?: string
+  target?: string
+  rel?: string
   onClick?: (e?: React.MouseEvent) => void
   icon: React.ReactNode
   iconBg?: string
@@ -20,6 +22,8 @@ const ChevronRight = () => (
 export const ProfileMenuItem: React.FC<ProfileMenuItemProps> = ({
   label,
   to,
+  target,
+  rel,
   onClick,
   icon,
   iconBgClass = ''
@@ -40,7 +44,13 @@ export const ProfileMenuItem: React.FC<ProfileMenuItemProps> = ({
 
   if (to) {
     return (
-      <Link to={to} className="profile-menu-item" onClick={onClick}>
+      <Link
+        to={to}
+        className="profile-menu-item"
+        onClick={onClick}
+        target={target}
+        rel={target === '_blank' ? (rel || 'noopener noreferrer') : rel}
+      >
         {content}
       </Link>
     )

@@ -99,12 +99,12 @@ export const RegistrationIdentityFields: React.FC<RegistrationIdentityFieldsProp
   const [resendTimer, setResendTimer] = useState(50)
   const otpInputRefs = useRef<(HTMLInputElement | null)[]>([])
 
-  // Check valid PAN format: 10 chars (5 letters, 4 numbers, 1 letter) without errors
+  // Check valid PAN format: 10 chars (3 letters, 1 category [ABCFGHJLPT], 1 letter, 4 numbers, 1 letter) without errors
   const panUpper = (values.pan || '').trim().toUpperCase()
   const isPanValid = Boolean(
     panUpper.length === 10 &&
       !errors.pan &&
-      /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(panUpper)
+      /^[A-Z]{3}[ABCFGHJLPT][A-Z][0-9]{4}[A-Z]$/.test(panUpper)
   )
 
   // Check valid Aadhaar for sending OTP: 12 digits, doesn't start with 0 or 1, not all identical
@@ -193,6 +193,7 @@ export const RegistrationIdentityFields: React.FC<RegistrationIdentityFieldsProp
   }
 
   const handleChangeAadhaar = () => {
+    if (isAadhaarVerified) return
     onAadhaarVerifiedChange?.(false)
     setOtpSent(false)
     setShowOtpSection(false)
@@ -204,12 +205,10 @@ export const RegistrationIdentityFields: React.FC<RegistrationIdentityFieldsProp
   }
 
   const handleAadhaarInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isAadhaarVerified) return
     if (otpSent) {
       setOtpSent(false)
       setShowOtpSection(false)
-    }
-    if (isAadhaarVerified) {
-      onAadhaarVerifiedChange?.(false)
     }
     onChange(e)
   }
@@ -355,14 +354,17 @@ export const RegistrationIdentityFields: React.FC<RegistrationIdentityFieldsProp
                   Aadhaar verified successfully
                 </span>
               </div>
-              <button
-                type="button"
-                className="reg-aadhaar__change-btn"
-                onClick={handleChangeAadhaar}
-                data-testid="change-aadhaar-btn"
-              >
-                Change
-              </button>
+              {/* BUG_GST_WB_004: Hide Change button after successful verification */}
+              {!isAadhaarVerified && (
+                <button
+                  type="button"
+                  className="reg-aadhaar__change-btn"
+                  onClick={handleChangeAadhaar}
+                  data-testid="change-aadhaar-btn"
+                >
+                  Change
+                </button>
+              )}
             </div>
           )}
 

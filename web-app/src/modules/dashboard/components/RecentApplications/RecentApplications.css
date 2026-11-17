@@ -67,6 +67,14 @@
   color: var(--primary-navy);
   background: var(--light-blue);
   border-radius: 10px;
+  overflow: hidden;
+}
+
+.recent-app-card__icon-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
 }
 
 .recent-app-card__info { display: flex; flex-direction: column; min-width: 0; }

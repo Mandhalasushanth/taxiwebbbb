@@ -29,19 +29,9 @@ export const CONSTITUTION_PAN_TYPES: Record<string, readonly PanHolderCode[]> = 
   'One person Company (OPC)': ['C'],
 }
 
-const PAN_HOLDER_INDEX = 3
-
-const describeCodes = (codes: readonly PanHolderCode[]): string =>
-  codes.map((code) => `"${code}" (${PAN_HOLDER_TYPES[code]})`).join(' or ')
-
-/** PAN of the business itself must be issued to the selected constitution */
-export const validateBusinessPan = (pan: string | undefined, constitution: string | undefined): string | undefined => {
-  const baseError = validatePan(pan || '', 'Business PAN')
-  if (baseError) return baseError
-  const allowed = CONSTITUTION_PAN_TYPES[constitution || '']
-  const holderCode = (pan || '').trim().toUpperCase().charAt(PAN_HOLDER_INDEX) as PanHolderCode
-  if (!allowed || allowed.includes(holderCode)) return undefined
-  return `For a ${constitution}, the PAN's 4th character must be ${describeCodes(allowed)}`
+/** PAN of the business must follow common PAN validation for all entity types */
+export const validateBusinessPan = (pan: string | undefined, _constitution?: string | undefined): string | undefined => {
+  return validatePan(pan || '', 'Business PAN') || undefined
 }
 
 /* ------------------------------------------------------------------ *

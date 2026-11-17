@@ -30,7 +30,7 @@ export default function GSTCertificate() {
           requestType={submittedRecord.requestType}
           onBackToForm={handleBackToForm}
           onBackToDashboard={() => navigate(routePaths.dashboard)}
-          onTrackApplications={() => navigate(routePaths.applications)}
+          onTrackApplications={() => navigate(routePaths.applicationTrack(submittedRecord.reference))}
           onContactSupport={() => navigate(routePaths.support)}
         />
       </div>

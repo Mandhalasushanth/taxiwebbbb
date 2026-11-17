@@ -13,7 +13,6 @@ import {
   COMPOSITION_SCHEME_OPTIONS,
 } from '@modules/gst/utils/gstBusinessDetails.constants'
 import {
-  CONSTITUTION_PAN_TYPES,
   isOptionBlockedByComposition,
 } from '@modules/gst/validation/gstBusinessRules'
 
@@ -64,8 +63,7 @@ export const GSTBusinessIdentitySection: React.FC<GSTBusinessGeneralSectionProps
   const { data, onChange, onBlur, errors = {} } = props
   const update = createGeneralFieldUpdater(props)
   const dateBounds = getCommencementDateBounds()
-  const panHint = CONSTITUTION_PAN_TYPES[data.constitution]
-  const panPlaceholder = panHint ? `PAN of the business (4th letter ${panHint.join(' / ')})` : 'ABCDE1234F'
+  const panPlaceholder = 'ABCPH5478H'
 
   return (
     <GSTFormSection

@@ -1,3 +1,25 @@
+/* ITR Module Unified Typography */
+.itr-hub-page,
+.itr-status-page {
+  font-family: var(--font-sans, 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+.itr-hub-page *,
+.itr-status-page * {
+  font-family: inherit;
+}
+.itr-hub-page input,
+.itr-hub-page button,
+.itr-hub-page select,
+.itr-hub-page textarea,
+.itr-hub-page label,
+.itr-status-page input,
+.itr-status-page button,
+.itr-status-page select,
+.itr-status-page textarea,
+.itr-status-page label {
+  font-family: var(--font-sans, 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
 /* ITR & TDS Module Main Styles - Blue & Orange Theme */
 .itr-hub-page {
   display: flex;

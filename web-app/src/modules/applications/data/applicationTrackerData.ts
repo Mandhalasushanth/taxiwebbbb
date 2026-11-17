@@ -78,11 +78,61 @@ interface TrackerConfig {
 }
 
 
+export function formatApplicationDateTime(rawDate?: string | null, savedAt?: string | null): string {
+  if (!rawDate) {
+    const now = new Date()
+    const dStr = new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(now)
+    const tStr = savedAt || new Intl.DateTimeFormat('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true }).format(now).toLowerCase()
+    return `${dStr}, ${tStr}`
+  }
+
+  const str = String(rawDate).trim()
+
+  // Clean ISO string or malformed strings like "2026-11-13T11:50:45.702Z" or "2026-11-13T11:50:45.702Z, 11:36 am"
+  if (str.includes('T') || str.includes('Z') || /\d{4}-\d{2}-\d{2}/.test(str)) {
+    const isoCandidate = str.includes(',') ? str.split(',')[0].trim() : str
+    const parsed = new Date(isoCandidate)
+    if (!isNaN(parsed.getTime())) {
+      const dStr = new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(parsed)
+      let tStr = ''
+      if (str.includes(',') && (str.toLowerCase().includes('am') || str.toLowerCase().includes('pm'))) {
+        const parts = str.split(',')
+        tStr = parts.slice(1).join(',').trim().toLowerCase()
+      } else {
+        tStr = savedAt || new Intl.DateTimeFormat('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true }).format(parsed).toLowerCase()
+      }
+      return `${dStr}, ${tStr}`
+    }
+  }
+
+  // Already cleanly formatted like "12 Nov 2026, 2:33 pm"
+  if (str.toLowerCase().includes('am') || str.toLowerCase().includes('pm')) {
+    return str
+  }
+
+  // If date string like "12 Nov 2026" or "2026-11-13" without time
+  const parsed = new Date(str)
+  if (!isNaN(parsed.getTime())) {
+    const dStr = new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(parsed)
+    const tStr = savedAt || new Intl.DateTimeFormat('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true }).format(parsed).toLowerCase()
+    return `${dStr}, ${tStr}`
+  }
+
+  return savedAt ? `${str}, ${savedAt}` : str
+}
+
+export function sanitizeTextWithDates(text?: string | null): string {
+  if (!text) return ''
+  return text.replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?(?:,\s*\d{1,2}:\d{2}\s*(?:am|pm|AM|PM))?/gi, (match) => {
+    return formatApplicationDateTime(match)
+  })
+}
+
 export function getDefaultApplicationSteps(
   dateOrTimestamp?: string,
   currentStatus?: string
 ): Array<[string, string, 'completed' | 'current' | 'pending', string?]> {
-  const ts = dateOrTimestamp || '3 Nov 2026, 11:36 am'
+  const ts = formatApplicationDateTime(dateOrTimestamp) || '3 Nov 2026, 11:36 am'
   const isCompleted = currentStatus === 'Completed' || currentStatus === 'Approved'
   const isPaid = currentStatus === 'Paid'
   const isInVerification = currentStatus === 'Verification' || currentStatus === 'In Verification' || currentStatus === 'Under Review'
@@ -196,9 +246,9 @@ function buildTracker(
   const timelineSteps: TimelineStep[] = sourceSteps.map(([title, desc, status, time], idx) => ({
     stepNumber: idx + 1,
     title,
-    description: desc,
+    description: sanitizeTextWithDates(desc),
     status,
-    ...(time ? { timestamp: time } : {}),
+    ...(time ? { timestamp: formatApplicationDateTime(time) } : {}),
   }))
 
   const assignedCA = cfg.assignedCA || 'CA not assigned yet'
@@ -239,7 +289,7 @@ function buildTracker(
       totalAmount: cfg.payment[3],
       transactionId: cfg.transactionId || cfg.rawApplication?.transactionId || `TXN-${appId.replace(/\D/g, '').slice(-6) || '91842'}`,
       paymentMethod: (cfg.rawApplication as any)?.paymentMethod || 'UPI',
-      paymentDate: cfg.paymentDate || cfg.rawApplication?.paidAt || date,
+      paymentDate: formatApplicationDateTime(cfg.paymentDate || cfg.rawApplication?.paidAt || date),
       paymentStatus,
     },
   }
@@ -262,7 +312,6 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
   const currentUser = authStorage.getUser()
   const defaultAppId = cleanId ? cleanId.toUpperCase() : 'APP-PENDING'
   const defaultEntity = currentUser?.fullName || 'Applicant'
-  const defaultDate = new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date())
 
   let matchedApp: RecentApplication | null = matchedAppFromStorage || null
 
@@ -289,7 +338,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
         ? 'GST Amendment'
         : cleanId.includes('compliance')
         ? 'GST Compliance'
-        : cleanId.includes('certificate')
+        : cleanId.includes('certificate') || cleanId.includes('cert') || cleanId.startsWith('gst-crt')
         ? 'GST Certificate (REG-06)'
         : cleanId.includes('cancellation')
         ? 'GST Cancellation (REG-16)'
@@ -316,9 +365,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
   const entity = currentUser?.fullName || metaParts[0] || 'Applicant'
   const appId = matchedApp.code || matchedApp.id
   const rawDate = (matchedApp as { date?: string; savedAt?: string }).date || (matchedApp as any)?.createdAt
-  const date = rawDate
-    ? (rawDate.includes('am') || rawDate.includes('pm') ? rawDate : `${rawDate}, ${(matchedApp as any)?.savedAt || '11:36 am'}`)
-    : `${defaultDate}, ${(matchedApp as any)?.savedAt || '11:36 am'}`
+  const date = formatApplicationDateTime(rawDate, (matchedApp as any)?.savedAt)
   const key = (matchedApp.title || appId).toLowerCase()
   const pan = currentUser?.pan ? currentUser.pan.toUpperCase() : 'Submitted in Application'
 
@@ -383,7 +430,7 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
 
     const isAwaiting = isDraftId || (matchedApp as any)?.paymentStatus === 'Awaiting Verification'
 
-    return buildTracker(appId, entity, date, {
+    return buildTracker(appId, bName, date, {
       title: matchedApp.title || 'GST Return Filing',
       category: 'GST',
       stageTitle: matchedApp.statusLabel || 'Document Collection in Progress',
@@ -487,22 +534,55 @@ export function getApplicationTrackerData(id?: string): ApplicationTrackerData |
   }
 
   // 5. GST Certificate Request
-  if (key.includes('certificate')) {
+  if (key.includes('certificate') || key.includes('cert') || key.includes('gst-crt')) {
+    const isApproved =
+      matchedApp.statusLabel === 'Approved' ||
+      matchedApp.statusLabel === 'Completed' ||
+      (matchedApp as any)?.managerApproved === true
+
+    const certGstin =
+      (currentUser as { gstin?: string })?.gstin ||
+      (matchedApp as any)?.gstin ||
+      (matchedApp.meta?.match(/[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}/)?.[0]) ||
+      '29AAAAA0000A1Z5'
+
     return buildTracker(appId, entity, date, {
       title: 'GST Certificate (REG-06)',
       category: 'GST',
-      stageTitle: matchedApp.statusLabel || 'Certificate Generated & Saved',
+      stageTitle: isApproved ? 'Certificate Approved & Ready' : (matchedApp.statusLabel || 'Under Verification'),
       filingHeader: 'GST Certificate Details',
       rawApplication: matchedApp,
       filingFields: [
         { label: 'Business Entity', value: entity },
-        { label: 'GSTIN', value: (currentUser as { gstin?: string })?.gstin || '29AAAAA0000A1Z5', isHighlight: true },
+        { label: 'GSTIN', value: certGstin, isHighlight: true },
         { label: 'Form Number', value: 'Form GST REG-06' },
-        { label: 'Status', value: 'Generated & Saved', isHighlight: true },
+        { label: 'Status', value: isApproved ? 'Approved & Ready' : 'Under Verification', isHighlight: true },
       ],
-      steps: getDefaultApplicationSteps(date, matchedApp.statusLabel),
+      steps: [
+        [
+          'Application Submitted',
+          `Application successfully submitted on ${date}.`,
+          'completed',
+          date,
+        ],
+        [
+          'Document Verification',
+          'Review of identity, premises and taxpayer record.',
+          isApproved ? 'completed' : 'current',
+        ],
+        [
+          'Manager Review & Approval',
+          'Tax officer / CA Manager scrutiny and document generation.',
+          isApproved ? 'completed' : 'pending',
+        ],
+        [
+          'Certificate Ready for Download',
+          'Form GST REG-06 registration certificate released for download.',
+          isApproved ? 'completed' : 'pending',
+        ],
+      ],
       docs: [
-        ['d1', 'Registration Certificate (REG-06)', 'uploaded'],
+        ['REG-06', 'Registration Certificate (REG-06)', isApproved ? 'uploaded' : 'pending'],
         ['d2', 'Taxpayer Verification Record', 'uploaded'],
       ],
       payment: ['Service Fee', '₹0', 'Included', 'Paid'],

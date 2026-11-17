@@ -7,11 +7,13 @@ export type ItrTaxCalculationResult = ReturnType<typeof calculateItrTax>
 export interface ItrReviewEstimatedTaxCardProps {
   selectedRegime: 'new' | 'old' | ''
   taxResult: ItrTaxCalculationResult
+  onEdit?: () => void
 }
 
 export const ItrReviewEstimatedTaxCard: React.FC<ItrReviewEstimatedTaxCardProps> = ({
   selectedRegime,
   taxResult,
+  onEdit,
 }) => {
   return (
     <div className="itr-step-card itr-rv2-tax-card itr-rv2-card-tax">
@@ -22,9 +24,21 @@ export const ItrReviewEstimatedTaxCard: React.FC<ItrReviewEstimatedTaxCardProps>
           </span>
           <h3 className="itr-rv2-tax-card__title">Estimated Tax Summary</h3>
         </div>
-        <span className="itr-rv2-regime-badge">
-          {selectedRegime === 'old' ? 'Old Tax Regime' : 'New Tax Regime'}
-        </span>
+        <div className="itr-rv2-tax-card__header-right">
+          <span className="itr-rv2-regime-badge">
+            {selectedRegime === 'old' ? 'Old Tax Regime' : 'New Tax Regime'}
+          </span>
+          {onEdit && (
+            <button
+              type="button"
+              className="itr-rv2-edit-btn"
+              onClick={onEdit}
+              aria-label="Edit Estimated Tax Calculation"
+            >
+              Edit
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="itr-rv2-tax-rows">
@@ -32,6 +46,38 @@ export const ItrReviewEstimatedTaxCard: React.FC<ItrReviewEstimatedTaxCardProps>
           <span className="itr-rv2-tax-row__label">1. Gross Total Income</span>
           <span className="itr-rv2-tax-row__val">{formatINR(taxResult.grossTotalIncome)}</span>
         </div>
+        {taxResult.salaryIncome > 0 && (
+          <div className="itr-rv2-tax-row itr-rv2-tax-row--sub">
+            <span className="itr-rv2-tax-row__label">↳ Salary / Pension</span>
+            <span className="itr-rv2-tax-row__val">{formatINR(taxResult.salaryIncome)}</span>
+          </div>
+        )}
+        {taxResult.hpIncome !== 0 && (
+          <div className="itr-rv2-tax-row itr-rv2-tax-row--sub">
+            <span className="itr-rv2-tax-row__label">↳ House Property Income / (Loss)</span>
+            <span className={`itr-rv2-tax-row__val ${taxResult.hpIncome < 0 ? 'itr-rv2-tax-row__val--neg' : ''}`}>
+              {taxResult.hpIncome < 0 ? `- ${formatINR(Math.abs(taxResult.hpIncome))}` : formatINR(taxResult.hpIncome)}
+            </span>
+          </div>
+        )}
+        {taxResult.bizIncome > 0 && (
+          <div className="itr-rv2-tax-row itr-rv2-tax-row--sub">
+            <span className="itr-rv2-tax-row__label">↳ Business / Profession</span>
+            <span className="itr-rv2-tax-row__val">{formatINR(taxResult.bizIncome)}</span>
+          </div>
+        )}
+        {taxResult.cgIncome > 0 && (
+          <div className="itr-rv2-tax-row itr-rv2-tax-row--sub">
+            <span className="itr-rv2-tax-row__label">↳ Capital Gains</span>
+            <span className="itr-rv2-tax-row__val">{formatINR(taxResult.cgIncome)}</span>
+          </div>
+        )}
+        {taxResult.otherIncome > 0 && (
+          <div className="itr-rv2-tax-row itr-rv2-tax-row--sub">
+            <span className="itr-rv2-tax-row__label">↳ Other Sources</span>
+            <span className="itr-rv2-tax-row__val">{formatINR(taxResult.otherIncome)}</span>
+          </div>
+        )}
         <div className="itr-rv2-tax-row">
           <span className="itr-rv2-tax-row__label">2. Less: Standard Deduction</span>
           <span className="itr-rv2-tax-row__val itr-rv2-tax-row__val--neg">

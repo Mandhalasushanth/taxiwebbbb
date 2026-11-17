@@ -1,6 +1,6 @@
 import React, { type MouseEvent } from 'react'
 import { CalendarDays } from 'lucide-react'
-import { getTodayIso } from '@shared/utils/dateUtils'
+import { getTodayIso, formatDisplayDate, toIsoDate } from '@shared/utils'
 import { GSTFieldShell } from './GSTFieldParts'
 import { fieldErrorId } from './gstFieldClasses'
 import './GSTFormFields.css'
@@ -9,7 +9,7 @@ export interface GSTDateFieldProps {
   id: string
   label: string
   infoTooltip?: React.ReactNode
-  /** ISO date (YYYY-MM-DD) as stored in the form */
+  /** ISO date (YYYY-MM-DD) or DD-MM-YYYY as stored in the form */
   value: string
   min?: string
   max?: string
@@ -17,12 +17,6 @@ export interface GSTDateFieldProps {
   error?: string | null
   onValueChange: (value: string) => void
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
-}
-
-/** YYYY-MM-DD → DD-MM-YYYY for display */
-const toDisplayDate = (iso: string) => {
-  if (!iso) return ''
-  return iso.split('-').reverse().join('-')
 }
 
 const openPicker = (e: MouseEvent<HTMLInputElement>) => {
@@ -54,16 +48,16 @@ export const GSTDateField = ({
           <CalendarDays />
         </span>
         <span className={`gst-date__text ${value ? '' : 'gst-date__text--empty'}`} aria-hidden="true">
-          {value ? toDisplayDate(value) : placeholder}
+          {value ? formatDisplayDate(value) : placeholder}
         </span>
         <input
           id={id}
           name={id}
           type="date"
           className="gst-date__native"
-          value={value}
-          min={min}
-          max={max || getTodayIso()}
+          value={toIsoDate(value)}
+          min={toIsoDate(min) || min}
+          max={toIsoDate(max) || max || getTodayIso()}
           onClick={openPicker}
           onChange={(e) => onValueChange(e.target.value)}
           onBlur={onBlur}

@@ -1,305 +1,307 @@
-/* ── Screen 2: GST Certificate Ready Container ── */
-.gst-cert-ready-container {
+/* ── Screen 2: Your Application Under Verification Container ── */
+.gst-cert-sub-container {
   width: 100%;
   max-width: 100%;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.35rem;
   font-family: var(--font-sans);
   box-sizing: border-box;
 }
 
 /* ── Top Bar Header ── */
-.gst-cert-ready-top-bar {
+.gst-cert-sub-top-bar {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  gap: 0.75rem;
   padding: 0.25rem 0;
 }
 
-/* ── Hero Slot Illustration ── */
-.gst-cert-ready-hero {
-  display: flex;
+.gst-cert-sub-back-btn {
+  background: transparent;
+  border: none;
+  color: #0f172a;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  align-items: center;
-  padding: 1rem 0 0.5rem 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  padding: 0;
+  transition: background-color 0.15s ease;
 }
 
-.gst-cert-ready-slot-wrap {
-  position: relative;
-  width: 140px;
-  height: 115px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
+.gst-cert-sub-back-btn:hover {
+  background-color: #f1f5f9;
 }
 
-.gst-cert-ready-paper {
-  width: 90px;
-  height: 85px;
-  background: #ffffff;
-  border: 1.5px solid #bfdbfe;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 10px;
-  position: absolute;
-  top: 0;
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.08);
-  z-index: 1;
-}
-
-.gst-cert-ready-paper-text {
-  font-size: 0.85rem;
+.gst-cert-sub-top-title {
+  font-size: 1.25rem;
   font-weight: 800;
-  color: #1e3a8a;
-  letter-spacing: 0.05em;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.01em;
 }
 
-.gst-cert-ready-paper-lines {
+/* ── Central Hero Graphic ── */
+.gst-cert-sub-hero {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: 65%;
-  margin-top: 8px;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0 0.25rem 0;
 }
 
-.gst-cert-ready-paper-line {
-  height: 2px;
-  background: #e2e8f0;
-  border-radius: 2px;
-  width: 100%;
-}
-
-.gst-cert-ready-paper-line--short {
-  width: 60%;
-}
-
-.gst-cert-ready-slot {
-  width: 130px;
-  height: 26px;
-  border-radius: 9999px;
-  background: #dbeafe;
-  border: 1.5px solid #93c5fd;
+.gst-cert-sub-icon-wrap {
+  position: relative;
+  width: 110px;
+  height: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
-  margin-top: 55px;
 }
 
-.gst-cert-ready-slot-inner {
-  width: 95px;
-  height: 6px;
-  border-radius: 9999px;
-  background: #1e40af;
-}
-
-.gst-cert-ready-check-badge {
+.gst-cert-sub-circle-outer {
   position: absolute;
-  bottom: 8px;
-  z-index: 3;
-  width: 34px;
-  height: 34px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: rgba(219, 234, 254, 0.45);
+}
+
+.gst-cert-sub-circle-mid {
+  position: absolute;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: rgba(191, 219, 254, 0.7);
+}
+
+.gst-cert-sub-badge-blue {
+  position: relative;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: #2563eb;
-  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  z-index: 2;
 }
 
-.gst-cert-ready-check-svg {
-  width: 18px;
-  height: 18px;
+.gst-cert-sub-shield-svg {
+  width: 32px;
+  height: 32px;
 }
 
-/* ── Heading Text Block ── */
-.gst-cert-ready-text-block {
+.gst-cert-sub-badge-clock {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ff7a00;
+  border: 2.5px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(255, 122, 0, 0.4);
+  z-index: 3;
+}
+
+.gst-cert-sub-clock-svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ── Headings ── */
+.gst-cert-sub-headings {
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
-.gst-cert-ready-title {
-  font-size: 1.65rem;
+.gst-cert-sub-heading {
+  font-size: 1.35rem;
   font-weight: 800;
   color: #0f172a;
   margin: 0;
-  letter-spacing: -0.02em;
+  line-height: 1.25;
 }
 
-.gst-cert-ready-subtitle {
+.gst-cert-sub-subheading {
   font-size: 0.92rem;
   color: #64748b;
-  margin: 0;
-  line-height: 1.5;
+  margin: 0 auto;
+  max-width: 440px;
+  line-height: 1.45;
 }
 
-.gst-cert-ready-subtitle strong {
+/* ── Framed Certificate Preview ── */
+.gst-cert-sub-preview-card {
+  background: #ffffff;
+  border: 1.8px solid #bfdbfe;
+  border-radius: 18px;
+  padding: 1.15rem;
+  box-shadow: 0 6px 24px rgba(37, 99, 235, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.gst-cert-sub-paper {
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem 1.4rem;
+  background: #fcfdfd;
+  position: relative;
+  overflow: hidden;
+}
+
+.gst-cert-sub-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  color: #2563eb;
+  z-index: 0;
+}
+
+.gst-cert-sub-paper-header {
+  text-align: center;
+  border-bottom: 1.5px solid #e2e8f0;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
+  position: relative;
+  z-index: 1;
+}
+
+.gst-cert-sub-emblem {
+  margin: 0 auto 3px auto;
+  display: flex;
+  justify-content: center;
+}
+
+.gst-cert-sub-paper-gov {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: #0f172a;
 }
 
-/* ── Summary Details Card ── */
-.gst-cert-ready-card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 18px;
-  padding: 1.5rem 2.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
-  box-sizing: border-box;
-  width: 100%;
-}
-
-.gst-cert-ready-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.gst-cert-ready-row-left {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.gst-cert-ready-icon-box {
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
-  background: #eff6ff;
-  color: #2563eb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.gst-cert-ready-icon-box--green {
-  background: #ecfdf5;
-  color: #10b981;
-}
-
-.gst-cert-ready-row-icon {
-  width: 18px;
-  height: 18px;
-}
-
-.gst-cert-ready-label {
-  font-size: 0.92rem;
-  font-weight: 600;
+.gst-cert-sub-paper-gst {
+  font-size: 0.78rem;
+  font-weight: 700;
   color: #475569;
 }
 
-.gst-cert-ready-value {
+.gst-cert-sub-paper-title {
   font-size: 0.95rem;
   font-weight: 800;
-  color: #0f172a;
+  color: #1e3a8a;
+  margin-top: 2px;
 }
 
-.gst-cert-ready-divider {
-  height: 1px;
-  background: #f1f5f9;
-  width: 100%;
-}
-
-.gst-cert-ready-status-pill {
-  padding: 4px 13px;
-  border-radius: 9999px;
-  background: #eff6ff;
-  color: #1d4ed8;
-  font-size: 0.82rem;
-  font-weight: 700;
-  border: 1px solid rgba(29, 78, 216, 0.15);
-}
-
-/* ── Actions: Dashboard, My Applications, Share / Save Certificate (One Row) ── */
-.gst-cert-ready-actions-row,
-.gst-cert-ready-bottom-actions {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+.gst-cert-sub-paper-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 1rem;
-  margin-top: 0.5rem;
-  width: 100%;
+  position: relative;
+  z-index: 1;
+  filter: blur(1.4px);
+  opacity: 0.85;
+  user-select: none;
 }
 
-.gst-cert-btn-nav {
-  height: 48px;
-  border-radius: 12px;
-  font-size: 0.92rem;
+.gst-cert-sub-paper-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.gst-cert-sub-row {
+  display: flex;
+  font-size: 0.72rem;
+  gap: 0.4rem;
+  line-height: 1.35;
+}
+
+.gst-cert-sub-cell-label {
+  color: #64748b;
+  font-weight: 600;
+  min-width: 125px;
+}
+
+.gst-cert-sub-cell-val {
+  color: #0f172a;
   font-weight: 700;
+}
+
+.gst-cert-sub-qr-box {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.55rem;
-  cursor: pointer;
-  transition: all 0.18s ease;
-  box-sizing: border-box;
-  padding: 0 1rem;
-  white-space: nowrap;
+  padding: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
 }
 
-.gst-cert-btn-nav--dashboard {
-  background: #083b75;
-  color: #ffffff;
-  border: none;
-  box-shadow: 0 2px 10px rgba(8, 59, 117, 0.22);
+/* ── Action Button: Track Application ── */
+.gst-cert-sub-actions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 1.25rem;
 }
 
-.gst-cert-btn-nav--dashboard:hover {
-  background: #062f5e;
-  box-shadow: 0 4px 16px rgba(8, 59, 117, 0.35);
-  transform: translateY(-1px);
-}
-
-.gst-cert-btn-nav--applications {
+.gst-cert-sub-btn-track {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  height: 52px;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 2rem;
   background: #ff7a00;
   color: #ffffff;
   border: none;
-  box-shadow: 0 2px 10px rgba(255, 122, 0, 0.24);
+  border-radius: 26px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 4px 14px rgba(255, 122, 0, 0.28);
+  letter-spacing: 0.02em;
 }
 
-.gst-cert-btn-nav--applications:hover {
+.gst-cert-sub-btn-track:hover {
   background: #e66e00;
-  box-shadow: 0 4px 16px rgba(255, 122, 0, 0.35);
+  box-shadow: 0 6px 18px rgba(255, 122, 0, 0.35);
   transform: translateY(-1px);
 }
 
-.gst-cert-btn-nav--share {
-  background: #ffffff;
-  color: #2563eb;
-  border: 2px solid #2563eb;
-}
-
-.gst-cert-btn-nav--share:hover {
-  background: #eff6ff;
-  border-color: #1d4ed8;
-  color: #1d4ed8;
-  transform: translateY(-1px);
-}
-
-.gst-cert-nav-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
+.gst-cert-sub-btn-icon {
+  width: 19px;
+  height: 19px;
 }
 
 @media (max-width: 640px) {
-  .gst-cert-ready-card {
-    padding: 1.15rem 1.25rem;
+  .gst-cert-sub-heading {
+    font-size: 1.2rem;
   }
 
-  .gst-cert-ready-actions-row,
-  .gst-cert-ready-bottom-actions {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
+  .gst-cert-sub-btn-track {
+    width: 100%;
   }
 }

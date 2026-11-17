@@ -2,22 +2,20 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { routePaths } from '@core/config'
 import { userStorage } from '@core/storage/userStorage'
-import { authStorage } from '@core/auth'
 import { useAppStore } from '@store/index'
 import { resetScrollToTop } from '@shared/components'
 import { CommonChatSupport } from '@modules/customerSupport'
-import { getApplicationTrackerData } from '../../data/applicationTrackerData'
+import { getApplicationTrackerData, formatApplicationDateTime } from '../../data/applicationTrackerData'
 import type { ApplicationTrackerData } from '../../data/applicationTrackerData'
 import { ApplicationOverviewTab } from './tabs/ApplicationOverviewTab'
 import { ApplicationStatusTab } from './tabs/ApplicationStatusTab'
 import { ApplicationDocumentsTab } from './tabs/ApplicationDocumentsTab'
-import { ApplicationPaymentsTab } from './tabs/ApplicationPaymentsTab'
-import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
+import { openGstDocumentPreview, downloadGstDocument } from '@modules/gst/utils/gstDocumentPreview'
 import { gstUploadedFiles } from '@modules/gst/services/gstUploadedFiles'
 import { resolveDraftResumeRoute } from '../../utils/draftRouting'
 import './ApplicationTrackerView.css'
 
-export type TrackerTab = 'overview' | 'status' | 'documents' | 'payments' | 'chat'
+export type TrackerTab = 'overview' | 'status' | 'documents' | 'chat'
 
 export interface ApplicationDocumentItem {
   id?: string
@@ -40,7 +38,7 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
 
   const initialTab = (searchParams.get('tab') as TrackerTab) || 'overview'
   const [activeTab, setActiveTab] = useState<TrackerTab>(
-    ['overview', 'status', 'documents', 'payments', 'chat'].includes(initialTab) ? initialTab : 'overview'
+    ['overview', 'status', 'documents', 'chat'].includes(initialTab) ? initialTab : 'overview'
   )
   const [data, setData] = useState<ApplicationTrackerData | null>(() => getApplicationTrackerData(appId))
   const pushToast = useAppStore((state) => state.pushToast)
@@ -83,22 +81,10 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
   // Sync tab if URL param changes
   useEffect(() => {
     const tabParam = searchParams.get('tab') as TrackerTab
-    if (tabParam && ['overview', 'status', 'documents', 'payments', 'chat'].includes(tabParam)) {
+    if (tabParam && ['overview', 'status', 'documents', 'chat'].includes(tabParam)) {
       setActiveTab(tabParam)
     }
   }, [searchParams])
-
-  const currentUser = authStorage.getUser()
-  const isManagerOrAdmin = Boolean(
-    currentUser?.role === 'MANAGER' || currentUser?.role === 'ADMIN' || currentUser?.role === 'SUPER_ADMIN'
-  )
-
-  // Manager charge formulation (for TDS applications)
-  const [mgrServiceFee, setMgrServiceFee] = useState('847')
-  const [mgrGovFees, setMgrGovFees] = useState('0')
-  const [mgrSuccess, setMgrSuccess] = useState('')
-  const [mgrError, setMgrError] = useState('')
-  const isProcessingPayment = false
 
   if (!data) {
     return (
@@ -145,7 +131,7 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
     overview: {
       pageHeader: 'Application Details',
       title: data.title,
-      subtitle: `${data.customerEntity} · ${data.appliedDate}`,
+      subtitle: `${data.customerEntity} · ${formatApplicationDateTime(data.appliedDate)}`,
     },
     status: {
       pageHeader: 'Application Status',
@@ -157,11 +143,6 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
       title: data.title,
       subtitle: `${data.documentsUploadedCount} of ${data.totalDocumentsCount} documents uploaded`,
     },
-    payments: {
-      pageHeader: 'Payment Summary',
-      title: data.title,
-      subtitle: 'Fee & Payment Details',
-    },
     chat: {
       pageHeader: 'Support Chat',
       title: 'Finsolz Support',
@@ -171,35 +152,12 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
 
   const { pageHeader, title: bannerTitle, subtitle: bannerSubtitle } = tabTitles[activeTab]
 
-  const currentStepIndex = data.timelineSteps.findIndex((s) => s.status === 'current')
-  const completedStepCount = data.timelineSteps.filter((s) => s.status === 'completed').length
-  const activeStepNum = currentStepIndex >= 0
-    ? currentStepIndex + 1
-    : completedStepCount === data.timelineSteps.length
-    ? data.timelineSteps.length
-    : Math.min(completedStepCount + 1, data.timelineSteps.length || 1)
-  const totalSteps = data.timelineSteps.length || 1
-
   const getDocumentMetaFallback = (name: string): string => {
     const n = name.toLowerCase()
-    if (n.includes('pan')) return 'Statutory & Compliance · IMAGE / PDF · 0.61 MB'
-    if (n.includes('aadhaar')) return 'Statutory & Compliance · IMAGE / PDF · 0.72 MB'
-    if (n.includes('business registration') || n.includes('coi') || n.includes('partnership')) return 'Statutory & Compliance · IMAGE / PDF · 1.80 MB'
-    if (n.includes('address') || n.includes('premises')) return 'Statutory & Compliance · IMAGE / PDF · 2.51 MB'
-    if (n.includes('bank') || n.includes('cheque') || n.includes('passbook')) return 'Financial Document · IMAGE / PDF · 2.32 MB'
-    if (n.includes('photo')) return 'Statutory & Compliance · IMAGE · 2.26 MB'
-    if (n.includes('sales')) return 'Sales & Outward Supplies · IMAGE / PDF · 2.45 MB'
-    if (n.includes('credit')) return 'Sales & Outward Supplies · IMAGE / PDF · 1.15 MB'
-    if (n.includes('debit')) return 'Sales & Outward Supplies · IMAGE / PDF · 1.05 MB'
-    if (n.includes('irn') || n.includes('e-invoice')) return 'Sales & Outward Supplies · JSON / PDF · 1.30 MB'
-    if (n.includes('eway') || n.includes('e-way')) return 'Sales & Outward Supplies · PDF · 1.25 MB'
-    if (n.includes('purchase')) return 'Purchases & Input Tax · IMAGE / PDF · 2.80 MB'
-    if (n.includes('gstr2b') || n.includes('gstr-2b')) return 'Purchases & Input Tax · JSON / PDF · 1.10 MB'
-    if (n.includes('expense')) return 'Purchases & Input Tax · IMAGE / PDF · 1.65 MB'
-    if (n.includes('return')) return 'Banking & Reconciliation · PDF · 2.15 MB'
-    if (n.includes('ack') || n.includes('acknowledgement')) return 'Banking & Reconciliation · PDF · 0.85 MB'
-    if (n.includes('statement') || n.includes('salary') || n.includes('slips') || n.includes('26as')) return 'Financial Document · PDF · 3.10 MB'
-    return 'Statutory & Compliance · IMAGE / PDF · 1.45 MB'
+    if (n.includes('photo') || n.includes('photograph') || n.includes('image') || n.includes('picture') || n.includes('selfie') || n.includes('avatar')) {
+      return 'IMAGE · 245 KB'
+    }
+    return 'PDF · 245 KB'
   }
 
   const displayDocuments: ApplicationDocumentItem[] = (data.documents && data.documents.length > 0)
@@ -239,7 +197,7 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
           name: d.name,
           fileName,
           meta: matchedRawDoc?.meta || (d as any).meta || getDocumentMetaFallback(d.name),
-          date: matchedRawDoc?.date || (d as any).date || data.appliedDate || '3 Nov 2026',
+          date: formatApplicationDateTime(matchedRawDoc?.date || (d as any).date || data.appliedDate || '3 Nov 2026'),
           url: matchedRawDoc?.url || (d as any).url || (d as any).fileHash,
           file: resolvedFile,
           status: matchedRawDoc?.status || d.status || 'uploaded',
@@ -264,7 +222,7 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
           id: rd.id || `req-doc-${idx + 1}`,
           name: rd.name || 'Requested Document',
           meta: rd.reason || rd.meta || 'Requested by CA · Pending submission',
-          date: rd.date || data.appliedDate,
+          date: formatApplicationDateTime(rd.date || data.appliedDate),
           status: (rd.status as any) || 'requested',
           rejectionReason: rd.reason || rd.rejectionReason,
           requestMessage: rd.message || rd.requestMessage,
@@ -325,65 +283,113 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
     }
   }
 
-  const isAwaitingVerification =
-    data.paymentSummary.paymentStatus === 'Awaiting Verification' ||
-    data.paymentSummary.totalAmount === 'Not Assigned'
-
-  const isTdsApplication = Boolean(
-    data.title.toLowerCase().includes('tds') ||
-    data.appId.startsWith('TDS-') ||
-    (data.category === 'ITR' && data.title.toLowerCase().includes('refund'))
+  const isCertificateApplication = Boolean(
+    data.title.toLowerCase().includes('certificate') ||
+    data.appId.toLowerCase().includes('cert') ||
+    data.appId.startsWith('GST-CRT')
   )
-  const isChargesPending = isTdsApplication && (data.paymentSummary.paymentStatus === 'Charges Pending' || !data.chargesFinalized)
-  const isPaid = !isAwaitingVerification && !isChargesPending
 
-  const computedGst = Math.round(Number(mgrServiceFee || 0) * 0.18)
-  const computedTotal = Number(mgrServiceFee || 0) + Number(mgrGovFees || 0) + computedGst
+  const isApproved = Boolean(
+    data.rawApplication?.statusLabel === 'Approved' ||
+    data.rawApplication?.statusLabel === 'Completed' ||
+    (data.rawApplication as any)?.managerApproved === true
+  )
 
-  const handleFinalizeCharges = (e: React.FormEvent) => {
-    e.preventDefault()
-    setMgrError('')
-    setMgrSuccess('')
+  const handleManagerApproveCertificate = () => {
+    const rawApps = userStorage.getUserApplications()
+    const appIndex = rawApps.findIndex((a) => a.id === data.appId || a.code === data.appId)
+    const gstinVal = (data.filingFields?.find((f) => f.label === 'GSTIN')?.value) || '29AAAAA0000A1Z5'
 
-    const sFee = Number(mgrServiceFee)
-    const gFee = Number(mgrGovFees)
+    const updatedDocs = [
+      {
+        id: 'REG-06',
+        name: 'Registration Certificate (REG-06)',
+        fileName: `GST-REG-06-${gstinVal}.pdf`,
+        status: 'uploaded',
+        meta: 'Official Government Copy · Form GST REG-06 · Ready for Download',
+        date: new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
+      },
+      {
+        id: 'd2',
+        name: 'Taxpayer Verification Record',
+        fileName: `Verification-Record-${gstinVal}.pdf`,
+        status: 'uploaded',
+        meta: '1.2 MB · Verified',
+        date: new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
+      },
+    ]
 
-    if (isNaN(sFee) || sFee < 0) {
-      setMgrError('Please enter a valid positive Service Fee.')
-      return
-    }
-    if (isNaN(gFee) || gFee < 0) {
-      setMgrError('Please enter a valid positive Government Fee.')
-      return
-    }
-
-    const total = sFee + gFee + computedGst
-    if (total <= 0) {
-      setMgrError('Total payable amount must be greater than ₹0.')
-      return
-    }
-
-    const updated = userStorage.finalizeApplicationCharges(data.appId, {
-      serviceFee: sFee,
-      govFees: gFee,
-      gst: computedGst,
-      total,
-      finalizedAt: new Date().toISOString(),
-      finalizedBy: currentUser?.fullName ? `${currentUser.fullName} (${currentUser.role})` : 'Priya Nair (Manager)',
-    })
-
-    if (updated) {
-      setData(getApplicationTrackerData(appId))
-      setMgrSuccess(`Charges of ₹${total.toLocaleString('en-IN')} successfully finalized and published.`)
-      pushToast(`Charges of ₹${total.toLocaleString('en-IN')} published for ${data.appId}!`, 'success')
+    if (appIndex >= 0) {
+      const app = rawApps[appIndex]
+      const updatedApp = {
+        ...app,
+        statusLabel: 'Approved',
+        statusTone: 'success' as const,
+        progress: 100,
+        documents: updatedDocs,
+        managerApproved: true,
+        managerApprovedAt: new Date().toISOString(),
+      }
+      userStorage.saveUserApplication(updatedApp)
     } else {
-      setMgrError('Could not update application charges in local storage.')
+      userStorage.saveUserApplication({
+        id: `app-${data.appId}`,
+        code: data.appId,
+        title: 'GST Certificate (REG-06)',
+        meta: `${gstinVal} · Download Certificate`,
+        statusLabel: 'Approved',
+        statusTone: 'success',
+        progress: 100,
+        icon: '📜',
+        to: routePaths.applicationTrack(data.appId),
+        documents: updatedDocs,
+        managerApproved: true,
+      })
     }
+
+    setData(getApplicationTrackerData(appId))
+    pushToast('GST Certificate approved! The document is now ready for download.', 'success')
   }
 
-  const handlePayNow = () => {
-    if (isPaid || !data) return
-    navigate(`/payments/checkout/${data.appId}`)
+  const handleManagerRevertVerification = () => {
+    const rawApps = userStorage.getUserApplications()
+    const appIndex = rawApps.findIndex((a) => a.id === data.appId || a.code === data.appId)
+    const gstinVal = (data.filingFields?.find((f) => f.label === 'GSTIN')?.value) || '29AAAAA0000A1Z5'
+
+    const updatedDocs = [
+      {
+        id: 'REG-06',
+        name: 'Registration Certificate (REG-06)',
+        fileName: `GST-REG-06-${gstinVal}.pdf`,
+        status: 'pending',
+        meta: 'Under Verification · In Progress',
+        date: 'Today',
+      },
+      {
+        id: 'd2',
+        name: 'Taxpayer Verification Record',
+        fileName: `Verification-Record-${gstinVal}.pdf`,
+        status: 'uploaded',
+        meta: '1.2 MB · Verified',
+        date: 'Today',
+      },
+    ]
+
+    if (appIndex >= 0) {
+      const app = rawApps[appIndex]
+      const updatedApp = {
+        ...app,
+        statusLabel: 'Under Verification',
+        statusTone: 'warning' as const,
+        progress: 35,
+        documents: updatedDocs,
+        managerApproved: false,
+      }
+      userStorage.saveUserApplication(updatedApp)
+    }
+
+    setData(getApplicationTrackerData(appId))
+    pushToast('Application reverted to Under Verification.', 'info')
   }
 
   return (
@@ -442,7 +448,6 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
             onClick={() => setActiveTab('status')}
           >
             <span>Status</span>
-            <span className="app-tracker-web-tab__badge">Step {activeStepNum}/{totalSteps}</span>
           </button>
           <button
             type="button"
@@ -451,24 +456,6 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
           >
             <span>Documents</span>
             <span className="app-tracker-web-tab__badge">{data.documentsUploadedCount}/{data.totalDocumentsCount}</span>
-          </button>
-          <button
-            type="button"
-            className={`app-tracker-web-tab ${activeTab === 'payments' ? 'app-tracker-web-tab--active' : ''}`}
-            onClick={() => setActiveTab('payments')}
-          >
-            <span>Payments</span>
-            <span
-              className={`app-tracker-web-tab__badge ${
-                isAwaitingVerification
-                  ? 'app-tracker-web-tab__badge--awaiting'
-                  : isPaid
-                  ? 'app-tracker-web-tab__badge--paid'
-                  : 'app-tracker-web-tab__badge--pending'
-              }`}
-            >
-              {data.paymentSummary.paymentStatus || (isAwaitingVerification ? 'Awaiting Verification' : isPaid ? 'Paid' : 'Pending')}
-            </span>
           </button>
           <button
             type="button"
@@ -482,6 +469,112 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
 
         {/* 3. TAB CONTENT PANES */}
         <main className="app-tracker-web-content">
+          {/* Manager Action Banner for GST Certificate Verification */}
+          {isCertificateApplication && (
+            <div
+              className="app-tracker-clean-card"
+              style={{
+                borderLeft: '4px solid #f97316',
+                marginBottom: '16px',
+                background: '#fffaf0',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '12px',
+                }}
+              >
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <span
+                      style={{
+                        fontSize: '11px',
+                        background: '#ea580c',
+                        color: '#ffffff',
+                        padding: '2px 8px',
+                        borderRadius: '4px',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      Manager Review & Action
+                    </span>
+                    <span
+                      style={{
+                        fontSize: '13px',
+                        color: isApproved ? '#16a34a' : '#ea580c',
+                        fontWeight: 700,
+                      }}
+                    >
+                      Document Status: {isApproved ? 'Approved & Ready for Download' : 'Under Verification'}
+                    </span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '13px', color: '#475569' }}>
+                    {isApproved
+                      ? 'The manager has approved this request. The applicant can download Form GST REG-06 now.'
+                      : 'This application is under verification. Once approved by the manager, Form GST REG-06 will be available for download.'}
+                  </p>
+                </div>
+
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  {!isApproved ? (
+                    <button
+                      type="button"
+                      onClick={handleManagerApproveCertificate}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '8px 16px',
+                        background: '#16a34a',
+                        color: '#ffffff',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '13px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 8px rgba(22, 163, 74, 0.25)',
+                      }}
+                    >
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      <span>Approve Certificate & Mark Ready</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleManagerRevertVerification}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '8px 16px',
+                        background: '#64748b',
+                        color: '#ffffff',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '13px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="1 4 1 10 7 10" />
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                      </svg>
+                      <span>Revert to Under Verification</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           {activeTab === 'overview' && (
             <ApplicationOverviewTab data={data} onNavigateToChat={() => setActiveTab('chat')} />
           )}
@@ -503,26 +596,16 @@ export const ApplicationTrackerView: React.FC<{ customId?: string }> = ({ custom
                   fileUrl: doc.url,
                 })
               }}
+              onDownloadDoc={(doc) => {
+                downloadGstDocument({
+                  id: doc.id,
+                  title: doc.name,
+                  fileName: doc.fileName || doc.name,
+                  file: doc.file,
+                  fileUrl: doc.url,
+                })
+              }}
               onUploadDoc={handleUploadRequestedDoc}
-            />
-          )}
-
-          {activeTab === 'payments' && (
-            <ApplicationPaymentsTab
-              data={data}
-              isPaid={isPaid}
-              isProcessingPayment={isProcessingPayment}
-              handlePayNow={handlePayNow}
-              isManagerOrAdmin={isManagerOrAdmin}
-              isTdsApplication={isTdsApplication}
-              mgrServiceFee={mgrServiceFee}
-              setMgrServiceFee={setMgrServiceFee}
-              mgrGovFees={mgrGovFees}
-              setMgrGovFees={setMgrGovFees}
-              handleFinalizeCharges={handleFinalizeCharges}
-              computedTotal={String(computedTotal)}
-              mgrSuccess={mgrSuccess}
-              mgrError={mgrError}
             />
           )}
 

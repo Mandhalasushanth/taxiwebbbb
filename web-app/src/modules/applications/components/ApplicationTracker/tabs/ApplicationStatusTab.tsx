@@ -1,5 +1,6 @@
 import React from 'react'
 import type { ApplicationTrackerData } from '../../../data/applicationTrackerData'
+import { formatApplicationDateTime, sanitizeTextWithDates } from '../../../data/applicationTrackerData'
 
 export interface ApplicationStatusTabProps {
   data: ApplicationTrackerData
@@ -54,6 +55,8 @@ const renderStepIcon = (idx: number) => {
 }
 
 export const ApplicationStatusTab: React.FC<ApplicationStatusTabProps> = ({ data }) => {
+  const cleanAppliedDate = formatApplicationDateTime(data.appliedDate)
+
   return (
     <div className="app-tracker-web-tab-content">
       {/* Top Banner Card: Application Submitted */}
@@ -68,7 +71,7 @@ export const ApplicationStatusTab: React.FC<ApplicationStatusTabProps> = ({ data
           <div>
             <h3 className="app-tracker-submitted-title">Application Submitted</h3>
             <p className="app-tracker-submitted-subtitle">
-              Application submitted successfully on {data.appliedDate}.
+              Application submitted successfully on {cleanAppliedDate}.
             </p>
           </div>
         </div>
@@ -94,6 +97,8 @@ export const ApplicationStatusTab: React.FC<ApplicationStatusTabProps> = ({ data
               ? 'app-tracker-pill-badge--progress'
               : 'app-tracker-pill-badge--pending'
             const pillText = isCompleted ? 'Completed' : isCurrent ? 'In Progress' : 'Pending'
+            const cleanTimestamp = step.timestamp ? formatApplicationDateTime(step.timestamp) : undefined
+            const cleanDescription = sanitizeTextWithDates(step.description)
 
             return (
               <div key={step.stepNumber || idx} className="app-tracker-stepper-row">
@@ -112,8 +117,8 @@ export const ApplicationStatusTab: React.FC<ApplicationStatusTabProps> = ({ data
                       {pillText}
                     </span>
                   </div>
-                  {step.timestamp && <span className="app-tracker-stepper-date">{step.timestamp}</span>}
-                  <p className="app-tracker-stepper-desc">{step.description}</p>
+                  {cleanTimestamp && <span className="app-tracker-stepper-date">{cleanTimestamp}</span>}
+                  <p className="app-tracker-stepper-desc">{cleanDescription}</p>
                 </div>
               </div>
             )
@@ -133,10 +138,12 @@ export const ApplicationStatusTab: React.FC<ApplicationStatusTabProps> = ({ data
         <div>
           <h4 className="app-tracker-info-banner-title">Application received</h4>
           <p className="app-tracker-info-banner-desc">
-            Your application was received on {data.appliedDate} and is queued for verification.
+            Your application was received on {cleanAppliedDate} and is queued for verification.
           </p>
         </div>
       </div>
     </div>
   )
 }
+
+export default ApplicationStatusTab

@@ -8,6 +8,8 @@ import {
   type RegistrationIdentityValues,
   type RegistrationIdentityErrors,
 } from '../../src/modules/authentication/components/RegistrationIdentityFields/RegistrationIdentityFields'
+import { RegistrationPersonalFields } from '../../src/modules/authentication/components/RegistrationPersonalFields/RegistrationPersonalFields'
+import { DobDatePickerModal } from '../../src/modules/authentication/components/DobDatePickerModal/DobDatePickerModal'
 import { RegistrationForm } from '../../src/modules/authentication/components/RegistrationForm/RegistrationForm'
 import { MemoryRouter } from 'react-router-dom'
 
@@ -141,30 +143,43 @@ describe('RegistrationIdentityFields - PAN & Aadhaar Verification Flow', () => {
     const aadhaarInput = screen.getByPlaceholderText('Aadhaar Number')
     expect(aadhaarInput).toHaveAttribute('readonly')
 
-    // Below field: Green success banner + Change button
+    // Below field: Green success banner without Change button
     expect(screen.getByTestId('aadhaar-success-banner')).toBeInTheDocument()
     expect(screen.getByText('Aadhaar verified successfully')).toBeInTheDocument()
-    expect(screen.getByTestId('change-aadhaar-btn')).toBeInTheDocument()
+    expect(screen.queryByTestId('change-aadhaar-btn')).not.toBeInTheDocument()
   })
 
-  it('allows clicking Change to clear verified status and re-edit Aadhaar number', () => {
+  it('BUG_GST_WB_004: hides Change button after successful verification and locks verified Aadhaar input', () => {
     render(<ControlledIdentityFields initialAadhaar="989989899892" initialVerified={true} />)
 
     expect(screen.getByTestId('aadhaar-verified-pill')).toBeInTheDocument()
     expect(screen.getByTestId('aadhaar-success-banner')).toBeInTheDocument()
+    expect(screen.getByText('Aadhaar verified successfully')).toBeInTheDocument()
 
-    const changeBtn = screen.getByTestId('change-aadhaar-btn')
-    fireEvent.click(changeBtn)
+    // Change button should NOT be present after successful verification
+    expect(screen.queryByTestId('change-aadhaar-btn')).not.toBeInTheDocument()
 
-    // Verified tag and banner disappear
+    // Aadhaar input remains readOnly to prevent modifications
+    const aadhaarInput = screen.getByPlaceholderText('Aadhaar Number')
+    expect(aadhaarInput).toHaveAttribute('readonly')
+  })
+
+  it('allows user to edit Aadhaar number and retry verification before successful verification', () => {
+    render(<ControlledIdentityFields initialAadhaar="989989899891" initialVerified={false} />)
+
+    // Unverified: Verified pill and success banner should not be present
     expect(screen.queryByTestId('aadhaar-verified-pill')).not.toBeInTheDocument()
     expect(screen.queryByTestId('aadhaar-success-banner')).not.toBeInTheDocument()
 
-    // Aadhaar input is no longer readOnly
+    // Aadhaar input is editable
     const aadhaarInput = screen.getByPlaceholderText('Aadhaar Number')
     expect(aadhaarInput).not.toHaveAttribute('readonly')
 
-    // Send OTP button is back
+    // User can edit Aadhaar number
+    fireEvent.change(aadhaarInput, { target: { value: '989989899892' } })
+    expect(aadhaarInput).toHaveValue('989989899892')
+
+    // Send OTP button is active for valid 12-digit number
     expect(screen.getByTestId('send-aadhaar-otp-btn')).toBeInTheDocument()
   })
 })
@@ -187,5 +202,85 @@ describe('RegistrationForm - Aadhaar verification enforcement on proceed', () =>
         screen.getByText('please send otp and verify your aadhar number')
       ).toBeInTheDocument()
     })
+  })
+})
+
+describe('BUG_GST_WB_005 - Date of Birth (DOB) Calendar and Manual Input', () => {
+  it('opens DOB calendar defaulting to the current system year dynamically', () => {
+    const currentYear = new Date().getFullYear()
+    render(
+      <DobDatePickerModal
+        isOpen={true}
+        value=""
+        onApply={vi.fn()}
+        onClose={vi.fn()}
+        maxDate={new Date()}
+        minDate={new Date(1900, 0, 1)}
+      />
+    )
+
+    // Displays current year dynamically
+    expect(screen.getByText(new RegExp(`${currentYear}`))).toBeInTheDocument()
+  })
+
+  it('allows navigating backwards to previous years and disables future jump', () => {
+    const currentYear = new Date().getFullYear()
+    render(
+      <DobDatePickerModal
+        isOpen={true}
+        value=""
+        onApply={vi.fn()}
+        onClose={vi.fn()}
+        maxDate={new Date()}
+        minDate={new Date(1900, 0, 1)}
+      />
+    )
+
+    // +5 Yrs and +10 Yrs are disabled because we start at current year (maxDate)
+    expect(screen.getByRole('button', { name: '+5 Yrs' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: '+10 Yrs' })).toBeDisabled()
+
+    // Jump back 10 years
+    const minus10Btn = screen.getByRole('button', { name: '-10 Yrs' })
+    fireEvent.click(minus10Btn)
+    expect(screen.getByText(new RegExp(`${currentYear - 10}`))).toBeInTheDocument()
+
+    // Now +5 Yrs is enabled
+    expect(screen.getByRole('button', { name: '+5 Yrs' })).not.toBeDisabled()
+  })
+
+  it('allows manually typing a date of birth into the input field', () => {
+    const handleChange = vi.fn()
+    render(
+      <RegistrationPersonalFields
+        values={{ fullName: 'John Doe', email: 'john@example.com', gender: 'Male', dob: '' }}
+        errors={{}}
+        onChange={handleChange}
+      />
+    )
+
+    const dobInput = screen.getByPlaceholderText('DD-MM-YYYY')
+    expect(dobInput).not.toHaveAttribute('readonly')
+    fireEvent.change(dobInput, { target: { name: 'dob', value: '15-08-1995' } })
+    expect(handleChange).toHaveBeenCalled()
+  })
+
+  it('opens DOB calendar popover when clicking the calendar button', () => {
+    const onApply = vi.fn()
+    render(
+      <RegistrationPersonalFields
+        values={{ fullName: 'John Doe', email: 'john@example.com', gender: 'Male', dob: '' }}
+        errors={{}}
+        onChange={vi.fn()}
+        onApplyDate={onApply}
+      />
+    )
+
+    const calendarBtn = screen.getByTestId('dob-calendar-btn')
+    fireEvent.click(calendarBtn)
+
+    // Calendar popover is opened
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    expect(screen.getByText('Select Date of Birth')).toBeInTheDocument()
   })
 })

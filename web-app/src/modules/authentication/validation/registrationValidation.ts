@@ -5,6 +5,7 @@ import {
   validateMobileNumber,
   validateName,
   validatePan,
+  validatePincode,
 } from '@shared/utils'
 
 export interface RegistrationFormState {
@@ -80,7 +81,7 @@ export const isValidDateString = (dob: string): boolean => {
 
   if (month < 1 || month > 12) return false
   if (day < 1 || day > 31) return false
-  if (year < 1900 || year > new Date().getFullYear()) return false
+  if (year < 1900) return false
 
   const date = new Date(year, month - 1, day)
   if (
@@ -92,7 +93,9 @@ export const isValidDateString = (dob: string): boolean => {
   }
 
   // Not in the future
-  return date.getTime() <= Date.now()
+  const now = new Date()
+  const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999)
+  return date.getTime() <= endOfToday.getTime()
 }
 
 /** Parses a DD-MM-YYYY string that already passed isValidDateString. */
@@ -175,10 +178,36 @@ export const validateField = (
     case 'dob': {
       const str = String(val ?? '').trim()
       if (!str) return 'Date of Birth is required'
-      if (!isValidDateString(str)) {
+
+      const match = str.match(/^(\d{2})-(\d{2})-(\d{4})$/)
+      if (!match) {
         return 'Enter a valid date in DD-MM-YYYY format'
       }
-      return getAgeRangeError(parseDateString(str)) ?? undefined
+
+      const day = parseInt(match[1], 10)
+      const month = parseInt(match[2], 10)
+      const year = parseInt(match[3], 10)
+
+      if (month < 1 || month > 12 || day < 1 || day > 31 || year < 1900) {
+        return 'Enter a valid date in DD-MM-YYYY format'
+      }
+
+      const date = new Date(year, month - 1, day)
+      if (
+        date.getFullYear() !== year ||
+        date.getMonth() !== month - 1 ||
+        date.getDate() !== day
+      ) {
+        return 'Enter a valid date in DD-MM-YYYY format'
+      }
+
+      const now = new Date()
+      const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999)
+      if (date.getTime() > endOfToday.getTime()) {
+        return 'Date of birth cannot be in the future.'
+      }
+
+      return getAgeRangeError(date) ?? undefined
     }
 
     case 'fatherSpouseName': {
@@ -227,15 +256,10 @@ export const validateField = (
     }
 
     case 'pincode': {
-      const str = String(val ?? '').replace(/\D/g, '')
-      if (!str) return 'PIN Code is required'
-      if (str.length !== 6) {
-        return 'PIN Code must be exactly 6 digits'
-      }
-      if (!/^[1-9][0-9]{5}$/.test(str)) {
-        return 'Enter a valid 6-digit Indian PIN code'
-      }
-      return undefined
+      return validatePincode(String(val ?? ''), {
+        label: 'PIN Code',
+        state: values.state,
+      }) ?? undefined
     }
 
     case 'addressLine1': {

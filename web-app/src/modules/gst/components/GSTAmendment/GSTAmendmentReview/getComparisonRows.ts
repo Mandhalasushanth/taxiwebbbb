@@ -1,4 +1,5 @@
 import { orNotAvailable } from '@modules/gst/services/gstProfileService'
+import { formatDisplayDate } from '@shared/utils'
 import type { AddressDetailsItem, BankDetailsItem, ContactDetailsItem, SignatoryDetailsItem } from './GSTAmendmentReview'
 
 export interface RowItem {
@@ -51,11 +52,7 @@ export function getAddressRows(
 
 export function getSignatoryRows(details: SignatoryDetailsItem, isRequested: boolean): RowItem[] {
   if (isRequested) {
-    let displayDob = details.dob || orNotAvailable('')
-    if (details.dob && /^\d{4}-\d{2}-\d{2}$/.test(details.dob)) {
-      const [year, month, day] = details.dob.split('-')
-      displayDob = `${day}-${month}-${year}`
-    }
+    const displayDob = formatDisplayDate(details.dob, orNotAvailable(''))
 
     const displayMobile = details.mobile ? details.mobile.replace(/^\+91\s*/, '') : ''
 

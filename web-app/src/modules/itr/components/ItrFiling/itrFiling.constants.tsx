@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef, useImperativeHandle, useLayoutEffect, useRef } from 'react'
 import { authStorage } from '@core/auth/authStorage'
 import type { AuthUser } from '@core/auth/authTypes'
 import './ItrStepHeaderStepper.css'
@@ -215,6 +215,232 @@ export const sanitizeIncomeAmount = (val: string, maxLength: number = 14): strin
     .slice(0, maxLength)
 }
 
+/**
+ * Formats a number or numeric string into Indian number format with commas.
+ * Examples:
+ * - 684784 -> "6,84,784"
+ * - 100000 -> "1,00,000"
+ * - 10000000 -> "1,00,00,000"
+ * - "0" -> "0"
+ * - "" / null / undefined -> ""
+ */
+export const formatIndianNumber = (
+  val: string | number | null | undefined,
+): string => {
+  if (val === null || val === undefined) return ''
+  const str = String(val).trim()
+  if (!str) return ''
+
+  // Preserve negative sign if any
+  const isNegative = str.startsWith('-')
+  const cleanStr = str.replace(/^-/, '').replace(/[^0-9.]/g, '')
+  if (!cleanStr) return ''
+
+  const parts = cleanStr.split('.')
+  let integerPart = parts[0]
+  const decimalPart = parts.length > 1 ? '.' + parts.slice(1).join('') : ''
+
+  // Normalize leading zeros for numbers (keep single '0')
+  if (integerPart.length > 1) {
+    integerPart = integerPart.replace(/^0+/, '') || '0'
+  }
+
+  let formattedInteger = ''
+  if (integerPart.length <= 3) {
+    formattedInteger = integerPart
+  } else {
+    const lastThree = integerPart.slice(-3)
+    const remaining = integerPart.slice(0, -3)
+    const formattedRemaining = remaining.replace(/\B(?=(\d{2})+(?!\d))/g, ',')
+    formattedInteger = `${formattedRemaining},${lastThree}`
+  }
+
+  return `${isNegative ? '-' : ''}${formattedInteger}${decimalPart}`
+}
+
+/**
+ * Formats an amount with an Indian currency prefix (default: "₹ ").
+ * Examples:
+ * - 684784 -> "₹ 6,84,784"
+ * - 0 -> "₹ 0"
+ * - "" / null / undefined -> "" (or fallback)
+ */
+export const formatIndianCurrency = (
+  val: string | number | null | undefined,
+  prefix = '₹ ',
+  fallback = ''
+): string => {
+  if (val === null || val === undefined || val === '') return fallback
+  const num = typeof val === 'number' ? val : Number(String(val).replace(/[^0-9.-]/g, ''))
+  if (isNaN(num)) return fallback
+  if (num === 0) return `${prefix}0`
+  return `${prefix}${formatIndianNumber(num)}`
+}
+
+/**
+ * Strips formatting commas, currency symbols, and extra spaces to yield a pure numeric string.
+ * Used for state persistence, calculations, and API requests.
+ */
+export const parseIndianNumber = (
+  val: string | number | null | undefined,
+  maxLength = 14
+): string => {
+  if (val === null || val === undefined) return ''
+  return String(val)
+    .replace(/[^0-9]/g, '')
+    .replace(/^0+/, '')
+    .slice(0, maxLength)
+}
+
+export interface ItrAmountInputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'> {
+  value: string | number | undefined | null
+  onChange: (sanitizedRawValue: string, e?: React.ChangeEvent<HTMLInputElement>) => void
+  maxDigits?: number
+}
+
+/**
+ * ItrAmountInput is a specialized numeric input for amount fields across the ITR module.
+ * - Displays values with Indian numbering comma separation (e.g. 684784 -> 6,84,784).
+ * - Emits sanitized pure numeric strings to `onChange` so underlying state, calculations,
+ *   and API requests remain uncorrupted numeric values.
+ * - Preserves cursor/caret position naturally when typing, editing in the middle, or backspacing.
+ * - Handles backspacing over comma separators seamlessly.
+ */
+export const ItrAmountInput = forwardRef<HTMLInputElement, ItrAmountInputProps>(
+  (
+    {
+      value,
+      onChange,
+      maxDigits = 14,
+      onKeyDown,
+      placeholder,
+      className,
+      id,
+      inputMode = 'numeric',
+      pattern = '[1-9][0-9]*',
+      ...restProps
+    },
+    forwardedRef
+  ) => {
+    const inputRef = useRef<HTMLInputElement | null>(null)
+    useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
+
+    const targetDigitsBeforeCursorRef = useRef<number | null>(null)
+
+    const displayValue = formatIndianNumber(value)
+
+    useLayoutEffect(() => {
+      const input = inputRef.current
+      if (!input) return
+      if (targetDigitsBeforeCursorRef.current !== null) {
+        const targetDigits = targetDigitsBeforeCursorRef.current
+        targetDigitsBeforeCursorRef.current = null
+        const currentVal = input.value
+        let newCursor = 0
+        let count = 0
+        for (let i = 0; i < currentVal.length; i++) {
+          if (count === targetDigits) {
+            newCursor = i
+            break
+          }
+          if (/[0-9]/.test(currentVal[i])) {
+            count++
+          }
+        }
+        if (count < targetDigits || (newCursor === 0 && targetDigits > 0)) {
+          newCursor = currentVal.length
+        }
+        try {
+          input.setSelectionRange(newCursor, newCursor)
+        } catch {
+          // Ignore
+        }
+      }
+    }, [displayValue])
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      const input = e.currentTarget
+      if (e.key === 'Backspace') {
+        const selStart = input.selectionStart ?? 0
+        const selEnd = input.selectionEnd ?? 0
+        if (selStart === selEnd && selStart > 0) {
+          if (input.value[selStart - 1] === ',') {
+            e.preventDefault()
+            const prevVal = input.value
+            // Remove the digit before the comma
+            const nextVal = prevVal.slice(0, selStart - 2) + prevVal.slice(selStart)
+            const rawClean = parseIndianNumber(nextVal, maxDigits)
+            const digitsBefore = Math.max(
+              0,
+              nextVal.slice(0, selStart - 2).replace(/[^0-9]/g, '').length
+            )
+            targetDigitsBeforeCursorRef.current = digitsBefore
+            onChange(rawClean)
+            return
+          }
+        }
+      }
+      onKeyDown?.(e)
+    }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const input = e.currentTarget
+      const domVal = input.value
+      const cursor = input.selectionStart ?? domVal.length
+      const digitsBeforeCursor = domVal.slice(0, cursor).replace(/[^0-9]/g, '').length
+      targetDigitsBeforeCursorRef.current = digitsBeforeCursor
+
+      const rawClean = parseIndianNumber(domVal, maxDigits)
+      onChange(rawClean, e)
+    }
+
+    return (
+      <input
+        {...restProps}
+        ref={inputRef}
+        id={id}
+        type="text"
+        inputMode={inputMode}
+        pattern={pattern}
+        className={className}
+        placeholder={placeholder}
+        value={displayValue}
+        onKeyDown={handleKeyDown}
+        onChange={handleChange}
+      />
+    )
+  }
+)
+
+ItrAmountInput.displayName = 'ItrAmountInput'
+
+/**
+ * Maximum eligible deduction for home loan interest on self-occupied house property
+ * under Section 24(b) of the Income Tax Act.
+ */
+export const MAX_SELF_OCCUPIED_HOME_LOAN_INTEREST = 200000
+
+/**
+ * Validates Home Loan Interest Paid under Section 24(b).
+ * - Self-Occupied (`self_occupied`): Deduction is strictly capped at ₹2,00,000.
+ * - Let-Out (`let_out`): There is no ₹2,00,000 statutory cap on actual interest paid against rental income under Section 24(b).
+ * Returns error string or null if valid.
+ */
+export const validateHomeLoanInterest = (
+  val: string | undefined | null,
+  propertyType: 'self_occupied' | 'let_out' = 'self_occupied'
+): string | null => {
+  const raw = String(val ?? '').trim()
+  if (!raw) return 'Home Loan Interest Paid is required'
+  const numeric = Number(raw.replace(/[^0-9]/g, ''))
+  if (isNaN(numeric) || numeric < 0) return 'Please enter a valid interest amount'
+  if (propertyType === 'self_occupied' && numeric > MAX_SELF_OCCUPIED_HOME_LOAN_INTEREST) {
+    return 'Maximum eligible deduction for self-occupied home loan interest is ₹2,00,000 under Section 24(b)'
+  }
+  return null
+}
+
 export const ASSET_TYPE_OPTIONS = ['Equity & Mutual Funds', 'F&O & Intraday Trading', 'Crypto / VDA', 'Real Estate / Land']
 
 export const BUSINESS_METHODS = [
@@ -345,31 +571,28 @@ export const getItrChecklistSections = ({
   const hasBusiness = sources.includes('business')
   const hasCapital = sources.includes('capital_gains')
   const hasHouse = sources.includes('house_property')
-  const hasOther = sources.includes('other_sources')
-
-  // If other_sources or multiple sources (Image 5)
-  const isImage5OtherOrMultiple = hasOther || (hasSalary && hasBusiness)
 
   const requiredDocs: ChecklistDocConfig[] = []
   const recommendedDocs: ChecklistDocConfig[] = []
   const optionalDocs: ChecklistDocConfig[] = []
 
-  // 1. Required Documents (Mandatory with small red star)
-  if (isImage5OtherOrMultiple) {
+  // 1. Required Documents (Mandatory only where applicable for selected income sources)
+  if (hasSalary) {
     requiredDocs.push(DOC_FORM_16)
+  }
+  if (hasBusiness) {
     requiredDocs.push(DOC_BUSINESS_TURNOVER)
-  } else {
-    if (hasSalary) requiredDocs.push(DOC_FORM_16)
-    if (hasBusiness) requiredDocs.push(DOC_BUSINESS_TURNOVER)
-    if (hasCapital) requiredDocs.push(DOC_CAPITAL_GAINS)
+  }
+  if (hasCapital) {
+    requiredDocs.push(DOC_CAPITAL_GAINS)
   }
 
-  // 2. Recommended Documents (Common 3 always present in all 5 images)
+  // 2. Recommended Documents (Common tax statements)
   recommendedDocs.push(DOC_FORM_26AS)
   recommendedDocs.push(DOC_AIS_TIS)
   recommendedDocs.push(DOC_BANK_STATEMENT)
 
-  if (hasSalary || isImage5OtherOrMultiple) {
+  if (hasSalary) {
     recommendedDocs.push(DOC_SALARY_PAYSLIPS)
   }
 

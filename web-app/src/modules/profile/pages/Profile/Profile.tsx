@@ -11,8 +11,8 @@ import { LogoutButton } from '../../components/LogoutButton/LogoutButton'
 import { LogoutConfirmModal } from '@shared/components'
 import { useLogoutConfirm } from '@modules/authentication'
 import { CompleteProfileCard } from '../../components/CompleteProfileCard/CompleteProfileCard'
-import { ProfileSectionModal, type ProfileModalType } from '../../components/ProfileSectionModal/ProfileSectionModal'
-import { UnavailableModal } from '../../components/UnavailableModal/UnavailableModal'
+import { ChangePasscodeModal } from '../../components/ChangePasscodeModal/ChangePasscodeModal'
+import { DeleteAccountModal } from '../../components/DeleteAccountModal/DeleteAccountModal'
 import { calculateProfileProgress } from '../../utils/profileProgress'
 import { useApplications } from '@modules/applications'
 import profileSectionsConfigDefault, { profileSectionsConfig as profileSectionsConfigNamed } from './profileConfig'
@@ -29,17 +29,23 @@ export const Profile = () => {
   const activeAppsCount = applications?.filter((app) => app.status !== 'COMPLETED' && app.status !== 'Completed').length ?? 0
   const completedAppsCount = applications?.filter((app) => app.status === 'COMPLETED' || app.status === 'Completed').length ?? 0
   const totalPaidAmount = applications?.reduce((sum, app) => sum + (app.amount || 0), 0) ?? 0
-  const UNAVAILABLE_ITEM_IDS = ['password', '2fa', 'history', 'privacy', 'rate', 'terms', 'policy']
-  const [activeModal, setActiveModal] = useState<ProfileModalType | null>(null)
-  const [unavailableTitle, setUnavailableTitle] = useState<string | null>(null)
 
-  const handleItemClick = (itemId: string, itemLabel: string) => {
-    if (itemId === 'gst' || itemId === 'itr' || itemId === 'loan') {
-      const type = itemId === 'loan' ? 'loans' : (itemId as ProfileModalType)
-      setActiveModal(type)
-    } else if (UNAVAILABLE_ITEM_IDS.includes(itemId)) {
-      setUnavailableTitle(itemLabel)
+  const [isChangePasscodeOpen, setIsChangePasscodeOpen] = useState(false)
+  const [isDeleteAccountOpen, setIsDeleteAccountOpen] = useState(false)
+
+  const handleItemClick = (itemId: string) => {
+    if (itemId === 'passcode') {
+      setIsChangePasscodeOpen(true)
+    } else if (itemId === 'delete-account') {
+      setIsDeleteAccountOpen(true)
     }
+  }
+
+  const handleConfirmDeleteAccount = () => {
+    useAuthStore.getState().signOut()
+    authStorage.clear()
+    setIsDeleteAccountOpen(false)
+    navigate(routePaths.auth.login, { replace: true })
   }
 
   const logout = useLogoutConfirm()
@@ -76,7 +82,7 @@ export const Profile = () => {
         )}
 
         {profileSectionsConfig.map((section) => {
-          const id = section.title.toLowerCase()
+          const id = section.title.toLowerCase().replace(/\s+/g, '-')
           return (
             <div id={id} key={id} className="profile-page-view__section-anchor">
               <ProfileSection title={section.title.toUpperCase()}>
@@ -84,8 +90,10 @@ export const Profile = () => {
                   <React.Fragment key={item.id}>
                     <ProfileMenuItem
                       label={item.label}
-                      to={['gst', 'itr', 'loan', ...UNAVAILABLE_ITEM_IDS].includes(item.id) ? undefined : item.to}
-                      onClick={() => handleItemClick(item.id, item.label)}
+                      to={item.to}
+                      target={item.target}
+                      rel={item.rel}
+                      onClick={() => handleItemClick(item.id)}
                       icon={item.icon}
                       iconBgClass={item.iconBgClass}
                     />
@@ -110,16 +118,15 @@ export const Profile = () => {
         </div>
       </div>
 
-      <ProfileSectionModal
-        isOpen={Boolean(activeModal)}
-        onClose={() => setActiveModal(null)}
-        modalType={activeModal}
+      <ChangePasscodeModal
+        isOpen={isChangePasscodeOpen}
+        onClose={() => setIsChangePasscodeOpen(false)}
       />
 
-      <UnavailableModal
-        isOpen={Boolean(unavailableTitle)}
-        title={unavailableTitle}
-        onClose={() => setUnavailableTitle(null)}
+      <DeleteAccountModal
+        isOpen={isDeleteAccountOpen}
+        onClose={() => setIsDeleteAccountOpen(false)}
+        onConfirm={handleConfirmDeleteAccount}
       />
     </div>
   )

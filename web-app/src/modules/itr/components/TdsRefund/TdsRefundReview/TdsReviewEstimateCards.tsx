@@ -20,7 +20,17 @@ export interface TdsReviewDocumentsCardProps {
 export const TdsReviewDocumentsCard: React.FC<TdsReviewDocumentsCardProps> = ({ businessDetails, onEdit }) => {
   const docs = (Object.keys(DOCUMENT_LABELS) as Array<keyof typeof DOCUMENT_LABELS>)
     .map((key) => ({ key, label: DOCUMENT_LABELS[key], meta: businessDetails?.[key] as UploadedFileMeta | undefined }))
-    .filter((doc) => Boolean(doc.meta))
+    .filter(
+      (doc) =>
+        Boolean(
+          doc.meta &&
+            doc.meta.status !== 'failed' &&
+            doc.meta.status !== 'error' &&
+            doc.meta.status !== 'uploading' &&
+            !doc.meta.error &&
+            (doc.meta.file || doc.meta.name)
+        )
+    )
 
   return (
     <section className="tds-review-card" data-testid="tds-review-documents">

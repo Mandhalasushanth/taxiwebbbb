@@ -52,13 +52,21 @@ describe('BUG-GST-010: real document preview', () => {
 })
 
 describe('BUG-GST-011: labelled Delete action', () => {
-  it('renders an accessible Delete button that removes the file', () => {
+  it('renders an accessible Delete button that prompts for confirmation before removing the file', () => {
     const onRemove = vi.fn()
     render(<UploadDocument id="pan" title="PAN Card" isUploaded fileName="pan.pdf" onRemove={onRemove} />)
     const button = screen.getByRole('button', { name: 'Delete PAN Card (pan.pdf)' })
     expect(button).toHaveTextContent('Delete')
     expect(button).toHaveAttribute('title', 'Delete pan.pdf')
     fireEvent.click(button)
+    // Confirmation popup opens; onRemove should not be called yet
+    expect(onRemove).not.toHaveBeenCalled()
+    expect(screen.getByRole('heading', { name: /Delete Document/i })).toBeInTheDocument()
+    expect(screen.getByText(/Are you sure you want to remove/)).toBeInTheDocument()
+
+    // Confirm deletion in popup
+    const confirmButton = screen.getByTestId('confirm-delete-doc-modal')
+    fireEvent.click(confirmButton)
     expect(onRemove).toHaveBeenCalledWith('pan')
   })
 

@@ -113,18 +113,17 @@ describe('GST Validations - Centralized & Field-by-Field', () => {
       expect(validateBusinessPan('ABCHE1234F', 'Hindu Undivided Family (HUF)')).toBeNull()
     })
 
-    it('rejects mismatched Constitution and PAN category with clear explanatory message', () => {
-      // Trying to register a Company with a Proprietor PAN (P)
-      const errorCompany = validateBusinessPan('ABCPE1234F', 'Private Limited Company')
-      expect(errorCompany).toContain('4th character must be "C"')
+    it('applies common PAN validation regardless of selected constitution', () => {
+      // Any valid PAN category (A, B, C, F, G, H, J, L, P, T) is accepted for any constitution
+      expect(validateBusinessPan('HGDAJ2345R', 'Government Department')).toBeNull()
+      expect(validateBusinessPan('ABCPE1234F', 'Private Limited Company')).toBeNull()
+      expect(validateBusinessPan('ABCCE1234F', 'Partnership Firm')).toBeNull()
+      expect(validateBusinessPan('ABCCE1234F', 'Proprietorship')).toBeNull()
 
-      // Trying to register a Partnership with a Company PAN (C)
-      const errorFirm = validateBusinessPan('ABCCE1234F', 'Partnership Firm')
-      expect(errorFirm).toContain('4th character must be "F"')
-
-      // Trying to register a Proprietorship with a Company PAN (C)
-      const errorProp = validateBusinessPan('ABCCE1234F', 'Proprietorship')
-      expect(errorProp).toContain('4th character must be "P"')
+      // 4th character must be one of the valid categories
+      expect(validateBusinessPan('ABCZE1234F', 'Government Department')).toBe(
+        VALIDATION_MESSAGES.panCategory
+      )
     })
 
     it('rejects malformed PAN formats', () => {
@@ -369,7 +368,7 @@ describe('GST Validations - Centralized & Field-by-Field', () => {
       const invalidData: GstBusinessFormData = {
         ...validFormData,
         legalName: '123456',
-        businessPan: 'ABCPE1234F', // Mismatch with Private Limited Company (P instead of C)
+        businessPan: 'ABCZE1234F', // Invalid 4th character Z
         confirmAccountNumber: '999999999999',
         hsnSacCode: '123',
         signatoryPan: 'ABCCE1234F', // Signatory must be individual PAN 'P' (this is C)
@@ -378,7 +377,7 @@ describe('GST Validations - Centralized & Field-by-Field', () => {
       const errors = validateGstBusinessForm(invalidData)
       expect(Object.keys(errors).length).toBeGreaterThan(0)
       expect(errors.legalName).toBe('Legal name cannot contain numbers')
-      expect(errors.businessPan).toContain('4th character must be "C"')
+      expect(errors.businessPan).toBe(VALIDATION_MESSAGES.panCategory)
       expect(errors.confirmAccountNumber).toBe('Account numbers do not match.')
       expect(errors.hsnSacCode).toBe('HSN / SAC code must be 4, 6 or 8 digits')
       expect(errors.signatoryPan).toContain('4th character "P"')

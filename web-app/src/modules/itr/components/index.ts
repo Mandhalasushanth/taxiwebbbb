@@ -5,3 +5,10 @@ export { TdsRefund } from "./TdsRefund";
 // export { PreviousYearItr } from "./PreviousYearItr";
 export { RevisedItr } from "./RevisedItr";
 // export { TaxNoticeAssistance } from "./TaxNoticeAssistance";
+export {
+  ItrAmountInput,
+  formatIndianNumber,
+  formatIndianCurrency,
+  parseIndianNumber,
+} from "./ItrFiling/itrFiling.constants";
+export type { ItrAmountInputProps } from "./ItrFiling/itrFiling.constants";

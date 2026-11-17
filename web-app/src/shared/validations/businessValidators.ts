@@ -220,34 +220,15 @@ export const CONSTITUTION_PAN_TYPES: Record<string, readonly string[]> = {
 };
 
 /**
- * Validates Business PAN against Constitution of Business:
- * - Checks PAN format using centralized PAN validator
- * - Matches 4th character against required PAN category for the selected constitution
+ * Validates Business PAN using common PAN validation across all entity types:
+ * - Checks format (5 letters, 4 digits, 1 letter)
+ * - 4th character must be a valid entity category code (A, B, C, F, G, H, J, L, P, T)
  */
 export const validateBusinessPan = (
   pan: string | undefined | null,
-  constitution: string | undefined | null,
+  _constitution?: string | undefined | null,
 ): string | null => {
-  const baseError = validatePan(pan || "", { label: "Business PAN" });
-  if (baseError) return baseError;
-
-  const constTrimmed = (constitution || "").trim();
-  if (!constTrimmed) return null;
-
-  const allowed = CONSTITUTION_PAN_TYPES[constTrimmed];
-  if (!allowed) return null;
-
-  const cleaned = String(pan ?? "")
-    .trim()
-    .toUpperCase();
-  const holderCode = cleaned.charAt(3);
-
-  if (!allowed.includes(holderCode)) {
-    const formattedAllowed = allowed.map((c) => `"${c}"`).join(" or ");
-    return `For a ${constTrimmed}, the PAN's 4th character must be ${formattedAllowed}`;
-  }
-
-  return null;
+  return validatePan(pan || "", { label: "Business PAN" });
 };
 
 /* -------------------------------------------------------------------------- */

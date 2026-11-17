@@ -12,6 +12,7 @@ import { GSTReviewDeclaration } from './GSTReviewDeclaration'
 import { GSTDocPreviewModal } from '../GSTStepDocuments/GSTDocPreviewModal'
 import type { DocPreviewState } from '@modules/gst/types/gstDocuments.types'
 import { StepActionBar } from '@shared/components'
+import { formatDisplayDate } from '@shared/utils'
 import './GSTStepReview.css'
 import { openGstDocumentPreview } from '@modules/gst/utils/gstDocumentPreview'
 
@@ -60,7 +61,7 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
     { label: 'Constitution', value: businessData.constitution || '—' },
     { label: 'Business PAN', value: businessData.businessPan || '—' },
     { label: 'Nature of Business', value: businessData.natureOfBusiness || '—' },
-    { label: 'Date of Commencement', value: businessData.commencementDate || '—' },
+    { label: 'Date of Commencement', value: formatDisplayDate(businessData.commencementDate) },
     { label: 'Reason for Reg.', value: businessData.registrationReason || '—' },
     {
       label: 'Composition Scheme',
@@ -96,18 +97,15 @@ export const GSTStepReview: FC<GSTStepReviewProps> = ({
   const signatoryFields: ReviewField[] = [
     { label: 'Name', value: businessData.signatoryName || '—' },
     { label: 'PAN', value: businessData.signatoryPan || '—' },
-    { label: 'DOB', value: businessData.dob || '—' },
+    { label: 'DOB', value: formatDisplayDate(businessData.dob) },
     { label: 'Designation', value: businessData.designation || '—' },
     {
       label: 'Contact',
-      value: (
-        <div className="gst-review-contact-val">
-          <span>{businessData.signatoryMobile ? `+91 ${businessData.signatoryMobile}` : '—'}</span>
-          {businessData.signatoryEmail && (
-            <span className="gst-review-contact-email">{businessData.signatoryEmail}</span>
-          )}
-        </div>
-      ),
+      value: businessData.signatoryMobile ? `+91 ${businessData.signatoryMobile}` : '—',
+    },
+    {
+      label: 'Email',
+      value: businessData.signatoryEmail || '—',
     },
   ]
 

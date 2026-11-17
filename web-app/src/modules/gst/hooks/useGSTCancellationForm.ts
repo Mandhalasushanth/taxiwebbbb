@@ -51,7 +51,17 @@ export const useGSTCancellationForm = ({
     ...initialValues,
     ...draftSnapshot?.formData,
   }));
-  const [gstin, setGstin] = useState(restored.gstin);
+  const [gstin, setGstinRaw] = useState(restored.gstin);
+  const handleSetGstin = (val: string) => {
+    setGstinRaw(val);
+    const liveErr = gstFieldRules.gstin(val, undefined, true);
+    setErrors((prev) => {
+      const next = { ...prev };
+      if (liveErr) next.gstin = liveErr;
+      else delete next.gstin;
+      return next;
+    });
+  };
   const [reason, setReason] = useState(restored.reason);
   const [cancellationDate, setCancellationDate] = useState(
     restored.cancellationDate,
@@ -250,7 +260,7 @@ export const useGSTCancellationForm = ({
 
   return {
     gstin,
-    setGstin,
+    setGstin: handleSetGstin,
     reason,
     setReason,
     cancellationDate,

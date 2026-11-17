@@ -9,14 +9,6 @@ export type ItrViewKey =
   | 'revised-itr'
   | 'tax-notice-assistance'
 
-export interface ItrStatCard {
-  id: string
-  label: string
-  value: string
-  subtext: string
-  icon: string
-}
-
 export interface ItrServiceCard {
   id: string
   title: string
@@ -26,29 +18,6 @@ export interface ItrServiceCard {
   icon: 'bar' | 'rupee' | 'clock' | 'document' | 'warning'
   viewKey: ItrViewKey
   accentTag?: string
-}
-
-export interface ItrApplicationItem {
-  id: string
-  title: string
-  reference: string
-  entityType: string
-  formType: string
-  caAssigned: string
-  statusLabel: string
-  statusTone: 'warning' | 'success' | 'info' | 'critical'
-  progressPercentage: number
-  amountCredited?: number
-  updatedAt: string
-}
-
-export interface TdsEstimatorValues {
-  totalTdsDeducted: number
-  estimatedRefund: number
-  taxEdgeFee: number
-  salaryTds?: number
-  interestTds?: number
-  contractorTds?: number
 }
 
 export interface ItrItem extends Timestamped {

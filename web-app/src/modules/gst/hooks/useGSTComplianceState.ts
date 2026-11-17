@@ -245,7 +245,20 @@ export const useGSTComplianceState = () => {
     value: ComplianceFields[K],
   ) => {
     setFields((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev));
+    setErrors((prev) => {
+      const next = { ...prev };
+      if (field === 'gstin') {
+        const liveErr = gstFieldRules.gstin(value as string, undefined, true);
+        if (liveErr) {
+          next.gstin = liveErr;
+        } else {
+          delete next.gstin;
+        }
+      } else {
+        delete next[field];
+      }
+      return next;
+    });
   };
 
   const setFileWithClear =
