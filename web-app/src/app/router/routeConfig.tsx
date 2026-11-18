@@ -11,6 +11,7 @@ import { Loader } from '@shared/components'
 import { applicationsRoutes } from '@modules/applications/routes'
 import { authenticationRoutes } from '@modules/authentication/routes'
 import { businessRoutes } from '@modules/business/routes'
+import { cibilRoutes } from '@modules/cibil/routes'
 import { customerSupportRoutes } from '@modules/customerSupport/routes'
 import { CustomerTypePage } from '@modules/customerType'
 import { dashboardRoutes } from '@modules/dashboard/routes'
@@ -90,6 +91,7 @@ export const routeConfig: RouteObject[] = [
           ...insuranceRoutes,
           ...projectsRoutes,
           ...paymentsRoutes,
+          ...cibilRoutes,
           ...documentsRoutes,
           ...applicationsRoutes,
           ...profileRoutes,

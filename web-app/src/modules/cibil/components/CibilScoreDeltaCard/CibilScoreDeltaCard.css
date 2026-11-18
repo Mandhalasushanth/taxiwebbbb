@@ -1,0 +1,119 @@
+.cibil-delta-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 440px;
+  padding: 10px 0;
+}
+
+.cibil-delta-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 24px;
+  border-radius: 20px;
+  border: 1px solid;
+  transition: transform 0.2s ease;
+}
+
+.cibil-delta-card--increase {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.cibil-delta-card--decrease {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.cibil-delta-card--unchanged {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.cibil-delta-card--baseline {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.cibil-delta-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cibil-delta-icon-box--increase {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.cibil-delta-icon-box--decrease {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.cibil-delta-icon-box--unchanged {
+  background: #e2e8f0;
+  color: #64748b;
+}
+
+.cibil-delta-icon-box--baseline {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.cibil-delta-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cibil-delta-primary-text {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.cibil-delta-primary-text--increase {
+  color: #15803d;
+}
+
+.cibil-delta-primary-text--decrease {
+  color: #b91c1c;
+}
+
+.cibil-delta-primary-text--unchanged {
+  color: #334155;
+}
+
+.cibil-delta-primary-text--baseline {
+  color: #1d4ed8;
+}
+
+.cibil-delta-secondary-text {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #64748b;
+  margin: 0;
+}
+
+.cibil-delta-refresh-notice {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #475569;
+  padding-left: 6px;
+}
+
+.cibil-delta-refresh-icon {
+  color: #64748b;
+}

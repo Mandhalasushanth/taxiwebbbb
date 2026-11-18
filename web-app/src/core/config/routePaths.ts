@@ -95,6 +95,7 @@ export const routePaths = {
   paymentCheckoutDirect: '/payments/checkout',
   paymentReceipt: (id = ':id') => `/payments/receipt/${id}`,
   paymentReceiptDirect: '/payments/receipt',
+  cibil: '/cibil',
   documents: '/documents',
   applications: '/applications',
   applicationTrack: (id = ':id') => `/applications/track/${id}`,
@@ -109,6 +110,7 @@ export const routePaths = {
   legal: {
     terms: '/legal/terms',
     privacy: '/legal/privacy',
+    refund: '/legal/refund',
     document: (id = ':documentId') => `/legal/${id}`,
   },
   notifications: '/notifications',

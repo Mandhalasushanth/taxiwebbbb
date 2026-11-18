@@ -1,0 +1,157 @@
+.cibil-home-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #eef2f6;
+  border-radius: 20px;
+  padding: 16px 28px;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cibil-home-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.08);
+  border-color: #cbd5e1;
+}
+
+.cibil-home-card__left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.cibil-home-card__gauge-icon {
+  width: 68px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cibil-home-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 3px;
+}
+
+.cibil-home-card__title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.cibil-home-card__free-badge {
+  display: inline-flex;
+  align-items: center;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.cibil-home-card__subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.cibil-home-card__middle {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 0 24px;
+  border-left: 1px solid #f1f5f9;
+}
+
+.cibil-home-card__feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.cibil-home-card__feature-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb;
+}
+
+.cibil-home-card__feature-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.cibil-home-card__btn {
+  background: #082b59;
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cibil-home-card__btn:hover {
+  background: #0f3d7a;
+  transform: translateX(2px);
+  box-shadow: 0 4px 14px rgba(8, 43, 89, 0.25);
+}
+
+@media (max-width: 992px) {
+  .cibil-home-card__middle {
+    gap: 16px;
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cibil-home-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 20px;
+  }
+
+  .cibil-home-card__middle {
+    border-left: none;
+    border-top: 1px solid #f1f5f9;
+    padding: 12px 0 0 0;
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .cibil-home-card__btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

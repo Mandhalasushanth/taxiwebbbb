@@ -1,0 +1,58 @@
+.cibil-issue-modal-body {
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cibil-issue-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cibil-issue-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.cibil-issue-select,
+.cibil-issue-textarea {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.cibil-issue-select:focus,
+.cibil-issue-textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.cibil-issue-success-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 30px 10px;
+  gap: 12px;
+}
+
+.cibil-issue-success-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #16a34a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

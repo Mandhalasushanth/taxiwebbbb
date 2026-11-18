@@ -43,7 +43,10 @@ const renderSection = (section: LegalSection) => (
   <section className="legal-doc__section" key={section.heading}>
     <h2 className="legal-doc__heading">{section.heading}</h2>
     {section.paragraphs.map((text, idx) => (
-      <p className="legal-doc__paragraph" key={idx}>
+      <p
+        className={`legal-doc__paragraph ${text.startsWith('• ') ? 'legal-doc__paragraph--bullet' : ''}`}
+        key={idx}
+      >
         {renderTextWithLinks(text)}
       </p>
     ))}
@@ -59,21 +62,18 @@ export const LegalDocumentView = ({
   <article className={`legal-doc ${isFullPage ? 'legal-doc--full-page' : ''}`} aria-label={document.title}>
     {showTitle && <h1 className="legal-doc__title">{document.title}</h1>}
 
-    <div className="legal-doc__meta">
-      <span className="legal-doc__meta-item">
-        Published: {formatEffectiveDate(document.effectiveDate)}
-      </span>
-      <span className="legal-doc__meta-divider">•</span>
-      <span className="legal-doc__meta-item">
-        Effective: {formatEffectiveDate(document.effectiveDate)}
-      </span>
+    {/* Highlighted Lead / Intro Box (as shown in reference designs) */}
+    <div className="legal-doc__intro-box" data-testid="legal-doc-intro-box">
+      <p className="legal-doc__intro-box-text">
+        {renderTextWithLinks(document.intro)}
+      </p>
     </div>
 
     {/* Introduction Section */}
     <section className="legal-doc__intro-section">
       <h2 className="legal-doc__intro-heading">Introduction</h2>
       <p className="legal-doc__paragraph">
-        {renderTextWithLinks(document.intro)}
+        Please review the following terms and guidelines carefully before accessing our platform or initiating any service engagement with {appConfig.name}.
       </p>
     </section>
 

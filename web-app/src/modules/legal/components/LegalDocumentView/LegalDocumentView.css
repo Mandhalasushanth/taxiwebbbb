@@ -21,7 +21,26 @@
   text-align: left;
 }
 
-/* Metadata */
+/* Lead Intro Callout Box - Styled as shown in reference design */
+.legal-doc__intro-box {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin: 1.25rem 0 2rem;
+  box-sizing: border-box;
+}
+
+.legal-doc__intro-box-text {
+  margin: 0;
+  font-size: 1rem;
+  font-style: italic;
+  line-height: 1.75;
+  color: #334155;
+  text-align: left;
+}
+
+/* Metadata (kept for backwards compatibility if needed) */
 .legal-doc__meta {
   margin: 0 0 2.25rem;
   font-size: 0.9375rem;
@@ -85,6 +104,11 @@
 
 .legal-doc__paragraph:last-child {
   margin-bottom: 0;
+}
+
+.legal-doc__paragraph--bullet {
+  padding-left: 1.5rem;
+  text-indent: -1.5rem;
 }
 
 /* Links: Professional Blue with Underline */

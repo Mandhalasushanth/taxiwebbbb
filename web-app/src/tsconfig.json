@@ -1,5 +1,17 @@
 {
-  // Lets editors opened on the src folder find the real app config one level up.
-  // Builds use ../tsconfig.json (project references) and are unaffected.
-  "extends": "../tsconfig.app.json"
+  "extends": "../tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "../node_modules/.tmp/tsconfig.src.tsbuildinfo",
+    "typeRoots": ["../node_modules", "../node_modules/@types"],
+    "paths": {
+      "@app/*": ["./app/*"],
+      "@core/*": ["./core/*"],
+      "@modules/*": ["./modules/*"],
+      "@shared/*": ["./shared/*"],
+      "@store/*": ["./store/*"],
+      "@styles/*": ["./styles/*"]
+    }
+  },
+  "files": ["../node_modules/vite/client.d.ts"],
+  "include": ["**/*"]
 }

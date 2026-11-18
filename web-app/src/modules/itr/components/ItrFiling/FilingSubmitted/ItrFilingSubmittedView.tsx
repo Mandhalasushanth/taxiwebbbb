@@ -52,7 +52,7 @@ export const ItrUnifiedApplicationStatusView: React.FC<ItrUnifiedApplicationStat
     customerName?.trim() ||
     profile?.fullName?.trim() ||
     authUser?.fullName?.trim() ||
-    'Sagarika Jena'
+    'Applicant'
 
   const formattedDate = formatDisplayDate(appliedDate)
 

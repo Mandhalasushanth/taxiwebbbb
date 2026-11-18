@@ -13,7 +13,7 @@ interface StoredRegisteredUser {
   profile?: RegisteredUserRecord['user']
 }
 
-const SCHEMA_VERSION = 'v16_clean_fresh_user_state'
+const SCHEMA_VERSION = 'v18_clear_all_mock_applications_and_payments'
 try {
   if (localStore.get<string>('taxedge.auth_schema') !== SCHEMA_VERSION) {
     localStore.clear()

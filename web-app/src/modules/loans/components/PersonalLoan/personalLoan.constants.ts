@@ -40,7 +40,7 @@ export const INITIAL_PERSONAL_LOAN_DATA: PersonalLoanFormData = {
   jobType: '',
   monthlySalary: '',
   workExperience: '',
-  salaryReceivedMode: 'Bank Account',
+  salaryReceivedMode: '',
   uploadedDocs: {},
   termsAccepted: false,
 }

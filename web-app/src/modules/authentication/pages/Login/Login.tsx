@@ -1,10 +1,14 @@
 import { FinsolzBrand } from '@shared/components'
-import React from 'react'
+import React, { useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { routePaths } from '@core/config'
+import { resolvePostLoginPath } from '@core/auth'
 import { useAuthStore } from '@store/index'
 import { SignInCard } from '../../components/SignInCard/SignInCard'
+import { AccountDeletionScheduledModal } from '../../components/AccountDeletionScheduledModal/AccountDeletionScheduledModal'
 import './Login.css'
+
+const ACCOUNT_DELETION_STORAGE_KEY = 'taxedge_account_deletion_scheduled'
 
 const FEATURE_BADGES = [
   { icon: '/assets/images/badge-secure.png', alt: 'Secure', title: 'Secure & Reliable', desc: 'Your data is always protected' },
@@ -20,8 +24,31 @@ export const Login: React.FC = () => {
     new URLSearchParams(location.search).get('reset') === 'true'
   )
 
+  const [scheduledDeletionDate, setScheduledDeletionDate] = useState<string | null>(() => {
+    try {
+      const stored = sessionStorage.getItem(ACCOUNT_DELETION_STORAGE_KEY)
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        return parsed?.scheduledDate || null
+      }
+    } catch {
+      // ignore
+    }
+    return null
+  })
+
+  const handleDismissDeletionModal = () => {
+    try {
+      sessionStorage.removeItem(ACCOUNT_DELETION_STORAGE_KEY)
+    } catch {
+      // ignore
+    }
+    setScheduledDeletionDate(null)
+  }
+
   if (isAuthenticated && !isResetFlow) {
-    return <Navigate to={routePaths.dashboard} replace />
+    const postLoginTarget = resolvePostLoginPath(location.search, location.state, routePaths.dashboard)
+    return <Navigate to={postLoginTarget} replace />
   }
   return (
     <div className="login-screen">
@@ -89,6 +116,15 @@ export const Login: React.FC = () => {
           <SignInCard />
         </aside>
       </div>
+
+      {/* Account Deletion Scheduled Success Modal */}
+      {scheduledDeletionDate && (
+        <AccountDeletionScheduledModal
+          isOpen={Boolean(scheduledDeletionDate)}
+          scheduledDate={scheduledDeletionDate}
+          onDismiss={handleDismissDeletionModal}
+        />
+      )}
     </div>
   )
 }

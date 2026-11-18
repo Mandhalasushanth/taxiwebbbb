@@ -38,8 +38,11 @@
   width: clamp(42px, 5.2vh, 52px);
   height: clamp(42px, 5.2vh, 52px);
   border-radius: clamp(10px, 1.3vh, 14px);
+  background: #ffffff;
+  padding: 4px;
+  box-sizing: border-box;
   object-fit: contain;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
 }
 .top-brand-text { display: flex; flex-direction: column; }
 .top-brand-name { font-size: clamp(1.3rem, 1.6vw, 1.65rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }

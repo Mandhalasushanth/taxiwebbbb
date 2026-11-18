@@ -33,15 +33,19 @@ const autosaveKey = (serviceId: string, namespace: string): string =>
 const savedAtText = (): string =>
   new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
 
-/** Draft to resume: an explicitly saved draft first, then the auto-saved copy */
+/** Draft to resume: the latest auto-saved copy first, then explicitly saved userStorage draft */
 export const readServiceDraft = <T>(
   serviceId: string,
   namespace = DEFAULT_NAMESPACE,
 ): ServiceDraftSnapshot<T> | null => {
   try {
+    const autoSaved = localStore.get<ServiceDraftSnapshot<T>>(autosaveKey(serviceId, namespace))
+    if (autoSaved?.formData) return autoSaved
+
     const saved = userStorage.getDraft(serviceId)
     if (saved?.formData) return { formData: saved.formData as T, currentStep: saved.currentStep }
-    return localStore.get<ServiceDraftSnapshot<T>>(autosaveKey(serviceId, namespace))
+
+    return null
   } catch {
     return null
   }
@@ -129,7 +133,31 @@ export const useServiceDraft = <T>({
   useEffect(() => {
     if (isComplete || !hasEnteredData || isDiscardedRef.current) return
     localStore.set<ServiceDraftSnapshot<T>>(storageKey, { formData, currentStep })
-  }, [storageKey, formData, currentStep, hasEnteredData, isComplete])
+    userStorage.saveDraft({
+      serviceId,
+      serviceTitle,
+      currentStep: isReviewOrEdit ? totalSteps : currentStep,
+      totalSteps,
+      stepLabel: isReviewOrEdit ? 'Review' : stepLabel,
+      formData: formData as Record<string, unknown>,
+      savedAt: savedAtText(),
+      savedTimestamp: Date.now(),
+      resumeRoute: (isReviewOrEdit && reviewRoute) ? reviewRoute : resumeRoute,
+    })
+  }, [
+    storageKey,
+    formData,
+    currentStep,
+    hasEnteredData,
+    isComplete,
+    serviceId,
+    serviceTitle,
+    totalSteps,
+    stepLabel,
+    isReviewOrEdit,
+    reviewRoute,
+    resumeRoute,
+  ])
 
   const saveDraft = useCallback(() => {
     if (isDiscardedRef.current || isComplete) return

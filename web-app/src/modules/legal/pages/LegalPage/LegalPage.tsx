@@ -12,13 +12,9 @@ export const LegalPage = () => {
   // Unknown policy slugs fall back to the Terms of Service rather than a dead end
   if (!document) return <Navigate to={routePaths.legal.terms} replace />
 
-  const handlePrint = () => {
-    window.print()
-  }
-
   return (
     <div className="legal-page">
-      {/* Simple Header: Logo on left, Print on right, thin light-gray bottom border */}
+      {/* Simple Header: Logo on left, thin light-gray bottom border */}
       <header className="legal-header">
         <div className="legal-header__inner">
           <Link
@@ -35,31 +31,6 @@ export const LegalPage = () => {
             />
             <span className="legal-header__brand-name">{appConfig.name}</span>
           </Link>
-
-          <button
-            type="button"
-            className="legal-header__print-btn"
-            onClick={handlePrint}
-            aria-label="Print this document"
-          >
-            <svg
-              className="legal-header__print-icon"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <polyline points="6 9 6 2 18 2 18 9" />
-              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-              <rect x="6" y="14" width="12" height="8" />
-            </svg>
-            <span className="legal-header__print-text">Print</span>
-          </button>
         </div>
       </header>
 
