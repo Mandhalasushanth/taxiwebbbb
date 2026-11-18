@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { Payments } from '../../src/modules/payments/pages/Payments/Payments'
+import { PaymentCheckoutPage } from '../../src/modules/payments/pages/PaymentCheckout/PaymentCheckoutPage'
 import { userStorage } from '@core/storage/userStorage'
 
 const mockNavigate = vi.fn()
@@ -11,6 +12,7 @@ vi.mock('react-router-dom', async () => {
   return {
     ...actual,
     useNavigate: () => mockNavigate,
+    useParams: () => ({ id: 'GST-PAID-001' }),
   }
 })
 
@@ -221,5 +223,33 @@ describe('Payments Component', () => {
       '/payments/checkout/GST-2026-00045',
       expect.objectContaining({ state: expect.objectContaining({ application: expect.anything() }) })
     )
+  })
+
+  it('Scenario 13: prevents duplicate payment and displays existing payment status if already paid', () => {
+    vi.spyOn(userStorage, 'getUserApplications').mockReturnValue([
+      {
+        id: 'app-paid-1',
+        code: 'GST-PAID-001',
+        title: 'GST Return Filing Service',
+        meta: 'India',
+        statusLabel: 'Completed',
+        statusTone: 'success',
+        progress: 100,
+        paymentStatus: 'Paid',
+        paidAt: '18 Nov 2026',
+        transactionId: 'TXN-998877',
+      } as any,
+    ])
+
+    render(
+      <MemoryRouter initialEntries={['/payments/checkout/GST-PAID-001']}>
+        <PaymentCheckoutPage />
+      </MemoryRouter>
+    )
+
+    expect(screen.getByText('Payment Already Completed')).toBeDefined()
+    expect(screen.getByText('TXN-998877')).toBeDefined()
+    expect(screen.getByTestId('payment-view-receipt-btn')).toBeDefined()
+    expect(screen.queryByText('Select Payment Method')).toBeNull()
   })
 })

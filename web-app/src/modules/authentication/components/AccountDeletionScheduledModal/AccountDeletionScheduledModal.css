@@ -1,0 +1,144 @@
+.account-deletion-scheduled-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.account-deletion-scheduled-modal-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(15, 40, 76, 0.25);
+  border: 1px solid #f1f5f9;
+  width: 100%;
+  max-width: 460px;
+  padding: 32px 28px 28px;
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+.account-deletion-scheduled-modal__close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.account-deletion-scheduled-modal__close-btn:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.account-deletion-scheduled-modal__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Green Checkmark Icon */
+.account-deletion-scheduled-modal__icon-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: #ecfdf5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.account-deletion-scheduled-modal__icon-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+}
+
+.account-deletion-scheduled-modal__title {
+  margin: 0 0 12px 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f284c;
+  letter-spacing: -0.01em;
+}
+
+.account-deletion-scheduled-modal__message {
+  margin: 0 0 24px 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #475569;
+  font-weight: 450;
+  max-width: 380px;
+}
+
+.account-deletion-scheduled-modal__date {
+  font-weight: 600;
+  color: #0f284c;
+}
+
+.account-deletion-scheduled-modal__ok-btn {
+  padding: 11px 48px;
+  background-color: #0b2545;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(11, 37, 69, 0.25);
+  transition: background-color 0.15s, transform 0.15s;
+  min-width: 140px;
+}
+
+.account-deletion-scheduled-modal__ok-btn:hover {
+  background-color: #081a33;
+  transform: translateY(-1px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .account-deletion-scheduled-modal-card {
+    padding: 28px 20px 24px;
+    border-radius: 16px;
+  }
+  .account-deletion-scheduled-modal__ok-btn {
+    width: 100%;
+  }
+}

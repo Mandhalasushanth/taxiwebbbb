@@ -337,10 +337,12 @@ if (typeof window !== 'undefined') {
   ;(window as unknown as Record<string, unknown>).__taxedge_clear_user_data__ = () => userStorage.clearAllUserData()
 
   try {
-    const DRAFTS_CLEARED_FLAG = 'taxedge.drafts_cleared_v1'
+    const DRAFTS_CLEARED_FLAG = 'taxedge.mock_applications_and_payments_cleared_v3'
     if (!window.localStorage.getItem(DRAFTS_CLEARED_FLAG)) {
       window.localStorage.removeItem(USER_APPLICATIONS_KEY)
       window.localStorage.removeItem(APPLICATION_DRAFTS_KEY)
+      window.localStorage.removeItem(USER_DEADLINES_KEY)
+      window.localStorage.removeItem('taxedge.notifications')
       window.localStorage.removeItem('taxedge_gst_applications')
       window.localStorage.removeItem('taxedge_gst_returns')
       window.localStorage.removeItem('taxedge_gst_amendments')
@@ -351,7 +353,15 @@ if (typeof window !== 'undefined') {
       const keysToRemove: string[] = []
       for (let i = 0; i < window.localStorage.length; i++) {
         const key = window.localStorage.key(i)
-        if (key && (key.includes('_draft_') || key.startsWith('taxedge_loan_app_'))) {
+        if (
+          key &&
+          (key.includes('_draft_') ||
+            key.startsWith('taxedge_loan_app_') ||
+            key.startsWith('taxedge_gst_') ||
+            key.startsWith('taxedge_itr_') ||
+            key === USER_APPLICATIONS_KEY ||
+            key === APPLICATION_DRAFTS_KEY)
+        ) {
           keysToRemove.push(key)
         }
       }

@@ -76,7 +76,7 @@ describe('Profile page sections & actions', () => {
     expect(kycLink?.getAttribute('href')).toBe('/profile/kyc')
   })
 
-  it('renders CUSTOMER SUPPORT section with Customer Support, Terms & Conditions, and Privacy Policy links', () => {
+  it('renders CUSTOMER SUPPORT section with Customer Support, Terms & Conditions, Privacy Policy, and Refund & Cancellation Policy links', () => {
     render(
       <MemoryRouter>
         <Profile />
@@ -98,6 +98,11 @@ describe('Profile page sections & actions', () => {
     expect(privacyLink).not.toBeNull()
     expect(privacyLink?.getAttribute('href')).toBe('/legal/privacy')
     expect(privacyLink?.getAttribute('target')).toBeNull()
+
+    const refundLink = screen.getByText('Refund & Cancellation Policy').closest('a')
+    expect(refundLink).not.toBeNull()
+    expect(refundLink?.getAttribute('href')).toBe('/legal/refund')
+    expect(refundLink?.getAttribute('target')).toBeNull()
   })
 
   it('renders SETTINGS section with Change Passcode and Delete Account', () => {
@@ -160,17 +165,19 @@ describe('Profile page sections & actions', () => {
 
     fireEvent.click(screen.getByText('Delete Account'))
     expect(screen.getByTestId('delete-account-modal-card')).toBeDefined()
-    expect(screen.getByText('Permanent Action')).toBeDefined()
-    expect(screen.getByText(/Deleting your Finsolz account is irreversible/i)).toBeDefined()
-    expect(screen.getByText('All profile data, PAN, and KYC details will be unlinked.')).toBeDefined()
-    expect(screen.getByText('Your active mobile authentication session will be revoked.')).toBeDefined()
-    expect(screen.getByText('Government filings already processed with authorities remain legally archived.')).toBeDefined()
+    expect(screen.getByText('Permanent Action – 60-Day Grace Period')).toBeDefined()
+    expect(screen.getByText(/Your data will be retained for 60 days before permanent erasure:/i)).toBeDefined()
+    expect(screen.getByText('All profile records, application tracking, and filings will be permanently erased.')).toBeDefined()
+    expect(screen.getByText('Your registered mobile number will be blocked from logging in during this period.')).toBeDefined()
+    expect(screen.getByText('All KYC, PAN, and Aadhaar associations will be permanently unlinked.')).toBeDefined()
+    expect(screen.getByText('Active mobile authentication sessions will be immediately revoked.')).toBeDefined()
 
-    // Confirm button is disabled when checkbox is unchecked
+    // Confirm button is disabled when checkbox is unchecked or reason is missing
     const confirmBtn = screen.getByTestId('delete-account-confirm-btn') as HTMLButtonElement
     expect(confirmBtn.disabled).toBe(true)
 
-    // Check the understand checkbox
+    // Select reason & check the understand checkbox
+    fireEvent.click(screen.getByTestId('delete-account-reason-0'))
     const checkbox = screen.getByTestId('delete-account-understand-checkbox') as HTMLInputElement
     fireEvent.click(checkbox)
     expect(checkbox.checked).toBe(true)

@@ -6,6 +6,7 @@ import { authStorage, buildProfileCompletionPath } from '@core/auth'
 import { routePaths } from '@core/config'
 import { userStorage, type ApplicationDraft } from '@core/storage/userStorage'
 import { calculateProfileProgress, CompleteProfileCard } from '@modules/profile'
+import { CibilHomeCard } from '@modules/cibil'
 import {
   DashboardHero,
   QuickServices,
@@ -65,6 +66,9 @@ export const CustomerDashboard = () => {
           ))}
         </div>
       )}
+
+      {/* CIBIL Score Card */}
+      <CibilHomeCard />
 
       {/* 4. Support Chat Section */}
       <div className="dashboard-support-banner" data-testid="dashboard-support-banner">

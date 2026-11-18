@@ -41,6 +41,15 @@ const IconShieldCheck = () => (
   </svg>
 )
 
+const IconRefund = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+    <path d="M21 3v5h-5" />
+    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+    <path d="M8 16H3v5" />
+  </svg>
+)
+
 const IconLock = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
@@ -117,6 +126,13 @@ export const profileSectionsConfig: ProfileSectionData[] = [
         to: routePaths.legal.privacy,
         icon: <IconShieldCheck />,
         iconBgClass: 'profile-menu-item__icon-wrapper--green',
+      },
+      {
+        id: 'refund-policy',
+        label: 'Refund & Cancellation Policy',
+        to: routePaths.legal.refund,
+        icon: <IconRefund />,
+        iconBgClass: 'profile-menu-item__icon-wrapper--orange',
       },
     ],
   },

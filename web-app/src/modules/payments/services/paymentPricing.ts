@@ -76,6 +76,8 @@ export interface CheckoutApplicationTarget {
   paymentStatus?: string
   finalizedCharges?: { total?: number }
   paymentAmount?: number
+  paidAt?: string
+  transactionId?: string
 }
 
 /**

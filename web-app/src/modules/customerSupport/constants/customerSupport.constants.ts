@@ -72,6 +72,7 @@ export const QUICK_SUPPORT_TOPICS = [
   'Document help',
   'Payment issue',
   'Talk to an expert',
+  'Refund & cancellation policy',
 ]
 
 export const INITIAL_SUPPORT_CONVERSATIONS: Record<string, SupportConversation> = {}

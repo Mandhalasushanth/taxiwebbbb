@@ -45,6 +45,9 @@
   height: clamp(40px, 5.2vh, 48px);
   object-fit: contain;
   border-radius: clamp(9px, 1.2vh, 12px);
+  background: #ffffff;
+  padding: 3px;
+  box-sizing: border-box;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
@@ -52,6 +55,9 @@
   width: clamp(52px, 6.8vh, 66px);
   height: clamp(52px, 6.8vh, 66px);
   border-radius: clamp(12px, 1.5vh, 16px);
+  background: #ffffff;
+  padding: 4px;
+  box-sizing: border-box;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 

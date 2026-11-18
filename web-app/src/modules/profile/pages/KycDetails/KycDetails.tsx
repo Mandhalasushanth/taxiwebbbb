@@ -1,13 +1,10 @@
-import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@store/index'
-import { authStorage, buildProfileCompletionPath } from '@core/auth'
-import { routePaths } from '@core/config'
+import { authStorage } from '@core/auth'
 import { maskPan, maskAadhaarAsterisk } from '@shared/utils'
 import { DetailCard, type DetailCardItem } from '../../components/DetailCard/DetailCard'
 import '../PersonalInformation/ProfileDetails.css'
 
 export const KycDetails = () => {
-  const navigate = useNavigate()
   const storeUser = useAuthStore((state) => state.user)
   const user = storeUser || authStorage.getUser()
 
@@ -19,12 +16,6 @@ export const KycDetails = () => {
         </div>
       </div>
     )
-  }
-
-  const handleEdit = () => {
-    navigate(buildProfileCompletionPath(routePaths.profileKyc), {
-      state: { returnTo: routePaths.profileKyc, mobile: user.mobile },
-    })
   }
 
   const isVerified = Boolean((user.pan && user.aadhaar) || user.isProfileComplete || user.pan)
@@ -65,7 +56,6 @@ export const KycDetails = () => {
         <DetailCard
           title="KYC Details"
           items={identityItems}
-          onEdit={handleEdit}
           footerNote="Status reflects the PAN and Aadhaar documents uploaded against your applications."
           icon={
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

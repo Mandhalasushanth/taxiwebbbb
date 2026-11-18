@@ -1,11 +1,30 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./DeleteAccountModal.css";
 
+export const ACCOUNT_DELETION_STORAGE_KEY = "taxedge_account_deletion_scheduled";
+
+export const DELETION_REASONS = [
+  "I no longer need this service",
+  "Privacy & security concerns",
+  "Too complex / hard to use",
+  "Switching to another service",
+  "Other reasons",
+] as const;
+
+export const calculate60DaysDeletionDate = (baseDate = new Date()): string => {
+  const target = new Date(baseDate.getTime());
+  target.setDate(target.getDate() + 60);
+  const yyyy = target.getFullYear();
+  const mm = String(target.getMonth() + 1).padStart(2, "0");
+  const dd = String(target.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+};
+
 export interface DeleteAccountModalProps {
   isOpen: boolean;
   isDeleting?: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
 }
 
 const TrashIcon = () => (
@@ -33,7 +52,7 @@ const CloseIcon = () => (
     height="20"
     viewBox="0 0 24 24"
     fill="none"
-    stroke="#64748b"
+    stroke="#475569"
     strokeWidth="2.5"
     strokeLinecap="round"
     strokeLinejoin="round"
@@ -66,69 +85,123 @@ const WarningTriangleIcon = () => (
   </svg>
 );
 
-const CrossCircleIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 20 20"
-    fill="none"
-    aria-hidden="true"
-  >
-    <circle cx="10" cy="10" r="9" fill="#dc2626" />
-    <path
-      d="M7 7L13 13M13 7L7 13"
-      stroke="#ffffff"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-  </svg>
-);
-
-const CheckCircleIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 20 20"
-    fill="none"
-    aria-hidden="true"
-  >
-    <circle cx="10" cy="10" r="9" fill="#10b981" />
-    <path
-      d="M6 10.5L8.5 13L14 7.5"
-      stroke="#ffffff"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
 export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   isOpen,
-  isDeleting = false,
+  isDeleting: externalIsDeleting = false,
   onClose,
   onConfirm,
 }) => {
-  const [isConfirmed, setIsConfirmed] = useState(false);
-  const cancelBtnRef = useRef<HTMLButtonElement>(null);
+  const [selectedReason, setSelectedReason] = useState<string | null>(null);
+  const [explanation, setExplanation] = useState<string>("");
+  const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
+  const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState<boolean>(false);
+  const [internalIsDeleting, setInternalIsDeleting] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const isDeleting = externalIsDeleting || internalIsDeleting;
+  const cancelBtnRef = useRef<HTMLButtonElement>(null);
+  const popupCancelBtnRef = useRef<HTMLButtonElement>(null);
+
+  // Reset state when closing
   useEffect(() => {
     if (!isOpen) {
+      setSelectedReason(null);
+      setExplanation("");
       setIsConfirmed(false);
+      setIsConfirmPopupOpen(false);
+      setInternalIsDeleting(false);
+      setErrorMessage(null);
       return;
     }
+    cancelBtnRef.current?.focus();
+  }, [isOpen]);
+
+  // Focus popup cancel button when popup opens
+  useEffect(() => {
+    if (isConfirmPopupOpen) {
+      popupCancelBtnRef.current?.focus();
+    }
+  }, [isConfirmPopupOpen]);
+
+  // Handle escape key
+  useEffect(() => {
+    if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && !isDeleting) {
-        onClose();
+        if (isConfirmPopupOpen) {
+          setIsConfirmPopupOpen(false);
+        } else {
+          onClose();
+        }
       }
     };
+
     document.addEventListener("keydown", handleKeyDown);
-    cancelBtnRef.current?.focus();
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, isDeleting, onClose]);
+  }, [isOpen, isDeleting, isConfirmPopupOpen, onClose]);
 
   if (!isOpen) return null;
+
+  const handleSelectReason = (reason: string) => {
+    setSelectedReason(reason);
+    setExplanation(reason);
+  };
+
+  const handleExplanationChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const value = e.target.value.slice(0, 300);
+    setExplanation(value);
+  };
+
+  // Both conditions required
+  const canProceedToDelete =
+    Boolean(selectedReason && selectedReason.trim().length > 0) && isConfirmed;
+
+  const handleOpenConfirmPopup = () => {
+    if (!canProceedToDelete || isDeleting) return;
+    setErrorMessage(null);
+    setIsConfirmPopupOpen(true);
+  };
+
+  const handleCloseConfirmPopup = () => {
+    if (isDeleting) return;
+    setIsConfirmPopupOpen(false);
+  };
+
+  const handleDeleteForever = async () => {
+    if (isDeleting) return;
+    setInternalIsDeleting(true);
+    setErrorMessage(null);
+
+    try {
+      const scheduledDate = calculate60DaysDeletionDate();
+      const payload = {
+        scheduledDate,
+        reason: selectedReason,
+        explanation,
+        requestedAt: new Date().toISOString(),
+      };
+
+      try {
+        sessionStorage.setItem(
+          ACCOUNT_DELETION_STORAGE_KEY,
+          JSON.stringify(payload)
+        );
+      } catch (storageErr) {
+        console.warn("Unable to save to sessionStorage:", storageErr);
+      }
+
+      await onConfirm();
+    } catch (err: any) {
+      setErrorMessage(
+        err?.message ||
+          "Failed to schedule account deletion. Please try again."
+      );
+      setInternalIsDeleting(false);
+    }
+  };
 
   return (
     <div
@@ -137,7 +210,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
       aria-modal="true"
       aria-labelledby="delete-account-modal-title"
       onClick={() => {
-        if (!isDeleting) onClose();
+        if (!isDeleting && !isConfirmPopupOpen) onClose();
       }}
       data-testid="delete-account-modal-overlay"
     >
@@ -159,127 +232,283 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               Delete Account
             </h3>
           </div>
+        </div>
+
+        {/* Reason Section */}
+        <div className="delete-account-modal__reason-section">
+          <div className="delete-account-modal__reason-header">
+            <span className="delete-account-modal__reason-title">
+              Why are you deleting your account?
+              <span
+                className="required-star delete-account-modal__required-star"
+                aria-label="required"
+                data-testid="delete-account-required-star"
+              >
+                *
+              </span>
+            </span>
+          </div>
+
+          <div
+            className="delete-account-modal__reason-chips"
+            role="radiogroup"
+            aria-label="Reason for deleting account"
+          >
+            {/* Row 1: 2 reasons */}
+            <div className="delete-account-modal__reason-row">
+              {DELETION_REASONS.slice(0, 2).map((reason, rowIdx) => {
+                const index = rowIdx;
+                const isSelected = selectedReason === reason;
+                return (
+                  <button
+                    key={reason}
+                    type="button"
+                    role="radio"
+                    aria-checked={isSelected}
+                    className={`delete-account-modal__reason-chip ${
+                      isSelected
+                        ? "delete-account-modal__reason-chip--selected"
+                        : ""
+                    }`}
+                    onClick={() => handleSelectReason(reason)}
+                    disabled={isDeleting}
+                    data-testid={`delete-account-reason-${index}`}
+                  >
+                    {reason}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Row 2: 3 reasons */}
+            <div className="delete-account-modal__reason-row">
+              {DELETION_REASONS.slice(2).map((reason, rowIdx) => {
+                const index = rowIdx + 2;
+                const isSelected = selectedReason === reason;
+                return (
+                  <button
+                    key={reason}
+                    type="button"
+                    role="radio"
+                    aria-checked={isSelected}
+                    className={`delete-account-modal__reason-chip ${
+                      isSelected
+                        ? "delete-account-modal__reason-chip--selected"
+                        : ""
+                    }`}
+                    onClick={() => handleSelectReason(reason)}
+                    disabled={isDeleting}
+                    data-testid={`delete-account-reason-${index}`}
+                  >
+                    {reason}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Explanation Text Area */}
+        <div className="delete-account-modal__textarea-wrapper">
+          <textarea
+            className="delete-account-modal__textarea"
+            placeholder="Tell us more about your reason (optional additional details)..."
+            value={explanation}
+            onChange={handleExplanationChange}
+            maxLength={300}
+            rows={2}
+            disabled={isDeleting}
+            data-testid="delete-account-explanation-textarea"
+            aria-label="Additional details"
+          />
+          <div
+            className="delete-account-modal__char-counter"
+            data-testid="delete-account-char-counter"
+          >
+            {explanation.length}/300
+          </div>
+        </div>
+
+        {/* Permanent Action Warning Box */}
+        <div
+          className="delete-account-modal__alert-box"
+          data-testid="delete-account-warning-box"
+        >
+          <div className="delete-account-modal__alert-title-row">
+            <WarningTriangleIcon />
+            <span className="delete-account-modal__alert-title">
+              Permanent Action – 60-Day Grace Period
+            </span>
+          </div>
+          <p className="delete-account-modal__alert-subtitle">
+            Your data will be retained for 60 days before permanent erasure:
+          </p>
+          <ul className="delete-account-modal__alert-bullets">
+            <li>
+              All profile records, application tracking, and filings will be
+              permanently erased.
+            </li>
+            <li>
+              Your registered mobile number will be blocked from logging in
+              during this period.
+            </li>
+            <li>
+              All KYC, PAN, and Aadhaar associations will be permanently
+              unlinked.
+            </li>
+            <li>
+              Active mobile authentication sessions will be immediately
+              revoked.
+            </li>
+          </ul>
+        </div>
+
+        {/* Checkbox confirmation */}
+        <label className="delete-account-modal__checkbox-container">
+          <input
+            type="checkbox"
+            className="delete-account-modal__checkbox-input"
+            checked={isConfirmed}
+            onChange={(e) => setIsConfirmed(e.target.checked)}
+            disabled={isDeleting}
+            data-testid="delete-account-understand-checkbox"
+          />
+          <span
+            className={`delete-account-modal__checkbox-custom ${
+              isConfirmed
+                ? "delete-account-modal__checkbox-custom--checked"
+                : ""
+            }`}
+            aria-hidden="true"
+          >
+            {isConfirmed && (
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 12 12"
+                fill="none"
+                stroke="#ffffff"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="2 6 4.5 9 10 3" />
+              </svg>
+            )}
+          </span>
+          <span className="delete-account-modal__checkbox-text">
+            I understand that my account will be permanently deleted after 60
+            days, and my mobile number will be blocked.
+          </span>
+        </label>
+
+        {/* Main Action buttons */}
+        <div className="delete-account-modal-actions">
           <button
+            ref={cancelBtnRef}
             type="button"
-            className="delete-account-modal__close-btn"
+            className="delete-account-modal-cancel-btn"
             onClick={onClose}
             disabled={isDeleting}
-            aria-label="Close"
-            data-testid="delete-account-close-btn"
+            data-testid="delete-account-cancel-btn"
           >
-            <CloseIcon />
+            Cancel
+          </button>
+          <button
+            type="button"
+            className={`delete-account-modal-confirm-btn ${
+              !canProceedToDelete
+                ? "delete-account-modal-confirm-btn--disabled"
+                : ""
+            }`}
+            onClick={handleOpenConfirmPopup}
+            disabled={!canProceedToDelete || isDeleting}
+            data-testid="delete-account-confirm-btn"
+            aria-disabled={!canProceedToDelete || isDeleting}
+          >
+            Delete Account
           </button>
         </div>
+      </div>
 
-        {/* Modal Body */}
-        <div className="delete-account-modal__body">
-          {/* Permanent Action Warning Box */}
-          <div className="delete-account-modal__alert-box">
-            <div className="delete-account-modal__alert-title-row">
-              <WarningTriangleIcon />
-              <span className="delete-account-modal__alert-title">
-                Permanent Action
-              </span>
+      {/* First Confirmation Popup: Confirm Account Deletion */}
+      {isConfirmPopupOpen && (
+        <div
+          className="delete-account-confirm-popup-overlay"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="confirm-deletion-title"
+          aria-describedby="confirm-deletion-message"
+          onClick={handleCloseConfirmPopup}
+          data-testid="confirm-deletion-popup-overlay"
+        >
+          <div
+            className="delete-account-confirm-popup-card"
+            onClick={(e) => e.stopPropagation()}
+            data-testid="confirm-deletion-popup-card"
+          >
+            <div className="delete-account-confirm-popup__header">
+              <h4
+                id="confirm-deletion-title"
+                className="delete-account-confirm-popup__title"
+              >
+                Confirm Account Deletion
+              </h4>
+              <button
+                type="button"
+                className="delete-account-confirm-popup__close-btn"
+                onClick={handleCloseConfirmPopup}
+                disabled={isDeleting}
+                aria-label="Close confirmation"
+                data-testid="confirm-deletion-close-btn"
+              >
+                <CloseIcon />
+              </button>
             </div>
-            <p className="delete-account-modal__alert-text">
-              Deleting your Finsolz account is irreversible. You will lose access
-              to your application tracking and profile records.
+
+            <p
+              id="confirm-deletion-message"
+              className="delete-account-confirm-popup__message"
+            >
+              Your account and data will be scheduled for permanent deletion in
+              60 days. Your mobile number will be blocked from logging in
+              during this period. Are you sure you want to proceed?
             </p>
-          </div>
 
-          {/* Checklist of consequences */}
-          <div className="delete-account-modal__list">
-            <div className="delete-account-modal__list-item">
-              <div className="delete-account-modal__list-icon">
-                <CrossCircleIcon />
+            {errorMessage && (
+              <div
+                className="delete-account-confirm-popup__error"
+                role="alert"
+                data-testid="confirm-deletion-error"
+              >
+                {errorMessage}
               </div>
-              <span className="delete-account-modal__list-text">
-                All profile data, PAN, and KYC details will be unlinked.
-              </span>
+            )}
+
+            <div className="delete-account-confirm-popup__actions">
+              <button
+                ref={popupCancelBtnRef}
+                type="button"
+                className="delete-account-confirm-popup__cancel-btn"
+                onClick={handleCloseConfirmPopup}
+                disabled={isDeleting}
+                data-testid="confirm-deletion-cancel-btn"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="delete-account-confirm-popup__delete-btn"
+                onClick={handleDeleteForever}
+                disabled={isDeleting}
+                data-testid="confirm-deletion-forever-btn"
+              >
+                {isDeleting ? "Deleting..." : "Delete Forever"}
+              </button>
             </div>
-
-            <div className="delete-account-modal__list-item">
-              <div className="delete-account-modal__list-icon">
-                <CrossCircleIcon />
-              </div>
-              <span className="delete-account-modal__list-text">
-                Your active mobile authentication session will be revoked.
-              </span>
-            </div>
-
-            <div className="delete-account-modal__list-item">
-              <div className="delete-account-modal__list-icon">
-                <CheckCircleIcon />
-              </div>
-              <span className="delete-account-modal__list-text">
-                Government filings already processed with authorities remain
-                legally archived.
-              </span>
-            </div>
-          </div>
-
-          {/* Checkbox confirmation */}
-          <label className="delete-account-modal__checkbox-container">
-            <input
-              type="checkbox"
-              className="delete-account-modal__checkbox-input"
-              checked={isConfirmed}
-              onChange={(e) => setIsConfirmed(e.target.checked)}
-              disabled={isDeleting}
-              data-testid="delete-account-understand-checkbox"
-            />
-            <span
-              className={`delete-account-modal__checkbox-custom ${
-                isConfirmed ? "delete-account-modal__checkbox-custom--checked" : ""
-              }`}
-              aria-hidden="true"
-            >
-              {isConfirmed && (
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  stroke="#ffffff"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="2 6 4.5 9 10 3" />
-                </svg>
-              )}
-            </span>
-            <span className="delete-account-modal__checkbox-text">
-              I understand this will permanently delete my Finsolz account.
-            </span>
-          </label>
-
-          {/* Action buttons */}
-          <div className="delete-account-modal-actions">
-            <button
-              ref={cancelBtnRef}
-              type="button"
-              className="delete-account-modal-cancel-btn"
-              onClick={onClose}
-              disabled={isDeleting}
-              data-testid="delete-account-cancel-btn"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className={`delete-account-modal-confirm-btn ${
-                !isConfirmed ? "delete-account-modal-confirm-btn--disabled" : ""
-              }`}
-              onClick={onConfirm}
-              disabled={!isConfirmed || isDeleting}
-              data-testid="delete-account-confirm-btn"
-            >
-              {isDeleting ? "Deleting..." : "Delete Account"}
-            </button>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

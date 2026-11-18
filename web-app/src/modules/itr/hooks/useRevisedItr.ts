@@ -116,7 +116,7 @@ export const useRevisedItr = () => {
   );
   const [showPayment, setShowPayment] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [applicationId, setApplicationId] = useState("ITR-2026-50983");
+  const [applicationId, setApplicationId] = useState("");
   const [ackNumber, setAckNumber] = useState<string>(
     () => existingDraft?.formData?.ackNumber || "",
   );
@@ -456,13 +456,16 @@ export const useRevisedItr = () => {
       try {
         setShowPayment(false);
         setIsSubmitted(true);
+        const randomDigits = Math.floor(10000 + Math.random() * 90000)
         const finalAppId = result?.paymentId
-          ? "ITR-2026-" +
+          ? "ITR-" +
+            new Date().getFullYear() +
+            "-" +
             result.paymentId
               .replace(/[^0-9]/g, "")
               .slice(-5)
-              .padStart(5, "50983")
-          : "ITR-2026-50983";
+              .padStart(5, String(randomDigits))
+          : `ITR-${new Date().getFullYear()}-${randomDigits}`;
         setApplicationId(finalAppId);
         clearDraft();
         userStorage.saveUserApplication({

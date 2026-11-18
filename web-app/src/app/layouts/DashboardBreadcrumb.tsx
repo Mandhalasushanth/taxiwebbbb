@@ -233,6 +233,16 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({ curren
     )
   }
 
+  if (path === routePaths.cibil) {
+    return (
+      <nav className="shell__breadcrumb" aria-label="Breadcrumb">
+        <Link to={routePaths.dashboard}>Services</Link>
+        <span className="shell__breadcrumb-sep" aria-hidden="true">→</span>
+        <span className="shell__breadcrumb-current">CIBIL Score</span>
+      </nav>
+    )
+  }
+
   if (path.startsWith('/applications')) {
     const isTracker = path.includes('/track') || path !== routePaths.applications
     return (

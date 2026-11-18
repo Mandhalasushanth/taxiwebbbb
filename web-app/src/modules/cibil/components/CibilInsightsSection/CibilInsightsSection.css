@@ -1,0 +1,236 @@
+.cibil-insights-container {
+  margin-top: 28px;
+  width: 100%;
+}
+
+.cibil-insights-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+  width: 100%;
+}
+
+.cibil-insights-header-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.cibil-insights-greeting {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.01em;
+}
+
+.cibil-insights-subtitle {
+  font-size: 15px;
+  font-weight: 500;
+  color: #64748b;
+  margin: 0;
+}
+
+.cibil-insights-header .cibil-view-report-btn {
+  background: #082B59;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 22px;
+  font-size: 14.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(8, 43, 89, 0.16);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  width: auto;
+  max-width: fit-content;
+  margin: 0;
+}
+
+.cibil-insights-header .cibil-view-report-btn:hover {
+  background: #0f3d7a;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(8, 43, 89, 0.22);
+}
+
+.cibil-insights-header .cibil-view-report-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+  .cibil-insights-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .cibil-insights-header .cibil-view-report-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.cibil-insights-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.cibil-insight-card {
+  border-radius: 20px;
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1px solid;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  min-height: 210px;
+  box-sizing: border-box;
+}
+
+.cibil-insight-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px -6px rgba(15, 23, 42, 0.06);
+}
+
+/* Color Schemes Matching Web Reference */
+.cibil-insight-card--green {
+  background-color: #f0fdf4;
+  border-color: #dcfce7;
+}
+
+.cibil-insight-card--blue {
+  background-color: #eff6ff;
+  border-color: #dbeafe;
+}
+
+.cibil-insight-card--orange {
+  background-color: #fff7ed;
+  border-color: #ffedd5;
+}
+
+.cibil-insight-card--purple {
+  background-color: #faf5ff;
+  border-color: #f3e8ff;
+}
+
+.cibil-insight-card--cyan {
+  background-color: #f0f9ff;
+  border-color: #e0f2fe;
+}
+
+/* Icon Box */
+.cibil-insight-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.cibil-insight-icon-box--green {
+  color: #16a34a;
+}
+
+.cibil-insight-icon-box--blue {
+  color: #2563eb;
+}
+
+.cibil-insight-icon-box--orange {
+  color: #ea580c;
+}
+
+.cibil-insight-icon-box--purple {
+  color: #7c3aed;
+}
+
+.cibil-insight-icon-box--cyan {
+  color: #0284c7;
+}
+
+.cibil-insight-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 10px 0;
+  line-height: 1.25;
+}
+
+/* Badge */
+.cibil-insight-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  white-space: nowrap;
+}
+
+.cibil-insight-badge--green {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.cibil-insight-badge--blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.cibil-insight-badge--orange {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.cibil-insight-badge--purple {
+  background: #f3e8ff;
+  color: #6b21a8;
+}
+
+.cibil-insight-badge--cyan {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.cibil-insight-desc {
+  font-size: 12.5px;
+  color: #475569;
+  line-height: 1.45;
+  margin: 0;
+  font-weight: 450;
+}
+
+@media (max-width: 1200px) {
+  .cibil-insights-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .cibil-insights-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .cibil-insight-card {
+    padding: 18px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cibil-insights-grid {
+    grid-template-columns: 1fr;
+  }
+}

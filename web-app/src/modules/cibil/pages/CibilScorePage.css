@@ -1,0 +1,236 @@
+.cibil-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 60px;
+  animation: cibilPageFadeIn 0.35s ease-out;
+}
+
+@keyframes cibilPageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Section A: Top Card (Gauge + Delta) */
+.cibil-score-panel-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 32px 36px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+  border: 1px solid #eef2f6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cibil-score-panel-divider {
+  width: 1px;
+  align-self: stretch;
+  background: #f1f5f9;
+  margin: 0 24px;
+}
+
+/* Section C: View Full Report Compact Navy Button */
+.cibil-view-report-btn {
+  width: auto;
+  max-width: fit-content;
+  background: #082b59;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 22px;
+  font-size: 14.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(8, 43, 89, 0.16);
+  transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cibil-view-report-btn:hover {
+  background: #0f3d7a;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(8, 43, 89, 0.22);
+}
+
+.cibil-view-report-btn:active {
+  transform: translateY(0);
+}
+
+/* Section D: Educational Information Card */
+.cibil-educational-banner {
+  margin-top: 16px;
+  background: #f0f7ff;
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.cibil-educational-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cibil-educational-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #1e40af;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cibil-educational-sep {
+  width: 1px;
+  height: 20px;
+  background: #cbd5e1;
+}
+
+.cibil-educational-desc {
+  font-size: 13.5px;
+  color: #334155;
+  margin: 0;
+  line-height: 1.4;
+  font-weight: 450;
+}
+
+/* Section E: Raise an Issue */
+.cibil-raise-issue-row {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #475569;
+}
+
+.cibil-raise-issue-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.cibil-raise-issue-btn:hover {
+  color: #1d4ed8;
+}
+
+/* Fallback & Special States (ERROR, NO_HISTORY) */
+.cibil-state-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 48px 32px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 520px;
+  margin: 40px auto;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+}
+
+.cibil-state-icon-box {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.cibil-state-icon-box--error {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.cibil-state-icon-box--no-history {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.cibil-state-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+}
+
+.cibil-state-desc {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.cibil-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #082b59;
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
+  padding: 12px 26px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 840px) {
+  .cibil-score-panel-card {
+    flex-direction: column;
+    padding: 24px 20px;
+    gap: 24px;
+  }
+
+  .cibil-score-panel-divider {
+    width: 100%;
+    height: 1px;
+    margin: 8px 0;
+  }
+
+  .cibil-educational-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .cibil-educational-sep {
+    display: none;
+  }
+}
